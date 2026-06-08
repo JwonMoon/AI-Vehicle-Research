@@ -209,7 +209,7 @@
 
 <div class="header">
     <h1>🤖 AI Report — 2026-06-08</h1>
-    <p><strong>5건</strong> 수집 | 생성: 2026-06-08 09:30</p>
+    <p><strong>6건</strong> 수집 | 생성: 2026-06-08 09:30 | <span style="font-size: 0.85em; opacity: 0.8;">(한글 5 + 영문 1)</span></p>
     <p style="font-size: 0.9em; margin-top: 15px;">차량 소프트웨어 개발자(OEM/Tier1) 관점 요약</p>
 </div>
 
@@ -990,10 +990,64 @@ $ trtexec --loadEngine=model.trt --iterations=100
     </div>
 </div>
 
+<!-- ========== 에이전틱 AI (영문, 1건 예시) ========== -->
+<div class="category">
+    <div class="category-title">🤖 에이전틱 AI (1건, EN)</div>
+
+    <div class="article">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div class="article-number">1</div>
+            <div class="article-title">NVIDIA Nemotron 3 Ultra Powers Faster, More Efficient Reasoning for Long-Running Agents</div>
+        </div>
+
+        <div class="article-meta">
+            <strong>Date</strong>: 2026-06-04<br>
+            <strong>Source</strong>: <a href="https://developer.nvidia.com/blog/" target="_blank">NVIDIA Developer Blog (English)</a><br>
+            <strong>Category</strong>: <span class="tag category-tag">Agentic AI</span> <span class="tag category-tag">LLM Reasoning</span><br>
+            <strong>Keywords</strong>:
+            <span class="tag keyword-tag">Nemotron 3 Ultra</span>
+            <span class="tag keyword-tag">Long-context reasoning</span>
+            <span class="tag keyword-tag">Inference optimization</span>
+        </div>
+
+        <div class="summary-box">
+            <strong>One-liner Summary</strong><br>
+            NVIDIA Nemotron 3 Ultra enables efficient long-context reasoning for autonomous agents with reduced latency and memory footprint.
+        </div>
+
+        <div class="insight-box">
+            <strong>💡 Key Insight for Vehicle Software Architects</strong><br><br>
+            <strong>Challenge</strong>: Long-running agents need extended context windows (8K+ tokens) but vehicle ECUs have limited memory/power.<br><br>
+            <strong>Solution</strong>: Nemotron 3 Ultra achieves 32K context with optimized KV-cache, enabling complex multi-step reasoning in edge vehicles.<br><br>
+            <strong>Impact</strong>: Enables sophisticated trip planning, diagnostic reasoning, user context retention without cloud dependency.
+        </div>
+
+        <div class="content-section">
+            <h4>📊 Key Improvements</h4>
+            <ul>
+                <li>32K token context window (vs 8K baseline)</li>
+                <li>40% faster reasoning throughput</li>
+                <li>30% reduced memory requirements</li>
+                <li>Native support for function calling + RAG pipelines</li>
+            </ul>
+
+            <h4>🚗 Vehicle Use Cases</h4>
+            <ul>
+                <li><strong>Trip Planning Assistant</strong>: Maintain context across multi-step route optimization, weather, traffic</li>
+                <li><strong>Diagnostic Agent</strong>: Reason over vehicle sensor history (weeks of data) for predictive maintenance</li>
+                <li><strong>Conversational Memory</strong>: Retain user preferences, previous requests across sessions</li>
+            </ul>
+        </div>
+
+        <div class="relevance high">🔴 Relevance: HIGH — Critical for stateful, long-context agent applications</div>
+    </div>
+</div>
+
 <hr style="margin-top: 50px; margin-bottom: 30px;">
 <p style="text-align: center; color: #999; font-size: 0.9em;">
-    <strong>생성 완료</strong>: 2026-06-08 | 총 5건 (차량AI 1건, LLM·모델 2건, 인프라 2건)<br>
-    대상: 차량 소프트웨어 개발자 (OEM/Tier1 아키텍처 담당자)
+    <strong>생성 완료</strong>: 2026-06-08 | 총 6건 (한글: 차량AI 1 + LLM·모델 2 + 인프라 2, 영문: 에이전틱 1)<br>
+    대상: 차량 소프트웨어 개발자 (OEM/Tier1 아키텍처 담당자)<br>
+    <span style="font-size: 0.85em; color: #aaa;">Source: NVIDIA Developer Blog (English + Korean, with dedup)</span>
 </p>
 
 </body>
