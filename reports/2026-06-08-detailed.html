@@ -183,6 +183,26 @@
         li {
             margin: 8px 0;
         }
+        .article-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .image-caption {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+            text-align: center;
+            font-style: italic;
+        }
+        .image-source {
+            font-size: 0.8em;
+            color: #999;
+            text-align: right;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
@@ -219,6 +239,10 @@
             자동차 콕핏이 규칙 기반 UI에서 추론·계획·행동 가능한 에이전틱 AI 시스템으로 진화하는 설계 방법론 제시
         </div>
 
+        <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/FeatureImage.webp" alt="NVIDIA DRIVE AGX 차량 내 AI 에이전트 아키텍처" class="article-image">
+        <div class="image-caption">NVIDIA DRIVE AGX로 구현하는 차량 내 멀티모달 에이전틱 AI 시스템</div>
+        <div class="image-source">출처: NVIDIA Developer Blog</div>
+
         <div class="insight-box">
             <strong>💡 OEM/Tier1 아키텍처 개발자 관점 핵심 인사이트</strong><br><br>
             <strong>직면한 설계 딜레마:</strong> 현재 인포테인먼트 SoC를 유지하면서도 최신 AI 기능을 추가하고 싶은데?<br><br>
@@ -244,6 +268,10 @@
             <details>
                 <summary>🏗️ AI Box (기존 인포테인먼트 유지형)</summary>
                 <div>
+                    <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/image8-2.webp" alt="AI Box 아키텍처 다이어그램" class="article-image">
+                    <div class="image-caption">AI Box: 기존 인포테인먼트 시스템 유지하며 독립 AI ECU 추가</div>
+                    <div class="image-source">출처: NVIDIA Developer Blog</div>
+
                     <strong>구성</strong>: DRIVE AGX Orin 기반 독립 ECU → 이더넷으로 기존 IVI SoC와 연동<br><br>
                     <strong>장점</strong>:
                     <ul>
@@ -259,6 +287,10 @@
             <details>
                 <summary>🏗️ DRIVE AGX Thor (완전 중앙화형)</summary>
                 <div>
+                    <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/Figure5.webp" alt="DRIVE AGX Thor 아키텍처" class="article-image">
+                    <div class="image-caption">DRIVE AGX Thor: 자율주행 + 캐빈 AI + IVI를 단일 멀티도메인 칩에서 통합</div>
+                    <div class="image-source">출처: NVIDIA Developer Blog</div>
+
                     <strong>구성</strong>: Blackwell GPU 아키텍처 → 자율주행 + 캐빈 AI + 인포테인먼트를 단일 칩에서 처리<br><br>
                     <strong>특징</strong>:
                     <ul>
@@ -274,17 +306,35 @@
             <details>
                 <summary>🏗️ 하이브리드 (DRIVE AGX + MediaTek Dimensity AX)</summary>
                 <div>
+                    <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/image1-6.webp" alt="DRIVE AGX + MediaTek Dimensity AX 하이브리드 아키텍처" class="article-image">
+                    <div class="image-caption">하이브리드: DRIVE AGX (AI) + MediaTek Dimensity AX (IVI) 분담 구성</div>
+                    <div class="image-source">출처: NVIDIA Developer Blog</div>
+
                     <details>
                         <summary>MediaTek Dimensity AX란?</summary>
                         <div>
                             중국 MediaTek이 제조한 ARM 기반 자동차 SoC. NVIDIA DRIVE AGX와 PCIe를 통해 연결되어 인포테인먼트·클러스터·카메라 처리 담당. 비용 효율적인 AI 통합을 위해 사용.
                         </div>
                     </details>
-                    
+
                     <strong>구성</strong>: DRIVE AGX (AI 전담) ↔ PCIe ↔ MediaTek Dimensity AX (IVI)<br><br>
                     <strong>장점</strong>: 스케일 가능한 구성 (프리미엄-보급 라인업 모두 대응)
                 </div>
             </details>
+
+            <h4>🎥 카메라 센서 통합 방식</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div>
+                    <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/image15-1.webp" alt="직접 카메라 연결" class="article-image">
+                    <div class="image-caption">방식1: 카메라 직접 연결</div>
+                    <div class="image-source">출처: NVIDIA Developer Blog</div>
+                </div>
+                <div>
+                    <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/image9-3.webp" alt="이더넷 카메라 연결" class="article-image">
+                    <div class="image-caption">방식2: 이더넷을 통한 카메라 스트리밍</div>
+                    <div class="image-source">출처: NVIDIA Developer Blog</div>
+                </div>
+            </div>
 
             <h4>🔄 개발-배포 통합 파이프라인</h4>
             <div class="diagram">클라우드 개발 (DGX/DRIVE AGX)
@@ -300,6 +350,10 @@
 피드백 루프 (지속 개선)
   └─ 클라우드-에지 컨텍스트 공유, OTA 업데이트</div>
 
+            <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/image7-3.webp" alt="멀티모달 에이전틱 AI 파이프라인" class="article-image">
+            <div class="image-caption">ASR(음성) → 오케스트레이터 → LLM/VLM 추론 → TTS(음성 출력) 의 전체 흐름</div>
+            <div class="image-source">출처: NVIDIA Developer Blog</div>
+
             <h4>🧠 멀티모달 에이전트 파이프라인</h4>
             <ul>
                 <li><strong>입력</strong>: 마이크(ASR: 자동 음성 인식) + 실내/실외 카메라(VLM: 시각 언어 모델) + 차량 OBD 데이터</li>
@@ -314,6 +368,10 @@
                 <li><strong>"안내견이 자고 있어"</strong> → 실내 카메라 + VLM(객체 인식) → 알람 설정 또는 환기 자동 조절</li>
                 <li><strong>"차 이상 진단해줄래?"</strong> → 차량 OBD 데이터 + LLM(자연어 진단) → 정비소 추천</li>
             </ul>
+
+            <img src="https://developer-blogs.nvidia.com/ko-kr/wp-content/uploads/sites/5/2026/05/Figure10.webp" alt="NeMo 엔드투엔드 개발 프로세스" class="article-image">
+            <div class="image-caption">NeMo: 유스케이스 정의 → 개발 → 배포 → 피드백 루프의 엔드투엔드 AI 팩토리</div>
+            <div class="image-source">출처: NVIDIA Developer Blog</div>
 
             <h4>📊 시장 전망</h4>
             <ul>
