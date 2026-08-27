@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자율주행 기술과 차량용 HPC 아키텍처 — 통합 세미나 리포트</title>
+<style>
+  :root {
+    --paper: #fbfaf8; --panel: #f2f0ec; --ink: #201a1e; --ink2: #55494f;
+    --muted: #8d8188; --hair: #e3dfda; --plum: #3d2237; --plum-soft: #6d4a63;
+    --accent: #8a4f75; --blue: #2a6ea8; --amber: #a8702a;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.9; font-weight: 400; }
+  .page { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+  @media (max-width: 720px) { .page { padding: 0 22px; } }
+
+  /* ── cover ── */
+  .cover { background: var(--plum); color: #f5eef2; padding: 110px 48px 90px; }
+  .cover .inner { max-width: 1080px; margin: 0 auto; }
+  .cover .brand { font-size: 0.78rem; letter-spacing: 0.35em; text-transform: uppercase; color: #c9aebe; margin-bottom: 60px; font-weight: 600; }
+  .cover h1 { font-weight: 300; font-size: clamp(2rem, 4.6vw, 3.4rem); letter-spacing: 0.06em; line-height: 1.35; }
+  .cover .sub { margin-top: 28px; font-size: 1.05rem; color: #d8c3d0; letter-spacing: 0.12em; font-weight: 300; max-width: 46em; }
+  .cover .meta { margin-top: 70px; font-size: 0.8rem; color: #a98a9d; letter-spacing: 0.22em; text-transform: uppercase; }
+
+  /* ── toc ── */
+  .toc { padding: 90px 0 60px; }
+  .toc h2, .secHead { font-weight: 400; letter-spacing: 0.28em; font-size: 1.12rem; margin-bottom: 40px; text-transform: uppercase; }
+  .toc ol { list-style: none; padding: 0; max-width: 680px; }
+  .toc li { display: flex; align-items: baseline; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
+  .toc .n { font-weight: 300; font-size: 1.02rem; color: var(--accent); min-width: 2.4em; letter-spacing: 0.1em; }
+  .toc .t { letter-spacing: 0.07em; font-size: 0.98rem; }
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc a:hover .t { color: var(--accent); }
+  .toc .part { margin: 30px 0 10px; font-size: 0.76rem; letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; border: none; }
+
+  /* ── chapters ── */
+  .part-divider { background: var(--panel); margin-top: 90px; padding: 70px 48px; }
+  .part-divider .inner { max-width: 1080px; margin: 0 auto; }
+  .part-divider .pno { font-size: 0.78rem; letter-spacing: 0.34em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-bottom: 14px; }
+  .part-divider h2 { font-weight: 300; font-size: clamp(1.6rem, 3.4vw, 2.4rem); letter-spacing: 0.1em; }
+  .part-divider p { color: var(--ink2); margin-top: 16px; max-width: 68ch; }
+  .ch { padding: 96px 0 20px; }
+  .ch-head { border-top: 1px solid var(--ink); padding-top: 26px; }
+  .ch .no { font-weight: 400; font-size: 0.85rem; letter-spacing: 0.32em; color: var(--accent); margin-bottom: 14px; text-transform: uppercase; }
+  .ch h2 { font-weight: 350; font-size: clamp(1.7rem, 3.4vw, 2.45rem); letter-spacing: 0.08em; line-height: 1.4; }
+  .journey { margin-top: 20px; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.04em; border-left: 2px solid var(--accent); padding-left: 14px; max-width: 72ch; }
+  h3 { font-weight: 600; font-size: 1.22rem; letter-spacing: 0.04em; margin: 58px 0 18px; }
+  h4 { font-weight: 600; font-size: 1.02rem; margin: 36px 0 12px; }
+  p { color: var(--ink2); margin: 0 0 17px; max-width: 76ch; }
+  li { color: var(--ink2); margin-bottom: 8px; }
+  ul, ol { padding-left: 1.3em; margin: 0 0 18px; }
+  strong { color: var(--ink); }
+  a { color: var(--plum-soft); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .grid2 { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 44px; align-items: start; }
+  @media (max-width: 840px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* ── components ── */
+  .panel { background: var(--panel); padding: 26px 30px; margin: 30px 0; font-size: 0.96rem; }
+  .panel .pt { font-size: 0.76rem; letter-spacing: 0.22em; color: var(--plum-soft); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
+  .panel p, .panel li { font-size: 0.95rem; }
+  .news { border-top: 2px solid var(--plum); background: #fff; padding: 22px 28px; margin: 30px 0; box-shadow: 0 1px 0 var(--hair); }
+  .news .nt { font-size: 0.74rem; letter-spacing: 0.24em; color: var(--accent); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+  .news p { font-size: 0.94rem; margin-bottom: 8px; }
+  .term { background: #fff; border: 1px solid var(--hair); border-left: 3px solid var(--accent); padding: 16px 22px; margin: 22px 0; font-size: 0.93rem; }
+  .term .tt { font-weight: 700; color: var(--plum); margin-bottom: 5px; font-size: 0.85rem; letter-spacing: 0.06em; }
+  .term p { font-size: 0.92rem; margin-bottom: 6px; }
+  figure { margin: 30px 0; }
+  figure img { max-width: 100%; display: block; border: 1px solid var(--hair); background: #fff; padding: 8px; }
+  figure svg { max-width: 100%; height: auto; display: block; }
+  figcaption { font-size: 0.83rem; color: var(--muted); margin-top: 11px; line-height: 1.65; max-width: 80ch; }
+  .diagram { background: #fff; border: 1px solid var(--hair); padding: 24px; }
+  .tablewrap { overflow-x: auto; margin: 22px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th { font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 650; text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+  td { padding: 11px 12px; border-bottom: 1px solid var(--hair); color: var(--ink2); vertical-align: top; }
+  td:first-child { color: var(--ink); font-weight: 600; }
+  .src { font-size: 0.8rem; color: var(--muted); margin: 8px 0 0; }
+  .timeline { list-style: none; padding: 0; margin: 26px 0; }
+  .timeline li { display: grid; grid-template-columns: 110px 1fr; gap: 22px; padding: 14px 0; border-bottom: 1px solid var(--hair); margin: 0; }
+  .timeline .yr { font-weight: 700; color: var(--accent); letter-spacing: 0.06em; font-size: 0.95rem; }
+  .timeline .ev { color: var(--ink2); font-size: 0.95rem; }
+  .foot { text-align: center; font-size: 0.72rem; letter-spacing: 0.3em; color: var(--muted); padding: 70px 0 46px; text-transform: uppercase; }
+  .glossary dt { font-weight: 700; color: var(--plum); margin-top: 18px; font-size: 0.95rem; }
+  .glossary dd { margin-left: 0; color: var(--ink2); font-size: 0.93rem; }
+  svg text { font-family: inherit; }
+  @media print { .ch { page-break-before: always; } .cover { padding: 60px 48px; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover"><div class="inner">
+  <div class="brand">Autonomous Driving Study · Integrated Report</div>
+  <h1>자율주행 기술과<br>차량용 HPC 아키텍처</h1>
+  <div class="sub">한 대의 차에 자율주행을 올리기까지 — 역사와 소프트웨어 스택, 개발 생태계, 그리고 그것을 실은 컴퓨터를 설계하는 사람들을 위한 통합 리포트</div>
+  <div class="meta">For Vehicle HPC Architecture Team · 2026-08</div>
+</div></div>
+
+<div class="page">
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<nav class="toc" id="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li class="part">이 보고서를 읽는 법</li>
+    <li><a href="#intro" style="display:contents"><span class="n">0 /</span><span class="t">여정 지도 — 자율주행을 실차에 올리려면</span></a></li>
+    <li class="part">Part I — 이해</li>
+    <li><a href="#ch1" style="display:contents"><span class="n">1 /</span><span class="t">자율주행의 진화와 현재</span></a></li>
+    <li><a href="#ch2" style="display:contents"><span class="n">2 /</span><span class="t">고전 AD 파이프라인 — 차는 어떻게 스스로 달리는가</span></a></li>
+    <li><a href="#ch3" style="display:contents"><span class="n">3 /</span><span class="t">최신 AI 모델 트렌드 — BEV에서 VLA까지</span></a></li>
+    <li><a href="#ch4" style="display:contents"><span class="n">4 /</span><span class="t">자율주행은 모델만이 아니다 — 개발 생태계 전체</span></a></li>
+    <li class="part">Part II — 실차 탑재</li>
+    <li><a href="#ch5" style="display:contents"><span class="n">5 /</span><span class="t">온보드 최적화 — 큰 모델을 작은 컴퓨터에 넣는 법</span></a></li>
+    <li><a href="#ch6" style="display:contents"><span class="n">6 /</span><span class="t">워크로드 정량화 — 숫자로 보는 요구사항</span></a></li>
+    <li><a href="#ch7" style="display:contents"><span class="n">7 /</span><span class="t">차량용 SoC 랜드스케이프</span></a></li>
+    <li><a href="#ch8" style="display:contents"><span class="n">8 /</span><span class="t">E/E 아키텍처와 차량 네트워크</span></a></li>
+    <li><a href="#ch9" style="display:contents"><span class="n">9 /</span><span class="t">SW 플랫폼과 실차 통합 — V-모델에서 OTA까지</span></a></li>
+    <li><a href="#ch10" style="display:contents"><span class="n">10 /</span><span class="t">기능안전과 규제</span></a></li>
+    <li><a href="#ch11" style="display:contents"><span class="n">11 /</span><span class="t">종합 — HPC 설계 체크리스트</span></a></li>
+    <li class="part">부록</li>
+    <li><a href="#glossary" style="display:contents"><span class="n">A /</span><span class="t">초심자용 용어집</span></a></li>
+  </ol>
+  <div class="panel" style="margin-top:44px">
+    <div class="pt">이 보고서를 읽는 법</div>
+    <p>이 보고서는 차량용 HPC(고성능 컴퓨팅) 플랫폼을 설계하는 팀을 위해 쓰였지만, <strong>자율주행을 처음 접하는 독자도 처음부터 읽으면 따라올 수 있도록</strong> 구성했습니다. 어려운 용어는 처음 등장할 때 <span style="border-left:3px solid var(--accent); padding:2px 8px; background:#fff; font-size:0.88em">용어 박스</span>로 풀고, 각 장의 시작에는 "이 기술이 지금 실제로 어떻게 쓰이는지"를 뉴스 요약(NOW 박스)으로 붙였습니다. 각 장의 끝에는 우리 팀 관점의 <strong>HPC 설계 시사점</strong>을 정리했습니다. 모든 수치와 주장에는 출처 링크가 달려 있습니다 — 발표에서 인용할 때는 링크를 따라가 원문을 확인하세요.</p>
+  </div>
+</nav>
+
+<!-- ═══════════════ CH0 여정 지도 ═══════════════ -->
+<section class="ch" id="intro">
+  <div class="ch-head">
+    <div class="no">Chapter 0 · Overview</div>
+    <h2>여정 지도 — 자율주행을 실차에 올리려면 무엇이 필요한가</h2>
+  </div>
+  <p style="margin-top:30px">"자율주행 모델을 하나 잘 학습시키면 차가 스스로 달린다"는 생각은 절반만 맞습니다. 학습된 모델은 출발점일 뿐이고, 그 모델이 실제 도로 위의 차에서 매초 안전하게 동작하기까지는 <strong>최적화, 하드웨어, 소프트웨어 플랫폼, 차량 네트워크, 기능안전, 인증, 그리고 양산 후의 데이터 루프</strong>라는 여러 관문이 있습니다. 이 보고서 전체가 아래 지도 하나를 따라갑니다.</p>
+
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 330" role="img" aria-label="자율주행 실차 탑재 여정 지도: 학습에서 양산 루프까지 8단계">
+      <defs><marker id="jar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c3b8bd"/></marker></defs>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <!-- row 1 -->
+        <rect x="15"  y="30" width="220" height="72" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="125" y="58" fill="#201a1e">① 모델 개발·학습</text>
+        <text x="125" y="80" font-size="11.5" font-weight="400" fill="#8d8188">데이터 엔진 · 시뮬레이션 · RL — 3·4장</text>
+        <rect x="285" y="30" width="220" height="72" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="395" y="58" fill="#201a1e">② 온보드 최적화</text>
+        <text x="395" y="80" font-size="11.5" font-weight="400" fill="#8d8188">양자화 · 증류 · 컴파일 — 5장</text>
+        <rect x="555" y="30" width="220" height="72" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="665" y="58" fill="#201a1e">③ 컴퓨트·센서 HW</text>
+        <text x="665" y="80" font-size="11.5" font-weight="400" fill="#8d8188">SoC 선정 · 사양 산정 — 6·7장</text>
+        <rect x="825" y="30" width="160" height="72" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="905" y="58" fill="#201a1e">④ SW 통합</text>
+        <text x="905" y="80" font-size="11.5" font-weight="400" fill="#8d8188">OS·미들웨어 — 9장</text>
+        <!-- row 2 (오른쪽에서 왼쪽으로) -->
+        <rect x="825" y="180" width="160" height="72" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="905" y="208" fill="#201a1e">⑤ 차량 통합</text>
+        <text x="905" y="230" font-size="11.5" font-weight="400" fill="#8d8188">E/E·네트워크 — 8장</text>
+        <rect x="555" y="180" width="220" height="72" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="665" y="208" fill="#201a1e">⑥ 안전 설계·인증</text>
+        <text x="665" y="230" font-size="11.5" font-weight="400" fill="#8d8188">ISO 26262 · UNECE — 10장</text>
+        <rect x="285" y="180" width="220" height="72" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="395" y="208" fill="#201a1e">⑦ 검증</text>
+        <text x="395" y="230" font-size="11.5" font-weight="400" fill="#8d8188">SIL/HIL → 시험장 → 실도로 — 9장</text>
+        <rect x="15" y="180" width="220" height="72" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="125" y="208" fill="#201a1e">⑧ 양산 · OTA · 데이터 루프</text>
+        <text x="125" y="230" font-size="11.5" font-weight="400" fill="#8d8188">fleet 데이터 → ①로 순환 — 4장</text>
+        <!-- arrows -->
+        <g stroke="#c3b8bd" stroke-width="2" fill="none" marker-end="url(#jar)">
+          <line x1="237" y1="66" x2="281" y2="66"/><line x1="507" y1="66" x2="551" y2="66"/><line x1="777" y1="66" x2="821" y2="66"/>
+          <path d="M905 104 L 905 176"/>
+          <line x1="823" y1="216" x2="779" y2="216"/><line x1="553" y1="216" x2="509" y2="216"/><line x1="283" y1="216" x2="239" y2="216"/>
+          <path d="M15 216 C -8 216 -8 66 13 66" stroke-dasharray="6 5"/>
+        </g>
+        <text x="70" y="300" font-size="12" font-weight="400" fill="#8d8188" text-anchor="start">점선 = 양산 후 수집된 데이터가 다시 학습으로 돌아가는 폐루프(closed loop)</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 0-1. 자율주행 실차 탑재 여정 지도. 이 보고서의 각 장은 이 지도의 한 구간씩을 맡는다. 마지막 ⑧이 다시 ①로 이어진다는 점 — 자율주행 개발이 일직선이 아니라 <strong>돌고 도는 루프</strong>라는 점이 이 보고서의 가장 중요한 메시지다.</figcaption>
+  </figure>
+
+  <p>우리 팀이 설계하는 HPC는 이 지도의 ③에 위치하지만, 나머지 모든 단계가 HPC에 요구사항을 던집니다. 모델 트렌드(①)는 연산량과 메모리 대역폭을, 최적화 기법(②)은 저정밀 연산 유닛을, 소프트웨어 플랫폼(④)은 파티셔닝과 격리를, 안전·인증(⑥)은 이중화와 감시 회로를, 그리고 데이터 루프(⑧)는 로깅 대역폭과 컴퓨트 헤드룸을 요구합니다. <strong>그래서 HPC 설계자는 자기 담당 구간만이 아니라 지도 전체를 알아야 합니다.</strong> 이것이 이 스터디의 목적입니다.</p>
+</section>
+
+<!-- ═══════════════ PART I ═══════════════ -->
+<div style="margin:0 -48px"><div class="part-divider">
+  <div class="inner">
+    <div class="pno">Part I</div>
+    <h2>이해 — 자율주행이라는 문제</h2>
+    <p>역사에서 출발해, 자율주행 소프트웨어가 어떻게 구성되고, 최신 AI 모델이 어디로 가고 있으며, 그 모델들이 어떤 개발 생태계 위에서 만들어지는지를 다룹니다.</p>
+  </div>
+</div></div>
+
+</div><!-- /.page (part I 전 재개) -->
+<div class="page">
+
+<!-- ═══════════════ CH1 ═══════════════ -->
+<section class="ch" id="ch1">
+  <div class="ch-head">
+    <div class="no">Chapter 1 · Part I</div>
+    <h2>자율주행의 진화와 현재</h2>
+    <div class="journey">여정에서의 위치 — 출발 전 지형 파악. 우리가 차에 올리려는 "자율주행"이 무엇이고, 20년 동안 어떤 길을 걸어 지금 어디에 서 있는지부터 짚는다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now · 2026</div>
+    <p>Waymo는 2025년 12월 <strong>주간 유료 무인 주행 45만 회</strong>를 넘겼고 2026년 말 100만 회를 목표로 하고 있다 (<a href="https://www.cnbc.com/2025/12/08/waymo-paid-rides-robotaxi-tesla.html">CNBC</a>). 중국은 2025년 12월 <strong>승용차 L3 판매를 세계 최초로 허가</strong>했다 (<a href="https://cnevpost.com/2025/12/15/china-grants-1st-l3-autonomous-driving-permits-passenger-cars/">CnEVPost</a>). 한편 L3의 선구자였던 Mercedes와 BMW는 2026년 초 나란히 L3 옵션을 접고 L2++로 회귀했다 (<a href="https://www.electrive.com/2026/02/23/following-mercedes-bmw-also-abandons-level-3-automated-driving/">electrive</a>). 신차의 66%가 이미 ADAS를 달고 나오고, EU는 2024년 7월부터 AEB 등 ADAS를 전 신차에 의무화했다 (<a href="https://counterpointresearch.com/en/insights/Global-ADAS-Penetration-to-Reach-94-Percent-by-2035">Counterpoint</a>, <a href="https://news.thatcham.org/thatcham-research-explains-new-eu-vehicle-safety-regulation/">Thatcham</a>). — 자율주행·고도화 ADAS는 더 이상 미래 기술이 아니라 <strong>지금 양산차 아키텍처의 전제 조건</strong>이다.</p>
+  </div>
+
+  <h3>1.1 먼저 용어부터 — "자율주행 레벨"이란</h3>
+  <p>자율주행 이야기에는 "L2다, L3다"라는 말이 계속 나옵니다. 이것은 미국 자동차공학회(SAE)가 정의한 <strong>운전 자동화 6단계(SAE J3016)</strong>로, 핵심 구분 기준은 성능이 아니라 <strong>"운전 책임이 누구에게 있는가"</strong>입니다.</p>
+
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="SAE 자율주행 레벨 0에서 5까지 사다리 다이어그램">
+      <g font-size="13.5" text-anchor="middle">
+        <rect x="10"  y="150" width="150" height="110" rx="4" fill="#f2f0ec"/><text x="85" y="180" font-weight="700" fill="#201a1e">L0–L1</text><text x="85" y="205" font-size="11.5" fill="#55494f">경고 또는</text><text x="85" y="223" font-size="11.5" fill="#55494f">조향·감속 중 하나 보조</text><text x="85" y="246" font-size="11" fill="#8d8188">예: 크루즈 컨트롤</text>
+        <rect x="175" y="120" width="150" height="140" rx="4" fill="#f2f0ec"/><text x="250" y="150" font-weight="700" fill="#201a1e">L2 / L2+</text><text x="250" y="175" font-size="11.5" fill="#55494f">조향+가감속 동시 보조</text><text x="250" y="193" font-size="11.5" fill="#b03d3d" font-weight="600">책임: 항상 운전자</text><text x="250" y="216" font-size="11" fill="#8d8188">예: 고속도로 어시스트,</text><text x="250" y="232" font-size="11" fill="#8d8188">Tesla FSD(Supervised)</text>
+        <rect x="340" y="85" width="150" height="175" rx="4" fill="#e8dee5"/><text x="415" y="115" font-weight="700" fill="#3d2237">L3</text><text x="415" y="140" font-size="11.5" fill="#55494f">조건부 자율 — ODD 안에서</text><text x="415" y="158" font-size="11.5" fill="#55494f">시스템이 운전, 요청 시</text><text x="415" y="176" font-size="11.5" fill="#55494f">운전자가 인수</text><text x="415" y="199" font-size="11.5" fill="#b03d3d" font-weight="600">책임: 조건부로 시스템</text><text x="415" y="222" font-size="11" fill="#8d8188">예: Mercedes Drive Pilot,</text><text x="415" y="238" font-size="11" fill="#8d8188">중국 L3 허가 차량</text>
+        <rect x="505" y="55" width="150" height="205" rx="4" fill="#d9c8d4"/><text x="580" y="85" font-weight="700" fill="#3d2237">L4</text><text x="580" y="110" font-size="11.5" fill="#55494f">지정 구역(ODD) 안에서는</text><text x="580" y="128" font-size="11.5" fill="#55494f">운전자 자체가 불필요</text><text x="580" y="151" font-size="11.5" fill="#b03d3d" font-weight="600">책임: 시스템</text><text x="580" y="174" font-size="11" fill="#8d8188">예: Waymo, Baidu</text><text x="580" y="190" font-size="11" fill="#8d8188">Apollo Go 로보택시</text>
+        <rect x="670" y="30" width="150" height="230" rx="4" fill="#3d2237"/><text x="745" y="62" font-weight="700" fill="#f5eef2">L5</text><text x="745" y="87" font-size="11.5" fill="#d8c3d0">조건 없는 완전 자율</text><text x="745" y="110" font-size="11.5" fill="#d8c3d0">(아직 존재하지 않음)</text>
+        <g font-size="11.5" fill="#8d8188" text-anchor="start">
+          <text x="845" y="70" font-weight="700" fill="#55494f">HPC 관점 요점</text>
+          <text x="845" y="95">레벨이 오를수록 요구</text>
+          <text x="845" y="113">연산이 계단식 증가하고,</text>
+          <text x="845" y="138" fill="#b03d3d" font-weight="600">L3부터는 법적 책임이</text>
+          <text x="845" y="156" fill="#b03d3d" font-weight="600">시스템으로 넘어와</text>
+          <text x="845" y="181">컴퓨트·전원 이중화가</text>
+          <text x="845" y="199">인증 요건이 된다 (10장)</text>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 1-1. SAE J3016 자동화 레벨. 계단이 높아질수록 "시스템이 책임지는 범위"가 넓어진다. L2까지는 아무리 잘 달려도 법적으로는 운전자 보조이고, L3부터 시스템이 조건부로 운전 책임을 진다 — 이 한 칸의 차이가 하드웨어 설계(이중화·인증)를 완전히 바꾼다.</figcaption>
+  </figure>
+
+  <div class="term">
+    <div class="tt">용어 — ODD (Operational Design Domain, 운행설계영역)</div>
+    <p>시스템이 안전하게 작동하도록 설계된 조건의 집합. "고속도로에서, 주간에, 시속 95km 이하로, 비가 오지 않을 때"처럼 자율주행 기능이 유효한 범위를 정의합니다. L3/L4는 반드시 ODD와 함께 정의되며, ODD를 벗어나면 운전자에게 제어를 돌려주거나(L3) 스스로 안전하게 정지해야(L4) 합니다.</p>
+  </div>
+
+  <h3>1.2 20년의 역사 — 사막의 레이스에서 로보택시까지</h3>
+  <div class="grid2">
+    <div>
+      <p>자율주행의 출발점으로 흔히 꼽히는 장면은 2004년 모하비 사막입니다. 미 국방연구기관 DARPA가 상금 100만 달러를 걸고 240km 무인차 경주(Grand Challenge)를 열었는데, <strong>완주한 차량이 한 대도 없었습니다.</strong> 최고 기록조차 12km 남짓이었죠 (<a href="https://www.smithsonianmag.com/smithsonian-institution/how-a-blue-suv-named-stanley-revolutionized-driverless-car-technology-180984882/">Smithsonian</a>).</p>
+      <p>그러나 겨우 1년 뒤인 2005년, 스탠퍼드 팀의 <strong>Stanley</strong>(폭스바겐 투아렉 개조)가 212km를 6시간 53분에 완주하며 우승합니다. Stanley의 승리 비결은 더 좋은 센서가 아니라 <strong>머신러닝</strong>이었습니다 — 사람이 규칙을 일일이 코딩하는 대신, "주행 가능한 지형"을 데이터로 학습시킨 것이 결정적이었습니다. 규칙 기반에서 학습 기반으로의 첫 전환점입니다 (<a href="https://en.wikipedia.org/wiki/Stanley_(vehicle)">Wikipedia</a>, <a href="https://cs.stanford.edu/group/roadrunner/stanley.html">Stanford</a>).</p>
+      <p>2007년 Urban Challenge(시가지 주행, CMU Boss 우승)를 끝으로 DARPA 대회는 막을 내렸지만, 이 대회 출신들이 이후 Google 자율주행 프로젝트(2009, 훗날 Waymo), Cruise, Aurora 등을 만들며 산업의 씨앗이 됩니다 (<a href="https://www.cmu.edu/news/stories/archives/2017/october/tartan-racing-10-years.html">CMU</a>).</p>
+    </div>
+    <div>
+      <div class="panel" style="margin-top:0">
+        <div class="pt">같은 시기, 조용한 상용화 — Mobileye</div>
+        <p>화려한 무인차 경주와 별개로, 이스라엘의 Mobileye는 1999년부터 <strong>카메라 한 대와 전용 칩(EyeQ)</strong>만으로 차선·차량을 인식하는 ADAS를 만들어 2007년부터 BMW·GM·볼보에 양산 공급했습니다. "완전 자율"이 아니라 "지금 팔 수 있는 보조 기능"부터 쌓아 올린 이 노선은 현재 ADAS 시장의 약 70%, 누적 1.7억 대 탑재라는 결과로 이어졌습니다 (<a href="https://www.mobileye.com/about/">Mobileye</a>). — 자율주행 산업에는 처음부터 "혁명파(로보택시)"와 "점진파(ADAS 고도화)"의 두 갈래가 있었고, 이 구도는 지금도 유효합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <ul class="timeline">
+    <li><span class="yr">2004–07</span><span class="ev"><strong>DARPA 챌린지</strong> — 2004 완주 0대 → 2005 Stanley 우승(ML 도입) → 2007 시가지 주행(Boss). 산업 인력의 요람이 됨</span></li>
+    <li><span class="yr">2009</span><span class="ev"><strong>Google 자율주행 프로젝트</strong> 시작 (Prius + LiDAR). 2016년 Waymo로 독립</span></li>
+    <li><span class="yr">2015</span><span class="ev"><strong>Tesla Autopilot 1.0</strong> — 고속도로 조향+속도 보조를 일반 양산차에 OTA로 배포한 첫 사례 (<a href="https://www.consumerreports.org/cars/autonomous-driving/timeline-of-tesla-self-driving-aspirations-a9686689375/">CR</a>)</span></li>
+    <li><span class="yr">2017</span><span class="ev"><strong>Audi A8 L3 시도와 좌절</strong> — 세계 최초 L3 양산 설계였지만 법규·형식승인 틀이 없어 한 번도 활성화되지 못하고 2020년 철회. <strong>"기술이 아니라 인증이 병목"</strong>이라는 교훈을 남김 (<a href="https://www.motor1.com/news/418944/audi-a8-no-semi-autonomous-system/">Motor1</a>)</span></li>
+    <li><span class="yr">2020–21</span><span class="ev"><strong>무인 상용화·L3 인증 원년</strong> — Waymo 피닉스 완전 무인 서비스(2020), Honda Legend 세계 최초 L3 형식승인(2021.3, 일본), Mercedes Drive Pilot UN-R157 기반 세계 최초 국제 유효 L3 승인(2021.12, 독일 KBA)</span></li>
+    <li><span class="yr">2023–24</span><span class="ev"><strong>Cruise의 몰락</strong> — 2023.10 보행자 끌림 사고와 정보 은폐로 캘리포니아 허가 정지, 2024.12 GM 로보택시 사업 철수. <strong>기술 완성도만큼 규제기관과의 신뢰가 사업 존속을 좌우</strong>함을 보여줌 (<a href="https://www.wardsauto.com/news/archive-auto-general-motors-shuts-cruise-robotaxi-unit-mary-barra/735270/">WardsAuto</a>)</span></li>
+    <li><span class="yr">2025</span><span class="ev"><strong>스케일링의 해</strong> — Waymo 주간 45만 회, Baidu Apollo Go 주간 무인 25만 회·누적 1,700만 주문, Tesla Robotaxi 오스틴 개시(6월), 중국 승용차 L3 판매 최초 허가(12월)</span></li>
+    <li><span class="yr">2026</span><span class="ev"><strong>노선 재편</strong> — Mercedes·BMW가 L3 옵션 중단(수요 부족·LiDAR 비용·좁은 ODD) 후 L2++ 회귀. 시장은 <strong>"L2++ 대중화"와 "L4 로보택시"로 양분</strong>되고, L3의 무게중심은 중국으로 이동 (<a href="https://www.electrive.com/2026/02/23/following-mercedes-bmw-also-abandons-level-3-automated-driving/">electrive</a>)</span></li>
+  </ul>
+
+  <h3>1.3 기술 패러다임의 다섯 번의 전환</h3>
+  <p>역사를 기술 관점으로 다시 자르면, 자율주행 소프트웨어는 지금까지 다섯 번 다시 만들어졌습니다. 각 전환은 그대로 <strong>차량 컴퓨터 요구 사양의 점프</strong>였습니다.</p>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 190" role="img" aria-label="기술 패러다임 5단계 타임라인">
+      <line x1="30" y1="95" x2="970" y2="95" stroke="#e3dfda" stroke-width="2"/>
+      <g font-size="13" text-anchor="middle">
+        <circle cx="110" cy="95" r="7" fill="#c3b8bd"/><text x="110" y="60" font-weight="700" fill="#201a1e">~2010</text><text x="110" y="130" fill="#55494f">규칙 기반</text><text x="110" y="150" font-size="11" fill="#8d8188">DARPA 시대</text>
+        <circle cx="300" cy="95" r="7" fill="#c3b8bd"/><text x="300" y="60" font-weight="700" fill="#201a1e">2012~</text><text x="300" y="130" fill="#55494f">딥러닝 인식(CNN)</text><text x="300" y="150" font-size="11" fill="#8d8188">AlexNet 이후</text>
+        <circle cx="490" cy="95" r="7" fill="#8a4f75"/><text x="490" y="60" font-weight="700" fill="#201a1e">2021~</text><text x="490" y="130" fill="#55494f">BEV + Transformer</text><text x="490" y="150" font-size="11" fill="#8d8188">Tesla AI Day · BEVFormer</text>
+        <circle cx="680" cy="95" r="7" fill="#8a4f75"/><text x="680" y="60" font-weight="700" fill="#201a1e">2023–24</text><text x="680" y="130" fill="#55494f">End-to-End</text><text x="680" y="150" font-size="11" fill="#8d8188">FSD v12 · UniAD</text>
+        <circle cx="870" cy="95" r="7" fill="#3d2237"/><text x="870" y="60" font-weight="700" fill="#201a1e">2025~</text><text x="870" y="130" fill="#55494f">VLA vs World Model</text><text x="870" y="150" font-size="11" fill="#8d8188">XPeng·Li Auto vs Huawei</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 1-2. 다섯 번의 패러다임 전환. 2012년 AlexNet이 이미지 인식 대회를 압도한 뒤 자율주행 인식은 CNN으로 전면 전환됐고, 2021년 이후로는 3~4년 간격이 아니라 <strong>1~2년 간격</strong>으로 세대가 바뀌고 있다. 각 세대의 내용은 3장에서 자세히 다룬다.</figcaption>
+  </figure>
+  <p>컴퓨트 요구의 관점에서 보면: Mobileye EyeQ 시대의 <strong>수 TOPS</strong> → NVIDIA Orin의 <strong>254 TOPS</strong>(2022) → Thor의 <strong>1,000 TOPS</strong>(2025) → XPeng 로보택시급의 <strong>~3,000 TOPS</strong>(Turing 칩 4개)로, 약 15년 사이 세 자릿수가 늘었습니다 (<a href="https://kr-asia.com/xpengs-new-chip-powers-its-push-toward-full-driving-autonomy">KrASIA</a>). 반면 뒤에서 보겠지만 메모리 대역폭은 그만큼 늘지 못했고, 이것이 6장의 핵심 주제가 됩니다.</p>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점</div>
+    <ul>
+      <li><strong>모델 세대교체 주기(1~2년) &lt; 차량 하드웨어 수명(5~10년).</strong> 우리가 설계하는 플랫폼은 출시 시점의 모델이 아니라 두세 세대 뒤의 모델까지 감당할 헤드룸이 필요하다 — Audi A8의 교훈(하드웨어를 실어도 못 쓰는 상황)과 반대로, Tesla HW3처럼 하드웨어가 모델을 못 따라가는 상황도 피해야 한다.</li>
+      <li><strong>L3가 분기점.</strong> L2++까지는 "성능 좋은 컴퓨터"면 되지만, L3부터는 법적 책임 이동 때문에 이중화·인증이 하드웨어 요구사항으로 들어온다(10장). 어느 레벨을 목표로 하는 플랫폼인지가 아키텍처를 가른다.</li>
+      <li><strong>시장은 L2++ 대중화 + L4 로보택시의 이원 구조로 재편 중.</strong> 전자는 비용(원칩 통합, 저전력), 후자는 성능·이중화가 지배 요구사항 — 같은 회사 제품군에서도 두 아키텍처가 갈린다.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════ CH2 ═══════════════ -->
+<section class="ch" id="ch2">
+  <div class="ch-head">
+    <div class="no">Chapter 2 · Part I</div>
+    <h2>고전 AD 파이프라인 — 차는 어떻게 스스로 달리는가</h2>
+    <div class="journey">여정에서의 위치 — ① 모델 개발의 출발점. 최신 End-to-End 모델을 이해하려면, 그것이 대체하고 있는 "고전적 구조"부터 알아야 한다. 그리고 이 구조는 지금도 Waymo를 포함한 대부분의 양산 시스템의 뼈대다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now</div>
+    <p>"모듈형 파이프라인은 끝났다"는 말이 유행하지만 현실은 다릅니다. Waymo·Mobileye·국내외 대부분의 양산 ADAS는 여전히 모듈형 구조(또는 모듈형+신경망 하이브리드) 위에서 달리고 있고, End-to-End를 전면에 내건 Tesla조차 안전 감시 계층은 별도 로직으로 유지합니다. 모듈형 구조는 <strong>"각 부분을 따로 검증할 수 있다"</strong>는 기능안전 관점의 장점 때문에 쉽게 사라지지 않습니다.</p>
+  </div>
+
+  <h3>2.1 여섯 개의 모듈 — 사람의 운전에 비유하면</h3>
+  <p>사람이 운전할 때를 생각해 봅시다. ① 눈으로 보고(감지), ② 본 것이 차인지 사람인지 알아보고(인지), ③ 내가 지금 도로 어디에 있는지 알고(측위), ④ 저 차가 끼어들 것 같다고 짐작하고(예측), ⑤ 그래서 속도를 줄이기로 하고(계획), ⑥ 브레이크를 밟습니다(제어). 고전적 자율주행 파이프라인은 정확히 이 순서를 소프트웨어 모듈로 옮긴 것입니다.</p>
+
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 940 130" role="img" aria-label="AD 파이프라인 6개 모듈 순서도">
+      <defs><marker id="par" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c3b8bd"/></marker></defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="8"   y="30" width="130" height="56" rx="4" fill="none" stroke="#2a6ea8" stroke-width="2"/><text x="73"  y="54" fill="#201a1e">Sensing</text><text x="73" y="74" font-size="11" font-weight="400" fill="#8d8188">본다 · I/O 대역폭</text>
+        <rect x="166" y="30" width="130" height="56" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/><text x="231" y="54" fill="#201a1e">Perception</text><text x="231" y="74" font-size="11" font-weight="400" fill="#8d8188">알아본다 · GPU/NPU</text>
+        <rect x="324" y="30" width="130" height="56" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/><text x="389" y="54" fill="#201a1e">Localization</text><text x="389" y="74" font-size="11" font-weight="400" fill="#8d8188">내 위치 · 가속 이득 최대</text>
+        <rect x="482" y="30" width="130" height="56" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/><text x="547" y="54" fill="#201a1e">Prediction</text><text x="547" y="74" font-size="11" font-weight="400" fill="#8d8188">짐작한다 · NPU 소형</text>
+        <rect x="640" y="30" width="130" height="56" rx="4" fill="none" stroke="#a8702a" stroke-width="2"/><text x="705" y="54" fill="#201a1e">Planning</text><text x="705" y="74" font-size="11" font-weight="400" fill="#8d8188">결정한다 · CPU 바운드</text>
+        <rect x="798" y="30" width="130" height="56" rx="4" fill="none" stroke="#a8702a" stroke-width="2"/><text x="863" y="54" fill="#201a1e">Control</text><text x="863" y="74" font-size="11" font-weight="400" fill="#8d8188">움직인다 · ASIL-D 결정성</text>
+        <g stroke="#c3b8bd" stroke-width="2" marker-end="url(#par)">
+          <line x1="138" y1="58" x2="162" y2="58"/><line x1="296" y1="58" x2="320" y2="58"/><line x1="454" y1="58" x2="478" y2="58"/><line x1="612" y1="58" x2="636" y2="58"/><line x1="770" y1="58" x2="794" y2="58"/>
+        </g>
+      </g>
+      <g font-size="12" fill="#8d8188"><text x="18" y="118">테두리 색 = 이 모듈이 주로 돌아가는 하드웨어: <tspan fill="#2a6ea8" font-weight="700">■</tspan> ISP·I/O  <tspan fill="#8a4f75" font-weight="700">■</tspan> GPU/NPU  <tspan fill="#a8702a" font-weight="700">■</tspan> 실시간 CPU</text></g>
+    </svg>
+    </div>
+    <figcaption>그림 2-1. 고전적 AD 파이프라인. 중요한 것은 각 모듈이 <strong>서로 완전히 다른 종류의 연산</strong>이라는 점 — 그래서 자율주행 컴퓨터는 처음부터 여러 종류의 프로세서를 섞은 이기종(heterogeneous) 구조가 될 수밖에 없다.</figcaption>
+  </figure>
+
+  <h4>각 모듈이 실제로 하는 일과 연산 특성</h4>
+  <div class="tablewrap"><table>
+    <tr><th>모듈</th><th>하는 일 (쉽게)</th><th>대표 연산</th><th>어떤 하드웨어를 압박하나</th></tr>
+    <tr><td>Sensing</td><td>카메라·LiDAR·레이더의 원시 신호를 쓸 수 있는 데이터로 다듬기</td><td>debayer, HDR 합성, 렌즈 왜곡 보정, 포인트클라우드 조립</td><td>고정 기능 ISP/DSP. 연산보다 <strong>스트리밍 I/O 대역폭</strong>이 병목</td></tr>
+    <tr><td>Perception</td><td>"저건 차, 저건 사람, 저건 차선"</td><td>신경망 추론 (CNN, 최근엔 BEV Transformer)</td><td><strong>GPU/NPU</strong> — 곱셈누산(MAC) 대량. 해상도가 오르면 연산량 급증</td></tr>
+    <tr><td>Tracking/Fusion</td><td>여러 센서의 관측을 하나의 객체로 묶고 추적</td><td>Kalman filter, Hungarian matching</td><td>작은 행렬·분기 많음 → <strong>CPU/DSP</strong>, 지연에 민감</td></tr>
+    <tr><td>Localization</td><td>"나는 지금 이 차선의 이 지점에 있다" (GPS 오차 ±수 m로는 부족 — cm급 필요)</td><td>LiDAR 스캔 매칭(ICP/NDT), particle filter, GNSS/IMU 융합</td><td>CPU에서 병목이 가장 심한 모듈 — <strong>가속기 이득 최대</strong></td></tr>
+    <tr><td>Prediction</td><td>"저 차는 3초 뒤 끼어들 것"</td><td>과거엔 물리 모델, 지금은 GNN/Transformer 궤적 예측</td><td>GPU/NPU (작은 모델, 낮은 지연 요구)</td></tr>
+    <tr><td>Planning</td><td>경로·속도 결정</td><td>최적화 솔버(QP/NLP), MPC, 샘플링 탐색</td><td><strong>CPU 바운드</strong> — 분기·반복이 많아 병렬화 어려움</td></tr>
+    <tr><td>Control</td><td>조향각·가감속 명령</td><td>PID/MPC</td><td>CPU, 100Hz+ 고주기, <strong>ASIL-D급 결정성</strong> 요구</td></tr>
+  </table></div>
+
+  <h3>2.2 얼마나 빨라야 하는가 — 지연 예산이라는 개념</h3>
+  <p>자율주행 소프트웨어의 성능은 "얼마나 정확한가"만큼 <strong>"얼마나 빨리 한 바퀴 도는가"</strong>로 정의됩니다. 카메라에 빛이 들어온 순간부터 브레이크가 움직이기까지의 시간(end-to-end latency)이 사람의 반응속도보다 빨라야 한다는 논리로, 업계는 통상 <strong>한 사이클 100ms(초당 10회)</strong>를 예산으로 잡습니다 (<a href="https://dl.acm.org/doi/10.1145/3173162.3173191">ASPLOS 2018</a>, <a href="https://arxiv.org/pdf/2207.08930">arXiv:2207.08930</a> — Mobileye도 100ms 예산 사용 인용).</p>
+  <p>이 주제의 고전 논문인 미시간대의 ASPLOS 2018 연구는 실제 자율주행 스택을 프로파일링해서 세 가지 중요한 사실을 실측으로 보였습니다:</p>
+  <ul>
+    <li><strong>측위·인지·추적 세 모듈이 전체 지연을 지배</strong>하며, 멀티코어 CPU만으로는 100ms를 맞출 수 없다.</li>
+    <li>가속기를 붙이면 지연이 극적으로 준다 — 측위 <strong>169배</strong>(FPGA/ASIC), 인지 10배(GPU), 추적 93배.</li>
+    <li>GPU는 빠르지만 <strong>전력·발열이 주행거리를 갉아먹는다.</strong> 그리고 카메라를 Full HD에서 Quad HD로 올리는 순간, 당시 어떤 하드웨어 조합으로도 실시간 처리가 불가능했다 — "센서 해상도의 이득을 컴퓨트가 막는" 상황.</li>
+  </ul>
+  <div class="term">
+    <div class="tt">용어 — p99 (tail latency, 꼬리 지연)</div>
+    <p>100번 중 99번째로 느렸던 실행 시간. 평균이 50ms여도 가끔 200ms가 튀면 그 한 번이 사고가 됩니다. 그래서 자율주행에서는 평균이 아니라 <strong>최악에 가까운 경우(p99)의 지연</strong>이 안전을 결정한다는 것이 정설입니다 (<a href="https://arxiv.org/pdf/2305.07147">COLA</a>). 하드웨어 관점에서 이것은 "평균 처리량"이 아니라 <strong>"결정성(predictability)"</strong>을 설계 목표로 삼아야 한다는 뜻입니다.</p>
+  </div>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점</div>
+    <ul>
+      <li>모듈형 스택은 <strong>"GPU/NPU(인지) + 실시간 CPU 클러스터(계획·제어) + 안전 코어(lockstep)"의 이기종 구성을 강제</strong>한다. 어느 하나의 프로세서 유형으로는 성립하지 않는다.</li>
+      <li>모듈 사이를 흐르는 데이터(카메라 프레임, BEV 특징맵, 포인트클라우드)가 <strong>온칩 패브릭과 메모리 대역폭</strong>을 소모한다 — 연산기만큼 인터커넥트 설계가 중요하다.</li>
+      <li>지연 예산은 모듈별로 쪼개져 배분된다. 우리 플랫폼 위 소프트웨어의 <strong>p99 지연을 보장</strong>하려면 캐시·메모리 QoS 같은 결정성 메커니즘이 필요하다(9장 FFI와 연결).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ CH3 ═══════════════ -->
+<section class="ch" id="ch3">
+  <div class="ch-head">
+    <div class="no">Chapter 3 · Part I</div>
+    <h2>최신 AI 모델 트렌드 — BEV에서 VLA까지</h2>
+    <div class="journey">여정에서의 위치 — ① 모델 개발. 지금 차에 실리고 있는, 그리고 2~3년 안에 실릴 모델들이 우리 하드웨어에 어떤 연산을 요구하는지 본다. 결론부터: 워크로드의 성격 자체가 바뀌고 있다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now · 2025–26</div>
+    <p>Tesla FSD v13은 이전 버전 대비 모델 크기 3배·학습 컴퓨트 5배로 커졌고 (<a href="https://creativestrategies.com/research/tesla-ai-autonomy-fsd-v13-update/">Creative Strategies</a>), XPeng은 <strong>300억 파라미터 VLA 모델을 차 안에서 직접 실행</strong>하겠다며 자체 칩 3개(2,250 TOPS)를 실었습니다. Volkswagen이 이 기술의 첫 라이선스 고객이 됐습니다 (<a href="https://www.xpeng.com/pressroom/news/019a56f54fe99a2a0a8d8a0282e402b7">XPeng</a>). 중국 시장은 사실상 End-to-End로 전면 전환했고(Momenta가 도심 주행보조 솔루션의 60% 공급), BMW 차세대 iX3에도 중국산 E2E 모델이 실립니다 (<a href="https://www.recodechinaai.com/p/tesla-fsds-toughest-competition-comes">Recode China AI</a>).</p>
+  </div>
+
+  <h3>3.1 기반 지식 — CNN과 Transformer, 무엇이 다른가</h3>
+  <p>이 장을 이해하는 데 필요한 배경 지식은 딱 하나, "CNN에서 Transformer로의 전환이 왜 하드웨어 관점에서 중요한가"입니다. 그림으로 보겠습니다.</p>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 330" role="img" aria-label="CNN과 Transformer의 연산 방식 비교">
+      <g font-size="13.5">
+        <!-- CNN side -->
+        <text x="230" y="30" text-anchor="middle" font-weight="700" fill="#201a1e" font-size="15">CNN — "돋보기로 훑기"</text>
+        <g>
+          <!-- image grid -->
+          <g stroke="#e3dfda" fill="none">
+            <rect x="80" y="55" width="180" height="140"/>
+            <line x1="125" y1="55" x2="125" y2="195"/><line x1="170" y1="55" x2="170" y2="195"/><line x1="215" y1="55" x2="215" y2="195"/>
+            <line x1="80" y1="90" x2="260" y2="90"/><line x1="80" y1="125" x2="260" y2="125"/><line x1="80" y1="160" x2="260" y2="160"/>
+          </g>
+          <rect x="80" y="55" width="90" height="70" fill="none" stroke="#8a4f75" stroke-width="2.5"/>
+          <rect x="125" y="90" width="90" height="70" fill="none" stroke="#8a4f75" stroke-width="2.5" stroke-dasharray="5 4"/>
+          <text x="170" y="225" text-anchor="middle" fill="#55494f">작은 필터(커널)가 이미지를</text>
+          <text x="170" y="245" text-anchor="middle" fill="#55494f">차례로 훑으며 특징 추출</text>
+        </g>
+        <g fill="#55494f"><text x="310" y="90" font-weight="600" fill="#201a1e">특성</text>
+          <text x="310" y="115">· 같은 필터를 계속 재사용</text>
+          <text x="310" y="138">· 한 번 읽은 데이터로 연산 많이 함</text>
+          <text x="310" y="161" fill="#2a6ea8" font-weight="600">→ 연산기(TOPS)가 병목</text>
+          <text x="310" y="184" font-size="11.5" fill="#8d8188">"compute-bound"</text>
+        </g>
+        <!-- divider -->
+        <line x1="500" y1="45" x2="500" y2="290" stroke="#e3dfda" stroke-width="1.5"/>
+        <!-- Transformer side -->
+        <text x="750" y="30" text-anchor="middle" font-weight="700" fill="#201a1e" font-size="15">Transformer — "전부와 전부를 비교하기"</text>
+        <g>
+          <g fill="#d9c8d4"><circle cx="590" cy="90" r="13"/><circle cx="650" cy="70" r="13"/><circle cx="710" cy="95" r="13"/><circle cx="770" cy="70" r="13"/><circle cx="830" cy="90" r="13"/></g>
+          <g stroke="#8a4f75" stroke-width="1.2" opacity="0.65">
+            <line x1="590" y1="90" x2="650" y2="70"/><line x1="590" y1="90" x2="710" y2="95"/><line x1="590" y1="90" x2="770" y2="70"/><line x1="590" y1="90" x2="830" y2="90"/>
+            <line x1="650" y1="70" x2="710" y2="95"/><line x1="650" y1="70" x2="770" y2="70"/><line x1="650" y1="70" x2="830" y2="90"/>
+            <line x1="710" y1="95" x2="770" y2="70"/><line x1="710" y1="95" x2="830" y2="90"/><line x1="770" y1="70" x2="830" y2="90"/>
+          </g>
+          <text x="710" y="140" text-anchor="middle" fill="#55494f">모든 조각(토큰)이 서로를 참조 —</text>
+          <text x="710" y="160" text-anchor="middle" fill="#55494f">"attention(주의)" 연산</text>
+        </g>
+        <g fill="#55494f"><text x="560" y="200" font-weight="600" fill="#201a1e">특성</text>
+          <text x="560" y="225">· 매번 방대한 가중치·과거 기록(KV cache)을 메모리에서 읽어야 함</text>
+          <text x="560" y="248">· 읽어온 데이터당 연산은 적음</text>
+          <text x="560" y="271" fill="#b03d3d" font-weight="600">→ 메모리 대역폭이 병목 — "memory-bound"</text>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 3-1. CNN과 Transformer의 하드웨어 관점 차이. CNN은 데이터 재사용률이 높아 연산기가 바쁘고(→ TOPS가 성능을 결정), Transformer 계열 — 특히 한 글자씩 생성하는 LLM/VLA 추론 — 은 메모리에서 데이터를 실어 나르는 시간이 지배한다(→ GB/s가 성능을 결정). 이 차이가 6장의 핵심 논점이 된다.</figcaption>
+  </figure>
+
+  <h3>3.2 BEV + Transformer — 세상을 위에서 내려다보기 (2021~)</h3>
+  <div class="grid2">
+    <div>
+      <p>카메라는 여러 대가 각자 다른 방향을 봅니다. 고전적 방식은 카메라마다 따로 인식하고 결과를 나중에 합쳤는데, 경계 영역에서 오류가 잦았습니다. 2021년 전후 등장한 <strong>BEV(Bird's-Eye-View) 방식</strong>은 발상을 바꿔, 여러 카메라 영상을 신경망 안에서 곧바로 <strong>하나의 탑뷰(위에서 내려다본) 공간</strong>으로 변환해 그 위에서 인식합니다. 마치 미니맵을 만들어 놓고 게임을 하는 것과 같습니다.</p>
+      <p>이 변환에 Transformer의 attention이 쓰입니다. 대표 논문 <strong>BEVFormer</strong>(ECCV 2022)는 BEV 격자의 각 칸이 "내가 어느 카메라의 어느 픽셀을 봐야 하지?"를 attention으로 배우게 했습니다 (<a href="https://arxiv.org/pdf/2203.17270">arXiv:2203.17270</a>). 실측 배포 성능은 TensorRT FP16 최적화 후 약 90ms, 경량 구성으로 25ms까지 내려갑니다 (<a href="https://multicorewareinc.com/optimized-bev-models-for-real-time-autonomous-perception-bevdet-bevformer/">MulticoreWare</a>).</p>
+      <p>같은 계열의 확장이 <strong>Occupancy Network</strong>입니다. "차/사람/자전거"처럼 종류를 아는 물체만 찾는 대신, 공간을 작은 정육면체(voxel)로 나눠 <strong>"이 칸이 비어 있나, 차 있나"</strong>만 판단합니다. 종류를 몰라도(쓰러진 나무, 떨어진 화물) 피할 수 있게 되는 것이죠. Tesla는 이를 FSD 컴퓨터에서 약 10ms에 실행한다고 알려져 있습니다 (<a href="https://arxiv.org/pdf/2303.01212">arXiv:2303.01212</a>).</p>
+    </div>
+    <div>
+      <figure style="margin-top:0">
+        <div class="diagram">
+        <svg viewBox="0 0 400 300" role="img" aria-label="멀티카메라 영상이 BEV 탑뷰 격자로 변환되는 개념도">
+          <g font-size="12" text-anchor="middle">
+            <g fill="none" stroke="#2a6ea8" stroke-width="1.8">
+              <rect x="20" y="20" width="100" height="62" rx="3"/><rect x="150" y="20" width="100" height="62" rx="3"/><rect x="280" y="20" width="100" height="62" rx="3"/>
+            </g>
+            <text x="70" y="55" fill="#55494f">전방 카메라</text><text x="200" y="55" fill="#55494f">좌측 카메라</text><text x="330" y="55" fill="#55494f">우측 카메라</text>
+            <g stroke="#c3b8bd" stroke-width="1.8" fill="none">
+              <path d="M70 86 C 70 120 170 120 190 145"/><path d="M200 86 L 200 141"/><path d="M330 86 C 330 120 230 120 210 145"/>
+            </g>
+            <text x="200" y="135" fill="#8a4f75" font-weight="700" font-size="12.5">attention 기반 시점 변환</text>
+            <g stroke="#e3dfda" fill="#fff">
+              <rect x="110" y="155" width="180" height="120"/>
+            </g>
+            <g stroke="#e3dfda">
+              <line x1="146" y1="155" x2="146" y2="275"/><line x1="182" y1="155" x2="182" y2="275"/><line x1="218" y1="155" x2="218" y2="275"/><line x1="254" y1="155" x2="254" y2="275"/>
+              <line x1="110" y1="185" x2="290" y2="185"/><line x1="110" y1="215" x2="290" y2="215"/><line x1="110" y1="245" x2="290" y2="245"/>
+            </g>
+            <rect x="182" y="215" width="36" height="30" fill="#8a4f75"/>
+            <rect x="146" y="185" width="36" height="30" fill="#d9c8d4"/><rect x="218" y="245" width="36" height="30" fill="#d9c8d4"/>
+            <text x="200" y="296" fill="#8d8188" font-size="11">BEV 격자 — 진한 칸: 내 차, 연한 칸: 다른 물체</text>
+          </g>
+        </svg>
+        </div>
+        <figcaption>그림 3-2. BEV 개념 — 여러 카메라의 시점을 신경망 안에서 하나의 탑뷰 지도로 변환한다.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/bevformer_arch.png" alt="BEVFormer 아키텍처">
+        <figcaption>그림 3-3. BEVFormer의 실제 아키텍처 — BEV 쿼리가 spatial cross-attention으로 멀티카메라 특징을, temporal self-attention으로 과거 BEV를 참조한다. <a href="https://github.com/fundamentalvision/BEVFormer">출처: BEVFormer 공식 리포지토리 (ECCV 2022)</a></figcaption>
+      </figure>
+    </div>
+  </div>
+  <p>하드웨어 관점의 주의점 하나: BEV 변환에 쓰이는 deformable attention은 <strong>메모리를 불규칙하게 접근</strong>하기 때문에 고정된 연산 패턴에 최적화된 NPU와 궁합이 나쁩니다. 그래서 커스텀 연산 없이 표준 연산만으로 BEV를 만드는 "배포 친화적 설계"(Fast-BEV 계열)가 별도의 연구 흐름으로 존재합니다 (<a href="https://arxiv.org/pdf/2301.12511">Fast-BEV</a>) — <strong>모델 설계가 하드웨어 지원 여부에 좌우되는</strong> 시대가 이미 왔다는 뜻입니다.</p>
+
+  <h3>3.3 End-to-End — 모듈의 벽을 허물다 (2023~)</h3>
+  <div class="grid2">
+    <div>
+      <p>2장의 모듈형 파이프라인에는 구조적 약점이 있습니다. 인지 모듈은 "인식 정확도"로, 계획 모듈은 "경로 품질"로 각자 최적화되다 보니, <strong>정작 최종 목표인 "운전을 잘한다"로 전체가 함께 최적화되지 않는다</strong>는 점입니다. 모듈 사이에서 정보도 손실됩니다(인지가 "차량, 신뢰도 0.87"로 요약해 넘기는 순간, 계획은 그 이상을 알 수 없습니다).</p>
+      <p>End-to-End(E2E)는 센서 입력에서 주행 출력까지를 <strong>하나의 신경망으로 잇고, 전체를 운전 성능으로 함께 학습</strong>시키는 접근입니다. 학계 이정표는 CVPR 2023 최우수논문 <strong>UniAD</strong> — 인지·추적·지도·예측·계획을 모두 Transformer 쿼리로 연결하되, 모든 모듈이 "계획을 잘하기 위해" 존재하도록 설계했습니다 (<a href="https://arxiv.org/abs/2212.10156">arXiv:2212.10156</a>).</p>
+      <p>산업 이정표는 <strong>Tesla FSD v12</strong>(2024)입니다. 규칙 기반 C++ 코드 약 30만 줄을 신경망으로 대체했고, v13(2024년 말)에서는 모델 크기·컨텍스트 3배, 학습 컴퓨트 5배로 커졌습니다. 커뮤니티 분석 기준 주행 신경망의 메모리 사용량은 v12 약 2.3GB → v13 약 7.5GB(추정)로 늘었고, 이 격차 때문에 구형 컴퓨터(HW3)에서는 v13이 실행되지 못합니다 (<a href="https://www.shop4tesla.com/en/blogs/news/tesla-fsd-v13-hw4-hw3-limit">shop4tesla</a>) — <strong>모델 성장 속도가 하드웨어 교체 주기를 앞지른 실제 사례</strong>입니다.</p>
+    </div>
+    <figure style="margin-top:6px">
+      <img src="assets/uniad_pipeline.png" alt="UniAD planning-oriented 파이프라인">
+      <figcaption>그림 3-4. UniAD의 planning-oriented 설계 — 모듈은 남아 있지만 전부 신경망 쿼리로 연결되어 최종 계획 성능을 위해 함께 학습된다. <a href="https://github.com/OpenDriveLab/UniAD">출처: UniAD 공식 리포지토리 (CVPR 2023 Best Paper)</a></figcaption>
+    </figure>
+  </div>
+  <div class="term">
+    <div class="tt">E2E의 대가 — 왜 하드웨어가 더 커져야 하나</div>
+    <p>E2E 모델은 쪼갤 수 없습니다. 모듈형이라면 인지는 이 칩, 계획은 저 칩에 나눠 실을 수 있지만, 단일 신경망은 <strong>하나의 큰 가속기 메모리 공간</strong>을 요구합니다. 또한 내부가 블랙박스라 "왜 그렇게 판단했는지" 설명이 어려워, 안전 논증을 위한 별도 감시 계층(10장)이 필요해집니다.</p>
+  </div>
+
+  <h3>3.4 VLA와 World Model — 2025년의 두 갈래 (그리고 "fast + slow")</h3>
+  <p>2025년 이후의 최전선은 두 노선으로 갈립니다. 하나는 <strong>VLA(Vision-Language-Action)</strong> — 대형 언어모델(LLM)의 "이해하고 추론하는" 능력을 주행에 이식해, 카메라 영상(Vision)을 보고 상황을 언어적으로 추론(Language)한 뒤 주행 행동(Action)을 출력하는 모델입니다. "공사 구간이라 차선이 지워졌지만 라바콘을 따라가야 한다" 같은, 규칙에 없는 상황(long-tail)에 강한 것이 장점입니다. XPeng VLA 2.0(30B, VW 라이선스), Li Auto MindVLA가 대표입니다.</p>
+  <p>다른 하나는 <strong>World Model</strong> — "세상이 다음에 어떻게 변할지"를 통째로 예측하는 모델로, Huawei ADS 4.0이 "언어를 거치는 것은 우회"라며 이 노선을 택했습니다 (<a href="https://chinaevhome.com/2025/08/28/huaweis-jin-yuzhi-skipping-vla-in-favor-of-wa-for-autonomous-driving/">ChinaEVHome</a>). World Model은 4장에서 보듯 시뮬레이터로서의 역할이 더 큽니다.</p>
+  <div class="grid2">
+    <figure style="margin-top:6px">
+      <img src="assets/opendrivevla_arch.jpg" alt="OpenDriveVLA 아키텍처">
+      <figcaption>그림 3-5. 학계 오픈소스 VLA의 대표인 OpenDriveVLA(0.5B~7B) 구조 — 3D 시각 인식 결과를 언어모델(Qwen2.5)에 투영하고, 언어모델이 주행 행동을 출력한다. <a href="https://github.com/DriveVLA/OpenDriveVLA">출처: OpenDriveVLA 공식 리포지토리 (AAAI 2026)</a></figcaption>
+    </figure>
+    <div>
+      <p>여기서 실차 탑재의 결정적 문제가 등장합니다. <strong>LLM은 느립니다.</strong> Li Auto가 실차(Orin 2개)에서 측정한 VLM 추론 지연은 평균 410ms — 초당 10회 돌아야 하는 제어 루프에 들어갈 수 없는 속도입니다 (<a href="https://arxiv.org/abs/2402.12289">DriveVLM, arXiv:2402.12289</a>).</p>
+      <p>업계의 해법은 사람의 인지처럼 <strong>"빠른 직관 + 느린 숙고"의 이중 시스템</strong>입니다. 10Hz 이상으로 도는 가벼운 E2E 모델(fast path)이 실제 운전을 담당하고, 크고 느린 VLM/VLA(slow path)는 1~2Hz로 돌며 어려운 상황에 대한 판단과 힌트를 비동기로 공급합니다. Li Auto는 실제로 Orin 두 개에 fast/slow를 나눠 실었습니다.</p>
+      <div class="panel" style="margin:14px 0 0">
+        <div class="pt">이 구조가 하드웨어에 요구하는 것</div>
+        <p style="margin:0">fast path에는 <strong>결정론적 지연</strong>(p99 보장), slow path에는 <strong>LLM형 연산</strong>(대용량 메모리, KV cache, 저정밀). 이 둘을 한 칩에 실으려면 서로 간섭하지 않게 하는 <strong>파티셔닝·QoS</strong>가 필수다(9장 FFI). 두 칩에 나누면 파티셔닝은 쉬워지지만 칩 간 대역폭이 병목이 된다(8장).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점 — 3장 종합</div>
+    <ul>
+      <li><strong>워크로드의 성격이 이동 중</strong>: CNN 시대의 "TOPS 부족" 문제에서, Transformer/VLA 시대의 <strong>"메모리 대역폭 부족"</strong> 문제로 (정량 근거는 6장).</li>
+      <li><strong>모델은 커지기만 한다</strong>: v12→v13 3배, 온보드 VLA 30B — 용량(모델 상주)·대역폭(생성)·연산(인코딩)의 3축 헤드룸 산정이 필요.</li>
+      <li><strong>fast/slow 이중 시간 스케일이 표준</strong>: 파티셔닝·격리·QoS가 성능 사양만큼 중요.</li>
+      <li><strong>모델-하드웨어 공동 설계</strong>: deformable attention처럼 하드웨어 비친화적 연산이 배포를 좌우 — 플랫폼의 연산자 커버리지가 채택 경쟁력(5장 컴파일러와 연결).</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════ CH4 ═══════════════ -->
+<section class="ch" id="ch4">
+  <div class="ch-head">
+    <div class="no">Chapter 4 · Part I</div>
+    <h2>자율주행은 모델만이 아니다 — 개발 생태계 전체</h2>
+    <div class="journey">여정에서의 위치 — ①과 ⑧을 잇는 폐루프. 모델은 "만들어지는 것"이 아니라 "길러지는 것"이다. 데이터 수집 → 라벨링 → 학습 → 시뮬레이션 검증 → 배포 → 다시 데이터 수집으로 돌아가는 루프 전체가 진짜 제품이며, 차량 컴퓨터는 이 루프의 한 노드다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now · NVIDIA Alpamayo가 보여준 그림</div>
+    <p>NVIDIA는 2025년 말~2026년에 걸쳐 <strong>Alpamayo</strong>를 발표하면서 모델 하나가 아니라 생태계 전체를 내놓았습니다: 추론하는 주행 모델(Alpamayo-R1, 10B) + 25개국 1,700시간 주행 데이터셋 + 시뮬레이터(AlpaSim) + 강화학습 프레임워크(AlpaGym)를 <strong>전부 오픈소스로</strong> 공개하고, 이것을 "학습 컴퓨터(DGX) → 시뮬레이션 컴퓨터(Omniverse/Cosmos) → 차량 컴퓨터(DRIVE Thor)"라는 3-컴퓨터 구조로 묶었습니다 (<a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">NVIDIA, CES 2026</a>, <a href="https://arxiv.org/abs/2511.00088">arXiv:2511.00088</a>). 메시지는 분명합니다 — <strong>자율주행의 경쟁력은 모델이 아니라 개발 루프 전체에서 나온다.</strong> 이 장은 그 루프를 하나씩 뜯어봅니다.</p>
+  </div>
+
+  <h3>4.1 데이터 엔진 — Tesla가 보여준 원형</h3>
+  <p>모델의 성능은 결국 데이터가 결정합니다. 그런데 도로에서 정말 중요한 데이터 — 갑자기 뛰어드는 보행자, 역주행 차량, 도로 위의 쓰러진 나무 — 는 <strong>수백만 km를 달려야 한 번 만나는 희귀 사건(long-tail)</strong>입니다. 이 문제를 시스템으로 푼 것이 Tesla의 "데이터 엔진"입니다.</p>
+
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="데이터 엔진 폐루프: 차량 플릿에서 트리거 수집, 자동 라벨링, 재학습, 섀도 모드 검증, OTA 배포">
+      <defs><marker id="dar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c3b8bd"/></marker></defs>
+      <g font-size="13.5" font-weight="600" text-anchor="middle">
+        <rect x="30" y="40" width="185" height="80" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="122" y="70" fill="#201a1e">① 플릿 (수백만 대)</text>
+        <text x="122" y="93" font-size="11.5" font-weight="400" fill="#8d8188">200+ 트리거가 희귀 상황 감지</text>
+        <rect x="285" y="40" width="185" height="80" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="377" y="70" fill="#201a1e">② 선별 업로드</text>
+        <text x="377" y="93" font-size="11.5" font-weight="400" fill="#8d8188">조건에 맞는 ~10초 클립만</text>
+        <rect x="540" y="40" width="185" height="80" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="632" y="70" fill="#201a1e">③ 자동 라벨링</text>
+        <text x="632" y="93" font-size="11.5" font-weight="400" fill="#8d8188">대형 offline 모델이 정답 생성</text>
+        <rect x="795" y="40" width="175" height="80" rx="4" fill="none" stroke="#8a4f75" stroke-width="2"/>
+        <text x="882" y="70" fill="#201a1e">④ 재학습</text>
+        <text x="882" y="93" font-size="11.5" font-weight="400" fill="#8d8188">GPU 클러스터</text>
+        <rect x="540" y="185" width="185" height="80" rx="4" fill="none" stroke="#a8702a" stroke-width="2"/>
+        <text x="632" y="215" fill="#201a1e">⑤ 시뮬레이션 검증</text>
+        <text x="632" y="238" font-size="11.5" font-weight="400" fill="#8d8188">폐루프 평가 · 회귀 테스트</text>
+        <rect x="285" y="185" width="185" height="80" rx="4" fill="none" stroke="#a8702a" stroke-width="2"/>
+        <text x="377" y="215" fill="#201a1e">⑥ Shadow mode</text>
+        <text x="377" y="238" font-size="11.5" font-weight="400" fill="#8d8188">실차에서 제어권 없이 병렬 실행</text>
+        <rect x="30" y="185" width="185" height="80" rx="4" fill="none" stroke="#a8702a" stroke-width="2"/>
+        <text x="122" y="215" fill="#201a1e">⑦ OTA 배포</text>
+        <text x="122" y="238" font-size="11.5" font-weight="400" fill="#8d8188">전 플릿 업데이트 → ①로</text>
+        <g stroke="#c3b8bd" stroke-width="2" fill="none" marker-end="url(#dar)">
+          <line x1="217" y1="80" x2="281" y2="80"/><line x1="472" y1="80" x2="536" y2="80"/><line x1="727" y1="80" x2="791" y2="80"/>
+          <path d="M882 122 C 882 160 750 195 729 210"/>
+          <line x1="538" y1="225" x2="474" y2="225"/><line x1="283" y1="225" x2="219" y2="225"/>
+          <path d="M122 183 L 122 124"/>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 4-1. 데이터 엔진 폐루프. 핵심은 ①과 ⑥ — 도로 위의 양산차 전체가 데이터 수집기이자 시험대라는 점이다. Tesla FSD 플릿의 누적 주행은 2026년 5월 100억 마일을 넘었고, 하루 약 2,900만 마일씩 쌓인다 (<a href="https://electrek.co/2026/05/03/tesla-fsd-10-billion-miles-no-magical-milestone-autonomy/">Electrek</a>).</figcaption>
+  </figure>
+
+  <ul>
+    <li><strong>트리거 기반 수집</strong>: 양산차의 데이터를 전부 올릴 수는 없습니다(대역폭·비용). 대신 "예측과 실제가 어긋난 순간" 등 200개 이상의 조건(트리거)을 차 안에서 감지해, 조건에 맞는 <strong>약 10초짜리 클립만</strong> 업로드합니다. 특정 상황(예: 끼어들기)의 개선이 필요하면 플릿 전체에 해당 트리거를 배포해 며칠 만에 수천 개의 사례를 모읍니다 (<a href="https://arxiv.org/html/2401.12888v1">Data-Centric Survey</a>).</li>
+    <li><strong>Shadow mode</strong>: 새 모델 후보를 고객 차량에 <strong>제어권 없이</strong> 병렬로 실행시켜, 현재 모델과 판단이 갈리는 순간을 수집합니다. 실차 검증을 위험 없이 대규모로 하는 방법입니다.</li>
+    <li><strong>자동 라벨링(auto-labeling)</strong>: 사람이 일일이 정답을 그려주는 대신, <strong>차에서는 못 돌리는 초대형 offline 모델(teacher)</strong>이 시간을 거꾸로도 보고(미래 프레임 참조) 여러 센서를 합쳐 고품질 정답을 만들어, 차에 실릴 작은 모델(student)을 가르칩니다. Tesla는 1만 대 트립 라벨링에 사람 손으로 500만 시간 걸릴 일을 클러스터 12시간으로 대체했다고 발표했고 (<a href="https://www.nocode.ai/recap-tesla-ai-day-2022/">AI Day 2022</a>), NVIDIA Alpamayo 2도 같은 teacher→student 증류 구조를 공식 워크플로로 제시합니다 (<a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">NVIDIA</a>).</li>
+    <li><strong>Active learning</strong>: 모아둔 방대한 무라벨 데이터 중 "모델이 가장 헷갈려하는 것"부터 골라 라벨링합니다. NVIDIA는 야간 보행자 검출에서 무작위 선별 대비 <strong>3배</strong>의 정확도 개선 효율을 A/B 테스트로 입증했습니다 (<a href="https://medium.com/nvidia-ai/scalable-active-learning-for-autonomous-driving-a-practical-implementation-and-a-b-test-4d315ed04b5f">NVIDIA</a>).</li>
+  </ul>
+
+  <figure>
+    <img src="assets/sam_masks.png" alt="Segment Anything 모델의 자동 분할 예시" style="max-width:620px">
+    <figcaption>그림 4-2. 파운데이션 모델을 활용한 라벨링 자동화의 예 — Meta의 SAM(Segment Anything)은 1,100만 장·10억 개 마스크로 학습되어, 어떤 이미지든 객체 경계를 자동 분할한다. 업계에서는 "SAM이 초벌 라벨 → 사람이 검수"가 정착된 패턴이다. 단 야간·악천후 같은 자율주행 long-tail에서는 여전히 사람의 검수가 필수다. <a href="https://github.com/facebookresearch/segment-anything">출처: Segment Anything 공식 리포지토리</a></figcaption>
+  </figure>
+
+  <h3>4.2 시뮬레이션 — 수십억 마일을 가상으로 달리는 이유</h3>
+  <p>RAND 연구소의 유명한 계산이 있습니다: 자율주행이 사람보다 안전함을 <strong>통계적으로</strong> 입증하려면 수억~수십억 마일의 주행 실적이 필요합니다 (<a href="https://arxiv.org/pdf/2009.05801">arXiv:2009.05801</a>). 실차만으로는 불가능한 숫자이고, 위험한 상황을 일부러 실차로 재현할 수도 없습니다. 그래서 모든 주요 업체가 시뮬레이션에 막대하게 투자합니다.</p>
+  <ul>
+    <li><strong>Waymo</strong>: 2019년에 이미 시뮬레이션 100억 마일을 넘겼고, 실도로 데이터 기반의 가상 도시(Simulation City)를 운영합니다. 2026년 2월에는 DeepMind Genie 3 기반의 <strong>Waymo World Model</strong>을 공개 — 카메라·LiDAR 출력을 통째로 생성해 "도로 위의 코끼리, 토네이도"급 극단 상황까지 합성합니다 (<a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation/">Waymo Blog</a>).</li>
+    <li><strong>Wayve GAIA-2</strong>: 생성형 world model로 충돌 직전 상황 같은 <strong>실차로는 수집 불가능한 안전-치명 시나리오</strong>를 만들어 학습·평가에 씁니다 (<a href="https://wayve.ai/press/wayve-unveils-gaia2/">Wayve</a>).</li>
+    <li><strong>NVIDIA</strong>: 실주행 로그를 3D로 복원(NuRec)하고, 그 위에 Cosmos world model로 변형·확장 시나리오를 생성하며, AlpaSim으로 폐루프 실행합니다. 오픈소스 표준으로는 <strong>CARLA</strong>가 학계에서 널리 쓰입니다 (<a href="https://github.com/carla-simulator/carla">CARLA</a>).</li>
+  </ul>
+  <figure>
+    <img src="assets/cosmos_predict_diagram.png" alt="NVIDIA Cosmos world foundation model 다이어그램">
+    <figcaption>그림 4-3. NVIDIA Cosmos world foundation model — 2,000만 시간의 실세계 영상으로 학습된 생성 모델이 텍스트/영상 조건에서 물리적으로 그럴듯한 미래 영상을 생성한다. 3장의 "World Model 노선"과 이 장의 "시뮬레이터"는 같은 기술의 두 얼굴이다. <a href="https://github.com/nvidia-cosmos/cosmos-predict1">출처: Cosmos 공식 리포지토리</a></figcaption>
+  </figure>
+  <div class="term">
+    <div class="tt">용어 — 폐루프(closed-loop) vs 개루프(open-loop) 평가</div>
+    <p>개루프 평가는 "기록된 상황에서 사람 운전과 얼마나 비슷한 답을 냈나"를 채점합니다. 문제는 모델이 조금 다르게 운전하는 순간 이후 상황 자체가 달라진다는 것 — 기록은 그걸 반영하지 못합니다. 폐루프 평가는 시뮬레이터 안에서 <strong>모델이 실제로 운전하게 하고 그 결과(충돌, 이탈)로 채점</strong>합니다. 작은 오차가 눈덩이처럼 커지는 문제(compounding error)는 폐루프에서만 드러납니다.</p>
+  </div>
+
+  <h3>4.3 강화학습 — 흉내내기의 한계를 넘어서 (2024~26의 전환)</h3>
+  <p>지금까지의 E2E 모델은 기본적으로 <strong>모방 학습(imitation learning)</strong> — 사람의 운전 기록을 흉내내도록 학습합니다. 그런데 모방에는 구조적 한계가 둘 있습니다:</p>
+  <ul>
+    <li><strong>분포 이탈(distribution shift)</strong>: 학습 데이터에는 "잘한 운전"만 있습니다. 모델이 일단 실수해서 낯선 상황에 빠지면, 그 상황에서 어떻게 복구하는지 배운 적이 없어 오차가 눈덩이처럼 커집니다.</li>
+    <li><strong>인과 혼동(causal confusion)</strong>: 상관관계를 인과로 착각합니다 — 유명한 예로, "앞차 제동" 대신 <strong>"내 계기판의 브레이크등이 켜지면 제동한다"</strong>를 배워버린 사례가 보고되어 있습니다 (<a href="https://arxiv.org/abs/1905.11979">NeurIPS 2019</a>).</li>
+    <li>결과적으로 모방 학습은 "데이터에 있던 상황"까지만 잘합니다. 진짜 어려운 long-tail에서는 <strong>스스로 시도하고 결과로부터 배우는</strong> 학습이 필요합니다.</li>
+  </ul>
+  <p>2024~26년, LLM 업계에서 검증된 "사전학습 → SFT → 강화학습(RLHF/GRPO)" 레시피가 주행 모델에 그대로 이식되기 시작했습니다. 실차에서 강화학습을 시킬 수는 없으므로(사고를 내면서 배울 수는 없으니), <strong>world model 시뮬레이터가 강화학습의 연습장(gym)이 됩니다</strong> — 4.2의 시뮬레이션 투자가 여기서 회수되는 것입니다.</p>
+  <div class="grid2">
+    <figure style="margin-top:6px">
+      <img src="assets/alphadrive_arch.png" alt="AlphaDrive 아키텍처: RL과 reasoning 결합">
+      <figcaption>그림 4-4. AlphaDrive(2025) — DeepSeek-R1을 유행시킨 GRPO 강화학습을 자율주행 계획에 처음 이식한 대표작. 계획 특화 보상 4종으로 SFT-only 대비 성능·학습효율을 개선했다. <a href="https://github.com/hustvl/AlphaDrive">출처: AlphaDrive 공식 리포지토리 (arXiv:2503.07608)</a></figcaption>
+    </figure>
+    <figure style="margin-top:6px">
+      <img src="assets/recogdrive_framework.png" alt="ReCogDrive 프레임워크">
+      <figcaption>그림 4-5. ReCogDrive(Xiaomi, ICLR 2026) — VLM + diffusion planner에 시뮬레이터 보조 강화학습(DiffGRPO)을 더해 벤치마크 SOTA를 달성한 3단계 학습 파이프라인. <a href="https://github.com/xiaomi-research/recogdrive">출처: ReCogDrive 공식 리포지토리 (arXiv:2506.08052)</a></figcaption>
+    </figure>
+  </div>
+  <p>산업 배치도 시작됐습니다. Tesla FSD v14는 파라미터를 약 10배 키우면서 v14.3에서 강화학습 단계를 강화했고, 플릿에서 "어려운 사례"를 골라 RL 학습에 투입합니다 (<a href="https://www.notateslaapp.com/news/3925/tesla-releases-fsd-143-fleet-learning-20-faster-reactions-and-more">Not a Tesla App</a>). Li Auto는 자체 클라우드 world model 안에서 MindVLA를 대규모 폐루프 RL로 훈련합니다 (<a href="https://autonews.gasgoo.com/icv/70036319.html">Gasgoo</a>). NVIDIA AlpaGym은 이 폐루프 RL 인프라 자체를 오픈소스로 공개한 것입니다.</p>
+
+  <h3>4.4 이 루프를 돌리는 인프라의 규모</h3>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>규모</th><th>출처</th></tr>
+    <tr><td>Tesla 학습 클러스터 (Cortex)</td><td>H100 5만 장 + 자체 칩, 이후 ~10만 장 규모 목표. 자체 학습칩 Dojo는 2025년 중단 — GPU로 회귀</td><td><a href="https://techcrunch.com/2025/09/02/teslas-dojo-a-timeline/">TechCrunch</a></td></tr>
+    <tr><td>Tesla 플릿 데이터</td><td>FSD 누적 100억 마일(2026-05), 하루 ~2,900만 마일</td><td><a href="https://electrek.co/2026/05/03/tesla-fsd-10-billion-miles-no-magical-milestone-autonomy/">Electrek</a></td></tr>
+    <tr><td>NVIDIA Alpamayo 1.5 학습 데이터</td><td>주행 80,000시간 → 10억+ 이미지, 인과 추론 주석 300만 개</td><td><a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-1-5">HF Blog</a></td></tr>
+    <tr><td>개발 차량 1대의 데이터 생성량</td><td>상위 센서셋 기준 ~40Gbit/s, 시간당 ~19TB — 테스트카 하루 5–20TB</td><td><a href="https://www.ni.com/en/solutions/transportation/adas-and-autonomous-driving-testing/adas-and-autonomous-driving-validation/adas-datalogger.html">NI</a>, <a href="https://www.tuxera.com/blog/autonomous-and-adas-test-cars-produce-over-11-tb-of-data-per-day/">Tuxera</a></td></tr>
+    <tr><td>Waymo 스케일링 법칙</td><td>주행 50만 시간 데이터로 "AV 성능도 LLM처럼 데이터·컴퓨트의 거듭제곱 법칙을 따른다"를 실증</td><td><a href="https://waymo.com/blog/2025/06/scaling-laws-in-autonomous-driving/">Waymo</a></td></tr>
+  </table></div>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점 — 차량 컴퓨터는 루프의 한 노드다</div>
+    <ul>
+      <li><strong>데이터 기록·업링크가 1급 설계 요구사항</strong>: 트리거 감지, 상시 링버퍼 인코딩, 압축·암호화가 주행 스택과 별개로 상주하는 워크로드다. 로그의 품질과 대역폭이 곧 회사의 학습 속도다.</li>
+      <li><strong>Shadow mode = 컴퓨트 헤드룸</strong>: 차세대(더 큰) 후보 모델을 현행 모델과 병렬로 돌릴 여유 연산·메모리를 처음부터 사양에 넣어야 한다. Thor가 현행 모델 대비 과해 보이는 2,000 TFLOPS로 설계된 배경이다.</li>
+      <li><strong>OTA가 전제</strong>: 모델이 10배씩 크는 시대 — 수 GB 모델의 주기적 무선 업데이트, A/B 이중 뱅크 스토리지, 실패 롤백이 하드웨어·스토리지 요구사항이 된다(9장).</li>
+      <li><strong>teacher→student 구조의 함의</strong>: 차에 실리는 것은 언제나 증류된 student다. 즉 온보드 최적화(5장)는 개발 루프의 마지막 필수 공정이다.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<!-- ═══════════════ PART II ═══════════════ -->
+<div class="part-divider">
+  <div class="inner">
+    <div class="pno">Part II</div>
+    <h2>실차 탑재 — 모델에서 양산차까지</h2>
+    <p>이제 학습된 모델을 실제 차에 올립니다. 모델을 다이어트시키고(5장), 필요한 컴퓨트를 숫자로 산정하고(6장), 칩을 고르고(7장), 차량 전체 아키텍처에 통합하고(8장), 소프트웨어 플랫폼 위에서 검증하고(9장), 안전·규제의 관문을 통과합니다(10장).</p>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════ CH5 ═══════════════ -->
+<section class="ch" id="ch5">
+  <div class="ch-head">
+    <div class="no">Chapter 5 · Part II</div>
+    <h2>온보드 최적화 — 큰 모델을 작은 컴퓨터에 넣는 법</h2>
+    <div class="journey">여정에서의 위치 — ② 온보드 최적화. 데이터센터에서 학습된 모델은 그대로는 차에 들어가지 않는다. 정확도를 지키면서 크기·연산·지연을 줄이는 공정이 실차 탑재의 첫 관문이며, 각 기법은 하드웨어에 특정 기능을 요구한다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now</div>
+    <p>중국 완성차들은 2025년 초 DeepSeek-R1급 대형 모델을 <strong>증류(distillation)한 소형 버전</strong>을 차량 콕핏에 탑재하기 시작했고(Geely·BYD·Zeekr 등, <a href="https://insidechinaauto.com/2025/02/08/chinese-carmakers-integrate-deepseek-into-infotainment-systems/">Inside China Auto</a>), NVIDIA는 차량 전용 LLM 실행기(DriveOS LLM SDK)에 FP8/FP4 양자화와 speculative decoding을 기본 탑재했습니다 (<a href="https://developer.nvidia.com/blog/streamline-llm-deployment-for-autonomous-vehicle-applications-with-nvidia-driveos-llm-sdk/">NVIDIA</a>). XPeng이 30B VLA를 차에 실을 수 있는 것도 이 장의 기법들 덕분입니다. — 온보드 최적화는 연구 주제가 아니라 <strong>양산 공정의 일부</strong>가 됐습니다.</p>
+  </div>
+
+  <h3>5.1 양자화 — 숫자의 정밀도를 낮춰 모두를 아끼기</h3>
+  <p>신경망의 파라미터는 원래 32비트 또는 16비트 실수로 저장됩니다. <strong>양자화(quantization)</strong>는 이것을 8비트·4비트 정수/실수로 낮추는 것 — 저장 공간, 메모리 전송량, 연산 에너지가 그만큼 줄어듭니다. "숫자를 소수점 여섯 자리 대신 두 자리로 반올림해 적는 것"에 비유할 수 있습니다. 핵심 질문은 "얼마나 낮춰도 정확도가 버티는가"입니다.</p>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 240" role="img" aria-label="FP32에서 FP4까지 양자화 정밀도별 크기 비교">
+      <g font-size="13.5">
+        <g text-anchor="start">
+          <text x="20" y="42" font-weight="700" fill="#201a1e">FP32</text><rect x="90" y="26" width="640" height="24" fill="#d9c8d4"/><text x="745" y="44" fill="#8d8188" font-size="12">32bit — 학습 시 표준</text>
+          <text x="20" y="90" font-weight="700" fill="#201a1e">FP16</text><rect x="90" y="74" width="320" height="24" fill="#c9aebe"/><text x="425" y="92" fill="#8d8188" font-size="12">절반 — 추론 기본값</text>
+          <text x="20" y="138" font-weight="700" fill="#201a1e">INT8/FP8</text><rect x="90" y="122" width="160" height="24" fill="#8a4f75"/><text x="265" y="140" fill="#8d8188" font-size="12">1/4 — 인지 모델 표준 (INT8) · Transformer용 (FP8)</text>
+          <text x="20" y="186" font-weight="700" fill="#201a1e">FP4/INT4</text><rect x="90" y="170" width="80" height="24" fill="#3d2237"/><text x="185" y="188" fill="#8d8188" font-size="12">1/8 — LLM/VLA용 최전선 (NVFP4: 정확도 손실 &lt;1%로 FP8 대비 ~3배 처리량)</text>
+        </g>
+        <text x="20" y="228" fill="#55494f" font-size="12.5">같은 모델이라도 낮은 정밀도로 저장·연산하면 <tspan font-weight="700">메모리 사용량·전송량·에너지가 비례해서 감소</tspan> — 단, 하드웨어가 그 포맷을 네이티브로 지원해야 이득이 실현된다</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 5-1. 정밀도 사다리. 자율주행 인지 모델은 INT8이 안전한 기본값(예: LiDAR-PTQ — 정확도 유지하며 3배 가속, <a href="https://arxiv.org/pdf/2401.15865">ICLR 2024</a>)이고, LLM/VLA 워크로드는 FP8→FP4로 이동 중이다 (<a href="https://build.nvidia.com/spark/nvfp4-quantization">NVIDIA NVFP4</a>).</figcaption>
+  </figure>
+  <ul>
+    <li><strong>PTQ vs QAT</strong>: 학습이 끝난 모델을 소량의 보정 데이터만으로 변환하는 것이 PTQ(빠름, 산업 주류), 낮은 정밀도를 가정하고 재학습까지 하는 것이 QAT(느리지만 더 공격적인 압축 가능). 4비트급 공격적 양자화는 대체로 QAT가 필요합니다 (<a href="https://arxiv.org/html/2507.17417">arXiv:2507.17417</a>).</li>
+    <li><strong>포맷 전쟁이 실리콘 선택이 된다</strong>: Qualcomm 연구진은 "전용 하드웨어에서 FP8 연산기는 INT8보다 면적·에너지가 50~180% 비싸다"고 반박하고(NPU 진영은 INT 중심, <a href="https://arxiv.org/pdf/2303.17951">arXiv:2303.17951</a>), NVIDIA는 Blackwell의 FP4/FP8 엔진을 전면에 내겁니다. <strong>어떤 정밀도를 1급으로 지원하는 칩을 고르느냐가 곧 모델 로드맵 선택</strong>입니다.</li>
+    <li>실전 레시피의 예 — NVIDIA 차량용 LLM 실행기는 무거운 행렬곱은 FP8/FP4로, 민감한 부분(LayerNorm·KV cache·attention)은 FP16으로 남기는 <strong>혼합 정밀도</strong>를 씁니다.</li>
+  </ul>
+
+  <h3>5.2 희소성·증류·토큰 줄이기 — 세 가지 다이어트</h3>
+  <div class="grid2">
+    <div>
+      <h4>구조적 희소성 (2:4 sparsity)</h4>
+      <p>학습된 신경망의 가중치 중 일부는 0에 가까워 지워도 됩니다(pruning). 아무 데나 지우면 하드웨어가 이득을 못 보므로, <strong>"연속 4개 중 정확히 2개를 0으로"</strong>라는 규칙적 패턴으로 지우면 NVIDIA Ampere 이후의 GPU와 Orin의 DLA가 이를 하드웨어로 가속합니다. 이론상 2배지만 <strong>실측은 1.3~1.7배</strong> — 계획 수립 시 보수적으로 잡아야 합니다 (<a href="https://arxiv.org/pdf/2410.21352">LLMCBench</a>, <a href="https://developer.nvidia.com/blog/sparsity-in-int8-training-workflow-and-best-practices-for-tensorrt-acceleration">NVIDIA</a>).</p>
+      <h4>지식 증류 (knowledge distillation)</h4>
+      <p>4장에서 본 teacher→student 구조의 모델판. 큰 모델(또는 LiDAR를 쓰는 모델)의 "판단"을 작은 모델(카메라만 쓰는 모델)이 흉내내도록 학습시킵니다. LiDAR 교사 → 카메라 학생 증류(DistillBEV +3.9% mAP, <a href="https://openaccess.thecvf.com/content/ICCV2023/papers/Wang_DistillBEV_Boosting_Multi-Camera_3D_Object_Detection_with_Cross-Modal_Knowledge_Distillation_ICCV_2023_paper.pdf">ICCV 2023</a>)는 <strong>센서 원가 절감</strong>과 직결되고, NVIDIA Minitron은 15B→4B 압축을 40배 적은 학습량으로 해냈습니다 (<a href="https://arxiv.org/abs/2407.14679">arXiv:2407.14679</a>).</p>
+    </div>
+    <figure style="margin-top:6px">
+      <img src="assets/tome_concept.png" alt="ToMe 토큰 병합 개념도">
+      <figcaption>그림 5-2. 토큰 줄이기의 원조 격인 ToMe(Token Merging) — 비슷한 이미지 조각(토큰)들을 병합해 Transformer 연산량을 절반으로 줄이되 정확도 손실은 0.2~0.3%에 그친다. 주행 특화 버전인 FastDriveVLA(XPeng×북경대, AAAI 2026)는 주행에 중요한 전경만 남기는 방식으로 VLA 연산을 <strong>7.5배</strong> 줄였다 (<a href="https://arxiv.org/abs/2507.23318">arXiv:2507.23318</a>). <a href="https://github.com/facebookresearch/ToMe">출처: ToMe 공식 리포지토리</a></figcaption>
+    </figure>
+  </div>
+
+  <h3>5.3 LLM/VLA 추론 최적화 — 느린 생성을 빠르게</h3>
+  <p>3장에서 본 대로 LLM류 모델은 한 단어(토큰)씩 생성하며, 매 토큰마다 전체 가중치를 메모리에서 읽어야 해서 느립니다. 이를 우회하는 대표 기법 두 가지:</p>
+  <ul>
+    <li><strong>KV cache</strong>: 이미 처리한 내용의 중간 결과(Key/Value)를 저장해 재계산을 피합니다. 대신 <strong>메모리 용량과 대역폭</strong>을 먹습니다 — 하드웨어에 "KV 전용 압축(FP8/INT8 KV)" 경로가 있으면 유리합니다.</li>
+    <li><strong>Speculative decoding(추측 생성)</strong>: 작은 초안 모델이 여러 토큰을 빠르게 써 내려가면, 큰 모델이 <strong>한 번에 묶어 검증</strong>합니다. 맞으면 그대로 채택 — 큰 모델의 메모리 읽기 횟수가 줄어 2~4.8배 빨라집니다 (<a href="https://developers.redhat.com/articles/2025/07/01/fly-eagle3-fly-faster-inference-vllm-speculative-decoding">EAGLE-3</a>). Li Auto는 실차 Orin에서 이 기법으로 VLM 생성을 2.7배 가속했습니다 (<a href="https://arxiv.org/html/2402.12289v4">DriveVLM</a>). 단, <strong>작은 모델과 큰 모델이 동시에 메모리에 상주</strong>해야 한다는 하드웨어 요구가 따라옵니다.</li>
+  </ul>
+
+  <h3>5.4 컴파일러 — 최적화의 절반은 소프트웨어 스택 문제</h3>
+  <p>아무리 좋은 NPU도, 모델의 연산자(operator)를 지원하지 않으면 해당 부분이 CPU로 떨어져(fallback) 전체가 느려집니다. 그래서 실무에서는 "타깃 칩의 컴파일러가 지원하는 연산만으로 모델을 설계"하는 것이 표준이 됐고(3장의 Fast-BEV 사례), 업계 공통 배포 계층으로는 ONNX Runtime + 벤더별 실행기(Qualcomm QNN, NVIDIA TensorRT, Horizon 자체 컴파일러)가 자리잡았습니다. XPeng은 자체 칩을 위해 <strong>컴파일러를 통째로 재개발</strong>했습니다 (<a href="https://www.xpeng.com/pressroom/news/019cae5e67b99c0960ee8a028129016a">XPeng</a>).</p>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점 — 기법별 하드웨어 요구 매핑</div>
+    <div class="tablewrap"><table>
+      <tr><th>최적화 기법</th><th>하드웨어에 요구하는 것</th></tr>
+      <tr><td>양자화 (INT8/FP8/FP4)</td><td>해당 정밀도의 <strong>네이티브 연산 유닛</strong> + per-block scaling 지원. FP4 네이티브가 없으면 변환 오버헤드로 이득 소멸</td></tr>
+      <tr><td>2:4 희소성</td><td>sparse 연산 가속 + 메타데이터 처리. 실효 1.3~1.7배로 계획</td></tr>
+      <tr><td>증류</td><td>(학습 인프라 측 부담) — 온보드에는 이득만. 단 student 교체가 잦으므로 OTA 대역폭·스토리지</td></tr>
+      <tr><td>KV cache</td><td>메모리 용량 + 대역폭 + KV 압축 경로</td></tr>
+      <tr><td>Speculative decoding</td><td>draft+target <strong>동시 상주 메모리</strong>, 소형 배치 행렬곱 효율</td></tr>
+      <tr><td>Token pruning</td><td><strong>동적 텐서 크기</strong>를 다루는 컴파일러·스케줄러</td></tr>
+      <tr><td>공통</td><td><strong>연산자 커버리지 넓은 컴파일러 스택</strong> — 이것 없는 TOPS는 카탈로그 숫자일 뿐</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- ═══════════════ CH6 ═══════════════ -->
+<section class="ch" id="ch6">
+  <div class="ch-head">
+    <div class="no">Chapter 6 · Part II</div>
+    <h2>워크로드 정량화 — 숫자로 보는 요구사항</h2>
+    <div class="journey">여정에서의 위치 — ③ 하드웨어 사양 산정. 앞 장들의 정성적 이야기를 설계에 쓸 수 있는 숫자로 바꾼다: 들어오는 데이터는 얼마나 되고, 연산은 얼마나 필요하며, 무엇이 진짜 병목인가.</div>
+  </div>
+
+  <h3>6.1 입력: 센서가 쏟아내는 데이터</h3>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>수치</th><th>출처</th></tr>
+    <tr><td>카메라 1대 (raw)</td><td>0.5–1.8 Gbps (해상도·설정에 따라)</td><td><a href="https://arxiv.org/pdf/2301.06422">arXiv:2301.06422</a> (실측)</td></tr>
+    <tr><td>11카메라 스위트</td><td>카메라만 수~수십 Gbps</td><td>상동 환산</td></tr>
+    <tr><td>LiDAR 1대</td><td>~240 Mbps (Ouster OS2급), 128ch 최대 ~250 Mbps</td><td><a href="https://ouster.com/insights/blog/the-anatomy-of-an-autonomous-vehicle">Ouster</a></td></tr>
+    <tr><td>4D 레이더 raw 중앙 처리</td><td>5대 합산 <strong>~540 MB/s (≈4.3 Gbps)</strong> — 객체 목록만 보내면 ~4.8 MB/s의 약 100배</td><td><a href="https://developer.nvidia.com/blog/how-centralized-radar-processing-on-nvidia-drive-enables-safer-smarter-level-4-autonomy/">NVIDIA</a></td></tr>
+    <tr><td>차량 총 센서 대역폭</td><td>3–40 Gbps 급 (구성에 따라)</td><td><a href="https://www.ni.com/en/solutions/transportation/adas-and-autonomous-driving-testing/adas-and-autonomous-driving-validation/adas-datalogger.html">NI</a></td></tr>
+    <tr><td>개발 차량 로깅</td><td>시간당 ~19TB, 하루 5–20TB</td><td><a href="https://www.tuxera.com/blog/autonomous-and-adas-test-cars-produce-over-11-tb-of-data-per-day/">Tuxera</a></td></tr>
+  </table></div>
+  <p>주목할 트렌드는 <strong>raw 데이터 중앙화</strong>입니다. 센서 안에서 미리 처리해 요약본(객체 목록)만 보내면 대역폭은 아끼지만 정보가 손실됩니다. E2E/BEV 모델은 raw에 가까운 데이터를 한곳에서 융합할수록 성능이 좋아서, 업계는 대역폭 비용을 감수하고 중앙화로 가고 있습니다 — HPC의 <strong>I/O 프런트엔드(SerDes·이더넷 수신단)와 ISP가 수십 Gbps 인입을 흡수</strong>해야 하는 이유입니다.</p>
+
+  <h3>6.2 연산: TOPS — 그리고 TOPS의 배신</h3>
+  <p>자율화 수준별 필요 연산량의 업계 통용치는 L2 &lt;10 TOPS → L3 20–30 → L4 200–320+ → 2025년 플래그십(E2E/VLA 여유분 포함) 500–2,000+ TOPS입니다 (<a href="https://www.huawei.com/en/huaweitech/publication/86/driverless-vehicles-with-MDC">Huawei</a>, <a href="https://www.nevsemi.com/blog/top-20-most-advanced-autonomous-driving-chips-2025">Nevsemi</a>). 그러나 이 숫자에는 함정이 둘 있습니다.</p>
+  <ul>
+    <li><strong>함정 1 — 기준이 제각각</strong>: 8비트 기준인지 4비트 기준인지, 희소성 가정인지에 따라 같은 칩의 TOPS가 2배씩 달라집니다. NVIDIA Thor의 "2,000"은 FP4 기준이고 INT8로는 1,000입니다. <strong>비교표에는 반드시 정밀도를 병기</strong>해야 합니다.</li>
+    <li><strong>함정 2 — TOPS ≠ 실성능</strong>: Mobileye는 34 TOPS 칩 2개로 hands-off 시스템 전체를 돌립니다. 아키텍처 효율과 실사용률, 컴파일러 품질이 실성능을 결정합니다 (<a href="https://www.mobileye.com/technology/eyeq-chip/benchmark/">Mobileye</a>).</li>
+  </ul>
+
+  <h3>6.3 진짜 병목: 메모리 대역폭</h3>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 250" role="img" aria-label="2019에서 2026 사이 TOPS는 70배, 메모리 대역폭은 4배 성장 비교">
+      <g font-size="13.5">
+        <text x="30" y="35" font-weight="700" fill="#201a1e" font-size="15">차량 SoC의 연산 성장 vs 메모리 대역폭 성장 (2019 → 2026)</text>
+        <g text-anchor="start">
+          <text x="30" y="85" font-weight="600" fill="#55494f">연산 (TOPS)</text><text x="30" y="104" font-size="11.5" fill="#8d8188">~30 → 2,000+</text>
+          <rect x="180" y="68" width="700" height="26" fill="#8a4f75"/>
+          <text x="892" y="87" font-weight="700" fill="#8a4f75">약 70배</text>
+          <text x="30" y="165" font-weight="600" fill="#55494f">메모리 대역폭 (GB/s)</text><text x="30" y="184" font-size="11.5" fill="#8d8188">~68 → 273</text>
+          <rect x="180" y="148" width="40" height="26" fill="#3d2237"/>
+          <text x="232" y="167" font-weight="700" fill="#3d2237">약 4배</text>
+        </g>
+        <text x="30" y="228" fill="#55494f" font-size="12.5">3장에서 본 대로 Transformer/VLA 추론은 메모리 대역폭이 성능을 결정한다 — <tspan font-weight="700" fill="#b03d3d">연산은 남아도는데 데이터를 실어 나르지 못해 노는 시대</tspan>가 오고 있다 (<tspan fill="#8d8188">arXiv:2605.30571</tspan>)</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 6-1. 2019~2026년 사이 차량 SoC의 TOPS는 약 70배 늘었지만(EyeQ급→Thor급) 메모리 대역폭은 약 4배(68→273 GB/s) 느는 데 그쳤다. LLM형 워크로드에서 생성 속도의 상한은 대략 "대역폭 ÷ 모델 크기" — 273 GB/s에서 1GB 모델이면 초당 ~273 토큰이 물리적 한계다. Tesla가 차세대 AI5 칩에 GDDR 12패키지(추정 768GB/s~1.5TB/s)를 붙이는 이유다 (<a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/elon-musk-demonstrates-first-sample-of-tesla-ai5-processor-accidentally-thanks-tsc-rather-than-tsmc-claims-40x-performance-boost-over-the-predecessor">Tom's Hardware</a>).</figcaption>
+  </figure>
+
+  <h3>6.4 지연 예산 정리</h3>
+  <div class="tablewrap"><table>
+    <tr><th>워크로드</th><th>지연</th><th>비고</th></tr>
+    <tr><td>E2E 파이프라인 (센서→액추에이터)</td><td>~100 ms (10–12Hz)</td><td>업계 통용 예산 — 2장</td></tr>
+    <tr><td>BEV 인지 (배포 최적화 후)</td><td>25–90 ms</td><td>BEVFormer 계열 실측</td></tr>
+    <tr><td>Occupancy (Tesla)</td><td>~10 ms</td><td>FSD 컴퓨터 실측 인용</td></tr>
+    <tr><td>온보드 VLM (slow path)</td><td>~410 ms (Orin) / 99 ms (Alpamayo-R1, Thor급)</td><td>이중 시스템의 근거 — 3·4장</td></tr>
+    <tr><td>제어 루프</td><td>10 ms 이하, 100Hz+</td><td>ASIL-D 결정성</td></tr>
+  </table></div>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점 — 사양 산정의 새 우선순위</div>
+    <ul>
+      <li>사양서의 1번 항목을 TOPS가 아니라 <strong>메모리(용량 = 모델 상주 + KV cache / 대역폭 = 생성 속도 / ECC = 기능안전)</strong>로 바꿔야 한다. 차세대 목표는 300–500 GB/s급.</li>
+      <li><strong>I/O 인입 3–40 Gbps + 로깅 경로</strong>가 연산과 별개의 병목 축이다.</li>
+      <li>비교표에는 <strong>정밀도 명기</strong>, TOPS는 활용률·컴파일러와 함께 평가.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════ CH7 ═══════════════ -->
+<section class="ch" id="ch7">
+  <div class="ch-head">
+    <div class="no">Chapter 7 · Part II</div>
+    <h2>차량용 SoC 랜드스케이프</h2>
+    <div class="journey">여정에서의 위치 — ③ 컴퓨트 하드웨어 선정. 6장의 요구사항을 들고 시장에 나가면 무엇이 있는가. 세 진영(성능·융합·효율)과 수직통합 세력, 그리고 일곱 가지 구조적 트렌드.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now · 2025–26</div>
+    <p>NVIDIA Thor가 2025년 중국 Lynk &amp; Co 900을 시작으로 양산에 진입했고, Zeekr 9X는 Thor-U 두 개(1,400 TOPS)를 실었습니다. Qualcomm은 BMW와 공동 개발한 시스템을 2025년 11월 신형 iX3에 실었고, Renesas는 업계 최초 3nm 차량 SoC(X5H)를 샘플링 중입니다. Tesla·NIO·XPeng은 자체 칩으로 이탈했습니다. — 칩 선택지가 폭발적으로 늘어난 동시에, <strong>벤더 종속(컴파일러·OS·안전 패키지)의 무게</strong>도 커졌습니다.</p>
+  </div>
+
+  <h3>7.1 서구 3파전 — 성능 · 융합 · 효율</h3>
+  <div class="tablewrap"><table>
+    <tr><th>진영</th><th>대표 제품</th><th>전략과 강점</th><th>주의점</th></tr>
+    <tr><td>NVIDIA<br>(성능·생태계)</td><td><strong>Thor</strong>: 1,000 TOPS(INT8)/2,000 TFLOPS(FP4), Blackwell GPU + FP4/FP8 엔진, 서버급 CPU 14코어, LPDDR5X 273 GB/s. <strong>Orin</strong>(254 TOPS)이 현행 양산 주력</td><td>차내 LLM/VLA 실행 겨냥. NVLink-C2C로 듀얼 칩 확장. CUDA·TensorRT 생태계, ASIL-D 인증 OS(DriveOS). Zeekr·BYD·Li Auto·Volvo·Lucid 등 채택</td><td>273 GB/s가 1,000 TOPS 대비 부족하다는 병목 논쟁. 생태계 종속</td></tr>
+    <tr><td>Qualcomm<br>(융합·비용)</td><td><strong>Ride Flex</strong>: 콕핏+ADAS 단일 SoC. <strong>Ride Elite</strong>(SA8797P): 자체 Oryon CPU, ~640 TOPS(기준 미공개)</td><td>2개 칩을 1개로 — BOM 25–50% 절감 소구. 스마트폰에서 검증된 전성비. BMW 공동개발 시스템 2025.11 양산(iX3), 10년 공급 보도</td><td>TOPS 기준 미공개 다수 — 벤치마크 요구 필요</td></tr>
+    <tr><td>Mobileye<br>(효율·턴키)</td><td><strong>EyeQ6H</strong>: 34 TOPS @ ~40W — 2칩으로 hands-off(SuperVision) 전체 구동</td><td>TOPS 경쟁 거부 — 알고리즘·칩 공동 설계로 극한 효율. 칩+카메라+SW 턴키 공급. VW그룹·미국 Top-10 OEM 수주</td><td>블랙박스 모델 — OEM이 내부를 수정·차별화하기 어려움(SDV 시대와 긴장)</td></tr>
+  </table></div>
+
+  <h3>7.2 그 외 주요 플레이어</h3>
+  <div class="tablewrap"><table>
+    <tr><th>플레이어</th><th>핵심</th><th>상태</th></tr>
+    <tr><td>TI (TDA4 계열)</td><td>8–32 TOPS, 저전력·저가 — L2 볼륨존, ASIL-D MCU 통합</td><td>양산 중</td></tr>
+    <tr><td>Renesas (R-Car X5H)</td><td>업계 최초 3nm. 400 TOPS + <strong>AI 칩렛으로 4배 확장</strong> 옵션, ADAS+IVI+게이트웨이 통합</td><td>2025 샘플, 2027 양산</td></tr>
+    <tr><td>Ambarella (CV3)</td><td>자체 CVflow 엔진 — 전성비 소구, ASIL-D 안전 섬</td><td>Continental 경유 2027 목표</td></tr>
+    <tr><td>Horizon Robotics (Journey 6)</td><td>중국 로컬 최강 — J6P 560 TOPS, 자체 BPU+컴파일러. 20+ OEM·100+ 차종 수주</td><td>2025 양산</td></tr>
+    <tr><td>Tesla (AI5)</td><td>AI4 대비 연산 8배·대역폭 5배(추정 768GB/s+). 자사 전용</td><td>2027 양산 목표</td></tr>
+    <tr><td>NIO / XPeng</td><td>NX9031(5nm, 1,000+ TOPS) / Turing(700+ TOPS, 자체 컴파일러) — OEM이 칩 벤더로 역전(XPeng→VW 라이선스)</td><td>2025 양산</td></tr>
+  </table></div>
+  <p class="src">수치 주의: 중국 벤더·Tesla·NIO·XPeng 수치는 자체 발표 기반으로 독립 검증이 없다. Qualcomm 일부 제품은 TOPS 기준 미공개. 출처 전체는 기존 2회차 자료(<a href="../02-hpc-platform/material.md">material.md</a>)의 SoC 절 참조.</p>
+
+  <h3>7.3 일곱 가지 구조적 트렌드</h3>
+  <ol>
+    <li><strong>정밀도 인플레이션</strong> — FP4 기준 마케팅 수치 확산. 비교는 반드시 동일 정밀도로.</li>
+    <li><strong>ADAS+콕핏 융합 원칩</strong> — Ride Flex, Renesas X5H, Thor 공통 로드맵. 비용 절감 대신 격리(FFI) 부담 증가(9장).</li>
+    <li><strong>듀얼 SoC 표준화</strong> — Zeekr 9X(Thor-U×2), NIO ET9(NX9031×2), Volvo(Orin×2)… 성능 확장 겸 이중화. 칩 간 인터커넥트(NVLink-C2C vs PCIe/이더넷)가 새 선택 축.</li>
+    <li><strong>칩렛(chiplet) 전환</strong> — Renesas X5H가 첫 상용 사례. Arm·BMW·Bosch 등이 참여하는 imec 프로그램에서 표준화 진행 (<a href="https://www.imec-int.com/en/press/arm-ase-bmw-group-bosch-cadence-siemens-siliconauto-synopsys-tenstorrent-and-valeo-commit">imec</a>).</li>
+    <li><strong>메모리가 병목</strong> — 차세대 요구 300–500 GB/s. 차량용 LPDDR5X(9,600Mbps)와 ECC 오버헤드를 줄이는 DLEP 기술 (<a href="https://www.micron.com/about/blog/memory/dram/micron-and-synopsys-accelerate-automotive-and-ai-innovation-with-dlep">Micron</a>).</li>
+    <li><strong>안전 스택의 상품화</strong> — ASIL-D 인증 OS(DriveOS·QNX 8), lockstep 안전 섬이 전 벤더 공통 패턴(10장).</li>
+    <li><strong>수직통합 vs 머천트 분화</strong> — Tesla/NIO/XPeng 자체 칩, 중국 볼륨존은 Horizon/Black Sesame, 서구는 3파전.</li>
+  </ol>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점 — SoC 평가 체크 항목</div>
+    <ul>
+      <li>TOPS(정밀도 명기) · <strong>메모리 대역폭·용량</strong> · CPU 성능 · 전력 — 6장 요구사항 대비.</li>
+      <li><strong>컴파일러·연산자 커버리지</strong>와 벤치마크 실측(우리 모델로).</li>
+      <li>안전 패키지: 안전 섬, ASIL 등급, 인증 OS 지원, <strong>메모리 QoS/대역폭 조절 기능</strong>(9장 FFI의 관건).</li>
+      <li>확장 경로: 듀얼 칩 인터커넥트, 칩렛 로드맵.</li>
+      <li>종속 리스크: 특정 벤더의 OS·툴체인·정밀도 로드맵에 얼마나 묶이는가.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ CH8 ═══════════════ -->
+<section class="ch" id="ch8">
+  <div class="ch-head">
+    <div class="no">Chapter 8 · Part II</div>
+    <h2>E/E 아키텍처와 차량 네트워크</h2>
+    <div class="journey">여정에서의 위치 — ⑤ 차량 통합. 선정한 HPC는 진공 속이 아니라 차량 전체의 전기·전자(E/E) 아키텍처 안에 들어간다. 그 아키텍처 자체가 지금 100년 만의 개편 중이다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now</div>
+    <p>Rivian은 2세대 차량에서 ECU를 17개에서 7개로 줄여 배선 2.6km·20kg을 덜어냈고 (<a href="https://insideevs.com/news/761865/rivian-zonal-architecture-development/">InsideEVs</a>), BMW 신형 iX3(Neue Klasse)는 차량 기능을 4개의 "Superbrain"에 집약해 연산력을 이전 세대의 20배로 올렸습니다 (<a href="https://www.bmwgroup.com/en/news/general/2025/superbrains.html">BMW</a>). VW은 자체 개발 대신 Rivian과의 합작사(RV Tech)로 전환해 2027년 첫 차를 냅니다. 현대차그룹도 고성능 차량 컴퓨터(HPVC)+존 컨트롤러 구조의 Pleos로 전환을 선언했습니다 (<a href="https://www.hyundainews.com/en-us/releases/4408">Hyundai</a>). — <strong>업계 전체가 "분산 ECU → 중앙집중 + 존"으로 이동 중</strong>이며, 우리가 만드는 HPC가 바로 그 중앙입니다.</p>
+  </div>
+
+  <h3>8.1 세 단계 진화 — 왜 중앙집중인가</h3>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 170" role="img" aria-label="E/E 아키텍처 3단계 진화: 분산형, 도메인형, 존형+중앙집중">
+      <defs><marker id="ear" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c3b8bd"/></marker></defs>
+      <g font-size="13.5" text-anchor="middle">
+        <rect x="15" y="25" width="280" height="110" rx="4" fill="#f2f0ec"/>
+        <text x="155" y="53" font-weight="700" fill="#201a1e">분산형 (~2015)</text>
+        <text x="155" y="78" font-size="12" fill="#55494f">기능 1개 = ECU 1개 → 100~150개</text>
+        <text x="155" y="99" font-size="12" fill="#55494f">배선 뭉치(하네스)가 한계 도달</text>
+        <rect x="360" y="25" width="280" height="110" rx="4" fill="#e8dee5"/>
+        <text x="500" y="53" font-weight="700" fill="#201a1e">도메인형 (현행 주력)</text>
+        <text x="500" y="78" font-size="12" fill="#55494f">기능 영역별 통합 컨트롤러</text>
+        <text x="500" y="99" font-size="12" fill="#55494f">(주행보조 · 인포테인먼트 · 차체…)</text>
+        <rect x="705" y="25" width="280" height="110" rx="4" fill="#d9c8d4"/>
+        <text x="845" y="53" font-weight="700" fill="#3d2237">존형 + 중앙집중 (전환 중)</text>
+        <text x="845" y="78" font-size="12" fill="#55494f">위치별 존 컨트롤러가 배선 집약,</text>
+        <text x="845" y="99" font-size="12" fill="#55494f">연산은 1~4개 HPC로 — ECU &lt;10개</text>
+        <g stroke="#c3b8bd" stroke-width="2" marker-end="url(#ear)"><line x1="297" y1="80" x2="356" y2="80"/><line x1="642" y1="80" x2="701" y2="80"/></g>
+        <text x="500" y="160" font-size="12" fill="#8d8188">효과: 하네스 30–40% 단축 전망 · SW 통합 단순화 · OTA 가능 구조 — 그리고 HPC에 모든 부하 집중</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 8-1. E/E 아키텍처의 진화. "존(zonal)"은 기능이 아니라 <strong>물리적 위치</strong> 기준으로 배선을 모으는 개념이다 — 차량 앞·뒤·좌·우의 존 컨트롤러가 근처 센서·액추에이터를 받아 이더넷 백본으로 중앙 HPC와 연결한다. Tesla Cybertruck은 이더넷 링+48V 전원으로 배선 수를 Model 3 대비 68% 줄였다 (<a href="https://grokipedia.com/page/etherloop">Etherloop</a>).</figcaption>
+  </figure>
+
+  <h3>8.2 차량 네트워크 — HPC는 "스위치 달린 컴퓨터"</h3>
+  <p>중앙집중 구조에서 HPC는 사실상 <strong>네트워크 스위치를 겸하는 컴퓨터</strong>입니다. 계층별로:</p>
+  <div class="tablewrap"><table>
+    <tr><th>계층</th><th>기술</th><th>역할·포인트</th></tr>
+    <tr><td>말단 센서·액추에이터</td><td>10BASE-T1S (10Mbps), CAN/LIN → <strong>CAN XL</strong>(20Mbps)</td><td>저가 장치 연결. CAN XL이 저속 이더넷과 CAN 사이 갭을 메움</td></tr>
+    <tr><td>존 → HPC</td><td>100M/1G 이더넷</td><td>존 컨트롤러가 집약한 트래픽</td></tr>
+    <tr><td>백본</td><td>Multi-Gig 이더넷(2.5–10G) + <strong>TSN</strong></td><td>TSN = 이더넷에 시간 보장을 더한 표준 묶음: 시간 동기(802.1AS), 예약 슬롯으로 지연 보장(Qbv), <strong>프레임 복제로 무손실 이중화(CB/FRER)</strong></td></tr>
+    <tr><td>카메라 직결</td><td>SerDes — GMSL/FPD-Link(12Gbps급) vs 표준화 진영 MIPI A-PHY/ASA-ML</td><td>동축 케이블 하나로 영상+제어+전원. 표준 수렴 진행 중 — PHY 선택이 카메라 생태계 선택</td></tr>
+    <tr><td>SoC 간</td><td>PCIe Gen4 / NVIDIA NVLink-C2C</td><td>듀얼 SoC 확장의 기반이자 벤더 종속 지점</td></tr>
+  </table></div>
+  <figure>
+    <img src="assets/gmsl_block_diagram.png" alt="GMSL 카메라 링크 블록 다이어그램" style="max-width:560px">
+    <figcaption>그림 8-2. 카메라 SerDes 링크의 실제 구성 예 — 4대의 카메라가 각각 직렬화 칩(serializer)을 거쳐 동축 케이블 하나로 역직렬화 칩(quad deserializer)에 모이고, CSI-2로 SoC에 인입된다. <a href="https://www.analog.com/en/solutions/gigabit-mulitimedia-serial-link.html">출처: Analog Devices GMSL 공식 문서</a> (그림: ADI documentation 리포지토리)</figcaption>
+  </figure>
+
+  <h3>8.3 전력과 열 — 물리적 제약</h3>
+  <ul>
+    <li>L4급 중앙 연산은 <strong>400–600W</strong>를 소비해 EV 주행거리를 7–10% 잠식할 수 있고, 시스템 열부하는 1–4kW까지 보고됩니다 (<a href="https://eureka.patsnap.com/blog/research-report/centralized-vehicle-computing-thermal-limits-fail-operational-design-cost-tradeoffs/">PatSnap</a>).</li>
+    <li>그 결과 <strong>수랭(액체 냉각)이 프리미엄 HPC의 기본값</strong>이 되는 중 — Mercedes 신형 CLA의 NVIDIA 칩이 수랭 양산 사례입니다.</li>
+    <li>전원 쪽에서는 48V 저전압망 + 반도체 퓨즈(eFuse)가 배선 절감·전력 게이팅과 맞물립니다(BMW: 효율 +20%). L3+에서는 <strong>전원 2계통</strong>이 이중화 요건입니다(10장).</li>
+  </ul>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점</div>
+    <ul>
+      <li>I/O 사양 = Multi-Gig TSN 다포트 + 카메라 SerDes 다수 + PCIe/칩간 링크 + CAN 게이트웨이. <strong>총 인입 3–40 Gbps</strong>(6장)를 받아내는 프런트엔드.</li>
+      <li>네트워크 이중화(FRER, 링 토폴로지)와 전원 2계통이 보드·커넥터 설계에 선반영되어야 함.</li>
+      <li>TDP는 칩 스펙이 아니라 <strong>통합 후 동시성 시나리오</strong>(주행 풀로드 + 콕핏 렌더링 + OTA)로 산정. 열 스로틀링이 안전 워크로드의 시간 보장을 깨지 않도록 파티션별 전력·열 버짓 분리.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════ CH9 ═══════════════ -->
+<section class="ch" id="ch9">
+  <div class="ch-head">
+    <div class="no">Chapter 9 · Part II</div>
+    <h2>SW 플랫폼과 실차 통합 — V-모델에서 OTA까지</h2>
+    <div class="journey">여정에서의 위치 — ④ SW 통합과 ⑦ 검증. 하드웨어와 모델이 준비됐다면, 이제 "자율주행을 실차에 딱 올리려면 무엇이 필요한가"라는 질문의 본론이다: 어떤 OS와 미들웨어 위에, 어떤 개발·검증 절차를 거쳐, 누가 무엇을 맡아 올리는가.</div>
+  </div>
+
+  <h3>9.1 중앙 컴퓨터 위의 소프트웨어는 어떻게 생겼나</h3>
+  <p>중앙 HPC 한 대 안에는 성격이 전혀 다른 소프트웨어들이 동거합니다 — 밀리초 단위 결정성이 필요한 주행 스택, 화려한 그래픽의 인포테인먼트(안드로이드), 차체 제어, 그리고 4장의 로깅·OTA 에이전트까지. 실무 구도는 대략 이렇습니다:</p>
+  <ul>
+    <li><strong>하이퍼바이저</strong>(QNX Hypervisor, NVIDIA 내장 등)가 하드웨어를 가상 머신으로 쪼개 — 안전 OS(QNX 등)와 리눅스/안드로이드를 <strong>서로 격리된 파티션</strong>에서 동시에 돌립니다.</li>
+    <li><strong>주행 스택 미들웨어</strong>: NVIDIA DriveOS(TÜV ASIL-D 인증), AUTOSAR Adaptive(POSIX 기반 서비스 지향 표준), 또는 ROS 2 계열 — ROS 2는 연구용이라는 통념과 달리 Apex.Grace가 <strong>ISO 26262 ASIL-D 인증</strong>을 받아 양산 경로가 열려 있습니다 (<a href="https://www.apex.ai/apexgrace">Apex.AI</a>).</li>
+    <li>모듈 간 통신은 DDS/SOME/IP, 최근에는 경량 프로토콜 zenoh(Toyota 계열 채택)가 부상 (<a href="https://arxiv.org/pdf/2505.02734">비교 연구</a>).</li>
+    <li>존 컨트롤러 등 마이크로컨트롤러 세계는 여전히 AUTOSAR Classic — <strong>한 차 안에 서너 개의 소프트웨어 세계가 공존</strong>합니다.</li>
+  </ul>
+
+  <div class="term">
+    <div class="tt">핵심 개념 — FFI (Freedom From Interference, 간섭으로부터의 자유)</div>
+    <p>안전 등급이 다른 소프트웨어(주행 스택 vs 유튜브 앱)가 한 칩에 동거하려면, 낮은 등급 쪽이 어떤 짓을 해도 높은 등급 쪽을 방해할 수 없음을 <strong>입증</strong>해야 합니다(ISO 26262 요구). 간섭 경로는 3가지이고 각각 하드웨어 메커니즘이 필요합니다:</p>
+    <div class="tablewrap"><table>
+      <tr><th>간섭 축</th><th>위협 예시</th><th>막는 메커니즘</th></tr>
+      <tr><td>공간 (메모리)</td><td>앱이 주행 스택 메모리를 덮어씀</td><td>MMU/하이퍼바이저 2단 변환, <strong>IOMMU</strong>(DMA 장치 격리), ECC</td></tr>
+      <tr><td>시간 (실행)</td><td>앱 폭주로 주행 스택이 제때 못 돎</td><td>코어 고정 할당, 실행 버짓, 워치독, <strong>캐시 분할·메모리 대역폭 조절</strong></td></tr>
+      <tr><td>통신</td><td>손상된 메시지 전파</td><td>E2E 보호(CRC/시퀀스), TSN 정책</td></tr>
+    </table></div>
+    <p style="margin-top:8px"><strong>함정: IOMMU는 "어디에 접근하는가"만 막을 뿐 "얼마나 대역폭을 먹는가"는 못 막습니다.</strong> 콕핏의 LLM이 메모리 대역폭을 폭식하면 주행 스택의 지연 보장이 무너질 수 있으므로, SoC에 대역폭 QoS/조절 기능이 있는지가 선정 체크포인트입니다 (<a href="https://arxiv.org/html/2506.05822v1">Mixed-Criticality HPC 연구</a>).</p>
+  </div>
+
+  <h3>9.2 개발과 검증 — V-모델과 X-in-the-Loop</h3>
+  <p>자동차 소프트웨어는 전통적으로 <strong>V-모델</strong>로 개발됩니다: 왼팔에서 요구사항→설계→구현으로 내려가고, 오른팔에서 각 단계에 짝을 이루는 검증(유닛→통합→시스템→차량)으로 올라갑니다. ISO 26262 기능안전 활동이 이 구조를 전제로 합니다.</p>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 330" role="img" aria-label="V-모델과 XIL 검증 단계">
+      <defs><marker id="var" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c3b8bd"/></marker></defs>
+      <g font-size="13" text-anchor="middle" font-weight="600">
+        <!-- V left arm -->
+        <rect x="30" y="20" width="185" height="46" rx="4" fill="#f2f0ec"/><text x="122" y="48" fill="#201a1e">요구사항 정의</text>
+        <rect x="90" y="90" width="185" height="46" rx="4" fill="#f2f0ec"/><text x="182" y="118" fill="#201a1e">시스템·SW 설계</text>
+        <rect x="150" y="160" width="185" height="46" rx="4" fill="#f2f0ec"/><text x="242" y="188" fill="#201a1e">구현 (모델·코드)</text>
+        <!-- V bottom -->
+        <rect x="360" y="235" width="280" height="50" rx="4" fill="#3d2237"/><text x="500" y="258" fill="#f5eef2">MIL — 전부 시뮬레이션 모델</text><text x="500" y="276" font-size="11" font-weight="400" fill="#d8c3d0">로직 자체 검증</text>
+        <!-- V right arm -->
+        <rect x="665" y="160" width="185" height="46" rx="4" fill="#e8dee5"/><text x="757" y="181" fill="#201a1e">SIL — 양산 코드</text><text x="757" y="199" font-size="11" font-weight="400" fill="#8d8188">PC 가상 환경에서 실행</text>
+        <rect x="725" y="90" width="185" height="46" rx="4" fill="#e8dee5"/><text x="817" y="111" fill="#201a1e">HIL — 실제 ECU</text><text x="817" y="129" font-size="11" font-weight="400" fill="#8d8188">시뮬레이터가 차량 흉내</text>
+        <rect x="785" y="20" width="200" height="46" rx="4" fill="#d9c8d4"/><text x="885" y="41" fill="#201a1e">VIL·시험장·실도로</text><text x="885" y="59" font-size="11" font-weight="400" fill="#8d8188">실차 → 허가 → 인증</text>
+        <g stroke="#c3b8bd" stroke-width="2" fill="none" marker-end="url(#var)">
+          <path d="M122 68 L 175 88"/><path d="M182 138 L 235 158"/><path d="M290 206 L 380 233"/>
+          <path d="M620 233 L 700 208"/><path d="M770 158 L 810 138"/><path d="M830 88 L 872 68"/>
+        </g>
+        <g stroke="#e3dfda" stroke-width="1.4" stroke-dasharray="5 5">
+          <line x1="217" y1="43" x2="783" y2="43"/><line x1="277" y1="113" x2="723" y2="113"/><line x1="337" y1="183" x2="663" y2="183"/>
+        </g>
+        <text x="500" y="315" font-size="12" font-weight="400" fill="#8d8188">점선 = 각 개발 단계는 대응되는 검증 단계와 짝을 이룬다 · 오른팔로 올라갈수록 "진짜"의 비율이 늘어난다</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 9-1. V-모델과 X-in-the-Loop 검증 사다리. MIL(모두 모델) → SIL(진짜 코드) → HIL(진짜 ECU에 가짜 차량 신호) → VIL/실차 순으로, 단계마다 "실물"이 하나씩 늘어난다. 캘리포니아 DMV의 상용 배포 허가는 의도한 운행 구역에서 <strong>최소 5만 마일</strong>의 시험 실적을 요구한다 (<a href="https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/">CA DMV</a>).</figcaption>
+  </figure>
+  <p>그런데 <strong>AI는 이 V-모델을 흔듭니다.</strong> 신경망의 행동은 요구사항 문서가 아니라 학습 데이터에서 나오므로 "요구사항 대비 검증"이라는 전제가 무너지고 (<a href="https://arxiv.org/pdf/1912.09630">arXiv:1912.09630</a>), OTA로 상시 업데이트되는 모델은 "한 번 통과하면 끝"인 V-사이클과 충돌합니다. 그래서 V-모델에 4장의 데이터 루프를 결합한 <strong>확장 V-모델</strong>과, AI 전용 안전 표준(ISO/PAS 8800, 10장)이 등장하고 있습니다 (<a href="https://arxiv.org/html/2502.13184v1">arXiv:2502.13184</a>).</p>
+
+  <h3>9.3 누가 무엇을 올리는가 — OEM·Tier1·칩 벤더의 재편</h3>
+  <p>"실차에 올리는 주체"의 지형도 바뀌고 있습니다. 전통 구조는 OEM(차량 통합) ← Tier1(보쉬·콘티넨탈: ECU+SW 납품) ← Tier2(칩)였지만, 지금은 네 가지 모델이 병존합니다:</p>
+  <div class="tablewrap"><table>
+    <tr><th>모델</th><th>구조</th><th>대표 사례</th></tr>
+    <tr><td>① 칩 벤더 직거래</td><td>칩 벤더가 Tier1을 우회해 OEM과 SW까지 공동 개발</td><td>NVIDIA–Mercedes(2020~, OTA 수익 공유), Qualcomm–BMW</td></tr>
+    <tr><td>② 턴키 풀스택</td><td>칩+센서+인식+주행정책 통째 공급</td><td>Mobileye SuperVision — Zeekr→Polestar→VW그룹. 대신 "블랙박스" 비판</td></tr>
+    <tr><td>③ OEM 수직통합</td><td>OEM이 칩·SW·데이터 인프라까지 자체 개발</td><td>Tesla, XPeng(자체 칩을 VW에 라이선스 — OEM이 칩 공급자로 역전)</td></tr>
+    <tr><td>④ 테크 기업 스택</td><td>Tier1과 OEM 사이의 새 계층</td><td>Huawei HIMA, Momenta(중국 도심 NOA 60%)</td></tr>
+  </table></div>
+  <p>우리 팀처럼 <strong>OEM/Tier1에서 HPC를 직접 설계하는 조직</strong>에게 이 재편이 뜻하는 것: 플랫폼이 특정 벤더의 풀스택에 묶일수록(②) 차별화 여지가 줄고, 수직통합(③)에 가까울수록 컴파일러·안전 패키지까지 직접 감당해야 합니다. 어느 지점에 설 것인지가 하드웨어 사양보다 앞서는 전략 결정입니다.</p>
+
+  <h3>9.4 양산 직전 마지막 관문 — SOP 전에 갖춰야 하는 것</h3>
+  <ol>
+    <li><strong>안전 논증(safety case)</strong>: 위험 분석(HARA)→안전 목표→설계·검증 증거를 "이 시스템은 허용 가능하게 안전하다"는 논증으로 묶은 문서 체계(10장).</li>
+    <li><strong>SOTIF 논증</strong>: 고장이 아닌 "성능 한계"의 위험 시나리오를 시뮬레이션→시험장→실도로 3단으로 줄였다는 증거.</li>
+    <li><strong>캘리브레이션 공정</strong>: 생산 라인 끝(EOL)에서의 센서 정렬·차량별 보정 절차의 양산 이관.</li>
+    <li><strong>플릿 검증 실적</strong>: 규제 요구(예: CA DMV 5만 마일)와 통계적 안전 입증용 주행 실적.</li>
+    <li><strong>OTA 인프라(UN R156)</strong>: 어떤 차의 어떤 ECU에 어떤 SW 버전이 있는지 추적(RXSWIN)하고, 업데이트가 인증에 미치는 영향을 평가·감사받는 체계. <strong>이것 없이는 형식승인 자체가 안 됩니다</strong> (<a href="https://www.itemis.com/en/glossary/unece-r156/">itemis</a>).</li>
+  </ol>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점</div>
+    <ul>
+      <li>플랫폼은 <strong>하이퍼바이저 파티셔닝 + FFI 하드웨어 메커니즘</strong>(IOMMU + 캐시/대역폭 QoS)을 1일차 요구사항으로 — 원칩 통합(7장 트렌드②)일수록 더.</li>
+      <li>HIL 검증을 위해 <strong>센서 raw 주입·시나리오 재생 인터페이스</strong>가 플랫폼에 필요 — 검증 인프라 호환성이 채택 요건이 된다.</li>
+      <li>OTA: A/B 이중 뱅크 스토리지, 보안 부팅, 버전 추적이 스토리지·보안 블록 사양으로 직결.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════ CH10 ═══════════════ -->
+<section class="ch" id="ch10">
+  <div class="ch-head">
+    <div class="no">Chapter 10 · Part II</div>
+    <h2>기능안전과 규제 — 컴퓨터가 "안전하다"를 증명하는 법</h2>
+    <div class="journey">여정에서의 위치 — ⑥ 안전 설계·인증. 아무리 성능이 좋아도 "안전함을 증명"하지 못하면 차는 도로에 나갈 수 없다. 이 장의 표준·규제들이 HPC 아키텍처에 구체적 회로와 구조를 요구한다.</div>
+  </div>
+
+  <div class="news">
+    <div class="nt">Now</div>
+    <p>2024년 12월, 차량 AI 안전을 다루는 최초의 국제 표준 <strong>ISO/PAS 8800</strong>이 발행됐고 2025년 8월 Geely가 세계 최초로 인증을 받았습니다 (<a href="https://www.sgs.com/en-hk/news/2025/08/geely-auto-awarded-first-global-ai-safety-certification-for-road-vehicles">SGS</a>). 유럽에서는 2027년부터 발효되는 UN R171 개정으로 <strong>고속도로 hands-off(L2+)</strong>가 허용될 예정이며, 사이버보안(R155)과 소프트웨어 업데이트(R156) 관리체계는 이미 형식승인의 전제조건입니다. — 규제는 자율주행의 걸림돌이 아니라 <strong>아키텍처 요구사항의 원천</strong>입니다.</p>
+  </div>
+
+  <h3>10.1 표준 지도 — 다섯 개의 표준이 각자 맡는 것</h3>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 240" role="img" aria-label="자율주행 안전 표준 5종의 역할 지도">
+      <g font-size="13" text-anchor="middle" font-weight="600">
+        <rect x="20" y="30" width="180" height="90" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="110" y="58" fill="#201a1e">ISO 26262</text>
+        <text x="110" y="80" font-size="11.5" font-weight="400" fill="#55494f">"고장 나면?"</text>
+        <text x="110" y="100" font-size="11.5" font-weight="400" fill="#8d8188">E/E 결함 → ASIL 등급</text>
+        <rect x="215" y="30" width="180" height="90" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="305" y="58" fill="#201a1e">ISO 21448 (SOTIF)</text>
+        <text x="305" y="80" font-size="11.5" font-weight="400" fill="#55494f">"고장이 아닌데 위험하면?"</text>
+        <text x="305" y="100" font-size="11.5" font-weight="400" fill="#8d8188">성능 한계 · 시나리오</text>
+        <rect x="410" y="30" width="180" height="90" rx="4" fill="none" stroke="#8a4f75" stroke-width="2.5"/>
+        <text x="500" y="58" fill="#201a1e">ISO/PAS 8800</text>
+        <text x="500" y="80" font-size="11.5" font-weight="400" fill="#55494f">"AI 모델은?"</text>
+        <text x="500" y="100" font-size="11.5" font-weight="400" fill="#8d8188">데이터·학습·AI 라이프사이클</text>
+        <rect x="605" y="30" width="180" height="90" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="695" y="58" fill="#201a1e">ISO 21434 / R155·156</text>
+        <text x="695" y="80" font-size="11.5" font-weight="400" fill="#55494f">"해킹·업데이트는?"</text>
+        <text x="695" y="100" font-size="11.5" font-weight="400" fill="#8d8188">보안 · OTA 관리</text>
+        <rect x="800" y="30" width="180" height="90" rx="4" fill="none" stroke="#3d2237" stroke-width="2"/>
+        <text x="890" y="58" fill="#201a1e">UN R157/R171</text>
+        <text x="890" y="80" font-size="11.5" font-weight="400" fill="#55494f">"판매 허가 조건은?"</text>
+        <text x="890" y="100" font-size="11.5" font-weight="400" fill="#8d8188">L3 ALKS · L2+ DCAS</text>
+        <rect x="20" y="155" width="960" height="55" rx="4" fill="#f2f0ec"/>
+        <text x="500" y="180" fill="#201a1e">하나의 안전 논증(Safety Case)으로 통합 — "이 시스템은 허용 가능하게 안전하다"는 증거의 체계</text>
+        <text x="500" y="200" font-size="11.5" font-weight="400" fill="#8d8188">어느 표준도 단독으로는 충분하지 않다 — AD 양산은 다섯 축의 조합 위에서만 성립</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 10-1. 자율주행 안전·규제 표준의 분업 구조. ISO 26262은 "부품이 고장 났을 때", SOTIF는 "고장이 없어도 성능 한계로 위험할 때", ISO/PAS 8800은 "AI 모델 자체"를, ISO 21434와 UN R155/156은 보안·업데이트를, UN R157/171은 판매 허가 조건을 각각 맡는다.</figcaption>
+  </figure>
+  <div class="term">
+    <div class="tt">용어 — ASIL (Automotive Safety Integrity Level)</div>
+    <p>ISO 26262이 위험도를 매기는 등급(A&lt;B&lt;C&lt;D). "고장 시 얼마나 심각한가 × 얼마나 자주 노출되나 × 운전자가 회피 가능한가"로 결정되며, <strong>D로 갈수록 개발·검증·진단 요구가 기하급수로 엄격</strong>해집니다. 제동·조향 같은 기능은 ASIL-D입니다. 중요한 실무 개념이 <strong>ASIL 분해(decomposition)</strong> — D 하나를 "충분히 독립적인" B 두 개로 나눠 구현할 수 있습니다. 아래 doer/checker 패턴의 근거입니다.</p>
+  </div>
+
+  <h3>10.2 거대 AI 칩이 ASIL-D를 만족하는 법 — "doer + checker"</h3>
+  <p>수백 TOPS짜리 AI SoC 전체를 ASIL-D로 개발하는 것은 비용상 불가능에 가깝습니다. 업계의 보편 해법은 <strong>일은 큰 컴퓨트가 하고(doer), 감시는 작고 확실한 안전 회로가 한다(checker)</strong>는 분업입니다.</p>
+  <figure>
+    <div class="diagram">
+    <svg viewBox="0 0 1000 230" role="img" aria-label="doer-checker 구조: QM/ASIL-B 대형 컴퓨트와 ASIL-D 안전 섬">
+      <g font-size="13.5" font-weight="600">
+        <rect x="30" y="25" width="560" height="170" rx="6" fill="none" stroke="#8a4f75" stroke-width="2.5"/>
+        <text x="310" y="53" text-anchor="middle" fill="#201a1e">Doer — 대형 컴퓨트 (QM ~ ASIL-B)</text>
+        <text x="310" y="75" text-anchor="middle" font-size="11.5" font-weight="400" fill="#8d8188">GPU·NPU·CPU 클러스터 — 인지·계획·LLM 등 실제 워크로드</text>
+        <rect x="60" y="95" width="150" height="75" rx="4" fill="#f2f0ec"/><text x="135" y="127" text-anchor="middle" font-size="12.5" fill="#201a1e">BIST + ECC</text><text x="135" y="148" text-anchor="middle" font-size="11" font-weight="400" fill="#8d8188">자체 진단·메모리 보호</text>
+        <rect x="235" y="95" width="150" height="75" rx="4" fill="#f2f0ec"/><text x="310" y="127" text-anchor="middle" font-size="12.5" fill="#201a1e">Safety Monitor</text><text x="310" y="148" text-anchor="middle" font-size="11" font-weight="400" fill="#8d8188">가속기 출력 감시</text>
+        <rect x="410" y="95" width="150" height="75" rx="4" fill="#f2f0ec"/><text x="485" y="127" text-anchor="middle" font-size="12.5" fill="#201a1e">Hypervisor</text><text x="485" y="148" text-anchor="middle" font-size="11" font-weight="400" fill="#8d8188">FFI 파티셔닝 (9장)</text>
+        <rect x="690" y="25" width="280" height="170" rx="6" fill="none" stroke="#a8702a" stroke-width="2.5"/>
+        <text x="830" y="53" text-anchor="middle" fill="#201a1e">Checker — Safety Island (ASIL-D)</text>
+        <text x="830" y="83" text-anchor="middle" font-size="12" font-weight="400" fill="#55494f">두 개가 똑같이 계산해 비교(lockstep)하는</text>
+        <text x="830" y="103" text-anchor="middle" font-size="12" font-weight="400" fill="#55494f">작은 CPU + 워치독 + 고장 수집기</text>
+        <text x="830" y="131" text-anchor="middle" font-size="12" font-weight="700" fill="#a8702a">독립 전원·클록</text>
+        <text x="830" y="155" text-anchor="middle" font-size="12" font-weight="400" fill="#55494f">이상 감지 시 안전 상태로 강제 전환</text>
+        <g stroke="#c3b8bd" stroke-width="2" fill="none">
+          <path d="M590 85 L 686 85"/><path d="M686 145 L 590 145"/>
+        </g>
+        <text x="638" y="75" text-anchor="middle" font-size="11.5" font-weight="400" fill="#8d8188">고장 신호</text>
+        <text x="638" y="168" text-anchor="middle" font-size="11.5" font-weight="400" fill="#8d8188">감시·개입</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>그림 10-2. doer/checker 패턴. NVIDIA Orin이 대표 사례 — 칩의 무작위 고장 등급은 ASIL-B지만, 독립 전원의 lockstep 안전 섬(FSI)과 ASIL 분해를 통해 시스템 수준 ASIL-D 목표를 달성한다 (<a href="https://developer.nvidia.com/docs/drive/drive-os/7.0.3/public/drive-os-linux-sdk/embedded-software-components/Functional_Safety_Island_FSI/Functional_Safety_Island.html">NVIDIA FSI 문서</a>). AI 가속기는 통째 이중화(lockstep)가 비경제적이라 자체 진단(BIST)+ECC+감시 조합을 쓴다.</figcaption>
+  </figure>
+
+  <h3>10.3 규제가 하드웨어에 직접 거는 요구</h3>
+  <div class="tablewrap"><table>
+    <tr><th>규제</th><th>내용</th><th>HPC에 요구하는 것</th></tr>
+    <tr><td>UN R157 (L3 ALKS)</td><td>제어권 인수 요청 후 <strong>최소 10초 + 최소위험기동(MRM)</strong> 동안 시스템이 주행 유지. 운전자 상태 상시 감시. 사건 기록장치(DSSAD) 의무</td><td><strong>단일 고장 후에도 동작하는 컴퓨트·전원 2계통(fail-operational)</strong> · DMS 상시 연산 · 변조 방지 로깅 경로(타임스탬프 ±1초, SW 버전 식별)</td></tr>
+    <tr><td>UN R171 (L2+ DCAS)</td><td>2024.9 발효, 02 시리즈(2027)로 고속도로 hands-off 허용. 시판 후 모니터링·연 1회 이상 보고</td><td>L2+에서도 DMS 필수 · <strong>시판 후 텔레메트리 인프라</strong></td></tr>
+    <tr><td>UN R155/156 (보안·OTA)</td><td>사이버보안 관리체계(CSMS)와 SW 업데이트 관리체계(SUMS)가 형식승인 전제</td><td>HSM(보안 모듈)·secure boot·서명 검증 OTA(A/B 뱅크)·버전 추적(RXSWIN)·침입 탐지 상주</td></tr>
+  </table></div>
+
+  <h3>10.4 양산이 증명한 이중화 설계</h3>
+  <ul>
+    <li><strong>Mercedes DRIVE PILOT</strong>(세계 최초 국제 유효 L3): 제동·조향·전원·센서, 그리고 <strong>연산 알고리즘까지 이중화</strong>. 30개 이상의 센서가 서로 다른 물리 원리로 겹쳐 본다(다양성 리던던시). 2024년 말 95km/h 승인 — 기존 판매 차량은 OTA만으로 업그레이드됐다(R156 체계의 실전 사례) (<a href="https://group.mercedes-benz.com/technology/autonomous-driving/driving/redundancy-drive-pilot.html">Mercedes</a>).</li>
+    <li><strong>Waymo</strong>(L4): 컴퓨트를 <strong>독립 엔진 두 개</strong>로 — 평시엔 둘 다 전체 워크로드를 병렬 수행하다, 한쪽 고장 시 남은 쪽이 끊김 없이 인수. 초당 수천 회의 자기 진단 (<a href="https://waymo.com/blog/2026/08/look-under-our-trunk/">Waymo Blog</a>).</li>
+    <li><strong>fail-safe vs fail-operational</strong>: L2까지는 고장 시 "꺼지고 운전자에게 넘기면"(fail-safe) 되지만, L3+는 넘겨받을 사람이 (한동안) 없으므로 <strong>고장 후에도 최소 기능을 유지(fail-operational)</strong>해야 합니다 — R157의 "10초+MRM"이 그 최소 유지시간의 스펙입니다.</li>
+  </ul>
+
+  <div class="panel">
+    <div class="pt">HPC 설계 시사점</div>
+    <ul>
+      <li>안전 섬(독립 전원·클록의 lockstep 코어 + 고장 수집 + 안전 상태 강제)은 선택이 아니라 <strong>표준 구성요소</strong>.</li>
+      <li>ASIL 분해 전략을 초기에 확정: 채널 간 독립성(전원·클록·물리 배치) 입증이 전제. 칩 등급(B)과 시스템 목표(D)의 갭은 외장 안전 MCU 또는 듀얼 SoC로.</li>
+      <li>ISO/PAS 8800 시대: <strong>NPU/GPU의 고장이 AI 출력 오류로 이어지는 경로</strong>가 관리 대상 — 가속기 진단 커버리지(BIST/ECC/모니터)와 런타임 감시가 안전 논증의 일부.</li>
+      <li>규제성 데이터 경로(DSSAD 로깅, 텔레메트리)와 보안 블록(HSM, secure boot)은 부가 기능이 아니라 <strong>인증 필수 요건</strong>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ CH11 ═══════════════ -->
+<section class="ch" id="ch11">
+  <div class="ch-head">
+    <div class="no">Chapter 11 · 종합</div>
+    <h2>HPC 설계 체크리스트 — 여정 지도를 사양서로</h2>
+    <div class="journey">여정의 종착점 — 지금까지의 모든 장을 우리 팀의 설계 결정 항목으로 번역한다.</div>
+  </div>
+
+  <div class="tablewrap"><table>
+    <tr><th>#</th><th>설계 결정 항목</th><th>체크 포인트</th><th>근거 장</th></tr>
+    <tr><td>1</td><td>목표 레벨·시장 포지션</td><td>L2++(비용·원칩) vs L3+(이중화·인증) — 아키텍처가 갈린다. 모델 세대교체(1~2년) 대비 헤드룸</td><td>1</td></tr>
+    <tr><td>2</td><td>이기종 구성</td><td>GPU/NPU + 실시간 CPU + lockstep 안전 코어, 모듈 간 데이터 흐름의 패브릭 대역폭</td><td>2</td></tr>
+    <tr><td>3</td><td>메모리 사양 (1순위)</td><td>용량(모델 상주+KV) · <strong>대역폭 300–500 GB/s급</strong> · ECC. fast/slow 이중 시간 스케일 수용</td><td>3·6</td></tr>
+    <tr><td>4</td><td>데이터 루프 지원</td><td>트리거·링버퍼 로깅, shadow mode 헤드룸, 수 GB 모델 OTA(A/B 뱅크)</td><td>4</td></tr>
+    <tr><td>5</td><td>저정밀·최적화 지원</td><td>워크로드 믹스에 맞는 정밀도(INT8 vs FP8/FP4) 네이티브 지원, 희소성 가속(실효 1.3–1.7배), 동적 텐서, 컴파일러 연산자 커버리지</td><td>5</td></tr>
+    <tr><td>6</td><td>I/O 프런트엔드</td><td>인입 3–40 Gbps: TSN 이더넷 다포트 + 카메라 SerDes + PCIe/칩간 링크 + CAN 게이트웨이</td><td>6·8</td></tr>
+    <tr><td>7</td><td>칩 선정</td><td>정밀도 병기 비교표 + 자사 모델 실측 벤치마크 + 종속 리스크(툴체인·OS·안전 패키지) 평가</td><td>7</td></tr>
+    <tr><td>8</td><td>전력·열</td><td>동시성 시나리오 기반 TDP, 수랭 연동, 파티션별 전력·열 버짓, 48V/eFuse 전원트리</td><td>8</td></tr>
+    <tr><td>9</td><td>FFI·파티셔닝</td><td>하이퍼바이저 + IOMMU + <strong>캐시/메모리 대역폭 QoS(SoC 선정 체크포인트)</strong> + 간섭 분석 문서화</td><td>9</td></tr>
+    <tr><td>10</td><td>검증 인프라 호환</td><td>HIL용 센서 raw 주입·시나리오 재생 인터페이스, SIL용 가상 플랫폼</td><td>9</td></tr>
+    <tr><td>11</td><td>안전·인증</td><td>안전 섬, ASIL 분해 전략, fail-operational 예산(R157 10초+MRM), 가속기 진단 커버리지(ISO 8800)</td><td>10</td></tr>
+    <tr><td>12</td><td>보안·규제 데이터</td><td>HSM·secure boot·서명 OTA·RXSWIN 추적, DSSAD 변조 방지 로깅, 시판 후 텔레메트리</td><td>10</td></tr>
+  </table></div>
+
+  <h3>토론 주제</h3>
+  <ul>
+    <li>우리 타깃 워크로드 믹스(인지 vs VLA/LLM 비중)에서 저정밀 포맷 우선순위는? — INT 진영과 FP 진영 중 어느 쪽에 서는가.</li>
+    <li>fast/slow 이중 시스템을 단일 SoC 파티셔닝으로 풀 것인가, 듀얼 SoC로 풀 것인가 — FFI 입증 부담 vs 칩 간 대역폭.</li>
+    <li>후보 SoC들의 <strong>메모리 대역폭 QoS 기능</strong>을 어떻게 실측 검증할 것인가.</li>
+    <li>데이터 루프(로깅·shadow mode·OTA)를 위한 헤드룸을 사양에 몇 %로 잡을 것인가.</li>
+    <li>밸류체인 재편(9장) 속에서 우리 플랫폼의 차별화 지점은 어디인가.</li>
+  </ul>
+</section>
+
+<!-- ═══════════════ 부록 ═══════════════ -->
+<section class="ch" id="glossary">
+  <div class="ch-head">
+    <div class="no">Appendix A</div>
+    <h2>초심자용 용어집</h2>
+  </div>
+  <dl class="glossary">
+    <dt>ADAS (Advanced Driver Assistance System)</dt><dd>첨단 운전자 보조 시스템 — 긴급제동(AEB), 차선유지 등. 운전 책임은 운전자에게 있다.</dd>
+    <dt>ODD (Operational Design Domain)</dt><dd>자율주행 기능이 안전하게 작동하도록 설계된 조건 범위(도로 종류·속도·날씨 등).</dd>
+    <dt>TOPS (Tera Operations Per Second)</dt><dd>초당 1조 회 연산. AI 가속기 성능 단위 — 단 정밀도(INT8/FP4 등) 기준을 함께 봐야 의미가 있다.</dd>
+    <dt>BEV (Bird's-Eye-View)</dt><dd>여러 카메라 영상을 위에서 내려다본 하나의 지도 공간으로 변환해 인식하는 방식.</dd>
+    <dt>End-to-End (E2E)</dt><dd>센서 입력→주행 출력을 하나의 신경망으로 잇고 전체를 함께 학습시키는 접근.</dd>
+    <dt>VLA (Vision-Language-Action)</dt><dd>영상을 보고 언어적으로 추론한 뒤 행동을 출력하는, LLM 기반 주행 모델.</dd>
+    <dt>World Model</dt><dd>"세상이 다음에 어떻게 변할지"를 통째로 생성·예측하는 모델. 온보드 주행과 시뮬레이터 양쪽에 쓰인다.</dd>
+    <dt>양자화 (Quantization)</dt><dd>모델의 숫자 정밀도를 32비트→8/4비트로 낮춰 크기·연산·전력을 줄이는 기법.</dd>
+    <dt>증류 (Knowledge Distillation)</dt><dd>큰 모델(teacher)의 판단을 작은 모델(student)이 흉내내도록 학습시키는 압축 기법.</dd>
+    <dt>KV cache</dt><dd>LLM이 이미 처리한 내용의 중간 결과를 저장해 재계산을 피하는 메모리 구조. 대역폭·용량을 소모한다.</dd>
+    <dt>Speculative decoding</dt><dd>작은 모델이 초안을 쓰고 큰 모델이 묶음 검증해 LLM 생성을 2~4배 가속하는 기법.</dd>
+    <dt>Shadow mode</dt><dd>새 모델 후보를 실차에서 제어권 없이 병렬 실행해 안전하게 검증하는 방법.</dd>
+    <dt>E/E 아키텍처</dt><dd>차량의 전기·전자 시스템 전체 구조 — ECU 배치, 네트워크, 전원 분배.</dd>
+    <dt>Zonal (존형)</dt><dd>차량의 물리적 구역별로 배선을 모으는 컨트롤러를 두고, 연산은 중앙 HPC에 집중하는 구조.</dd>
+    <dt>TSN (Time-Sensitive Networking)</dt><dd>이더넷에 시간 동기·지연 보장·이중화를 더한 표준 묶음.</dd>
+    <dt>SerDes (GMSL/A-PHY 등)</dt><dd>카메라 영상을 동축 케이블 하나로 장거리 전송하는 직렬화 링크.</dd>
+    <dt>ASIL / ASIL-D</dt><dd>ISO 26262의 안전 등급(A~D). D가 최고 — 제동·조향급. 등급이 오를수록 개발·진단 요구가 엄격.</dd>
+    <dt>FFI (Freedom From Interference)</dt><dd>안전 등급이 다른 소프트웨어가 한 칩에 있어도 서로 방해할 수 없음을 입증하는 것.</dd>
+    <dt>Safety Island (안전 섬)</dt><dd>큰 칩 안의 독립 전원·클록을 가진 소형 안전 회로 — 전체를 감시하고 이상 시 안전 상태로 강제한다.</dd>
+    <dt>Lockstep</dt><dd>같은 계산을 두 코어가 동시에 수행해 결과를 비교하는 고장 검출 방식.</dd>
+    <dt>Fail-operational</dt><dd>고장이 나도 (축소된 형태로라도) 기능을 유지하는 설계. L3+의 요건. ↔ fail-safe(안전하게 정지).</dd>
+    <dt>MRM (Minimum Risk Manoeuvre)</dt><dd>운전자가 제어를 인수하지 않을 때 시스템이 스스로 수행하는 최소 위험 기동(감속·정차).</dd>
+    <dt>HIL / SIL (Hardware/Software-in-the-Loop)</dt><dd>실제 ECU(HIL) 또는 양산 코드(SIL)를 가상 차량 환경에 물려 검증하는 시험 방법.</dd>
+    <dt>OTA (Over-The-Air)</dt><dd>무선 소프트웨어 업데이트. UN R156이 관리체계를 형식승인 전제조건으로 요구한다.</dd>
+    <dt>SOP (Start of Production)</dt><dd>양산 개시 시점.</dd>
+  </dl>
+  <p class="src" style="margin-top:36px">이 보고서의 모든 수치·주장의 원 출처는 본문 링크로 연결되어 있으며, 회차별 상세 출처 목록은 <a href="../01-ad-workloads/material.md">1회차</a>·<a href="../02-hpc-platform/material.md">2회차</a> material.md의 부록에도 정리되어 있다. 그림 중 논문·프로젝트의 아키텍처 그림은 각 공식 리포지토리에서 가져왔으며 캡션에 출처를 명기했다. 원문 페이지의 프레스 이미지(제품 사진 등)는 네트워크 정책상 이 문서에 포함하지 못했으므로 캡션의 출처 링크에서 확인하기 바란다.</p>
+</section>
+</div>
+
+<div class="foot">Autonomous Driving Study · Integrated Report · 2026</div>
+</body>
+</html>
