@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1회차 — 자율주행 워크로드의 이해</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --ink-1: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --s1: #2a78d6;  /* blue */
+    --s2: #eb6834;  /* orange */
+    --s3: #1baf7a;  /* aqua */
+    --s4: #eda100;  /* yellow */
+    --accent-bg: #eef4fc;
+    --warn-bg: #fdf3e7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --ink-1: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --s4: #c98500;
+      --accent-bg: #14202e;
+      --warn-bg: #2b2014;
+    }
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --ink-1: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --accent-bg: #14202e;
+    --warn-bg: #2b2014;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--page);
+    color: var(--ink-1);
+    font-family: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.6;
+  }
+  .slide {
+    min-height: 100vh;
+    padding: 64px 8vw 72px;
+    border-bottom: 1px solid var(--grid);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--surface-1);
+  }
+  .slide + .slide { background: var(--page); }
+  .slide:nth-of-type(even) { background: var(--surface-1); }
+  .kicker {
+    font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--s1); font-weight: 700; margin-bottom: 10px;
+  }
+  h1 { font-size: clamp(1.9rem, 4.4vw, 3.1rem); line-height: 1.22; margin-bottom: 18px; }
+  h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); line-height: 1.3; margin-bottom: 22px; }
+  h3 { font-size: 1.06rem; margin: 20px 0 8px; }
+  p, li { color: var(--ink-2); font-size: 1.0rem; }
+  strong { color: var(--ink-1); }
+  ul { padding-left: 1.2em; display: grid; gap: 7px; }
+  .lead { font-size: 1.12rem; max-width: 62ch; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; margin-top: 12px; }
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 22px;
+  }
+  .slide:nth-of-type(even) .card { background: var(--page); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin: 18px 0; }
+  .tile { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: var(--surface-1); }
+  .tile .v { font-size: 2.0rem; font-weight: 750; color: var(--ink-1); line-height: 1.15; }
+  .tile .l { font-size: 0.86rem; color: var(--ink-2); margin-top: 6px; }
+  .tile .s { font-size: 0.76rem; color: var(--muted); margin-top: 4px; }
+  .tablewrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--border); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; background: var(--surface-1); }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  th { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 650; }
+  tr:last-child td { border-bottom: none; }
+  td { color: var(--ink-2); }
+  td:first-child { color: var(--ink-1); font-weight: 600; white-space: nowrap; }
+  .note {
+    border-left: 4px solid var(--s2); background: var(--warn-bg);
+    padding: 13px 17px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 0.95rem; color: var(--ink-2);
+  }
+  .insight {
+    border-left: 4px solid var(--s1); background: var(--accent-bg);
+    padding: 13px 17px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 0.98rem; color: var(--ink-2);
+  }
+  .src { font-size: 0.78rem; color: var(--muted); margin-top: 14px; }
+  .src a { color: var(--muted); }
+  a { color: var(--s1); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  figure { margin: 18px 0; }
+  figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+  svg text { font-family: inherit; }
+  .navdots {
+    position: fixed; right: 14px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 9px; z-index: 10;
+  }
+  .navdots a { width: 9px; height: 9px; border-radius: 50%; background: var(--baseline); display: block; }
+  .navdots a:hover { background: var(--s1); }
+  @media (max-width: 720px) { .navdots { display: none; } .slide { padding: 48px 6vw; } }
+  @media print { .slide { min-height: auto; page-break-after: always; } .navdots { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="navdots" aria-label="슬라이드 이동">
+  <a href="#s1" title="표지"></a><a href="#s2" title="왜 HPC"></a><a href="#s3" title="파이프라인"></a>
+  <a href="#s4" title="지연 예산"></a><a href="#s5" title="모델 트렌드"></a><a href="#s6" title="VLA"></a>
+  <a href="#s7" title="메모리 병목"></a><a href="#s8" title="양자화"></a><a href="#s9" title="희소성·증류"></a>
+  <a href="#s10" title="추론 최적화"></a><a href="#s11" title="정량화"></a><a href="#s12" title="시사점"></a>
+</nav>
+
+<!-- 표지 -->
+<section class="slide" id="s1">
+  <div class="kicker">자율주행 스터디 · 1회차</div>
+  <h1>자율주행/ADAS 워크로드의 이해<br>— SW 스택이 컴퓨팅에 요구하는 것</h1>
+  <p class="lead">알고리즘이 아니라 <strong>워크로드의 관점</strong>으로 봅니다.
+  각 소프트웨어 계층이 우리가 설계하는 HPC의 연산기·메모리·I/O를 어떻게 압박하는지,
+  그리고 최신 모델을 차량에 올리기 위한 최적화 기법이 하드웨어에 무엇을 요구하는지 정리했습니다.</p>
+  <div class="tiles" style="margin-top:34px">
+    <div class="tile"><div class="v">6개</div><div class="l">파이프라인 모듈별 연산 특성</div></div>
+    <div class="tile"><div class="v">4갈래</div><div class="l">모델 트렌드: BEV · E2E · VLA · World Model</div></div>
+    <div class="tile"><div class="v">5계열</div><div class="l">온보드 최적화 기법과 HW 요구사항</div></div>
+  </div>
+</section>
+
+<!-- 왜 HPC -->
+<section class="slide" id="s2">
+  <div class="kicker">1. 배경</div>
+  <h2>왜 중앙집중형 HPC가 필수가 됐나</h2>
+  <div class="tablewrap">
+    <table>
+      <tr><th>레벨</th><th>AI 연산 요구 (업계 통용 추정치)</th><th>비고</th></tr>
+      <tr><td>L2</td><td>&lt; 10 TOPS</td><td>실질 2–2.5 TOPS 사례도</td></tr>
+      <tr><td>L3</td><td>20–30 TOPS</td><td>eyes-off 진입</td></tr>
+      <tr><td>L4</td><td>200–320+ TOPS</td><td>도심 무인 주행</td></tr>
+      <tr><td>2025+ 플래그십</td><td><strong>500–2,000+ TOPS</strong></td><td>도심 NOA + E2E/VLA 헤드룸</td></tr>
+    </table>
+  </div>
+  <div class="cols">
+    <div class="card"><h3>데이터 중력</h3><p>E2E/BEV 모델은 전 센서 raw 데이터를 한 곳에서 시간 동기화해 융합해야 성능이 나온다. 레이더 raw 중앙화 시 5대 합산 ~540MB/s.</p></div>
+    <div class="card"><h3>E2E 모델의 단일성</h3><p>단일 신경망은 기능 분산이 불가능 — 모델 하나가 하나의 큰 가속기 메모리 공간을 요구 (FSD v13 주행 모델 추정 ~7.5GB).</p></div>
+    <div class="card"><h3>L3 법적 책임 → 이중화</h3><p>eyes-off부터 제동·조향·전원·<strong>컴퓨트</strong> 이중화가 인증 요건. "고성능 컴퓨터 2계통"에서만 비용이 성립.</p></div>
+  </div>
+  <div class="note">⚠️ TOPS는 필요조건이지 충분조건이 아님 — Mobileye EyeQ6H는 <strong>34 TOPS 칩 2개</strong>로 hands-off(SuperVision) 전체 스택을 구동. 아키텍처 효율과 활용률이 실성능을 결정.</div>
+  <p class="src">출처: Huawei MDC, Nevsemi 2025, NVIDIA Centralized Radar Processing, Mercedes-Benz redundancy, Mobileye benchmark — 상세 링크는 material.md</p>
+</section>
+
+<!-- 파이프라인 -->
+<section class="slide" id="s3">
+  <div class="kicker">2. 고전적 파이프라인</div>
+  <h2>모듈별 연산 특성 — 이기종 구성을 강제한다</h2>
+  <figure>
+    <svg viewBox="0 0 940 120" role="img" aria-label="AD 파이프라인: 센싱, 인지, 측위, 예측, 계획, 제어 순서도" style="width:100%;max-width:940px;height:auto">
+      <defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--baseline)"/></marker></defs>
+      <g font-size="15" font-weight="600" text-anchor="middle">
+        <rect x="8"   y="30" width="130" height="52" rx="10" fill="none" stroke="var(--s3)" stroke-width="2"/><text x="73"  y="52" fill="var(--ink-1)">Sensing</text><text x="73" y="71" font-size="11.5" font-weight="400" fill="var(--muted)">I/O 대역폭</text>
+        <rect x="166" y="30" width="130" height="52" rx="10" fill="none" stroke="var(--s1)" stroke-width="2"/><text x="231" y="52" fill="var(--ink-1)">Perception</text><text x="231" y="71" font-size="11.5" font-weight="400" fill="var(--muted)">GPU/NPU</text>
+        <rect x="324" y="30" width="130" height="52" rx="10" fill="none" stroke="var(--s1)" stroke-width="2"/><text x="389" y="52" fill="var(--ink-1)">Localization</text><text x="389" y="71" font-size="11.5" font-weight="400" fill="var(--muted)">가속 이득 최대</text>
+        <rect x="482" y="30" width="130" height="52" rx="10" fill="none" stroke="var(--s1)" stroke-width="2"/><text x="547" y="52" fill="var(--ink-1)">Prediction</text><text x="547" y="71" font-size="11.5" font-weight="400" fill="var(--muted)">NPU 소형모델</text>
+        <rect x="640" y="30" width="130" height="52" rx="10" fill="none" stroke="var(--s2)" stroke-width="2"/><text x="705" y="52" fill="var(--ink-1)">Planning</text><text x="705" y="71" font-size="11.5" font-weight="400" fill="var(--muted)">CPU 바운드</text>
+        <rect x="798" y="30" width="130" height="52" rx="10" fill="none" stroke="var(--s2)" stroke-width="2"/><text x="863" y="52" fill="var(--ink-1)">Control</text><text x="863" y="71" font-size="11.5" font-weight="400" fill="var(--muted)">ASIL-D 결정성</text>
+        <g stroke="var(--baseline)" stroke-width="2" marker-end="url(#ar)">
+          <line x1="138" y1="56" x2="162" y2="56"/><line x1="296" y1="56" x2="320" y2="56"/><line x1="454" y1="56" x2="478" y2="56"/><line x1="612" y1="56" x2="636" y2="56"/><line x1="770" y1="56" x2="794" y2="56"/>
+        </g>
+      </g>
+    </svg>
+    <figcaption>모듈 색 = 지배적 실행 자원: <span style="color:var(--s3);font-weight:700">■</span> I/O·ISP &nbsp; <span style="color:var(--s1);font-weight:700">■</span> GPU/NPU &nbsp; <span style="color:var(--s2);font-weight:700">■</span> 실시간 CPU</figcaption>
+  </figure>
+  <div class="tablewrap">
+    <table>
+      <tr><th>모듈</th><th>대표 연산</th><th>바운드</th></tr>
+      <tr><td>Sensing</td><td>debayer, HDR merge, point cloud 조립</td><td>ISP/DSP 고정 기능 · 스트리밍 I/O</td></tr>
+      <tr><td>Perception</td><td>CNN/BEV Transformer 추론, voxelization</td><td>GPU/NPU (dense MAC)</td></tr>
+      <tr><td>Tracking/Fusion</td><td>Kalman filter, Hungarian matching</td><td>CPU/DSP · latency-critical</td></tr>
+      <tr><td>Localization</td><td>ICP/NDT scan matching, particle filter</td><td>CPU 병목 → 가속기 이득 최대 (169×)</td></tr>
+      <tr><td>Planning</td><td>QP/NLP solver, MPC, sampling</td><td>CPU 바운드 · 병렬화 어려움</td></tr>
+      <tr><td>Control</td><td>PID/MPC, 액추에이터</td><td>CPU 100Hz+ · ASIL-D 결정성</td></tr>
+    </table>
+  </div>
+  <div class="insight">💡 모듈형 스택은 <strong>"GPU/NPU + 실시간 CPU 클러스터 + lockstep 안전 코어"의 이기종 구성을 강제</strong>하고, 모듈 간 데이터 이동이 온칩 fabric/메모리 대역폭을 소모한다.</div>
+  <p class="src">출처: ASPLOS 2018 (localization 169× / detection 10× / tracking 93× 가속 실측)</p>
+</section>
+
+<!-- 지연 예산 -->
+<section class="slide" id="s4">
+  <div class="kicker">2. 고전적 파이프라인</div>
+  <h2>지연 예산 — 평균이 아니라 p99가 안전을 결정한다</h2>
+  <div class="tiles">
+    <div class="tile"><div class="v">~100 ms</div><div class="l">End-to-end (sensing→actuation) 지연 예산</div><div class="s">ASPLOS 2018 · 업계 통용</div></div>
+    <div class="tile"><div class="v">10–12 Hz</div><div class="l">perception–planning 스택 주기</div><div class="s">사이클당 80–100ms</div></div>
+    <div class="tile"><div class="v">p99</div><div class="l">tail latency가 안전성 결정 요인</div><div class="s">COLA, arXiv:2305.07147</div></div>
+    <div class="tile"><div class="v">Quad HD</div><div class="l">2018년 기준 어떤 HW 조합도 실시간 미달</div><div class="s">해상도 향상을 컴퓨트가 막음</div></div>
+  </div>
+  <ul>
+    <li>GPU는 지연은 만족시키지만 <strong>전력+냉각 부하가 주행거리를 잠식</strong> — TOPS/W가 곧 상품성.</li>
+    <li>localization·detection·tracking 3개 모듈이 E2E latency를 지배 — 멀티코어 CPU만으로는 실시간 불가(실측).</li>
+  </ul>
+  <p class="src">출처: ACM ASPLOS 2018, arXiv:2207.08930 (Mobileye 100ms 예산 인용), arXiv:2305.07147</p>
+</section>
+
+<!-- 모델 트렌드 -->
+<section class="slide" id="s5">
+  <div class="kicker">3. 모델 트렌드</div>
+  <h2>BEV → Occupancy → End-to-End</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>BEV + Transformer</h3>
+      <p>멀티카메라를 통합 BEV 표현으로. BEVFormer 기본 ~130ms → TensorRT FP16 <strong>~90ms</strong>.
+      deformable attention의 불규칙 메모리 접근은 <strong>NPU 비친화적</strong> — HW 지향 재설계 연구 존재(HotBEV, Fast-BEV).</p>
+    </div>
+    <div class="card">
+      <h3>Occupancy Network</h3>
+      <p>비정형 장애물을 3D voxel 점유로 표현. Tesla FSD 컴퓨터에서 <strong>~10ms</strong> 실시간 추론.
+      dense 3D 출력 → <strong>메모리 사용량이 큼</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>End-to-End</h3>
+      <p>UniAD(CVPR 2023 Best Paper): 전 태스크를 단일 query 기반 Transformer로.
+      Tesla FSD v12: 규칙 기반 C++ <strong>~30만 줄 제거</strong>.
+      v13: 모델 3× · 데이터 4.2× · 학습 컴퓨트 5×, 주행 모델 <strong>~2.3GB → ~7.5GB</strong>(추정) — HW3 실행 불가 격차 발생.</p>
+    </div>
+  </div>
+  <div class="insight">💡 중국 OEM은 E2E 전면 전환 단계 — Momenta가 city-NOA 솔루션 60% 공급(2024), BMW 차세대 iX3(2026)에 E2E 대모델 탑재 예정. <strong>모델 세대교체 주기가 하드웨어 수명보다 짧다</strong> → 헤드룸 설계 필수.</div>
+  <p class="src">출처: arXiv:2203.17270, arXiv:2303.01212, arXiv:2212.10156, Creative Strategies(FSD v13), Recode China AI</p>
+</section>
+
+<!-- VLA -->
+<section class="slide" id="s6">
+  <div class="kicker">3. 모델 트렌드</div>
+  <h2>VLA / World Model — "fast + slow" 이중 시스템이 표준</h2>
+  <figure>
+    <svg viewBox="0 0 900 210" role="img" aria-label="fast path와 slow path 이중 시스템 구조도" style="width:100%;max-width:900px;height:auto">
+      <g font-size="14.5" font-weight="600">
+        <rect x="10" y="20" width="150" height="60" rx="10" fill="none" stroke="var(--s3)" stroke-width="2"/>
+        <text x="85" y="46" text-anchor="middle" fill="var(--ink-1)">센서 스위트</text>
+        <text x="85" y="66" text-anchor="middle" font-size="11.5" font-weight="400" fill="var(--muted)">카메라·LiDAR·Radar</text>
+        <rect x="250" y="10" width="380" height="80" rx="10" fill="none" stroke="var(--s1)" stroke-width="2.5"/>
+        <text x="440" y="38" text-anchor="middle" fill="var(--ink-1)">Fast path — E2E/BEV 주행 모델</text>
+        <text x="440" y="60" text-anchor="middle" font-size="12" font-weight="400" fill="var(--muted)">10Hz+ · 결정론적 지연 · 예: OrinX-1 · Thor 파티션</text>
+        <rect x="250" y="120" width="380" height="80" rx="10" fill="none" stroke="var(--s2)" stroke-width="2.5"/>
+        <text x="440" y="148" text-anchor="middle" fill="var(--ink-1)">Slow path — VLM/VLA long-tail 추론</text>
+        <text x="440" y="170" text-anchor="middle" font-size="12" font-weight="400" fill="var(--muted)">1–2Hz · ~410ms on OrinX · 예: OrinX-2 · 별도 파티션</text>
+        <rect x="720" y="60" width="160" height="70" rx="10" fill="none" stroke="var(--baseline)" stroke-width="2"/>
+        <text x="800" y="89" text-anchor="middle" fill="var(--ink-1)">차량 제어</text>
+        <text x="800" y="110" text-anchor="middle" font-size="11.5" font-weight="400" fill="var(--muted)">100Hz · ASIL-D</text>
+        <g stroke="var(--baseline)" stroke-width="2" fill="none">
+          <path d="M160 42 C 205 42 205 40 246 40"/>
+          <path d="M160 62 C 205 62 205 160 246 160"/>
+          <path d="M630 50 C 680 50 680 80 716 84"/>
+          <path d="M630 160 L 660 160 C 690 160 690 105 716 100" stroke-dasharray="6 5"/>
+        </g>
+        <text x="672" y="145" font-size="11.5" font-weight="400" fill="var(--muted)">힌트/의도 (비동기)</text>
+      </g>
+    </svg>
+    <figcaption>DriveVLM-Dual(Li Auto), MindVLA, XPeng VLA — 모두 이 비동기 협조 구조. 실선 = 실시간 경로, 점선 = 비동기 보조 경로.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>DriveVLM-Dual</strong> (Li Auto 실차): VLM 추론 평균 410ms → 10Hz 제어 루프에 못 들어가므로 <strong>slow-path로 격리</strong>. speculative decoding으로 decode 2.7× 가속.</li>
+    <li><strong>XPeng VLA 2.0</strong>: <strong>30B 파라미터</strong> VLA를 로컬 실행 — Turing 칩 3개(2,250 TOPS). Volkswagen 라이선스 채택.</li>
+    <li><strong>노선 분화</strong>: VLA(XPeng·Li Auto) vs World Model(Huawei ADS 4.0 WEWA, MDC 1000). Waymo EMMA(Gemini 기반)는 연산 비용 과다로 아직 연구 단계.</li>
+  </ul>
+  <p class="src">출처: arXiv:2402.12289, XPeng 공식(2025-11), EEWorld(Huawei ADS 4.0), Waymo Blog(2024-10)</p>
+</section>
+
+<!-- 메모리 병목 -->
+<section class="slide" id="s7">
+  <div class="kicker">3. 모델 트렌드 — 핵심 논점</div>
+  <h2>Transformer/VLA는 TOPS가 아니라 메모리 대역폭을 압박한다</h2>
+  <div class="tiles">
+    <div class="tile"><div class="v">~70×</div><div class="l">차량 SoC TOPS 증가 (2019→2026, ~30 → 2,000+)</div></div>
+    <div class="tile"><div class="v">~4×</div><div class="l">같은 기간 메모리 대역폭 증가 (~68 → 273 GB/s)</div></div>
+    <div class="tile"><div class="v">≈273 tok/s</div><div class="l">273 GB/s ÷ 1GB 모델 = decode 상한</div><div class="s">batch-1 autoregressive 기준</div></div>
+    <div class="tile"><div class="v">768GB/s–1.5TB/s</div><div class="l">Tesla AI5 추정 대역폭 (GDDR6/7 12패키지)</div><div class="s">병목이 대역폭임을 보여주는 실리콘 방증</div></div>
+  </div>
+  <div class="cols">
+    <div class="card"><h3>CNN perception</h3><p>conv 커널 재사용률이 높아 <strong>arithmetic intensity(OPS/byte)가 높음</strong> → MAC array(TOPS)가 병목.</p></div>
+    <div class="card"><h3>LLM/VLA decode</h3><p><strong>batch-1 autoregressive</strong>: 매 토큰마다 전체 weight + KV cache를 DRAM에서 스트리밍 → 연산기가 놀고 <strong>step time이 대역폭으로 결정</strong>. attention은 matrix-vector 위주로 본질적 memory-bound.</p></div>
+  </div>
+  <div class="insight">💡 차기 플랫폼의 1차 차별화 요소는 TOPS가 아니라 <strong>DRAM 대역폭 · 온칩 SRAM · KV cache 처리 능력 · FP8/FP4 datapath</strong>.</div>
+  <p class="src">출처: arXiv:2605.30571 (Physical AI inference gap), SparQ arXiv:2312.04985, Tom's Hardware(AI5, 2026)</p>
+</section>
+
+<!-- 양자화 -->
+<section class="slide" id="s8">
+  <div class="kicker">4. 온보드 최적화</div>
+  <h2>양자화 — 저정밀 포맷 전쟁: INT8 vs FP8 vs FP4</h2>
+  <div class="tablewrap">
+    <table>
+      <tr><th>기법/포맷</th><th>효과</th><th>주의점</th></tr>
+      <tr><td>LiDAR-PTQ (ICLR 2024)</td><td>INT8 PTQ, FP32 동급 정확도 + 3× 가속</td><td>QAT 대비 30× 빠른 양자화 비용</td></tr>
+      <tr><td>Q-PETR</td><td>8-bit PTQ &lt;1% 열화, 2× 속도, 3× 메모리↓</td><td>positional encoding 재설계 필요했음</td></tr>
+      <tr><td>NVFP4 (Blackwell)</td><td>&lt;1% 손실, FP8 대비 ~3× 처리량, 트래픽 절반</td><td>FP4 네이티브 가속 없으면 dequant 병목으로 이득 소멸</td></tr>
+      <tr><td>W4A8</td><td>처리량 최상위</td><td>대형 모델 최대 22% 품질 손실 사례 — 태스크별 검증 필수</td></tr>
+    </table>
+  </div>
+  <div class="note">⚠️ Qualcomm AI Research: 전용 하드웨어에서 <strong>FP8 MAC은 INT8 대비 면적/에너지 효율 50–180% 열세</strong> — NPU 진영(INT 중심) vs GPU 진영(FP 중심) 구도의 이론적 배경. <strong>포맷 선택이 곧 실리콘 벤더 선택(lock-in)</strong>이 된다.</div>
+  <div class="insight">💡 이원화 진행 중: <strong>INT8 = 인지 모델의 안전한 기본값</strong>, <strong>FP8/FP4 = Transformer/LLM 워크로드의 새 기본값</strong>. DriveOS LLM SDK 레시피: weight/GEMM은 FP8·NVFP4, LayerNorm·KV cache·attention은 FP16 유지.</div>
+  <p class="src">출처: arXiv:2401.15865, arXiv:2303.17951, NVIDIA NVFP4, arXiv:2508.16712</p>
+</section>
+
+<!-- 희소성/증류 -->
+<section class="slide" id="s9">
+  <div class="kicker">4. 온보드 최적화</div>
+  <h2>구조적 희소성 · 지식 증류 · 효율적 아키텍처</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>2:4 Structured Sparsity</h3>
+      <p>이론 2× — 실측은 LLM <strong>1.40–1.44×</strong>, CNN sparse+INT8 <strong>~1.7×</strong>.
+      Orin DLA도 channel 2:4 sparsity를 HW 지원(105 TOPS INT8 sparse).
+      <strong>"이론 2×, 실측 1.3–1.7×"로 보수적으로 계획</strong>할 것.</p>
+    </div>
+    <div class="card">
+      <h3>지식 증류 (KD)</h3>
+      <p>LiDAR teacher → camera student: DistillBEV +3.9% mAP, SimDistill +4.8% — <strong>센서 BOM 절감</strong>이 동기.
+      Minitron: 15B→8B/4B pruning+증류, 학습 토큰 40× 절감.
+      DeepSeek 증류 모델이 Geely·BYD 등 cockpit에 양산 탑재(2025).</p>
+    </div>
+    <div class="card">
+      <h3>Deployable by Design</h3>
+      <p>Fast-BEV++: custom CUDA plugin 제거 → <strong>TensorRT-native</strong> 설계.
+      Token pruning: FastDriveVLA가 visual token 3,249→812로 <strong>연산 ~7.5× 절감</strong>(주행 특화 — 일반 VLM용 pruning은 주행 시나리오에서 성능 저하).
+      실무 NAS = "타깃 NPU 지원 연산자 집합 안에서의 설계".</p>
+    </div>
+  </div>
+  <p class="src">출처: LLMCBench, NVIDIA DLA SW, ICCV 2023 DistillBEV, arXiv:2407.14679, arXiv:2512.08237, arXiv:2507.23318</p>
+</section>
+
+<!-- 추론 최적화 -->
+<section class="slide" id="s10">
+  <div class="kicker">4. 온보드 최적화</div>
+  <h2>온디바이스 LLM 추론 최적화와 컴파일러 스택</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>DriveOS LLM SDK (DriveOS 7)</h3>
+      <ul>
+        <li>TensorRT 기반 순수 C++ 경량 런타임</li>
+        <li>FP16/FP8/INT4(AWQ)/NVFP4</li>
+        <li><strong>speculative decoding</strong> (TensorRT-LLM ~3×, EAGLE-3 최대 4.79×), KV caching, LoRA, dynamic batching</li>
+        <li>Li Auto 실차: OrinX에서 EAGLE 2.7× decode 가속</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>컴파일러가 실리콘 가치를 결정</h3>
+      <ul>
+        <li>ONNX Runtime + 벤더 EP = 공통 배포 계층 (자동 partitioning, CPU fallback)</li>
+        <li>Qualcomm SNPE → QNN/QAIRT 세대교체</li>
+        <li>Horizon: BPU + 자체 컴파일러 + 알고리즘 3축</li>
+        <li>XPeng: 자체 칩에 자체 컴파일러 재개발</li>
+      </ul>
+    </div>
+  </div>
+  <div class="insight">💡 <strong>"모델 최적화의 절반은 컴파일러 문제"</strong> — 연산자 커버리지·양자화 툴체인 없는 NPU TOPS는 무의미. speculative decoding은 "작은+큰 모델 동시 상주"를, token pruning은 동적 텐서 shape 지원을 하드웨어·컴파일러에 요구한다. Thor는 MIG로 ADAS/cockpit 도메인 격리(FFI).</div>
+  <p class="src">출처: NVIDIA DriveOS LLM SDK, Red Hat(EAGLE-3), Qualcomm docs, Horizon, NVIDIA Thor 블로그</p>
+</section>
+
+<!-- 정량화 -->
+<section class="slide" id="s11">
+  <div class="kicker">5. 워크로드 정량화</div>
+  <h2>숫자로 보는 요구사항</h2>
+  <h3>센서 → 인입 대역폭</h3>
+  <div class="tiles">
+    <div class="tile"><div class="v">0.5–1.8 Gbps</div><div class="l">카메라 1대 raw (실측)</div><div class="s">11카메라급 = 수십 Gbps</div></div>
+    <div class="tile"><div class="v">~240 Mbps</div><div class="l">LiDAR 1대 (Ouster OS2)</div></div>
+    <div class="tile"><div class="v">~4.3 Gbps</div><div class="l">radar 5대 raw ADC 중앙 처리 시</div><div class="s">point cloud 전송 대비 ~100×</div></div>
+    <div class="tile"><div class="v">~4 TB/day</div><div class="l">차량 1대당 수집 데이터</div></div>
+  </div>
+  <h3>주요 SoC — TOPS와 메모리 대역폭 (precision 병기 필수)</h3>
+  <div class="tablewrap">
+    <table>
+      <tr><th>칩</th><th>AI 성능</th><th>메모리 대역폭</th><th>시점</th></tr>
+      <tr><td>NVIDIA Orin</td><td>254 TOPS (INT8 sparse)</td><td>LPDDR5 204.8 GB/s</td><td>2022 양산</td></tr>
+      <tr><td>NVIDIA Thor</td><td>1,000 TOPS INT8 = 2,000 TFLOPS FP4</td><td>LPDDR5X 273 GB/s</td><td>2025 양산</td></tr>
+      <tr><td>Tesla HW4</td><td>~243 TOPS (추정)</td><td>GDDR6 224 GB/s</td><td>2023</td></tr>
+      <tr><td>Tesla AI5</td><td>AI4 대비 실질 5–8×</td><td>768GB/s–1.5TB/s (추정)</td><td>2027 목표</td></tr>
+      <tr><td>XPeng Turing ×3</td><td>2,250 TOPS (자체 발표)</td><td>미공개</td><td>2025</td></tr>
+      <tr><td>Mobileye EyeQ6H</td><td>34 TOPS — 2칩으로 SuperVision 구동</td><td>LPDDR5</td><td>2025</td></tr>
+    </table>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <tr><th>워크로드</th><th>지연</th></tr>
+      <tr><td>E2E 예산 (sensing→actuation)</td><td>~100ms (10–12Hz)</td></tr>
+      <tr><td>BEV perception (배포 최적화)</td><td>25–90ms</td></tr>
+      <tr><td>Occupancy (Tesla)</td><td>~10ms</td></tr>
+      <tr><td>온보드 VLM (slow path)</td><td>~410ms on OrinX</td></tr>
+    </table>
+  </div>
+  <p class="src">출처: arXiv:2301.06422, Ouster, NVIDIA radar 중앙화, Orin/Thor 공식 문서, Samsung automotive LPDDR5X — 상세 링크는 material.md</p>
+</section>
+
+<!-- 시사점 -->
+<section class="slide" id="s12">
+  <div class="kicker">6. 결론</div>
+  <h2>HPC 설계 시사점 — 그리고 토론</h2>
+  <ul style="font-size:1.03rem; gap:10px">
+    <li><strong>① memory-bound 시대</strong>: 사양의 1차 축은 TOPS가 아닌 DRAM 대역폭·온칩 SRAM·KV cache·FP8/FP4 datapath. 용량(모델 상주) + 대역폭(decode) + 연산(prefill)의 3축 균형.</li>
+    <li><strong>② 포맷 로드맵 = 워크로드 믹스</strong>: CNN 인지 중심 → INT8+INT4 / VLA·LLM 중심 → FP8/FP4 필수. per-block scaling 지원이 관건.</li>
+    <li><strong>③ Sparsity는 실측 1.3–1.7×</strong>로 보수적으로 반영.</li>
+    <li><strong>④ 이중 시간 스케일이 표준</strong>: 10Hz+ fast path + 1–2Hz slow path — 파티셔닝·QoS·격리 설계. 메모리 QoS로 LLM의 대역폭 폭식이 인지 deadline을 침해하지 않게.</li>
+    <li><strong>⑤ I/O 프런트엔드</strong>: 카메라 10대+ ×2Gbps + radar raw 4Gbps급 인입 흡수 (SerDes/이더넷 + ISP).</li>
+    <li><strong>⑥ p99 결정성 + mixed-criticality</strong> — 2회차(플랫폼·기능안전)에서 상세.</li>
+    <li><strong>⑦ 컴파일러 접점을 1일차부터</strong>: ONNX Runtime EP 등 표준 계층과의 통합 계획.</li>
+  </ul>
+  <h3 style="margin-top:26px">토론 주제</h3>
+  <ul>
+    <li>우리 타깃 워크로드 믹스에서 저정밀 포맷 우선순위는? (INT vs FP 진영)</li>
+    <li>273 GB/s급 대역폭으로 어느 규모의 온보드 모델까지? 차기 목표 대역폭은?</li>
+    <li>fast/slow path — 단일 SoC 파티셔닝 vs 별도 칩?</li>
+  </ul>
+  <p class="src" style="margin-top:22px">전체 출처·상세 내용: 같은 폴더의 <strong>material.md</strong> · 다음 회차: 차량용 HPC 플랫폼 설계 (SoC · E/E 아키텍처 · 기능안전)</p>
+</section>
+
+</body>
+</html>

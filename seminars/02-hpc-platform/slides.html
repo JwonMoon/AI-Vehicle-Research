@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2회차 — 차량용 HPC 플랫폼 설계</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --ink-1: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --s1: #2a78d6;  /* blue */
+    --s2: #eb6834;  /* orange */
+    --s3: #1baf7a;  /* aqua */
+    --accent-bg: #eef4fc;
+    --warn-bg: #fdf3e7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --ink-1: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --accent-bg: #14202e;
+      --warn-bg: #2b2014;
+    }
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --ink-1: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --accent-bg: #14202e;
+    --warn-bg: #2b2014;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--page); color: var(--ink-1);
+    font-family: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.6;
+  }
+  .slide {
+    min-height: 100vh; padding: 64px 8vw 72px; border-bottom: 1px solid var(--grid);
+    display: flex; flex-direction: column; justify-content: center; background: var(--surface-1);
+  }
+  .slide:nth-of-type(odd) { background: var(--page); }
+  .kicker { font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--s1); font-weight: 700; margin-bottom: 10px; }
+  h1 { font-size: clamp(1.9rem, 4.4vw, 3.1rem); line-height: 1.22; margin-bottom: 18px; }
+  h2 { font-size: clamp(1.45rem, 3vw, 2.15rem); line-height: 1.3; margin-bottom: 22px; }
+  h3 { font-size: 1.06rem; margin: 20px 0 8px; }
+  p, li { color: var(--ink-2); font-size: 1.0rem; }
+  strong { color: var(--ink-1); }
+  ul { padding-left: 1.2em; display: grid; gap: 7px; }
+  .lead { font-size: 1.12rem; max-width: 62ch; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; margin-top: 12px; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+  .slide:nth-of-type(odd) .card { background: var(--surface-1); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin: 18px 0; }
+  .tile { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: var(--surface-1); }
+  .tile .v { font-size: 2.0rem; font-weight: 750; color: var(--ink-1); line-height: 1.15; }
+  .tile .l { font-size: 0.86rem; color: var(--ink-2); margin-top: 6px; }
+  .tile .s { font-size: 0.76rem; color: var(--muted); margin-top: 4px; }
+  .tablewrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--border); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; background: var(--surface-1); }
+  th, td { text-align: left; padding: 9px 13px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  th { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 650; }
+  tr:last-child td { border-bottom: none; }
+  td { color: var(--ink-2); }
+  td:first-child { color: var(--ink-1); font-weight: 600; white-space: nowrap; }
+  .note { border-left: 4px solid var(--s2); background: var(--warn-bg); padding: 13px 17px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 0.95rem; color: var(--ink-2); }
+  .insight { border-left: 4px solid var(--s1); background: var(--accent-bg); padding: 13px 17px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 0.98rem; color: var(--ink-2); }
+  .src { font-size: 0.78rem; color: var(--muted); margin-top: 14px; }
+  a { color: var(--s1); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  figure { margin: 18px 0; }
+  figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+  svg text { font-family: inherit; }
+  .navdots { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 9px; z-index: 10; }
+  .navdots a { width: 9px; height: 9px; border-radius: 50%; background: var(--baseline); display: block; }
+  .navdots a:hover { background: var(--s1); }
+  @media (max-width: 720px) { .navdots { display: none; } .slide { padding: 48px 6vw; } }
+  @media print { .slide { min-height: auto; page-break-after: always; } .navdots { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="navdots" aria-label="슬라이드 이동">
+  <a href="#s1"></a><a href="#s2"></a><a href="#s3"></a><a href="#s4"></a><a href="#s5"></a>
+  <a href="#s6"></a><a href="#s7"></a><a href="#s8"></a><a href="#s9"></a><a href="#s10"></a><a href="#s11"></a>
+</nav>
+
+<!-- 표지 -->
+<section class="slide" id="s1">
+  <div class="kicker">자율주행 스터디 · 2회차</div>
+  <h1>차량용 HPC 플랫폼 설계<br>— SoC, E/E 아키텍처, 기능안전</h1>
+  <p class="lead">1회차에서 "무엇이 돌아가는가(워크로드)"를 봤다면, 이번에는
+  <strong>"무엇 위에서, 어떤 제약으로 돌리는가(플랫폼)"</strong>입니다.
+  SoC 선택, E/E 전환이 만드는 I/O·전력·열 요구, 그리고 기능안전·규제 제약을
+  설계 체크리스트로 종합합니다.</p>
+  <div class="tiles" style="margin-top:34px">
+    <div class="tile"><div class="v">10+</div><div class="l">비교 대상 AD SoC 플랫폼</div></div>
+    <div class="tile"><div class="v">3축</div><div class="l">FFI: Spatial · Temporal · Communication</div></div>
+    <div class="tile"><div class="v">10항목</div><div class="l">HPC 설계 체크리스트</div></div>
+  </div>
+</section>
+
+<!-- precision 함정 -->
+<section class="slide" id="s2">
+  <div class="kicker">1. SoC 비교</div>
+  <h2>먼저 함정부터 — 벤더 TOPS는 그대로 비교할 수 없다</h2>
+  <div class="tiles">
+    <div class="tile"><div class="v">2,000</div><div class="l">NVIDIA Thor "TFLOPS" — <strong>FP4 기준</strong></div></div>
+    <div class="tile"><div class="v">1,000</div><div class="l">같은 칩의 INT8 sparse TOPS</div></div>
+    <div class="tile"><div class="v">34</div><div class="l">Mobileye EyeQ6H TOPS — 2칩으로 hands-off 스택 구동</div></div>
+    <div class="tile"><div class="v">"equivalent"</div><div class="l">일부 중국 벤더의 환산 TOPS — 기준 불명확</div></div>
+  </div>
+  <ul>
+    <li>precision(INT8 dense/sparse, FP8, FP4)과 sparsity 가정이 벤더마다 다름 → <strong>비교표에 precision 컬럼 필수</strong></li>
+    <li>Qualcomm SA8775P는 TOPS 공식 미공개(보도치 편차 큼) → "기준 미공개" 명기</li>
+    <li>중국 벤더·Tesla/NIO/XPeng 수치는 자체 발표 기반, 독립 검증 없음 — 청중에 고지</li>
+  </ul>
+  <div class="insight">💡 실성능 = TOPS × 활용률(utilization) × 컴파일러 품질. 1회차 결론과 연결: <strong>메모리 대역폭(GB/s) 컬럼이 TOPS 컬럼만큼 중요</strong>하다.</div>
+</section>
+
+<!-- 3진영 -->
+<section class="slide" id="s3">
+  <div class="kicker">1. SoC 비교</div>
+  <h2>서구 3파전 — 성능 · 융합 · 효율</h2>
+  <div class="cols">
+    <div class="card">
+      <h3 style="color:var(--s1)">NVIDIA — 성능·생태계</h3>
+      <ul>
+        <li><strong>Thor</strong>: 1,000 TOPS INT8, Blackwell FP4/FP8 Transformer Engine, 14× Neoverse V3AE, LPDDR5X 273 GB/s</li>
+        <li>NVLink-C2C dual-Thor(~2,000 TOPS), MIG 도메인 격리</li>
+        <li>DriveOS ASIL-D 인증 + QNX Safety 8</li>
+        <li>디자인윈: Zeekr 9X(dual Thor-U), BYD, Li Auto(VLA), Volvo, Lucid…</li>
+        <li>주의: 273 GB/s는 1,000 TOPS 대비 낮은 B/F — 병목 논쟁</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--s2)">Qualcomm — 융합·비용</h3>
+      <ul>
+        <li><strong>Ride Flex</strong>: cockpit+ADAS 단일 SoC(업계 최초 주장), SEooC ASIL-D 타깃 — <strong>BOM 25–50% 절감</strong> 소구</li>
+        <li><strong>Ride Elite(SA8797P)</strong>: Oryon CPU, ~640 TOPS(기준 미공개), Leapmotor D19 dual 2026 Q1</li>
+        <li>BMW 공동개발 "Ride Pilot" — Neue Klasse iX3 2025-11 첫 양산, 10년 공급 보도</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--s3)">Mobileye — 효율</h3>
+      <ul>
+        <li><strong>EyeQ6H</strong>: 34 TOPS @ ~40W — 1칩 Surround ADAS, 2칩 SuperVision(hands-off)</li>
+        <li>TOPS 경쟁 거부 — 알고리즘-HW 공동설계 + 자체 가속기(XNN·PMA·VMP·MPC)</li>
+        <li>VW 그룹 수주(Tier-1 Valeo), Top-10 US OEM</li>
+        <li>리스크: 블랙박스 모델 vs SDV 시대 OEM 통제권 요구</li>
+      </ul>
+    </div>
+  </div>
+  <p class="src">그 외: TI(32 TOPS 저전력 볼륨존) · Renesas X5H(3nm + AI chiplet, 2027) · Ambarella(perf/W) · Horizon J6P(중국 로컬 최대, 560 TOPS) · Tesla AI5 / NIO NX9031 / XPeng Turing(수직통합)</p>
+</section>
+
+<!-- 비교표 -->
+<section class="slide" id="s4">
+  <div class="kicker">1. SoC 비교</div>
+  <h2>종합 비교표</h2>
+  <div class="tablewrap">
+    <table>
+      <tr><th>플랫폼</th><th>AI 성능 (precision)</th><th>전력</th><th>메모리</th><th>CPU</th><th>Safety</th><th>양산</th></tr>
+      <tr><td>NVIDIA Thor</td><td>1,000 INT8 / 2,000 FP4</td><td>DevKit 350W(킷)</td><td>LPDDR5X 273 GB/s</td><td>14× V3AE</td><td>island + ASIL-D 평가</td><td>2025</td></tr>
+      <tr><td>NVIDIA Orin</td><td>254 INT8 sparse</td><td>60–70W</td><td>LPDDR5 205 GB/s</td><td>12× A78AE</td><td>R52 island, 칩B/시스템D</td><td>2022</td></tr>
+      <tr><td>Qualcomm SA8797P</td><td>~640 (미공개)</td><td>—</td><td>—</td><td>Oryon</td><td>ASIL 지원</td><td>2026 Q1</td></tr>
+      <tr><td>Qualcomm SA8775P</td><td>미공개(편차)</td><td>~75W 보도</td><td>LPDDR5</td><td>Kryo</td><td>SEooC ASIL-D 타깃</td><td>양산 중</td></tr>
+      <tr><td>Mobileye EyeQ6H</td><td>34 INT8</td><td>~40W</td><td>LPDDR5</td><td>8C/32T</td><td>ASIL-B(D) 전통</td><td>2025</td></tr>
+      <tr><td>TI TDA4VH</td><td>32 INT8</td><td>~20W급</td><td>LPDDR4x</td><td>8× A72</td><td>ASIL-D MCU 통합</td><td>양산 중</td></tr>
+      <tr><td>Renesas X5H</td><td>400 (+chiplet 4×)</td><td>-35% vs 5nm</td><td>—</td><td>32× A720AE</td><td>6× R52 lock-step</td><td>2027 H2</td></tr>
+      <tr><td>Horizon J6P</td><td>560 (미공개)</td><td>—</td><td>—</td><td>410K DMIPS</td><td>—</td><td>2025</td></tr>
+      <tr><td>Tesla AI5</td><td>AI4×8 (compute)</td><td>효율 3×/W</td><td>대역폭 5×</td><td>자체</td><td>자체</td><td>2027</td></tr>
+    </table>
+  </div>
+  <div class="note">⚠️ 구조적 트렌드: ① precision 인플레이션 ② ADAS+cockpit 융합 ③ <strong>멀티 SoC 스케일링 표준화</strong>(dual Thor-U/NX9031/SA8797) ④ chiplet 전환(X5H 첫 상용, imec 프로그램) ⑤ <strong>메모리 병목</strong>(차세대 300–500 GB/s 요구, LPDDR5X 9,600Mbps + DLEP) ⑥ safety 스택 상품화 ⑦ 수직통합 vs 머천트 분화</div>
+</section>
+
+<!-- E/E -->
+<section class="slide" id="s5">
+  <div class="kicker">2. E/E 아키텍처</div>
+  <h2>분산형 → 도메인 → 존(Zonal) + 중앙집중</h2>
+  <figure>
+    <svg viewBox="0 0 900 150" role="img" aria-label="E/E 아키텍처 3단계 진화" style="width:100%;max-width:900px;height:auto">
+      <defs><marker id="ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--baseline)"/></marker></defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="10" y="25" width="240" height="95" rx="10" fill="none" stroke="var(--baseline)" stroke-width="2"/>
+        <text x="130" y="52" fill="var(--ink-1)">분산형</text>
+        <text x="130" y="76" font-size="12" font-weight="400" fill="var(--muted)">기능당 1 ECU · 100–150개+</text>
+        <text x="130" y="96" font-size="12" font-weight="400" fill="var(--muted)">하네스·SW 통합 한계</text>
+        <rect x="330" y="25" width="240" height="95" rx="10" fill="none" stroke="var(--s2)" stroke-width="2"/>
+        <text x="450" y="52" fill="var(--ink-1)">도메인형</text>
+        <text x="450" y="76" font-size="12" font-weight="400" fill="var(--muted)">기능 도메인별 컨트롤러</text>
+        <text x="450" y="96" font-size="12" font-weight="400" fill="var(--muted)">현행 양산 주력</text>
+        <rect x="650" y="25" width="240" height="95" rx="10" fill="none" stroke="var(--s1)" stroke-width="2.5"/>
+        <text x="770" y="52" fill="var(--ink-1)">존형 + 중앙집중</text>
+        <text x="770" y="76" font-size="12" font-weight="400" fill="var(--muted)">zonal controller + 1–4개 HPC</text>
+        <text x="770" y="96" font-size="12" font-weight="400" fill="var(--muted)">이더넷 백본 · ECU &lt;10개 전망</text>
+        <g stroke="var(--baseline)" stroke-width="2" marker-end="url(#ar2)"><line x1="252" y1="72" x2="325" y2="72"/><line x1="572" y1="72" x2="645" y2="72"/></g>
+      </g>
+    </svg>
+  </figure>
+  <div class="tiles">
+    <div class="tile"><div class="v">17 → 7</div><div class="l">Rivian Gen2 ECU (zonal 3개) — 배선 2.6km·20kg↓, 자재비 20%↓</div></div>
+    <div class="tile"><div class="v">20배</div><div class="l">BMW Neue Klasse "Superbrain" 4개의 연산 성능 (이전 세대 대비)</div></div>
+    <div class="tile"><div class="v">-68%</div><div class="l">Tesla Cybertruck 배선 수 (Etherloop 링 + 48V)</div></div>
+    <div class="tile"><div class="v">30–40%</div><div class="l">2030년까지 하네스 단축 전망</div></div>
+  </div>
+  <p class="src">OEM 현황: Mercedes MB.OS(수랭 NVIDIA 칩) · VW→Rivian JV(2027 ID.EVERY1) · 현대 Pleos(HPVC+zone) · BYD XUANJI(One Brain) · NIO SkyOS — 상세는 material.md</p>
+</section>
+
+<!-- 네트워크 -->
+<section class="slide" id="s6">
+  <div class="kicker">2. E/E 아키텍처</div>
+  <h2>HPC는 사실상 "네트워크 스위치 + 컴퓨터"</h2>
+  <div class="tablewrap">
+    <table>
+      <tr><th>계층</th><th>기술</th><th>포인트</th></tr>
+      <tr><td>Edge</td><td>10BASE-T1S (10Mbps multidrop)</td><td>저가 센서/액추에이터의 CAN/LIN 대체</td></tr>
+      <tr><td>중간 갭</td><td>CAN XL (최대 20Mbps, payload 2048B)</td><td>ISO 11898 3판(2024) 편입, 이더넷 프레임 터널링</td></tr>
+      <tr><td>Zone→HPC</td><td>100/1000BASE-T1</td><td>zonal 집약 트래픽</td></tr>
+      <tr><td>백본/센서</td><td>Multi-Gig 2.5–10G (802.3ch) + <strong>TSN</strong></td><td>802.1AS 시간동기 · Qbv bounded latency · <strong>CB(FRER) 이중화</strong></td></tr>
+      <tr><td>카메라 링크</td><td>GMSL3/FPD-Link (12Gbps) vs <strong>MIPI A-PHY/ASA-ML</strong></td><td>2023 MIPI-ASA 제휴로 표준 수렴 중 — PHY 선정 리스크 관리</td></tr>
+      <tr><td>SoC 간</td><td>PCIe Gen4(+switch) / <strong>NVLink-C2C</strong></td><td>멀티 SoC 스케일링의 기반, 벤더 종속 요인</td></tr>
+    </table>
+  </div>
+  <div class="tiles">
+    <div class="tile"><div class="v">3–40 Gbps</div><div class="l">차량 총 센서 대역폭</div></div>
+    <div class="tile"><div class="v">~6 GB/s</div><div class="l">플랫폼 수준 처리량 규모감</div></div>
+  </div>
+  <p class="src">출처: ADI, CiA, MIPI Alliance, NVIDIA — material.md 참조</p>
+</section>
+
+<!-- SW 스택 -->
+<section class="slide" id="s7">
+  <div class="kicker">3. SW 플랫폼</div>
+  <h2>중앙 컴퓨트 위의 소프트웨어 — 혼합 스택이 현실</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>실무 스택 구도</h3>
+      <ul>
+        <li>Safety/vehicle-motion 파티션 → <strong>AUTOSAR Adaptive</strong> (POSIX·SOA·OTA 전제)</li>
+        <li>Zonal MCU → AUTOSAR Classic (정적 스케줄, 하드 RT)</li>
+        <li>IVI → AAOS/Linux</li>
+        <li>AD 스택 → 전용 미들웨어 (DriveOS, Apex.Grace 등)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>ROS 2의 양산 경로</h3>
+      <ul>
+        <li><strong>Apex.Grace</strong>: ROS 2 fork를 TÜV Nord ISO 26262 <strong>ASIL-D SEooC 인증</strong>, zero-copy(iceoryx)</li>
+        <li><strong>Autoware Open AD Kit</strong>: SOAFEE 첫 blueprint — 컨테이너 기반 cloud-native</li>
+        <li>단, <strong>컨테이너는 배포 단위이지 safety isolation 단위가 아님</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>통신 미들웨어 3파전</h3>
+      <ul>
+        <li>SOME/IP: AUTOSAR 표준, 기능 최소주의</li>
+        <li>DDS: 풍부한 QoS+보안 — ROS 2/AP 채택</li>
+        <li><strong>zenoh</strong>: discovery 최속, WAN 우위 — Woven by Toyota 채택 (2024 Eclipse 정식화)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="src">출처: AUTOSAR, Apex.AI, SOAFEE, arXiv:2505.02734(성능 비교) — material.md 참조</p>
+</section>
+
+<!-- FFI -->
+<section class="slide" id="s8">
+  <div class="kicker">3. SW 플랫폼 — 핵심</div>
+  <h2>하이퍼바이저와 Mixed-Criticality: FFI가 1급 설계 목표</h2>
+  <p class="lead">단일 SoC에서 QM(IVI, LLM)과 ASIL(주행) 워크로드가 공존하려면 ISO 26262의
+  <strong>FFI(Freedom From Interference)</strong> 3축을 하드웨어+SW로 입증해야 한다.</p>
+  <div class="tablewrap">
+    <table>
+      <tr><th>축</th><th>위협</th><th>메커니즘</th></tr>
+      <tr><td>Spatial</td><td>QM 워크로드의 메모리 오염</td><td>MMU + stage-2 translation, <strong>IOMMU/SMMU</strong>(DMA 격리), ECC</td></tr>
+      <tr><td>Temporal</td><td>실행시간 침해·스로틀링</td><td>코어 정적 할당, 실행 버짓, watchdog, <strong>cache partitioning(MPAM류) + 메모리 대역폭 regulation</strong></td></tr>
+      <tr><td>Communication</td><td>메시지 오염</td><td>E2E protection(CRC/시퀀스), MACsec/CANsec, TSN policing</td></tr>
+    </table>
+  </div>
+  <div class="note">⚠️ <strong>IOMMU는 접근 영역만 제한할 뿐 대역폭은 제어하지 못한다</strong> — 공유 자원(DRAM 컨트롤러·LLC·NoC)의 QoS/regulator가 FFI 입증의 최대 난점. <strong>SoC 후보 평가 시 "대역폭 regulator 유무"를 반드시 확인.</strong> 1회차의 "LLM 대역폭 폭식 vs 인지 deadline" 문제와 직결.</div>
+  <p class="src">하이퍼바이저: QNX Safety 8(점유율 27%+, ASIL-D) · DriveOS 내장(파티션-코어 바인딩) · 오픈소스 수렴(AGL+Xen dom0less+Zephyr) — 출처: arXiv:2506.05822 외</p>
+</section>
+
+<!-- 기능안전 -->
+<section class="slide" id="s9">
+  <div class="kicker">4. 기능안전</div>
+  <h2>ASIL-D 달성 패턴 — "doer + checker"</h2>
+  <figure>
+    <svg viewBox="0 0 900 190" role="img" aria-label="doer-checker 구조: 대형 QM/ASIL-B 컴퓨트와 ASIL-D safety island" style="width:100%;max-width:900px;height:auto">
+      <g font-size="14.5" font-weight="600">
+        <rect x="20" y="20" width="500" height="150" rx="12" fill="none" stroke="var(--s1)" stroke-width="2.5"/>
+        <text x="270" y="48" text-anchor="middle" fill="var(--ink-1)">Doer — 대형 컴퓨트 (QM / ASIL-B)</text>
+        <text x="270" y="72" text-anchor="middle" font-size="12" font-weight="400" fill="var(--muted)">GPU · NPU · CPU 클러스터 — perception/planning/LLM</text>
+        <rect x="55" y="95" width="130" height="50" rx="8" fill="none" stroke="var(--baseline)" stroke-width="1.5"/><text x="120" y="117" text-anchor="middle" font-size="12" fill="var(--ink-2)">BIST + ECC</text><text x="120" y="134" text-anchor="middle" font-size="11" font-weight="400" fill="var(--muted)">진단 커버리지</text>
+        <rect x="205" y="95" width="130" height="50" rx="8" fill="none" stroke="var(--baseline)" stroke-width="1.5"/><text x="270" y="117" text-anchor="middle" font-size="12" fill="var(--ink-2)">Safety monitor</text><text x="270" y="134" text-anchor="middle" font-size="11" font-weight="400" fill="var(--muted)">가속기 감시</text>
+        <rect x="355" y="95" width="130" height="50" rx="8" fill="none" stroke="var(--baseline)" stroke-width="1.5"/><text x="420" y="117" text-anchor="middle" font-size="12" fill="var(--ink-2)">Hypervisor</text><text x="420" y="134" text-anchor="middle" font-size="11" font-weight="400" fill="var(--muted)">FFI 파티셔닝</text>
+        <rect x="610" y="20" width="270" height="150" rx="12" fill="none" stroke="var(--s2)" stroke-width="2.5"/>
+        <text x="745" y="48" text-anchor="middle" fill="var(--ink-1)">Checker — Safety Island (ASIL-D)</text>
+        <text x="745" y="76" text-anchor="middle" font-size="12" font-weight="400" fill="var(--muted)">DCLS lock-step R52 · 전용 TCM</text>
+        <text x="745" y="98" text-anchor="middle" font-size="12" font-weight="400" fill="var(--muted)">fault aggregator · watchdog</text>
+        <text x="745" y="120" text-anchor="middle" font-size="12" font-weight="400" fill="var(--muted)"><tspan font-weight="700" fill="var(--ink-1)">독립 전원 레일</tspan> · safe-state 강제</text>
+        <g stroke="var(--baseline)" stroke-width="2" fill="none">
+          <path d="M520 70 L 606 70"/><path d="M606 120 L 520 120"/>
+        </g>
+        <text x="563" y="60" text-anchor="middle" font-size="11.5" font-weight="400" fill="var(--muted)">fault 신호</text>
+        <text x="563" y="140" text-anchor="middle" font-size="11.5" font-weight="400" fill="var(--muted)">감시·개입</text>
+      </g>
+    </svg>
+    <figcaption>NVIDIA Orin FSI가 대표 사례: 칩 random HW는 ASIL-B, 시스템 ASIL-D는 decomposition + island로 달성. AI 가속기는 lockstep이 비경제적 → monitor+BIST+ECC 조합.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>ASIL Decomposition</strong>(ISO 26262-9): D → B(D)+B(D) 등 — 단, "충분히 독립"(공통원인 배제, DFA) 입증이 전제</li>
+    <li>표준 스택: <strong>26262(고장) + SOTIF 21448(성능한계) + ISO/PAS 8800(AI, 2024-12 발행) + TS 5083(ADS) + 21434(보안)</strong></li>
+    <li>ISO/PAS 8800: AI 가속기의 random fault → AI 출력 오류 경로가 관리 대상 — NPU 진단·모니터링이 안전 논증의 일부</li>
+  </ul>
+  <p class="src">출처: Promwad, NVIDIA FSI 문서, ISO 8800, SGS-Geely(세계 최초 8800 인증, 2025-08)</p>
+</section>
+
+<!-- 규제 -->
+<section class="slide" id="s10">
+  <div class="kicker">4. 규제</div>
+  <h2>UNECE 규제가 HPC에 직접 거는 요구</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>R157 (ALKS, L3)</h3>
+      <ul>
+        <li><strong>Transition Demand 10초 + MRM</strong> — 단일 고장 후에도 유지 → <strong>fail-operational 컴퓨트/전원</strong></li>
+        <li>운전자 가용성 모니터링 → DMS 컴퓨트가 규제 필수</li>
+        <li><strong>DSSAD</strong>: 변조 방지 로깅(±1s, SW 버전 식별)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>R171 (DCAS, L2+)</h3>
+      <ul>
+        <li>2024-09 발효, 02 시리즈(2027)는 고속도로 <strong>hands-off</strong> 허용</li>
+        <li>L2+임에도 DMS 상시 실행 + <strong>시판 후 모니터링 텔레메트리</strong>(연 1회+ 보고)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>R155 / R156 (보안·OTA)</h3>
+      <ul>
+        <li>CSMS/SUMS 인증, TARA(ISO 21434)</li>
+        <li><strong>HSM · secure boot · 서명 OTA(A/B) · RXSWIN 추적 · IDS 상주</strong>가 플랫폼 기본 요건</li>
+      </ul>
+    </div>
+  </div>
+  <h3>양산 리던던시 사례</h3>
+  <ul>
+    <li><strong>Mercedes DRIVE PILOT</strong>: 제동·조향·전원·연산까지 이중화, 95km/h 승인(2024-12) — OTA 업그레이드로 확대(R156 실례)</li>
+    <li><strong>Waymo</strong>: 컴퓨트 "독립 엔진 2개" — 평시 병렬, fault 시 seamless 인수</li>
+    <li>지역: EU 2022/1426 · 미국 NHTSA AV Framework(2025) · 중국 최초 승용 L3 허가(2025-12) · 한국 L4 성능인증제(2027 목표)</li>
+  </ul>
+  <div class="note">⚠️ 열·전력도 규제만큼 단단한 제약: L4급 400–600W(주행거리 7–10% 잠식), 열부하 1–4kW → <strong>수랭 연동이 프리미엄 HPC 기본값</strong>화(Mercedes CLA 양산 사례). TDP는 통합 후 동시성 시나리오로 산정, 열 스로틀링이 temporal FFI를 침해하지 않게 파티션별 버짓 분리.</div>
+</section>
+
+<!-- 체크리스트 -->
+<section class="slide" id="s11">
+  <div class="kicker">5. 종합</div>
+  <h2>우리 팀 HPC 설계 체크리스트</h2>
+  <div class="tablewrap">
+    <table>
+      <tr><th>#</th><th>항목</th><th>체크 포인트</th></tr>
+      <tr><td>1</td><td>ASIL 배분</td><td>decomposition 채널 분할 + 독립성 입증. SoC random fault 등급(B)과 시스템 클레임 갭은 외장 MCU/듀얼 SoC로</td></tr>
+      <tr><td>2</td><td>Safety island</td><td>DCLS 코어, 독립 전원/클록, fault aggregator, safe-state 강제 권한</td></tr>
+      <tr><td>3</td><td>FFI</td><td>정적 파티셔닝 + 메모리/캐시/NoC QoS + DFA. <strong>대역폭 regulator 유무 확인</strong></td></tr>
+      <tr><td>4</td><td>Fail-operational</td><td>R157 "TD 10초+MRM" = 최소 유지시간 스펙. degraded 경로 + 전원 2계통</td></tr>
+      <tr><td>5</td><td>메모리</td><td>용량(모델 상주)+대역폭(300–500 GB/s급)+ECC(DLEP) — 1회차 결론 연결</td></tr>
+      <tr><td>6</td><td>I/O</td><td>Multi-Gig TSN 다포트 + SerDes + PCIe/NVLink + CAN 게이트웨이 (인입 3–40 Gbps)</td></tr>
+      <tr><td>7</td><td>규제 데이터 경로</td><td>DSSAD 변조 방지 로깅, R171 텔레메트리</td></tr>
+      <tr><td>8</td><td>보안</td><td>HSM/secure boot/서명 OTA/RXSWIN/IDS (R155·156)</td></tr>
+      <tr><td>9</td><td>AI 안전 보증</td><td>ISO 8800 라이프사이클 + 가속기 진단(BIST/ECC/monitor) + SOTIF 기록/리플레이</td></tr>
+      <tr><td>10</td><td>열/전력</td><td>동시성 시나리오 TDP, 수랭 검토, 파티션별 버짓, 48V/eFuse 전원트리</td></tr>
+    </table>
+  </div>
+  <h3>토론 주제</h3>
+  <ul>
+    <li>doer/checker 분리 — 온칩 island로 충분한가, 외장 MCU가 필요한가?</li>
+    <li>멀티 SoC 인터커넥트(PCIe vs NVLink-C2C vs 이더넷)와 FFI 입증 전략?</li>
+    <li>SoC 후보별 메모리 대역폭 QoS 지원을 어떻게 검증할 것인가?</li>
+    <li>벤더 종속(컴파일러·OS·safety 패키지) vs 자체 스택의 경계선?</li>
+  </ul>
+  <p class="src" style="margin-top:20px">전체 출처·상세 내용: 같은 폴더의 <strong>material.md</strong></p>
+</section>
+
+</body>
+</html>
