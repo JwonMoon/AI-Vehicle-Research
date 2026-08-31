@@ -1,0 +1,89 @@
+Catena-X strives to create an
+ecosystem for the development operation
+and collaborative use of solutions
+to solve the toughest industry problems
+across the entire automotive value chain.
+Joining the Catena-X ecosystem
+as adopter or solution provider
+can look quite overwhelming
+and may feel complex.
+That's why
+we want to make access as easy
+as possible and help
+you get started quickly to realize
+the full potential
+of the Catena-X ecosystem.
+Adopters mainly connect to the Catena-X
+data space in a do it yourself way
+to provide or consume data.
+Solution providers
+design and create
+interoperable solutions,
+profit from development resources
+and accelerate their development
+using open source.
+And for example, our Kits
+and now let's head over to Tractus-X,
+the home of our Kits.
+The Eclipse Tractus-X project
+is the official open source project
+in the Catena-X ecosystem under
+the umbrella of the Eclipse Foundation.
+The Eclipse Foundation is a not
+for profit corporation that is supported
+by over
+320 members and represents
+the world's largest sponsored collection
+of open source projects and developers.
+By using an open
+and well-established development process,
+we enable organizations
+and their developers to collaborate
+on the design and development of kits.
+Kits are released
+under the Apache 2.0 license,
+so any organization can use,
+modify and distribute them
+in any environment.
+In addition to our kits,
+you will also find a forum
+for our developer community,
+development and release guidelines,
+as well as an overview of our releases
+on the Tractus-X website.
+The Tractus-X project is structured
+along the four domains that represent
+use cases in Catena-X.
+First there is the shared network domain
+that provides the basis
+and functionality
+for the business domains.
+It's the foundation to build upon.
+Then we have the business domain
+PLM and quality.
+Resiliency
+and sustainability.
+Each addressing
+a specific set of industry challenges
+that Catena-X solves
+with the help of Kits.
+Each of the domains provide at least
+one specific page with a well-defined
+toolbox of artifacts
+that support the two main stakeholders.
+Solution providers, for example,
+can combine
+multiple kits and use API specifications,
+as well as semantic models to develop new
+interoperable applications and services.
+Adopters, in turn,
+can use the kits to build and connect
+their existing in-house
+infrastructure to the Catena-X
+data space.
+By adopting reference implementations
+and following the quick setup guides.
+Join us in building the future
+of the automotive industry together.
+Thank you for your interest
+in the Catena-X Community and Project.

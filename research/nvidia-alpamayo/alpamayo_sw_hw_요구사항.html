@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpamayo 활용 SW·HW 요구사항</title>
+<style>
+  :root{--bg:#f7f8fa;--card:#fff;--ink:#1e2430;--sub:#5b6472;--accent:#76b900;--accent-dark:#4e7a00;--line:#e3e7ee;--warn-bg:#fff7e6;--warn-line:#f0c36d}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Pretendard,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px}
+  header.hero{background:linear-gradient(135deg,#161b22,#243018);color:#fff;border-radius:16px;padding:36px 32px;margin-bottom:28px}
+  header.hero h1{margin:0 0 10px;font-size:1.7rem}
+  header.hero .meta{color:#b9c4a8;font-size:.9rem}
+  header.hero .meta a{color:#cfe89b}
+  h2{font-size:1.3rem;border-left:5px solid var(--accent);padding-left:10px;margin:40px 0 14px}
+  h3{font-size:1.05rem;margin:26px 0 8px;color:var(--accent-dark)}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin-bottom:20px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f0f3e8}
+  tr:nth-child(even) td{background:#fafbf7}
+  .warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.93rem}
+  .tldr{background:#f3f8ea;border:1px solid #cfe3ad;border-radius:10px;padding:14px 18px;margin:10px 0}
+  code,pre{background:#eef1f5;border-radius:4px;font-size:.88em}
+  code{padding:1px 5px}
+  pre{padding:12px;overflow-x:auto}
+  a{color:#2b6cb0;text-decoration:none} a:hover{text-decoration:underline}
+  footer{color:var(--sub);font-size:.85rem;margin-top:30px}
+  .small{font-size:.85rem;color:var(--sub)}
+  ul{padding-left:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Alpamayo 활용에 필요한 SW·HW — 목적별 요구사항</h1>
+  <div class="meta">작성일 2026-07-15 · 자매 문서: <a href="alpamayo_1_vs_2_비교보고서.html">비교보고서</a> · 발췌: <a href="reference/references.md">references.md</a><br>
+  전제: <b>범용 기준</b>(공식 문서 최소/권장 사양, 특정 장비 가정 없음) · 등급: ✅ 교차검증 / 🔍 원문 직접 확인 / 📄 발췌 확보 / 🎥 영상 발언만</div>
+</header>
+
+<div class="warn">⚠️ Alpamayo 2 Super는 미공개(여름 예정) — 아래는 전부 <b>1.5(현행 공개판) 기준</b>. 2 Super 공개 시 갱신 필요.</div>
+
+<section>
+<h2>0. 한눈 요약</h2>
+<table>
+<tr><th>목적</th><th>최소 HW 한 줄</th><th>핵심 SW</th><th>난이도 체감</th></tr>
+<tr><td>① 추론 체험</td><td>NVIDIA GPU <b>24GB VRAM</b> 1장 + 디스크 ~30GB</td><td>uv + PyTorch + HF gated 승인</td><td>낮음 — 노트북 따라하기</td></tr>
+<tr><td>② 파인튜닝(SFT)</td><td>다GPU 권장(수치 미공표 — recipe별 README 확인)</td><td>alpamayo-recipes (HF Trainer + DeepSpeed)</td><td>중간</td></tr>
+<tr><td>③ closed-loop RL</td><td><b>GPU 2장(각 ≥40–50GB)</b> 스모크 / 실전 노드 단위 + 씬 ~1.5TB</td><td>AlpaGym = AlpaSim + Cosmos-RL(GRPO)</td><td>높음 — 분산 인프라</td></tr>
+<tr><td>④ 차량 배포</td><td>타깃: DRIVE AGX Thor (Blackwell, 2,000 FP4 TFLOPS)</td><td>quantization recipe(FP8/NVFP4) + distillation(공식 recipe 미출시)</td><td>높음 — 파트너 트랙</td></tr>
+</table>
+<div class="tldr">공통 관문: <b>HF gated 승인 2건</b> — <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">모델</a>·<a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">데이터셋</a> 각각 계정+약관 동의. (🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a> · <a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">데이터셋 카드</a>)<br>
+라이선스: 코드 전부 <b>Apache 2.0</b> / 가중치 <b>non-commercial</b>(상업 별도 요청) / 데이터셋 <b>NVIDIA AV Dataset License</b>(AV 용도 한정, 재배포·감시 금지).</div>
+</section>
+
+<section>
+<h2>1. 공통 준비물</h2>
+<table>
+<tr><th>항목</th><th>내용</th><th>근거</th></tr>
+<tr><td>OS/드라이버</td><td>Linux + CUDA Toolkit <b>12.x</b> (nvcc)</td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a></td></tr>
+<tr><td>Python</td><td><b>3.12</b></td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a></td></tr>
+<tr><td>패키지 관리</td><td><b>uv</b> — Alpamayo/AlpaSim/AlpaGym 공통</td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5</a> · <a href="https://github.com/NVlabs/alpagym">alpagym</a></td></tr>
+<tr><td>계정</td><td>HF 계정 + <code>hf auth login</code> + gated 승인(모델·데이터셋)</td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a></td></tr>
+<tr><td>컨테이너</td><td>Docker (AlpaSim/AlpaGym 서비스)</td><td>🔍 <a href="https://github.com/NVlabs/alpasim">alpasim</a></td></tr>
+<tr><td>참고</td><td>flash-attention 빌드 실패 시 <code>attn_implementation="sdpa"</code></td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a></td></tr>
+</table>
+</section>
+
+<section>
+<h2>2. ① 추론 체험 — "모델이 뭘 하는지 눈으로 확인"</h2>
+<h3>SW</h3>
+<ul>
+<li>repo: <a href="https://github.com/NVlabs/alpamayo1.5">NVlabs/alpamayo1.5</a> (Apache 2.0). <code>src/alpamayo1_5/test_inference.py</code> — 예제 데이터+가중치(<b>22GB</b>) 자동 다운로드. (🔍)</li>
+<li>노트북 4종: 표준 추론 / <b>navigation guidance</b> / 멀티카메라 변형 / <b>VQA</b>. (🔍)</li>
+<li>구모델(1)은 <a href="https://github.com/NVlabs/alpamayo">NVlabs/alpamayo</a> — navigation·RL 없는 구버전. 신규 시작은 1.5 권장(공식 권장 🔍).</li>
+</ul>
+<h3>HW (공식 수치, H100 80GB 테스트)</h3>
+<table>
+<tr><th>작업</th><th>VRAM</th><th>근거</th></tr>
+<tr><td>단일 샘플 추론</td><td><b>~24 GB</b></td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a></td></tr>
+<tr><td>16샘플 배치</td><td>~40 GB</td><td>🔍 동일</td></tr>
+<tr><td>16샘플 + CFG</td><td>~60 GB</td><td>🔍 동일</td></tr>
+<tr><td>디스크</td><td>가중치 22GB + 예제 → 여유 ~30GB+</td><td>🔍 동일</td></tr>
+</table>
+<p>해석: RTX 3090/4090(24GB)로 단일 샘플 데모 가능 — Alpamayo 1 repo 최소선("≥24 GB VRAM, e.g., RTX 3090, RTX 4090, A5000, H100" 🔍 <a href="https://github.com/NVlabs/alpamayo">GitHub</a>)과 일치. 배치·CFG는 40GB+급(A100/H100/RTX 6000 계열).</p>
+<p class="small">절차: HF gated 신청 → uv 환경(CUDA 12.x, Py 3.12) → <code>hf auth login</code> → <code>test_inference.py</code> → 노트북으로 CoC·navigation·VQA 확인.</p>
+</section>
+
+<section>
+<h2>3. ② 파인튜닝(SFT) — "내 데이터로 적응"</h2>
+<h3>SW</h3>
+<ul>
+<li>repo: <a href="https://github.com/NVlabs/alpamayo-recipes">NVlabs/alpamayo-recipes</a> — recipe 4계열 (🔍): <code>alpamayo1_sft</code>·<code>alpamayo1_5_sft</code>(<b>HF Trainer + DeepSpeed</b>) / <code>alpamayo1_x_rl</code>(Cosmos-RL·GRPO → §4) / <code>alpamayo1_5_quant</code>(→ §5)</li>
+<li>유틸: 1↔1.5 체크포인트 변환, PAI 데이터셋 서브셋 큐레이션. (🔍)</li>
+<li>커스텀 데이터: Physical AI 데이터셋 유사 포맷 변환 후 데이터 로더 참고. (🎥 <a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">라이브스트림</a>)</li>
+</ul>
+<h3>데이터</h3>
+<ul>
+<li><a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">PhysicalAI-Autonomous-Vehicles</a>: 1,700시간 / 306,152클립 / <b>133TB</b> — 서브셋 큐레이션이 현실적. (🔍 카드)</li>
+<li>자체 reasoning 라벨: 공개 auto-labeling 파이프라인 (📄 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo">HF 런치 블로그</a>). 2 Super는 auto-labeler 겸용 예정 (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>).</li>
+</ul>
+<h3>HW</h3>
+<p><b>공식 총괄 수치 미공표</b> — recipes 메인 README는 개별 recipe README로 위임 (🔍). DeepSpeed 채택 = 다GPU 전제 신호. 참고선: 10B <b>학습은 단일 GPU 불가</b>(스모크 2장, 📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a>). → <b>미확인: SFT 정확 GPU 수/VRAM은 개별 recipe README 확인 필요.</b></p>
+</section>
+
+<section>
+<h2>4. ③ closed-loop RL — "시뮬레이터 안에서 자기 행동으로 배우기"</h2>
+<h3>SW 스택 (3층)</h3>
+<table>
+<tr><th>층</th><th>컴포넌트</th><th>역할</th><th>근거</th></tr>
+<tr><td>환경</td><td><a href="https://github.com/NVlabs/alpasim">AlpaSim</a> (Apache 2.0)</td><td><b>gRPC 마이크로서비스</b>(Driver/Renderer/TrafficSim/Controller/Physics, GPU별 배치). 렌더러 <b>NuRec</b>(기본)+<b>OmniDreams/FlashDreams</b>(생성형). Python 94.5%+Rust 4%, Docker Compose/Slurm</td><td>🔍 <a href="https://github.com/NVlabs/alpasim">alpasim</a> · 📄 <a href="https://developer.nvidia.com/blog/building-autonomous-vehicles-that-reason-with-nvidia-alpamayo/">dev blog</a></td></tr>
+<tr><td>하네스</td><td><a href="https://github.com/NVlabs/alpagym">AlpaGym</a> (Apache 2.0)</td><td>패키지 4개: <code>host</code>(CLI·config) / <code>runtime</code>(GPU 컨테이너, rollout+추론) / <code>policies</code> / <code>alpasim_configs</code>. 리워드 교체형(<code>reward=progress_safety</code>)</td><td>🔍 <a href="https://github.com/NVlabs/alpagym">alpagym</a></td></tr>
+<tr><td>트레이너</td><td><a href="https://github.com/nvidia-cosmos/cosmos-rl">Cosmos-RL</a> (Apache 2.0)</td><td>분산 rollout·학습. 병렬화: tensor/sequence/context/FSDP/pipeline. FP8 학습·FP8/FP4 rollout. <b>GRPO</b> 기본</td><td>🔍 <a href="https://github.com/nvidia-cosmos/cosmos-rl">cosmos-rl</a></td></tr>
+</table>
+<div class="warn">⚠️ 스택 세대 교체: Cosmos-RL repo가 "활발한 개발 종료, <b>Cosmos 3 이동 권장</b>" 표기 (🔍). 2 Super(Cosmos 3 백본) 공개 시 RL 스택도 이동 가능성 — 신규 구축 전 버전 확인.</div>
+<pre>uv run --no-sync --all-packages python -m alpagym_host.cli \
+  experiment=alpamayo_1_5_local_2gpu_smoke \
+  policy.model.path="$(pwd)/tmp/checkpoints/alpamayo-1.5-10B_alpagym_ckpt" \
+  reward=progress_safety</pre>
+<h3>HW</h3>
+<table>
+<tr><th>항목</th><th>수치</th><th>근거</th></tr>
+<tr><td>스모크 테스트</td><td><b>GPU 2장</b>(학습1+rollout1) — "tested on 2x 50GB RTX 6000 Ada"</td><td>🔍 <a href="https://github.com/NVlabs/alpagym">alpagym</a> · 📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">블로그</a></td></tr>
+<tr><td>GPU VRAM</td><td><b>≥40GB 권장</b></td><td>📄 동일</td></tr>
+<tr><td>디스크(기본)</td><td>~100–150GB (환경+컨테이너+가중치 ~21GB)</td><td>📄 동일</td></tr>
+<tr><td>씬 데이터</td><td>씬당 ~1.5GB, <code>public_2601</code> 전체 <b>~1.5TB</b> (<a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles-NuRec">NuRec 데이터셋</a>, 공개 씬 ~900개)</td><td>📄 동일 · 📄 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo">런치 블로그</a></td></tr>
+<tr><td>실전 학습</td><td>노드 단위+, Slurm. 수백 GPU 선형 스케일링 주장(초기 단계)</td><td>🔍 <a href="https://github.com/NVlabs/alpagym">alpagym</a> · 🎥</td></tr>
+<tr><td>지원 모델</td><td><b>Alpamayo 1.5 10B만</b> — 2 Super 미지원 (2026-07-15)</td><td>🔍 <a href="https://github.com/NVlabs/alpagym">alpagym</a></td></tr>
+</table>
+</section>
+
+<section>
+<h2>4B. SW 스택 계층 상세 — "BSP부터 앱까지"</h2>
+<p>두 스택 구분: <b>(A) 개발·학습 스택</b>(공개 repo로 전부 사실 확인 가능)과 <b>(B) 차량 탑재 스택</b>(각 층은 공식 문서로 확인되나, <b>Alpamayo가 실제로 어떻게 꽂히는지는 NVIDIA 미공개</b> → 결합부는 추론 표기).</p>
+
+<h3>A. 개발·학습 스택 (repo 의존성 파일 직접 확인)</h3>
+<figure>
+  <img src="images/stack_dev_learning.svg" alt="Alpamayo 개발·학습 SW 스택 계층도 L0–L5">
+  <figcaption>자체 제작(본 절 근거 기반) — 실선: 공식 repo/문서 직접 확인 🔍, 점선: 추정(근거 병기). 아래 표가 근거 원본.</figcaption>
+</figure>
+<table>
+<tr><th>계층</th><th>구성요소</th><th>근거</th></tr>
+<tr><td><b>L5 앱/워크로드</b></td><td>추론 노트북 4종·<code>test_inference.py</code> / SFT·quant recipe / AlpaGym experiment CLI / CVPR 챌린지 제출</td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5</a> · <a href="https://github.com/NVlabs/alpamayo-recipes">recipes</a> · <a href="https://github.com/NVlabs/alpagym">alpagym</a></td></tr>
+<tr><td><b>L4 도메인 프레임워크</b></td><td><code>alpamayo1.5</code>(모델 코드) · <code>alpamayo-recipes</code> · <b>AlpaGym</b> 5패키지(<code>host</code>·<code>plugins</code>·<code>runtime</code>·<code>alpasim_configs</code>·<code>policies/alpamayo_r1</code>) · <b>AlpaSim</b> 모듈 11종(<code>driver</code>·<code>renderer</code>(NuRec/OmniDreams)·<code>trafficsim</code>·<code>controller</code>·<code>physics</code>·<code>eval</code>·<code>grpc</code>·<code>runtime</code>·<code>utils</code>·<code>tools</code>·<code>wizard</code> — 옵션 extras)</td><td>🔍 각 repo pyproject.toml</td></tr>
+<tr><td><b>L3 ML 프레임워크·라이브러리</b></td><td><b>PyTorch 2.8.0</b>(CUDA 12.8 wheel 고정) · <b>transformers 4.57.1</b> · <b>flash-attn ≥2.8.3</b>(SDPA 폴백) · accelerate ≥1.12 · <b>DeepSpeed</b>(SFT) · <b>Cosmos-RL</b>(rollout 추론 <b>vLLM ≥0.8.5</b>, <code>[rl]</code> extra) · grouped-gemm · einops · hydra-core/colorlog · av(PyAV 비디오 디코딩) · pandas/pillow/matplotlib/seaborn · <code>physical-ai-av==0.2.0</code>(이름상 PAI-AV 데이터 SDK — <b>역할은 이름 기반 추정</b>)</td><td>🔍 <a href="https://raw.githubusercontent.com/NVlabs/alpamayo1.5/main/pyproject.toml">1.5 pyproject</a> · <a href="https://raw.githubusercontent.com/NVlabs/alpagym/main/pyproject.toml">alpagym pyproject</a> · <a href="https://raw.githubusercontent.com/nvidia-cosmos/cosmos-rl/main/pyproject.toml">cosmos-rl pyproject</a> · <a href="https://github.com/NVlabs/alpamayo-recipes">recipes</a></td></tr>
+<tr><td><b>L2 런타임·시스템 SW</b></td><td>Python <b>3.12</b>(AlpaSim은 3.11–3.12) · <b>uv ≥0.10</b> · <b>Docker</b> · <b>gRPC</b>(<code>alpasim_grpc</code> 패키지 실존) · <b>NCCL</b>(<code>nccl_e2e</code> 테스트 실존; 영상: 대용량 rollout 전송 튜닝 🎥) · <b>Rust/cargo</b>(AlpaSim 가속, 4%) · <b>Slurm</b>(<code>run-on-slurm</code>)</td><td>🔍 각 pyproject·README</td></tr>
+<tr><td><b>L1 OS·드라이버</b></td><td><b>Linux x86_64 전용</b>(AlpaGym 명시) + NVIDIA 드라이버 + <b>CUDA Toolkit 12.x</b>(nvcc)</td><td>🔍 <a href="https://raw.githubusercontent.com/NVlabs/alpagym/main/pyproject.toml">alpagym pyproject</a> · <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a></td></tr>
+<tr><td><b>L0 HW</b></td><td>GPU(§2·§4) · 디스크 · 다노드 시 고속 인터커넥트(NCCL 스케일링 전제, 🎥 수백 GPU 선형 주장)</td><td>§2·§4 참조</td></tr>
+</table>
+<div class="tldr">주목 사실 2개 (🔍 <a href="https://raw.githubusercontent.com/NVlabs/alpagym/main/pyproject.toml">alpagym pyproject</a>): ① <b>xformers 의도적 비활성</b> — cosmos-rl 체인과 flash-attn 버전 충돌 회피 명시(스택 결합 민감) ② 정책 패키지 경로 <code>policies/alpamayo_r1</code> — 1.5 지원도 R1 코드베이스 기반.</div>
+
+<h3>B. 차량 탑재 스택 (NVIDIA DRIVE 참조 아키텍처)</h3>
+<div class="warn">⚠️ 각 층은 NVIDIA 공식 문서로 확인된 사실. 단 <b>"Alpamayo distilled 모델이 어느 자리에 어떻게 통합되는지"는 공개 문서 없음</b> — 최상층 배치는 보도자료 발언(teacher→distill→Thor 🔍)에서 유추한 <b>추론</b>.</div>
+<figure>
+  <img src="images/stack_vehicle.svg" alt="차량 탑재 참조 스택 — DriveOS부터 DRIVE AV까지, Alpamayo 결합부 점선">
+  <figcaption>자체 제작(본 절 근거 기반) — 실선: NVIDIA 공식 문서 원문 확인 🔍, 점선: 추론(Alpamayo 통합 위치 미공개). 아래 표가 근거 원본.</figcaption>
+</figure>
+<table>
+<tr><th>계층</th><th>구성요소</th><th>근거</th></tr>
+<tr><td><b>앱/AV 스택</b></td><td><b>DRIVE AV software</b> — "purpose-built for L4 autonomy". Alpamayo 관점: distilled student가 주행 정책, meta-action 소비하는 downstream planner와 결합 구조 <b>시사(추론)</b> — 보도자료 "downstream AV stack built on Alpamayo"·"distilled compact models run on NVIDIA DRIVE AGX Thor" 기반, 실제 통합 아키텍처 미공개</td><td>🔍 <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/in-vehicle-computing/">in-vehicle computing</a> · <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a></td></tr>
+<tr><td><b>AI 런타임</b></td><td>DriveOS가 <b>CUDA·cuDNN·TensorRT</b> 포함(사실). quant recipe(FP8/NVFP4) 산출물 ↔ Thor FP4 가속 정합. <b>"차량 추론=TensorRT 계열" 직접 명시 없음(추론)</b> — 근거: DriveOS 구성+NVFP4 recipe+Thor FP4 스펙(전부 사실)</td><td>🔍 <a href="https://developer.nvidia.com/drive/os">DriveOS</a> · <a href="https://github.com/NVlabs/alpamayo-recipes">recipes</a> · <a href="https://developer.nvidia.com/blog/accelerate-autonomous-vehicle-development-with-the-nvidia-drive-agx-thor-developer-kit/">Thor 블로그</a></td></tr>
+<tr><td><b>미들웨어</b></td><td><b>DriveWorks SDK</b> — DriveOS 위 계층. <b>SAL</b>(Sensor Abstraction Layer): "abstraction between physical sensor models and software applications" / 이미지·포인트클라우드 처리 / <b>동적 캘리브레이션</b>(런타임 재추정) / <b>egomotion 모듈</b>(Alpamayo 입력의 egomotion 히스토리와 개념 대응 — 직접 연결 문서 없음)</td><td>🔍 <a href="https://developer.nvidia.com/drive/driveworks">DriveWorks</a></td></tr>
+<tr><td><b>OS/BSP</b></td><td><b>DriveOS</b> — "hypervisor manages resources and provides abstraction between underlying hardware and OS" / 게스트 <b>Linux 또는 QNX</b> / <b>NvMedia</b>: "camera frames are directly loaded into GPU memory" / <b>NvStreams</b>: zero-copy 전송 / <b>ASPICE, ISO 26262, ISO/SAE 21434</b> 준수 / DRIVE AGX SDK Developer Program 가입 필요(gated)</td><td>🔍 <a href="https://developer.nvidia.com/drive/os">DriveOS</a></td></tr>
+<tr><td><b>HW 플랫폼</b></td><td><b>DRIVE AGX Thor</b>(Blackwell, 1,000 INT8 TOPS/2,000 FP4 TFLOPS, ASIL-D 설계). 플랫폼 단위 <b>DRIVE Hyperion</b>: "two NVIDIA DRIVE AGX Thor systems-on-a-chip on a single board, the safety-certified NVIDIA DriveOS operating system, and a fully qualified multimodal sensor suite that includes <b>14 high-definition cameras, nine radars, one lidar, and 12 ultrasonics</b>"</td><td>🔍 <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/in-vehicle-computing/">in-vehicle computing</a> · <a href="https://developer.nvidia.com/blog/accelerate-autonomous-vehicle-development-with-the-nvidia-drive-agx-thor-developer-kit/">Thor 블로그</a></td></tr>
+<tr><td><b>안전 프레임워크</b></td><td><b>NVIDIA Halos</b> — PlusAI가 "safety through NVIDIA Halos"로 3축(모델·HW·안전) 중 하나로 명시. Halos 상세는 본 조사 범위 밖(미조사)</td><td>🔍 <a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI</a></td></tr>
+</table>
+<p class="small">정합성 참고: Hyperion 카메라 14개 ⊃ 데이터셋 7카메라(§6) — 부분집합으로 보이나 <b>공식 매핑 문서 없음(추론)</b>.</p>
+
+<h3>C. 스택 속 AI 기술 요소</h3>
+<table>
+<tr><th>기술</th><th>어디에</th><th>근거</th></tr>
+<tr><td>Transformer VLM 백본 (Cosmos-Reason2 / Cosmos 3 Super Reasoner)</td><td>모델 본체</td><td>🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a> · <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a></td></tr>
+<tr><td>Diffusion action decoder + conditional flow matching(Stage 1)</td><td>궤적 생성(action expert 2.3B)</td><td>🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a> · 📄 <a href="https://arxiv.org/html/2511.00088v2">arXiv v2</a></td></tr>
+<tr><td>Chain-of-Causation SFT</td><td>Stage 2</td><td>🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a></td></tr>
+<tr><td>GRPO RL post-training</td><td>Stage 3 · AlpaGym</td><td>🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a> · <a href="https://github.com/NVlabs/alpagym">alpagym</a></td></tr>
+<tr><td>FlashAttention</td><td>추론·학습 필수 의존성</td><td>🔍 <a href="https://raw.githubusercontent.com/NVlabs/alpamayo1.5/main/pyproject.toml">1.5 pyproject</a></td></tr>
+<tr><td>Classifier-Free Guidance</td><td>navigation 조건 증폭</td><td>🔍 <a href="https://github.com/NVlabs/alpamayo1.5">1.5 repo</a>("+CFG") · 🎥</td></tr>
+<tr><td>vLLM rollout 서빙</td><td>Cosmos-RL <code>[rl]</code> extra</td><td>🔍 <a href="https://raw.githubusercontent.com/nvidia-cosmos/cosmos-rl/main/pyproject.toml">cosmos-rl pyproject</a></td></tr>
+<tr><td>PTQ 양자화 FP8 / NVFP4+FP8 혼합</td><td>배포 전 압축 (Model Optimizer Toolkit)</td><td>🔍 <a href="https://github.com/NVlabs/alpamayo-recipes">recipes</a></td></tr>
+<tr><td>Knowledge distillation</td><td>차량 배포 경로(공식 recipe 미출시)</td><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a> · <a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI</a></td></tr>
+<tr><td>NuRec 재구성 렌더링(영상에선 3DGS 기법 언급)</td><td>AlpaSim 기본 렌더러</td><td>🔍 <a href="https://github.com/NVlabs/alpasim">alpasim</a> · 🎥</td></tr>
+<tr><td>OmniDreams/FlashDreams 생성형 렌더링</td><td>AlpaSim 대체 렌더러</td><td>🔍 <a href="https://github.com/NVlabs/alpasim">alpasim</a></td></tr>
+<tr><td>Speculative decoding·DFlash</td><td>10Hz reasoning 가속 수단 언급</td><td>🎥 · 🔍 <a href="https://huggingface.co/z-lab/Alpamayo-1.5-10B-DFlash">z-lab HF</a></td></tr>
+<tr><td>Adaptive thinking(단순 상황 reasoning 생략)</td><td>연구 단계 — CVPR highlight 논문 발언</td><td>🎥 — 논문 실체 미확인</td></tr>
+</table>
+</section>
+
+<section>
+<h2>5. ④ 차량 배포 — "엣지 크기로 줄여 싣기"</h2>
+<h3>SW 경로</h3>
+<table>
+<tr><th>수단</th><th>상태</th><th>근거</th></tr>
+<tr><td><b>Quantization</b></td><td>공식 recipe 존재: <code>alpamayo1_5_quant</code> — Model Optimizer Toolkit, <b>FP8</b>, <b>NVFP4+FP8 혼합</b></td><td>🔍 <a href="https://github.com/NVlabs/alpamayo-recipes">recipes</a></td></tr>
+<tr><td><b>Distillation</b></td><td>공식 recipe <b>아직 없음</b>(목록 부재 🔍). "여름 말 예정" 🎥 + "single-GPU용 2B distill 스크립트 계획" 📄</td><td><a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a></td></tr>
+<tr><td>추론 가속(참고)</td><td>z-lab <b>DFlash</b>판(<a href="https://huggingface.co/z-lab/Alpamayo-R1-10B-DFlash">R1</a>·<a href="https://huggingface.co/z-lab/Alpamayo-1.5-10B-DFlash">1.5</a>) + speculative decoding·템플릿화 CoC로 10Hz reasoning 🎥</td><td>🔍 HF · 🎥</td></tr>
+<tr><td>실증 사례</td><td>PlusAI: 10B teacher → <b>500M student</b> distill, 트럭 엣지 탑재</td><td>🔍 <a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI</a></td></tr>
+</table>
+<h3>타깃 HW: NVIDIA DRIVE AGX Thor</h3>
+<table>
+<tr><th>항목</th><th>수치</th><th>근거</th></tr>
+<tr><td>연산</td><td>"Up to <b>1,000 INT8 TFLOPS; 2,000 FP4 TFLOPS</b>" (Blackwell GPU)</td><td>🔍 <a href="https://developer.nvidia.com/blog/accelerate-autonomous-vehicle-development-with-the-nvidia-drive-agx-thor-developer-kit/">Thor 개발킷 블로그 2025-09-03</a></td></tr>
+<tr><td>CPU/메모리</td><td>14x Arm Neoverse V3AE, LPDDR5X 273GB/s</td><td>🔍 동일</td></tr>
+<tr><td>안전</td><td>ISO 26262 <b>ASIL-D</b> + ISO 21434 설계</td><td>🔍 동일</td></tr>
+<tr><td>개발킷</td><td><a href="https://developer.nvidia.com/drive/agx">DRIVE AGX 페이지</a> — Thor SKU 10(벤치)/12(차량)</td><td>🔍</td></tr>
+</table>
+<p class="small">NVFP4 recipe ↔ Thor FP4 native 가속이 짝 — 보도자료의 "distill → Thor 탑재" 경로와 일치 (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a>).</p>
+</section>
+
+<section>
+<h2>6. 데이터셋·센서 스펙</h2>
+<p><a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">PhysicalAI-Autonomous-Vehicles</a> 카드 직접 확인(2026-07-15 🔍):</p>
+<table>
+<tr><th>항목</th><th>수치</th></tr>
+<tr><td>규모</td><td>1,700시간 / 306,152클립(20초) / <b>133TB</b> / 25개국·2,500+도시</td></tr>
+<tr><td>카메라</td><td><b>7개</b>: 전방 광각 120° · 전방 망원 30° · 크로스 좌/우 120° · 후방 좌/우 70° · 후방 망원 30°</td></tr>
+<tr><td>LiDAR</td><td>상단 360° 회전식 1기 — 298,326클립</td></tr>
+<tr><td>Radar</td><td>최대 10기 — 160,761클립</td></tr>
+<tr><td>부가 라벨</td><td>egomotion, 캘리브레이션, 기계생성 장애물 라벨, OOD reasoning 라벨</td></tr>
+<tr><td>라이선스</td><td>NVIDIA AV Dataset License — <b>AV 용도 한정</b>(상업 가능), 감시·생체·재배포 금지, gated</td></tr>
+<tr><td>인기</td><td>최근 한 달 다운로드 207,246회(HF 표기)</td></tr>
+</table>
+<p class="small">주의: 2026-01 dev blog 수치(1,727h/310,895클립 📄)와 소폭 차이 — 버전 갱신 추정(확증 없음), 본 문서는 카드 기준. 시사점: 데이터셋 7카메라 구성은 2 Super 360°("7+ 카메라" 🎥)와 정합 — 1/1.5는 전방 4개만 사용, 2 Super가 전체 셋 사용 방향으로 해석 가능(<b>추정</b> — 2 Super 입력 스펙 미공개).</p>
+</section>
+
+<section>
+<h2>7. 미확인 항목</h2>
+<table>
+<tr><th>항목</th><th>상태</th></tr>
+<tr><td>SFT recipe별 GPU 수/VRAM</td><td>개별 recipe README 미확인 — 실행 전 확인 필요</td></tr>
+<tr><td>2 Super 추론/학습 HW</td><td>모델 미공개. 34B급 → 1.5(24GB) 대비 대폭 상승 예상(추정)</td></tr>
+<tr><td>distillation recipe 시점</td><td>"여름 말" 🎥 영상 발언만</td></tr>
+<tr><td>AlpaSim 렌더링 GPU 최소 사양</td><td>README 명시 없음 🔍</td></tr>
+<tr><td>Cosmos 3 RL 스택 전환 일정</td><td>Cosmos-RL 이관 권고만 확인</td></tr>
+<tr><td>2 Super 라이선스</td><td>미발표 — CES "상업 옵션" 예고만 📄</td></tr>
+</table>
+</section>
+
+<section>
+<h2>8. 레퍼런스 (신규 소스)</h2>
+<ul class="small">
+<li><a href="https://github.com/NVlabs/alpamayo1.5">NVlabs/alpamayo1.5</a> · <a href="https://github.com/NVlabs/alpamayo-recipes">alpamayo-recipes</a> · <a href="https://github.com/NVlabs/alpasim">alpasim</a> · <a href="https://github.com/NVlabs/alpagym">alpagym</a> · <a href="https://github.com/nvidia-cosmos/cosmos-rl">cosmos-rl</a> — 전부 🔍 직접 확인</li>
+<li><a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">PhysicalAI-Autonomous-Vehicles 카드</a> 🔍 · <a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles-NuRec">NuRec 데이터셋</a></li>
+<li><a href="https://developer.nvidia.com/blog/accelerate-autonomous-vehicle-development-with-the-nvidia-drive-agx-thor-developer-kit/">DRIVE AGX Thor 개발킷 블로그</a> 2025-09-03 🔍 · <a href="https://developer.nvidia.com/drive/agx">DRIVE AGX 페이지</a> 🔍 · <a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI 발표</a> 🔍</li>
+<li>의존성 파일(§4B): <a href="https://raw.githubusercontent.com/NVlabs/alpamayo1.5/main/pyproject.toml">alpamayo1.5</a> · <a href="https://raw.githubusercontent.com/NVlabs/alpagym/main/pyproject.toml">alpagym</a> · <a href="https://raw.githubusercontent.com/NVlabs/alpasim/main/pyproject.toml">alpasim</a> · <a href="https://raw.githubusercontent.com/nvidia-cosmos/cosmos-rl/main/pyproject.toml">cosmos-rl</a> — 전부 🔍</li>
+<li>차량 스택(§4B): <a href="https://developer.nvidia.com/drive/os">DriveOS</a> 🔍 · <a href="https://developer.nvidia.com/drive/driveworks">DriveWorks</a> 🔍 · <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/in-vehicle-computing/">in-vehicle computing(Hyperion)</a> 🔍</li>
+<li>기존 공유 소스: <a href="reference/references.md">reference/references.md</a></li>
+</ul>
+</section>
+
+<footer>모든 사실 주장은 표기된 레퍼런스 범위로 한정, 미확인은 §7에 명시. 작성 2026-07-15.</footer>
+</div>
+</body>
+</html>

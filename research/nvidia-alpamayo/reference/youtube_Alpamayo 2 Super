@@ -1,0 +1,1409 @@
+orig link: https://www.youtube.com/watch?v=kJRVwaYwvt0
+
+txt: 
+Hey everybody, welcome to the live
+stream. Very excited to have you join us
+today. This live stream's Alpamo 2
+Super, the open open reasoning model for
+robo taxis. I'm joined here by some
+excellent guests from the Nvidia team.
+We're going to be diving into Nvidia's
+open reasoning model built for robo
+taxis. Alpamo 2 Super actually reasons
+and plans across the entire autonomous
+vehicle pipeline. Uh, it's 32 billion
+parameters running on Cosmos 3 backbone
+with full 360deree surround perception
+across seven plus cameras. Auto labeling
+and explicit metaction outputs alongside
+trajectory predictions. We're also going
+to look at super exciting output gym,
+the closed loop reinforcement learning
+framework that trains AV policy models
+on the simulated consequences of their
+own decisions all at GPU scale. Very
+exciting. And to help kick things off,
+I'm going to turn the mic over to my
+great colleague, Marco. Marco, it's so
+great to have you and these great
+colleagues joining us today. Super
+exciting live stream today. Um, we're
+going to uh we're going to take people's
+questions along the way. So, if you have
+a question, the more on topic it is, the
+more likely we're are going to be able
+to talk about it on the air. So, try to
+keep it on topic, but feel free to say
+hi and let us know where you're watching
+from. Marco, I'm going to hand it off to
+you for this exciting intro.
+>> Thank you, Admar, for the introduction.
+It's great to be back. So today in this
+live stream, we'll discuss our latest
+progress toward building reasoning
+models for autonomous driving
+collectively referred to as Alpameio
+models. Next.
+Now, as many of you uh already know, at
+the latest CES, Nvidia unveiled the
+Alpario open platform, a comprehensive
+open uh ecosystems of AI models,
+simulation tools, and data sets aimed at
+accelerating the development of
+reasoning based autonomous vehicle
+solutions. Next, the Alpameo platform
+comprises the Alpameo reasoning model
+series, namely Alpha Mayo 1, Alamayo
+1.5, Alpameo 2. These are at a high
+level open 10 billion or 32 billion
+parameter channel thought reasoning
+vision language action models purpose
+built for autonomous driving
+applications. They take multi- camera
+video as input and outputs both driving
+trajectories and explicit reasoning
+traces that expose the logic behind each
+decision. And the models come with a
+fine-tuning scripts that allow
+developers to fine-tune the models to
+their own data set. Next, we have
+Alpasim, which is an open-source end to
+end autonomous vehicle simulation
+platform designed specifically for
+research and development. And exactly
+today we are going to release Alpagy
+which is an open closed loop enforcement
+learning training framework to uh train
+through enforcement learning end to end
+autonomous vehicle driving policies. On
+the data side, the the platform provides
+the physical AI autonomous vehicle data
+set which represents one of the largest
+and most geographically diverse
+collections of multi-ensor data
+available. And for scalability, we have
+also opensource our reasoning auto
+labeling pipeline so that developers can
+autole their data set with reasoning
+traces in order to build their own
+reasoning based AV solutions. Everything
+in the ecosystem is open. Model weights,
+code and data sets are available on
+GitHub and hugging face and a good entry
+point to the ecosystem is provided by
+the hugging phase of blog post that is
+referenced at the bottom of this slide.
+Next,
+I would also like to highlight two
+challenges we have just released on
+reasoning and closed loop driving
+performance. So if you are interested in
+benchmarking your solutions with the
+community, I would encourage you to
+participate in these challenges. Next,
+now since its introduction, the Alpha
+Mayo ecosystem has uh um gotten
+significant uh traction. Among other
+accolades, it has received the Computex
+2026 best choice award as the most
+innovative solution in the automotive
+space. is one of the most downloaded
+open models robotics open models on a
+phase and perhaps most importantly
+developers worldwide have been using
+bits and pieces of alpha mayo to develop
+their own AV solutions. Next,
+now let me give you uh um let me show
+you a short video that provides a
+glimpse of Alpa Mayo capabilities
+including the core principles behind
+Alpameo as well as associated
+development tools. Next.
+So as you can see, Alamay is a reasoning
+model which means that as it drives
+around, it produce reasoning traces that
+explain as I said before the logic
+behind its decision. Alio is really a
+platform in the sense that it comprises
+a model. It comprises a simulator
+Alpazine and it comprises the data set
+the multi-ensor data set that I
+mentioned before.
+Alto is an end to end model that maps
+images and other inputs such as for
+example user prompt and navigation input
+into different sets of outputs including
+listening traces, meta actions and
+trajectories.
+And by now we have conclusing evidence
+that uh reasoning so forcing the model
+to output reasoning traces thereby
+decomposing a pro problem into its
+constituent components leads to better
+action generation. Next
+and currently we are in the process of
+uh uh protot
+next.
+So here you can see a user that is
+seamlessly talking to the car and the
+car is replying back providing
+information
+uh about uh where to go and most
+importantly on demand underscoring the
+reasoning behind some of the decisions
+that are being made and that's how we
+envision the experience of a user in a
+robot axis in uh in the future. Next,
+a little bit more on the technical side.
+As mentioned, Alpio is a reasoning based
+vision language action model. So
+differently from a standard vision
+language action model that directly maps
+images or more broadly sensory inputs
+into actions, a reasoning model
+decomposes a scene into its constituent
+components and then articulate its
+reasoning step by step underscoring and
+explaining the motivation or the logic
+behind each uh decision.
+As I mentioned, uh, Alpomayio takes
+multiple sensor inputs from images to
+navigation inputs and prod produces
+multiple action modalities from
+reasoning traces to, uh, trajectories.
+Next.
+Now, of course, we're not claiming that
+uh um Alpameo really models really
+display human cognition, but more
+fundamentally
+uh uh this model can be viewed as a
+scaffolded statistical processes that
+produce traces resembling humanlike
+reasoning, linking special understanding
+and common sense reasoning with phys
+physical actions, which is ultimately
+what we're interested in. Click. So here
+is an example of a reasoning trace for a
+scenario where a person is chasing a cat
+highlighting what's happening and
+whether there are uh any risks and
+finally what to do next. And as I said
+by now there is conclusive evidence that
+the reasoning process leads to better
+more performance and safer actions. Now
+then the question is how do we scaffold
+embodied reasoning into a model? Well,
+uh this is of course a relatively
+complex process and to this purpose we
+have developed a multi-stage training
+pipeline where different stages enable
+different capabilities and rely on
+different data sources. We begin with
+cosmos reason which is trained on
+internet scale data to provide a general
+reasoning ability. This is followed by a
+pre-training stage on large scale
+driving data to enable trajectory
+prediction capabilities.
+Next, we perform a supervised
+fine-tuning using driving related
+reasoning traces generated by our
+in-house autoing pipeline in order to
+elicit explicit explicit reasoning and
+as mentioned we have actually open
+source our reasoning autoleing pipeline
+and then a subsequent reinforcement
+learning stage built on cosmos RL
+further improves reasoning on
+challenging cases and promotes alignment
+among output modal.
+to make sure that for example
+trajectories and reasoning traces are
+reflective of each other. Finally, we
+can apply distillation to compress this
+capabilities into model suitable for on
+board deployment. Now, as announced uh
+at Computex uh by Jensen
+uh Alpio 2 is the next version of the
+Alpo ecosystem. Alpa mayo 2 comprises a
+new better model, Alpameo 2 super and
+the Alpim closed loop reinforcer
+learning framework that instantiates uh
+the uh RL the closed loop RL step that
+we see in the multi-stage training
+pipeline we have developed. So the plan
+for the rest of the live stream is to
+first go in detail through the alpha gym
+training framework which as I said is
+going to be released uh today. We are
+going to provide uh a discussion about
+the key technological motivations about
+Alpim, the key technological tenets as
+well as a glimpse into how to get
+started with Alpim and then we're going
+to move to the reasoning models
+themselves with uh a bit more of a deep
+dive into the capabilities that will be
+offered by Alpameo 2 super. With that,
+Max, please take it away. And actually
+before Max just just before you start I
+wanted to let everyone know actually
+Alpa Gym we just released it publicly.
+So when Marco said released today
+released right now.
+>> I love it. Just in time it release.
+>> Yes. Thank you very much Boris and
+Marco. Um so before diving in I just
+want to quickly clarify what we mean
+when we talk about openloop RL and
+closed loop RL because we're both using
+both in the training pipeline for
+Alamayio. So open loop RL we mean that
+we have some fixed sensor input from the
+expert data and then we feed that into
+the model and ask it to predict for
+example reasoning traces meta actions or
+a plan trajectory and then we compute
+our rewards based on that one-step
+prediction of the model and perform RL
+on it. In contrast in closed loop RL we
+have a simulation in the loop. So the
+simulation provides a state, the policy
+sends back an action, the simulate up
+simulator updates the state, sends the
+new observation back and so on. So
+there's a feedback loop going on between
+policy and simulator that results on
+some actual driving behavior in the
+simulation and then we perform
+reinforcement learning on top of that.
+So that's why it's called closed loop
+because it closes the loop between
+outputs and inputs of the policy.
+But why do we even need closed loop
+reinforcement learning? This is an
+important question to ask because doing
+it is pretty expensive because now we
+have the simulation and the rollout
+loop. But we do strongly believe that
+openloop is just not enough and we have
+several data points that make us believe
+that. The first one is theoretical. We
+know that if we want to deploy our
+policy in closed loop, the best thing we
+can do for training is also train it in
+closed loop. Otherwise, and that's the
+theoretical insight is we get
+quadratically increasing regret over the
+the time horizon of the rollout. So what
+does it mean intuitively? I think
+there's two good intuitive explanations
+of why we need to train closed loop. The
+first one is coariant shift. We want our
+policy to be able to recover from its
+own mistakes. The problem is that it's
+not going to be able to learn that from
+expert data alone because the expert
+wasn't making those same mistakes. So
+what we have to do is we have to roll
+out the policy in closed loop. It sees
+the mistakes that it's making and then
+it can learn to recover from them.
+The other intuitive reason for why we
+want closed loop training is causal
+confusion. So we all know the different
+uh the the difference between
+correlation and causation and we want
+our model to condition on the causally
+correct factors when making decisions.
+So for example, if we approach a red
+traffic light, we want the model to stop
+because the traffic light is red and not
+because the other cars are stopping as
+well. Now the problem is that it's
+really hard to differentiate between
+correlation and causation from purely
+static data because in those scenarios
+both the traffic light is red and the
+other cars are also stopping. So how is
+the car supposed to know?
+In general, if you want to learn about
+causation, you need some form of
+intervention. So this is why for example
+in medicine we have the concept of
+randomized control trials. In our case
+what we have is a simulation where the
+model can try out different things and
+see how the environment reacts and
+figure out what is kind of the causal
+correlation or the causal relationship
+between actions and reactions.
+Okay. So this is on the intuitive level
+of why we need closed loop training. But
+there's also a lot of experimental
+evidence that shows us that if we take
+even a very strong pre-trained policy
+and then we fine-tune it with closed
+loop data and reinforcement learning, we
+get a much stronger policy. So for
+example, this this plot here is from a
+recent paper from phys physical
+intelligence who are building robots.
+And you can see in the the red and green
+bars is the pre-trained policy and the
+two yellow bars are fine-tuned with
+reinforcement learning on top of the
+green bars. and the performance is a lot
+better. But we also have our own results
+both from the domain of traffic modeling
+as well as actually from fine-tuning our
+end-to-end policy itself. In both cases,
+we started with a strong baseline
+pre-trained model and we fine-tuned it
+with closed loop data and we got a much
+better performance.
+So hopefully I can convince you that
+closed loop training is important. The
+other important question is why now?
+because RL and closed loop training has
+been around for a while. Autonomous
+vehicles have been kind of being
+researched for a while now. So why
+should we now start pushing for actually
+combining both? And I think there's at
+least three reasons. The first one is
+that endto-end policies are becoming
+much more widespread. And one important
+consequence of that is that we put a lot
+more emphasis on the training data and
+the training algorithms that we are
+using to train those models because
+really this is our biggest lever to
+improve them. And hopefully I convinced
+you on the previous slide that for
+training closed loop reinforcement
+learning or some form of closed loop
+training should be part of the training
+pipeline of such policies.
+The other reason is that it's actually
+becoming feasible now because we have
+libraries such as the neur library from
+Nvidia that allows us to render
+realistic highfidelity images at a cost
+and speed that makes close to training
+actually feasible.
+And lastly, world models are an
+important topic in the community at the
+moment. And so we should expect those
+trends that brought us to the point
+where closed loop training is feasible.
+Those trends should continue on and
+close loop training should just become
+more and more powerful from here on.
+But it's still not exactly cheap and it
+does require infrastructure at scale.
+And this is exactly what we are wanting
+to build with Alpasim and Alpasim.
+Alpasim and Alpajim for evaluating and
+training endto-end policies.
+Okay, let's start with Alpasim, our
+simulation infrastructure.
+When we built Alpasim, we had several
+goals. The first one of course that it's
+supposed to be realistic. Because of
+that we rely on neur 3DGS rendering and
+since very recently also on omnires
+alternatively to use a world model for
+the rendering. We also have a realistic
+controller and traffic model in the
+loop. Additionally we want alpasim to re
+to be really modular meaning that we
+want each component such that such as
+driver renderer traffic model etc.
+um should be very easy to swap out by
+our researcher and plug their own in.
+And the goal for that is really that we
+want to build a platform not just for
+evaluating AV policies, but by really
+pushing the research frontier across
+policies, traffic models and rendering
+technologies. So everything that makes
+AV simulation work well.
+And the idea here clearly is that if
+someone is working on for example a
+traffic simulation, they can plug it
+into Alpasim and compare it to the um
+best AV policy, train it with RL um and
+see how they all interact with each
+other. We also optimize Alpasim for
+throughput through heavy
+parallelization. And this is just to get
+to the scale that we actually need for
+our training. But at the same time, we
+put a lot of effort on keeping the code
+still very lightweight and hackable just
+to make it approachable by researchers
+and easy to modify. And I have to say,
+I'm actually pretty proud of the code
+base. Um, especially nowadays in the the
+age of agentic coding.
+What you can see here is a video of our
+Alpamaya reasoning policy being rolled
+out in the simulation. Um,
+yeah. And Max, while we have while we
+have that Alpasim um slide up, I just
+wanted to there's a few good questions
+in the chat here about um so for
+example, how are scenarios defined in
+the Alpo ecosystem? How to map real sim
+vice versa? What standards do we use? Do
+we use open scenario? Things like this.
+Uh excellent question. Um so in
+principle, uh Alpasim is agnostic to the
+type of data. Um so we try because we
+try to make it a platform we try to keep
+it fairly general. Um we are using a
+library called stretch data to parse
+input maps and stretch data supports a
+wide range of formats both from the
+NVIDIA side the NVIDIA physical AI data
+set but also for example uh new plan and
+a couple of others. Um on the rendering
+side what you need depends heavily on
+the renderer. Um I mentioned that we're
+implementing for example Nurk. In that
+case the artifact that you need is a
+USDZ file that was converted by Newur um
+from an initial video. Um that
+conversion um can be done with your own
+data. So you can bring your own data um
+go to the corresponding p I think it's
+hosted on ref. You can upload it. It
+gets converted to the US file and you
+can simulate it in in alpasim. Um but
+you can also bring your own renderer. we
+are implementing or we we are compatible
+with a renderer MTGS that is able to
+render new um artifacts as well and not
+new sorry new plan artifacts um
+and yeah I I hope that answered the
+question I'm sorry if I forgot something
+>> no that's that's perfect max and and
+I'll and I'll actually there's a related
+question that I can also very quickly
+answer so yeah actually there there
+definitely are ways to integrate these
+kinds of reasoning models into if you
+have other simulators of interest that
+you're used to using like for example
+Carla a lot of those same artifacts
+actually carry across both Alpha Sim and
+Carla because actually under the hood we
+use a lot of the same uh loading
+infrastructure for maps or for the
+actual 3D environments that they that
+they operate in. Um the main difference
+as Max said is Alasim itself is uh
+designed basically first and foremost to
+be lightweight and hackable and and
+really is a strong research base um to
+really make your own swap out different
+components change you know at the
+deepest level how the simulation
+operates um while still maintaining a a
+strong ability for even for example a
+single developer to launch many parallel
+simulations on a on a large cluster. So
+it's kind of this balance exactly of
+modularity
+flexibility but also with well-gineered
+throughput that we really want to try
+and balance uh and achieve with Alpsim.
+And you'll see actually why this is
+important when we talk about close-up
+training.
+>> So yeah, thank you Max. I just wanted to
+uh address those while we're here.
+>> Yeah. No, very good question. Also um in
+two slides I'll talk about the
+configurility and modularity. So if you
+implement for example your own rendering
+um or your own data um we encourage you
+to write a plugin that can you make that
+you can make available to the wider
+community because we really want to
+build a community around this.
+Um just one slide on how to run alpasim.
+Um I'm not going to go through the
+onboarding but there's a very good
+onboarding guide on our GitHub page.
+Effectively, you need UV for Python
+dependencies, cargo for Rust because we
+have a small module that we've written
+in Rust because we found that to kind of
+greatly accelerate the simulation and
+it's usually not to necessary to touch
+it. Uh so you can still do everything in
+Python that you need to um docker for
+running in containers and you need a
+hugging face account to download both
+the models and the data and then on your
+machine um this is the simple command to
+run. So uv run alpasim wizard um deploy
+local for example here meaning we want
+to use docker um topology on one GPU
+running the alpha Mario 15 driver and we
+specify a locked deer um we're using
+hydra which you might be familiar with
+um to specify the configuration and this
+effectively just means that there's one
+yaml file that gives the base
+configuration and then all these command
+line overrites that you see just point
+to a different yaml file that overwrites
+part of the base config
+on the right you can see something more
+complex where we run on slurm um we run
+on four nodes in parallel uh with a
+different driver with a much larger
+topology so on eight GPUs and 100
+rollouts in parallel so this is what I
+meant with like focus on throughput
+through heavy parallelization um we run
+on our public uh new data set um so also
+related to the question at the moment
+there's around 900 something scenes um
+publicly uploaded that you can just
+simulate directly without bringing your
+um and we want to roll out eight
+rollouts per per scenario. For example,
+out of the box, we support docker
+compose and slurm with n root as
+deployment options. But we took great
+care to really capture all the
+deployment specific code in just one
+Python class. So it should be very easy
+to reimplement that Python class for
+your own deployment, for example,
+Kubernetes.
+As I promised, um, we take great care to
+keep Alpasim modular and configurable.
+And here I just want to list some
+options that you have in order to change
+how Alasim works. The first one is of
+course the configuration file itself
+where you can change things like camera
+resolution, exttrinsic, intrinsics,
+timings, etc. You also have a plug-in
+system. Um, the explicit goal of this is
+to enable a research community around it
+where you can write your own code, plug
+it into Alpasim without having to change
+the Alpasim core code itself. Um so you
+can host it in your own repo and people
+can just load it by installing it into
+the shared um virtual environment. One
+nice side effect is that for example you
+can just run your own driver and our
+harness and you don't have to write a
+lot of lot of supporting logic um to
+implement your driver.
+Option three is to replace an entire
+service. So all our services are hosted
+in an individual uh uh docker
+containers. [snorts] Um this is what
+gives us the flexibility to both scale
+and also swap individual components
+easily in and out. So this is also an
+option if you want to integrate your own
+driver, your own renderer etc. Um it
+adds a little bit of overhead because
+you have to implement your own gRPC
+server. So we're using gRPC to
+communication to communicate between the
+different components but especially now
+with agents that's really not a big deal
+and you can look at the existing code to
+see an example. And then the last option
+is to just touch the code yourself. Um,
+hack around in it and then if you find
+something that you want to share with
+the community, think about turning it
+into plug-in.
+So this was everything on Alpasim. Um,
+we also have one announcement. So this
+was announced technically at CDPR. Um,
+and we're launching a end-to-end closed
+loop driving challenge. And the reason
+for that is that we really see Alpaio as
+a platform to accelerate AV research,
+right? And so we'll you will hear about
+this more after my talk. Um but we have
+the pretense alamaya reasoning models,
+training scripts, quantization scripts,
+evaluation, post- training, etc. But
+what we felt was missing was a
+leaderboard and a challenge that really
+brings the community together and allows
+us to measure progress as a field. Um
+and so that's what we're targeting with
+this challenge. Um we announced that at
+CVPR, uh submissions will open very soon
+and there will be two tracks. The first
+one is on the physical AI data set by
+Nvidia and this is a very large scale
+data set with 1700 hours of very diverse
+data and here we really target the
+frontier scale. We also have a second
+track um on the new plan data set which
+has the big advantage that it offers a
+very low entry barrier to researchers
+because they're very familiar with this
+data and there's already hundreds of
+different baselines out there and I
+hinted at it before. This is possible
+because we're modular and flexible and
+so we have a different rendering system
+called MTGS that implements the new plan
+rendering and it also serves as an
+example of how you can implement your
+own render in Alpasm. The winner of this
+challenge will be announced at Europe's
+2026 and there will also be of course
+nice prices.
+So this was on the Alpasim side. Let's
+talk a little bit about Alpachim, our RL
+training framework on top of Alpasim.
+Um, also on the top right you see the QR
+code to our just now released uh GitHub
+repository.
+So zooming out a little bit you might
+ask okay why do we actually need yet
+another RL training framework and to
+answer this question let's zoom out a
+little bit and look at the different
+training frameworks that exist and I
+would argue that there are two clusters
+the first one which came earlier is the
+type of framework where you have a a
+small typically model that you can train
+on one maybe a couple of GPUs um but
+then you have expensive rollouts on CPUs
+for example on Atari Mojo Carla etc I
+realize some of those are now injects
+but at least in the early days many of
+them were or all of them were on CPU
+also things like so um Starcraft 2 etc.
+And in this case you have a simple GPU
+training infrastructure for your model
+but you have a distributed
+infrastructure for your rollouts maybe
+with hundreds or even thousands of CPUs
+sometimes even running the model on CPU
+because it was still feasible. On the
+other hand, a year or two ago with the
+rise of uh LLM RL training, a completely
+different paradig paradigm emerged where
+you needed very complex large
+infrastructure just to do inference and
+training on your RL model. But the
+rollouts initially were very cheap
+because it was just auto reggressive
+rollout effectively. I realized things
+are now changing slightly with more and
+more complex environments for training
+all kinds of things. But still the
+environments are relatively cheap
+compared to actual model inference.
+What we actually need for physical AI
+and for reinforcement learning on it I
+think is the next frontier where we
+really bring both trends together where
+we have an expensive simulator in our
+case alpasim which even needs GPU for
+the realistic rendering and we want to
+support heavy models um for example
+built on VAS or world models in order to
+have the the higher capabilities. Now of
+course we don't want to reinvent the
+wheel and so for the simulation side we
+rely on Alpasim and for the inference uh
+infrastructure side we rely on Cosmos RL
+which is Nvidia's framework for large
+scale distributed inference and training
+um of LLMs and and VLMs.
+So at a high level how does Alpachim
+look like? Um there's different type of
+workers. Um we start with the policy
+trainer which updates the policy and
+sends the model weights to the rollout
+worker. The rollout worker communicates
+with Alpasim or various Alpasim
+instances via gRPC sending driving
+actions and receiving sensor data back.
+Once the rollout worker completed an
+entire rollout um which we also call
+payload, it sends that back to the
+policy trainer and the whole thing is
+coordinated by an orchestrator. Now
+compared to the standard Cosmos um
+training framework, we needed to make a
+few modifications.
+First of all, obviously including
+Alpasim in the in the loop, but second
+of all, the key difference is that our
+rollouts are much heavier. So the
+rollout itself takes much longer because
+we have the simulation in the loop. And
+also the artifacts that we generate are
+much heavier, multiple gigabytes of data
+because it's highdefinition video,
+multiple of those for the different
+cameras. And so sending those back and
+updating the weights at the same time
+requires some tweaks to to nickel the
+communication layer in order to do this
+efficiently and in order to scale to
+many nodes without blocking each other.
+Um in order to get started and run
+things, it's again very simple. Um I'm
+going to again jump over the onboarding
+docs. Um but to give you an example for
+running our 10V alpha mayo model um on a
+local uh workstation you can see the
+command here. Um this is requiring two
+GPUs just because the 10B model is so
+large that actually doing training on
+them requires a dedicated GPU and then
+you have a second one for the rollout
+and the the simulation. Um in the future
+we plan on releasing a distillation
+script and then with a 2B model you
+might fit it all into one TPU. But in
+general, this is also meant more as a as
+a smoke run to play around with the code
+to test it. And then for actual
+training, you will likely need at least
+a node.
+Um, again here, so this is the the
+example command. Um, it should look very
+similar to before because we're again
+using the same setup of UV for Python
+dependencies and Hydra for
+configuration. And we here just specify
+kind of our experiment uh template a
+path to the model and a specific reward.
+Out of the box we support gpo and flow
+gpo for training. Um we are compatible
+with 1b and upload the results. We
+support local and swam deployment and we
+have initial support for the alpamaya
+model family but we also want to support
+and encourage you to bring your own
+model and we allow support uh or we have
+support for that on two levels. The
+first one higher level one is at the
+what we call policy level which is a
+stateful wrapper. So if your policy
+needs to main state maintain state
+between steps that's what you need to
+reimplement and then at the model level
+you basically bring your own model and a
+few functions that tell us how to feed
+the data into that model.
+We have some initial results on scaling
+where we can show that kind of scaling
+to many hundreds of GPUs has very linear
+relationship with throughput. That being
+said, Alpajim is in very early
+development. So, as Boris mentioned, we
+just released the first version. So, our
+current focus is really to optimize
+throughput and efficiency. So, the
+actual numbers right now aren't amazing
+yet, but at least the scaling is there.
+And because we rely on Cosmos Rail, we
+also inherit all the functionality that
+you would expect from such a framework,
+including the kind of multi-dimensional
+parallelism as of tensor parallelism,
+context parallelism, and so on.
+Um lastly here just some examples of uh
+kind of training on I think it was 30 or
+50 different scenes and showing that our
+old training actually works. So on the
+left hand side you see the policy before
+finetuning and you can see it actually
+uh runs into a few cars and then on the
+right hand side after just a few steps
+of RL training you see that it's
+successfully able to avoid the
+collision. Um and in the middle you can
+see the the mean reward going up. Of
+course, this is only so far a small
+scale experiment. As we improve our
+efficiency and throughput, we'll scale
+this up to many, many more scenes um and
+GPUs.
+And with that, I'd like to hand over to
+Yan.
+Yeah. Uh thanks, Max. Hi, I'm Yan. Uh
+yeah, next. Uh
+yeah, so ML has uh been gaining strong
+traction since CS. We release a new
+version of the OPM 1.5. OPM one already
+have a reasoning and RL post training
+for 1.5. We scale the RL recipe on the
+10B model to improve alignment between
+the reasoning and the driving outputs.
+So the model's reasoning and action can
+stay consistent. Uh beyond that we c we
+also add the new capabilities navigation
+guideline VQA and the sync grounding.
+together. This makes the OPM 1.5 more
+practical and interactive for AV
+reasoning. Uh, externally op 1.5 ranks
+number one on the lingo QA for AV
+reasoning and OPM remains the number two
+most downloaded robotics model on the
+hacking phase. Next, Euron will show a
+demo how to do inference and post
+training with OPM.
+And actually just just before we get
+there, I know that there were actually
+some questions uh in the chat that
+people had about
+um the the model itself, the alpha model
+itself. Um
+>> and I think a lot of them stem from,
+you know, how
+how expensive is it actually to do
+reasoning? What strategies can people
+consider to maintain the benefits of
+reasoning but still actually be able to
+uh maintain a reasonable uh uh real-time
+performance? Um I provided a link to one
+of our latest research works on uh
+different representations for reasoning
+like for example latent chain of thought
+which can give you kind of more
+efficient um more efficient reasoning
+traces. Uh but I but I also wanted to
+ask you Yan you know what are some other
+things that people can consider to to
+maintain the benefits of reasoning but
+uh greatly reduce the cost at inference
+time.
+>> Yeah. So first of all we uh we we also
+optimized the the latency cost. We
+iterated the chain of causation uh a lot
+of times try to make it more concise and
+have most of the information. Uh in
+order to first improve the efficiency as
+Boris mentioned we can do other types of
+reasoning like the latent reasoning and
+so on. Uh for current model we can do
+specular decoding do quantization and do
+deflash and so on to improve the the
+efficiency. There is a network from uh
+Jian uh in uh UCSD. They did did the
+optimization for the opio model and
+achieve significant uh improvement. Uh
+we uh in the in the future we we will
+also consider release optimized version
+of the opt to have better efficiency. Uh
+yeah there are several approaches please
+stay tuned.
+>> Thank you. Yeah. Let's hand it over to
+Yuron.
+>> Yeah. Yeah. Hi everyone. Uh this is
+Yuron. So today I will uh go over the
+upper 1.5 model inference. Um so this
+code is all available on GitHub. Please
+do check out uh uh the link shown here
+and we will covered um I run the one of
+uh two of the notebooks and see what the
+data looks like before fit into the
+upper mile 1.5 model and we will take a
+look how the model react to such um
+driving scene how how the model outputs
+the CLC reasoning traces um how to how
+they react to the navigation guidance
+and we will also see how the model uh
+answers
+uh VQA questions on um the driving
+scenes and we'll take a look how the
+model outputs. So in order to run this
+code you will need uh at least one uh
+Nvidia GPU with more than uh 24 GB of
+VRAN. Um and we mostly test it on the
+Linux and Python 3.12.
+Um so let's get started. Uh can I have
+my screen up?
+Yeah. Okay. So I am uh showing the
+inference um notebook uh in one of the
+uh notebooks in the upper 1.5 ripple. So
+I will u mostly go through this ripple
+and um show you how the model uh
+performs. And so if you first time
+running this notebook, you will need to
+download uh you will automatically
+download uh my 1.5 model from hugging
+face. Of course, you need to set up the
+environments and the uh hugging face
+tokens before you run it which I'll skip
+here due to time constraint. Um so it
+might takes a while to download because
+the model is really large and um so here
+I have already load the model from
+hugging face and also I am loading a
+clip from the physical AI data set. U it
+will also automatically download a scene
+if you uh haven't downloaded before. So
+let's take a look what the data looks
+like.
+So we are feeding in the model with
+multi- camera multi-time frame uh video
+data along with uh the model's uh eco
+history uh up to 1.6 seconds uh in um in
+a history and then um we will tokenize
+the data into a sequence and we'll um
+petrify the images
+and let's take a look what it looks
+like.
+So this is the uh bird's eye view eagle
+history of the model. You can see the
+model is driving from here to here and
+here the model need to make a driving
+decision uh at this point.
+And in terms of the visual inputs
+we are using four cameras here. Left uh
+right uh front wide and front tele
+cameras.
+Each of the camera we're using four
+frames. Uh the current frame uh 0.1
+seconds before, 0.2 seconds before, 0.3
+seconds before.
+So you can see uh this is left front
+wife uh right and front tally. You can
+see there's a car is trying to turn
+left.
+So um next we will tokenize the data. So
+um we'll start by assistant promps and
+you are driving assistant a generally
+safe and accurate actions and we'll
+tokenize the images. So all the
+character I here is actually an image
+token that will be swap out with the
+actual image embeddings internally in
+the model. So we are fitting in all the
+forefronts of of the front left camera
+uh front camera, front right camera and
+the front tally camera. And then we will
+also fit in the trajectory history. Also
+the edge key will be replaced with the
+actual um trajectory token um inside the
+model. And we ask the model to first
+output the train of thought reasoning of
+the driving process then output the
+future trajectory.
+And uh so this is basically what's the
+the the prefilling um prompt for the
+model and we will run the model
+inference.
+And um we are currently here we are
+asking the model to trae generate one
+trajectories uh based on this scene. So
+uh the model will first generate a
+channel of causation and then generate a
+corresponding uh trajectory. So um it
+the model says slow down due to the lead
+vehicle ahead turning left which is
+correct because this car the front car
+is trying to turn left [snorts]
+and then uh the trajectory the model
+generates looks like this in bird's eye
+view. Um the red line is the ground
+truth and the um uh blue one are the
+model's prediction. And in abama 1.5 the
+model is able to take in the navigation
+guidance as text um just like you use
+Google map it says okay turn right in um
+next uh x meters something like that. So
+we are going to try it. So here we uh
+have the navigation tax as turn right in
+30 m and we also generate another like
+counterfactual like swapped uh
+navigation tax is turn left in 30 mters.
+So we will feed both in and see how the
+model reacts.
+So similarly we inspect the inputs
+through the model. So everything else is
+the same. The only difference is we will
+add we will have additional routes
+inputs to the model. It ask the model to
+turn right in 30 mters and for the
+counterfactor part will ask the model to
+turn left in 30 mters. And let's run the
+inference.
+Um so uh a bit note on the um model
+inference we act because we um are
+filling in the model navigation guidance
+we actually can do uh classify free um
+guidance uh for the diffusion. Well, we
+with no guidance is just we don't feed
+any navigations with uh guidance is just
+we feed the navigations we and we can
+run the CFG inference on this to amplify
+the
+um difference. So here is just melad uh
+diffusion outputs of the model. So as
+you can see red ones are trajectories
+that without the navigation guidance. As
+you can see the model has naturally has
+multiple modalities. Uh multi it has
+multimodal outputs. It has uh go
+straight mode. It has turn left mode. It
+has turn right mode. But when we give
+the model the navigation guidance it's
+at least converging to the corresponding
+um guide uh navigation guidance.
+Uh so similarly as I described
+previously we can uh use the CFG to
+amplify the navigation guidance. Let's
+also run this.
+So here I'm using the uh inference
+guidance way two. So um with one is um
+is the default is guidance only and with
+two is more guidance.
+So as you can see is uh the guidance is
+more pronounced.
+Okay. So this is uh I will uh go hop to
+another notebook where we ask the model
+general uh visual question answering
+task. Um so here similarly we are using
+the same model up 1.5 10B and I have
+already loaded up the model here and
+load a scene here. So we are going to
+ask the model to describe a scene and so
+in this class we are not asking the
+model to generate trajectory rather than
+we just ask some general questions. Um
+for example we ask the model describe a
+scene. So this is the inputs to the
+model is just um a front view of the
+scene where we can see is a construction
+zone and there is a a construction
+vehicle on the right. The model um let's
+see how model reacts
+to this scene. [snorts]
+So it says there's a cone, right?
+There's a cone and a working work
+vehicle partially blocking the right
+side of our land with another work
+vehicle worker position off our right
+side. There's a work work person here is
+etc etc. So the model is correctly
+describing the scene and we can actually
+um try asking different uh questions
+like for example here I um already put
+in what are the key traffic element
+visible in the scene and how should they
+influence um the driving behavior and
+says the key element includes the
+construction equipments and traffic
+construction workers
+and yeah you need to be cautious reduce
+speed etc etc.
+So um as you can see the model can
+correctly answer this um driving um
+related questions and do feel free to
+try out um this notebook is all
+available on GitHub.
+Yeah. Um so this is uh our end about uh
+the demo today. Could you uh swap out
+back to the slides?
+Yes. Uh can you hit next? Yes. So apart
+from the model, we also uh release up a
+mile recipe. Uh well, this includes um
+the finetuning uh recipes for upper mile
+one and 1.5 and also the IO recipe for
+one and 1.5. And we do plan to cover
+more in the future. For example, the
+recipes of the quantization. Well, we
+have an ongoing PR that is implementing
+the PDQ procedure for uh quantizing upon
+my 1.5 to FBA or auto quant and we also
+will include a recipe so about gym close
+through training. Um and stay tuned for
+more. Uh next
+>> actually before we go next I there was a
+few other uh good questions that I think
+tie in very well here. So there were
+some questions about um distilling the
+model down and what sizes can fit onto
+for example a drive Thor. These are
+actually things I I did um respond to
+one of these uh questions. So just so
+everyone knows we're actually planning
+in the future to be releasing
+distillation recipes. So basically
+empowering you to uh distill the model
+actually down to the size that you're
+interested in. um and uh you know
+because you will best know your own um
+deployment uh constraints or or the
+specific uh inference runtime that
+you're targeting. [clears throat] But
+these quantization recipes that Yurong
+just mentioned are actually part of a
+broader strategy to provide you with the
+tools to quantize distill everything
+that you might need to do to bring it
+down to you know whichever embedded
+hardware you have or whatever runtime
+constraints you're you're looking to
+fill. Yes, exactly right. To give a
+sense of timeline, we plan to release
+such distillation of recipes by the end
+of the summer.
+>> Yeah. Uh yeah. And here are some like
+frequently asked questions. For example,
+how should I um add custom data for
+fine-tuning? Um our recommendation is
+that you can transform the data set into
+a format that is similar to the physical
+air data set. So you can directly use it
+and you can take a look on how the data
+loader is implemented in our um uh upp
+um report and some people also ask um
+how should I use a different rewarding
+reinforcement learning and it's actually
+very easy to implement and you can uh
+you please do feel free to implement a
+custom reward and integrate it into the
+aggregated reward functions and you can
+take a look at the this aggregated
+reward py uh files. Um uh it should be
+fairly easy to integrate
+and could you hit next? Yeah, as many of
+you might know uh Jensen announced a
+mile 2 super um in the GDC Taipei
+recently and uh could you hit next? And
+we are planning to release the upper ML
+2 very very soon um by summer this year
+and we it will include full 360 surround
+view perception and we'll have more
+advanced capabilities and trend of
+possession outputs and it also supports
+um generating the mala action outputs
+such as l transering and stopping and
+you can it this model can also serve as
+a auto labeling model to generate the
+originaling traces. and the visual
+grounding for scalable data annotation
+and of course the model will have um
+state of VR performance across reasoning
+prediction and alignment. Please do stay
+tuned and uh for the link um you can
+check out the link shown below which is
+a uh wonderful blog post by Marco to
+describe the upper mile 2 and it will be
+a central um information um uh sharing
+place for any information related to
+upper mile 2. Please do stay tuned and I
+think that's all for our presentation
+today and we are open to discussion.
+>> Yeah, and I'll add there's a lot of
+really great questions in the chat.
+We've been trying to keep up as much as
+we could um with them. Uh perhaps some
+quick uh rapidfire questions. So I saw
+there was a question about capability or
+working towards natural languages
+simulation capabilities. Actually, yes,
+this is something we we have some papers
+on from maybe two years ago now. Um, you
+can take a look at we we've had a many
+lines of work on language conditioned
+traffic generation, language conditioned
+environment uh simulation. So definitely
+take a look um at that and I think those
+are kind of all the the keywords you
+need. Um
+currently and maybe this is a good
+question for for Yan. Do we perform
+reasoning at every time step or is it
+run asynchronously?
+>> You're muted.
+>> Yeah, that's a good question. For the
+current released model, uh uh I think
+the user have the option to change the
+prompt either perform it in every step
+or only output the action. We do have a
+CVPR paper this year. It's a highlight
+paper. uh if the model can uh do adapt
+adaptive thinking for the uh simple
+scenario the model will automatically
+skip the sync syncing mode and output
+the the action.
+Please check the paper is called
+counterfactual vray.
+>> Well the bottom line is that it's yes
+it's possible to do reasoning at each
+planning uh step basically performing
+reasoning at 10 hertz. Of course to do
+that you need to do significant amount
+of optimizations and of course the
+reasoning traces are heavily templated
+so that we minimize the number of
+reasoning tokens uh to only then those
+reasoning tokens that are really
+informative for subsequent trajectory
+generation.
+Okay. So we just a few minutes left. Um
+I would let me see let's do this. If any
+one of the speakers here wants to take a
+look at the starred column of any
+questions that Rick has been asterisking
+and Boris hasn't covered yet, um, feel
+free to just read it out loud, one that
+you're interested in taking and then
+we'll I'll try to show it on the screen
+if I could identify it.
+There is a a nice question from Abishek
+9133
+more about future looking research. In
+the altomy one paper there were there
+were a couple of points which said that
+domain and structural prior are going to
+be important going forward. So what sort
+of explicit inductive biases are you
+guys going to use? So this my question
+for you and Yan. So maybe you can
+comment a little bit on the type of
+inductive biases that we may want to
+consider broadly as we stop stand up the
+alpha models.
+Yeah, I think one of the inductive we
+kind of formulated inductive bias in the
+way we formulate the COC traces. Um we
+are using uh some auto labeling. We are
+using autoleing to um generate the CC
+traces and because the driving thing is
+naturally a um cause and effect um uh
+driven task. So we specifically
+formulate CLC as a structure like that
+and instead of putting this inductive
+bias in the model itself we are putting
+the inductive bias in the reasoning
+traces in a way that is scalable to
+trend. So we do see the benefit of doing
+this and I think this is one of the
+explicit inductive bias we are using.
+Maybe Yen you can um add your points.
+>> Yeah. Yeah. I think so. Also, we have a
+following up paper try to leverage the
+inductive bias so we can do the parallel
+decoding for the questions.
+>> All right, great. Any other questions uh
+you guys want to cover before we close
+out?
+>> So, there is a question that I think
+important for Max from Tosha Gamage.
+Is Alpasim akin to Carla? If so, are
+there ways to integrate the rest of your
+reasoning model within Carla? So,
+essentially, what are the what is the
+relationship between Carla and Alpha
+Sims? What are the relative strengths
+and weaknesses and would it be possible
+to run some of the alamio reasoning
+models indeed within Carla?
+>> So, for the second half of the question,
+I would probably defer to Yan and Yur.
+Um for the first part of the question,
+they're both kind of they both have very
+different strengths and target audiences
+I would say. So Carla has a very mature
+ecosystem and is very capable in some
+regards for setting up your own
+environment. They have a great traffic
+model integrated and it's very has a
+very clean API to play around with
+within individual scenarios. The focus
+on Alpasim is more to be approachable at
+the code level. So you can go into the
+code, you can hack around in it,
+implement your own simulator if you want
+to. Plus, it's also heavily optimized
+for parallelized inference on a cluster
+on a node. Um, just to get the scale
+that we need for RL training. Um, which
+one you prefer really depends on your
+use case. Um, as to whether alpio models
+can be integrated in Carla, to be
+honest, I don't know. I would assume
+yes, but I don't know how difficult or
+what the what the obstacles might be.
+Um, last thing to note, both of them
+actually allow using Nuric. So, as you
+might know, maybe this is where the
+question is coming from. Carla is also
+able to use Nuric as a rendering engine.
+Um, so from from that perspective, there
+are similar.
+>> All right. Thank you. Marco, do you see
+anything else you want to tackle?
+>> I think we're at time. So, I would like
+to thank everybody uh for joining the
+live stream. As we said, we released
+Alpa Gym as we were uh covering Alpa
+Gimm uh which is exciting. Should you
+have uh any questions, feel free to
+reach out to us of course uh uh through
+our contacts, but also through uh GitHub
+and uh any other venues. Of course, we
+present our work at the conferences. So
+always happy to talk to people about
+possible collaborations and really about
+opportunities to grow the upper Mario
+ecosystem.
+>> Amazing. And I did put that web page up
+on the screen since it's now live. Uh
+you can we we'll also put the link in uh
+the description of the video, but it's
+also in the live chat. Uh so currently
+went live I think for the first time in
+the live stream. We we pushed it live
+which is awesome. Um I want to thank
+each of our presenters here for
+presenting such nice quality material.
+Um, and if this was helpful to you as a
+viewer, we'd really appreciate it if you
+like the video. It really lets us know
+that this is the type of content you
+want to see us produce more of. And
+don't hesitate to reach out. Let us know
+what you like to narrow down on in the
+future regarding NEAV. Um, and uh, if
+you came in after the uh, live stream
+started, the live stream exists uh,
+permanently on the YouTube channel. So,
+just go to the Nvidia Drive YouTube
+channel um, and you will see um, I'm
+sorry, this is on the Nvidia Omniverse
+channel. go to the NVIDIA Omniverse
+channel to the live section and you will
+see this video uh replayable actually
+right now. You can watch from the
+beginning. Um thank you so much uh for
+the great great expertise each of you
+provided and thank you to everyone
+watching for the amazing comments and
+questions throughout. It's been a
+pleasure uh hosting uh this audience
+today. Uh we will see you next time.
+Thanks everybody.
+>> Thank you.
+>> Thank you. Byebye.s

@@ -1,0 +1,629 @@
+[
+ {
+  "agentId": "a5676a7169d05788f",
+  "url": "https://research.nvidia.com/labs/avg/publication/wang.luo.etal.arxiv2025/",
+  "publishDate": "arXiv v1: 2025-10-30 (last revised 2026-01-07, v2); NVIDIA publication page lists it as \"arXiv Preprint, December 2025\"",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "Alpamayo-R1 (AR1) is a vision-language-action model that combines the Cosmos-Reason VLM (pre-trained for Physical AI) as its backbone with a diffusion-based trajectory decoder, outputting both Chain of Causation reasoning traces and trajectory plans.",
+    "quote": "a modular VLA architecture combining Cosmos-Reason, a Vision-Language Model pre-trained for Physical AI applications, with a diffusion-based trajectory decoder that generates dynamically feasible plans in real time",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1 was evaluated at model sizes from 0.5B to 7B parameters, with performance improving consistently as the model scales.",
+    "quote": "Model scaling from 0.5B to 7B parameters shows consistent improvements.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1 achieves up to 12% better planning accuracy on challenging cases versus a trajectory-only baseline, with a 35% reduction in off-road rate and a 25% reduction in close encounter rate in closed-loop simulation.",
+    "quote": "Evaluation shows AR1 achieves up to a 12% improvement in planning accuracy on challenging cases compared to a trajectory-only baseline, with a 35% reduction in off-road rate and 25% reduction in close encounter rate in closed-loop simulation.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1's training pipeline uses a Chain of Causation (CoC) dataset built via a hybrid auto-labeling plus human-in-the-loop pipeline, followed by supervised fine-tuning and RL post-training that improves reasoning quality by 45% (per a large reasoning model critic) and reasoning-action consistency by 37%.",
+    "quote": "the Chain of Causation (CoC) dataset, built through a hybrid auto-labeling and human-in-the-loop pipeline producing decision-grounded, causally linked reasoning traces aligned with driving behaviors ... RL post-training improves reasoning quality by 45% as measured by a large reasoning model critic and reasoning-action consistency by 37%.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1 ran in real time on-vehicle with 99 ms inference latency in urban road tests, and the publication page links code at github.com/NVlabs/alpamayo and the paper PDF at arxiv.org/pdf/2511.00088 (arXiv v1 submitted 30 Oct 2025, revised 7 Jan 2026).",
+    "quote": "On-vehicle road tests confirm real-time performance (99 ms latency) and successful urban deployment. ... Code: https://github.com/NVlabs/alpamayo ... PDF: https://arxiv.org/pdf/2511.00088",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "accc0b7394cbc6d3d",
+  "url": "https://arxiv.org/abs/2511.00088",
+  "publishDate": "2025-10-30 (v1); revised 2026-01-07 (v2)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "Alpamayo-R1 (AR1) is a vision-language-action (VLA) model for autonomous driving whose architecture combines the Cosmos-Reason vision-language model (pre-trained for Physical AI) as backbone with a diffusion-based trajectory decoder, and it integrates Chain of Causation reasoning with trajectory planning.",
+    "quote": "We introduce Alpamayo-R1 (AR1), a vision-language-action model (VLA) that integrates Chain of Causation reasoning with trajectory planning for complex driving scenarios... (2) a modular VLA architecture combining Cosmos-Reason, a vision-language model pre-trained for Physical AI, with a diffusion-based trajectory decoder that generates dynamically feasible trajectories in real time",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1's training pipeline is multi-stage: supervised fine-tuning to elicit reasoning followed by reinforcement learning; the RL post-training improves reasoning quality by 45% and reasoning-action consistency by 37%.",
+    "quote": "(3) a multi-stage training strategy using supervised fine-tuning to elicit reasoning and reinforcement learning (RL) to enforce reasoning-action consistency and optimize reasoning quality... RL post-training improves reasoning quality by 45% and reasoning-action consistency by 37%.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1 achieves up to 12% improvement in planning accuracy on challenging cases versus a trajectory-only baseline, a 35% reduction in close encounter rate in closed-loop simulation, and 99 ms latency in on-vehicle road tests; model scaling experiments span 0.5B to 7B parameters.",
+    "quote": "AR1 achieves up to a 12% improvement in planning accuracy on challenging cases compared to a trajectory-only baseline, with a 35% reduction in close encounter rate in closed-loop simulation... Model scaling from 0.5B to 7B parameters shows consistent improvements. On-vehicle road tests confirm real-time performance (99 ms latency) and successful urban deployment.",
+    "importance": "central"
+   },
+   {
+    "claim": "NVIDIA publicly released Alpamayo-R1 model weights on Hugging Face as nvidia/Alpamayo-R1-10B (a 10B-parameter release, despite the abstract's scaling study citing 0.5B-7B) with inference code at GitHub NVlabs/alpamayo.",
+    "quote": "Model weights are available at [this https URL](https://huggingface.co/nvidia/Alpamayo-R1-10B) with inference code at [this https URL](https://github.com/NVlabs/alpamayo).",
+    "importance": "central"
+   },
+   {
+    "claim": "The Chain of Causation (CoC) training dataset for Alpamayo-R1 was built through a hybrid auto-labeling and human-in-the-loop pipeline that produces decision-grounded, causally linked reasoning traces aligned with driving behaviors.",
+    "quote": "(1) the Chain of Causation (CoC) dataset, built through a hybrid auto-labeling and human-in-the-loop pipeline producing decision-grounded, causally linked reasoning traces aligned with driving behaviors",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "a64a94732755c0e56",
+  "url": "https://arxiv.org/html/2511.00088v2",
+  "publishDate": "2025-10-30 (v1); 2026-01-07 (v2, fetched version)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "Alpamayo-R1 (AR1) is officially identified by NVIDIA as the same model as \"Alpamayo 1\": the paper's v2 revision (7 Jan 2026) states the name follows the NVIDIA Alpamayo release at CES 2026.",
+    "quote": "Following the release of NVIDIA Alpamayo at CES 2026 (NVIDIA, 2026), Alpamayo-R1 is also referred to as Alpamayo 1.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1's architecture uses NVIDIA's Cosmos-Reason VLM (pre-trained for Physical AI) as the backbone, combined with a diffusion-based trajectory decoder for real-time trajectory generation.",
+    "quote": "a modular VLA architecture combining Cosmos-Reason, a vision-language model pre-trained for Physical AI, with a diffusion-based trajectory decoder that generates dynamically feasible trajectories in real time ... We adopt Cosmos-Reason (NVIDIA et al., 2025a) as the VLM backbone for Alpamayo-R1.",
+    "importance": "central"
+   },
+   {
+    "claim": "The training pipeline builds on a Chain of Causation (CoC) dataset produced via a hybrid auto-labeling plus human-in-the-loop pipeline, followed by multi-stage training: supervised fine-tuning to elicit reasoning, then reinforcement learning to enforce reasoning-action consistency.",
+    "quote": "(1) the Chain of Causation (CoC) dataset, built through a hybrid auto-labeling and human-in-the-loop pipeline producing decision-grounded, causally linked reasoning traces aligned with driving behaviors; ... (3) a multi-stage training strategy using supervised fine-tuning to elicit reasoning and reinforcement learning (RL) to enforce reasoning-action consistency and optimize reasoning quality.",
+    "importance": "central"
+   },
+   {
+    "claim": "Reported benchmark results: up to 12% planning-accuracy improvement on challenging cases vs. a trajectory-only baseline, 35% reduction in close encounter rate in closed-loop simulation, RL post-training gains of 45% (reasoning quality) and 37% (reasoning-action consistency), consistent scaling from 0.5B to 7B parameters, and 99 ms end-to-end on-vehicle latency.",
+    "quote": "AR1 achieves up to a 12% improvement in planning accuracy on challenging cases compared to a trajectory-only baseline, with a 35% reduction in close encounter rate in closed-loop simulation. RL post-training improves reasoning quality by 45% and reasoning-action consistency by 37%. Model scaling from 0.5B to 7B parameters shows consistent improvements. On-vehicle road tests confirm real-time performance (99 ms latency)",
+    "importance": "central"
+   },
+   {
+    "claim": "NVIDIA publicly released Alpamayo-R1 model weights as a 10B variant on Hugging Face (nvidia/Alpamayo-R1-10B) with inference code on GitHub (NVlabs/alpamayo).",
+    "quote": "Model weights are available at https://huggingface.co/nvidia/Alpamayo-R1-10B with inference code at https://github.com/NVlabs/alpamayo.",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "a45391fc897673693",
+  "url": "https://huggingface.co/nvidia/Alpamayo-R1-10B",
+  "publishDate": "2025-12-03 (stated as \"Hugging Face 12/03/2025\"; card subsequently updated after CES 2026 with the Alpamayo 1 renaming note)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "Alpamayo-R1 was renamed to 'Alpamayo 1' following the NVIDIA Alpamayo announcement at CES 2026, and the model card designates nvidia/Alpamayo-1.5-10B as its newer version (frontmatter 'new_version: nvidia/Alpamayo-1.5-10B'), linking to the arXiv paper 2511.00088 and GitHub NVlabs/alpamayo.",
+    "quote": "Note: Following the release of [NVIDIA Alpamayo](https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development) at CES 2026, Alpamayo-R1 has been renamed to Alpamayo 1.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1 (10B) is a VLA model built on a Cosmos-Reason VLM backbone (8.2B parameters) with a diffusion-based trajectory decoder / action expert (2.3B parameters).",
+    "quote": "**Network Architecture:** A VLA model based on Cosmos-Reason and featuring a diffusion-based trajectory decoder. ... **Number of model parameters:** - Backbone: 8.2B parameters - Action Expert: 2.3B parameters",
+    "importance": "central"
+   },
+   {
+    "claim": "Input is camera-only plus egomotion history: 4 cameras (front-wide, front-tele, cross-left, cross-right) with 0.4s history at 10Hz (4 frames/camera), 1080x1920 downsampled to 320x576; output is Chain-of-Causation reasoning text plus a 6.4-second future trajectory of 64 waypoints at 10Hz in the ego frame.",
+    "quote": "Multi-camera images (4 cameras: front-wide, front-tele, cross-left, cross-right) with 0.4 second history window at 10Hz (4 frames per camera), image resolution 1080x1920 pixels (processor will downsample them to 320x576 pixels). ... Outputs 6.4-second future trajectory (64 waypoints at 10Hz) with position `(x, y, z)` and rotation matrix `R_rot` in ego vehicle coordinate frame.",
+    "importance": "central"
+   },
+   {
+    "claim": "Training data comprises 80,000 hours of multi-camera driving video (>1 billion images) and 700,000 Chain-of-Causation reasoning traces, labeled via a hybrid of human structured CoC annotation and VLM-based auto-labeling, mixed with Cosmos-Reason Physical AI datasets and NVIDIA internal proprietary AV data.",
+    "quote": "The dataset comprises 80,000 hours of multi-camera driving videos with corresponding egomotion and trajectory annotations. It includes 700,000 Chain-of-Causation (CoC) reasoning traces ... **Labeling Method by dataset:** Hybrid: Human (structured CoC annotations), Automated (VLM-based auto-labeling), Automatic/Sensors (trajectory and egomotion)",
+    "importance": "central"
+   },
+   {
+    "claim": "Benchmarks and release scope: closed-loop AlpaSim Score of 0.73 ± 0.01 on 910 PhysicalAI-AV-NuRec scenarios and open-loop minADE_6 at 6.4s of 1.22m on 937 PhysicalAI-AV samples; model weights are under a non-commercial license (commercial upon request), inference code under Apache 2.0, released on Hugging Face 12/03/2025.",
+    "quote": "Closed-Loop Evaluation using [AlpaSim](https://github.com/NVlabs/alpasim) on 910 scenarios from the [PhysicalAI-AV-NuRec Dataset](...): AlpaSim Score of 0.73 ± 0.01. - Open-Loop Evaluation on 937 challenging samples from the [PhysicalAI-AV Dataset](...): minADE_6 at 6.4s of 1.22m. ... The model weights are released under a [non-commercial license](...). The inference code is released under the [Apache 2.0](...) license. ... Release Date: Hugging Face 12/03/2025 via this repository.",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "a6f14f48f6e2f7747",
+  "url": "https://blogs.nvidia.com/blog/neurips-open-source-digital-physical-ai/",
+  "publishDate": "2025-12-01",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "NVIDIA announced DRIVE Alpamayo-R1 (AR1) as the world's first open reasoning VLA model for AV research, integrating chain-of-thought reasoning with path planning aimed at level 4 autonomy; the announcement was made in a blog post dated December 1, 2025 tied to NeurIPS 2025 (headline: 'At NeurIPS, NVIDIA Advances Open Model Development for Digital and Physical AI'), establishing that Alpamayo-R1's open release predates the CES 2026 Alpamayo 2 announcements.",
+    "quote": "NVIDIA DRIVE Alpamayo-R1 (AR1), the world's first open reasoning VLA model for AV research, integrates chain-of-thought AI reasoning with path planning — a component critical for advancing AV safety in complex road scenarios and enabling level 4 autonomy.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1's backbone/foundation is NVIDIA Cosmos Reason, and the model is open so researchers can customize it.",
+    "quote": "AR1's open foundation, based on NVIDIA Cosmos Reason, lets researchers customize the model",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo-R1 was released on GitHub and Hugging Face (the page references the model as nvidia/Alpamayo-R1-10B, i.e., a 10B-parameter model), and a subset of its training and evaluation data was made available in the NVIDIA Physical AI Open Datasets.",
+    "quote": "NVIDIA DRIVE Alpamayo-R1 is now available on GitHub and Hugging Face ... a subset of the data used to train and evaluate the model is available in the NVIDIA Physical AI Open Datasets",
+    "importance": "central"
+   },
+   {
+    "claim": "Alongside Alpamayo-R1, NVIDIA released the open-source AlpaSim framework specifically for evaluating AR1 (i.e., AlpaSim debuted with Alpamayo-R1 at NeurIPS 2025, not later).",
+    "quote": "NVIDIA has also released the open-source AlpaSim framework to evaluate AR1.",
+    "importance": "central"
+   },
+   {
+    "claim": "In Alpamayo-R1's training pipeline, reinforcement learning was used for post-training and NVIDIA states it proved especially effective at improving the model's reasoning capabilities.",
+    "quote": "For post-training AR1, reinforcement learning has proven especially effective",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "a96b7b6dbc20bca84",
+  "url": "https://huggingface.co/nvidia/Alpamayo-1.5-10B",
+  "publishDate": "2026-03-19",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "Alpamayo 1.5 is NVIDIA's open 10B-parameter chain-of-thought reasoning VLA model, built on the Cosmos-Reason2 VLM backbone with RL post-training, and (vs. the prior version) adds navigation guidance, flexible camera counts, and user question answering; the model card lists its Hugging Face release date as 03/19/2026.",
+    "quote": "Alpamayo 1.5 is a significant update to NVIDIA's open 10B-parameter chain-of-thought reasoning VLA model... is built on the Cosmos-Reason2 VLM backbone, is RL post-trained, and introduces support for navigation guidance, flexible camera counts, and user question answering. ... Hugging Face 03/19/2026 via https://huggingface.co/nvidia/Alpamayo-1.5-10B",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1.5's 10B parameters split into an 8.2B-parameter backbone plus a 2.3B-parameter action expert; default input is 4 cameras (front-wide, front-tele, cross-left, cross-right) at 10Hz with a 0.4s history window plus text and egomotion history, and outputs are Chain-of-Causation reasoning text plus a 6.4-second future trajectory of 64 waypoints at 10Hz.",
+    "quote": "Backbone: 8.2B parameters ... Action Expert: 2.3B parameters ... 4 cameras by default: front-wide, front-tele, cross-left, cross-right ... 0.4 second history window at 10Hz (4 frames per camera) ... Text: String (Chain-of-Causation reasoning traces or question answers) ... 6.4-second future trajectory (64 waypoints at 10Hz)",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1.5 was trained on 80,000 hours of multi-camera driving data comprising more than 1 billion images and 3 million Chain-of-Causation (CoC) reasoning traces.",
+    "quote": "80,000 hours of multi-camera driving data ... More than 1 Billion Images ... 3,000,000 Chain-of-Causation (CoC) reasoning traces",
+    "importance": "central"
+   },
+   {
+    "claim": "Reported benchmark performance for Alpamayo 1.5: LingoQA Lingo-Judge score of 74.2 (reasoning), closed-loop AlpaSim Score of 0.81 ± 0.01, and open-loop trajectory error minADE_6 at 6.4s of 1.11m — confirming AlpaSim was already in use as the closed-loop eval at the 1.5 release (AlpaGym and Alpamayo 2 are not mentioned on this card).",
+    "quote": "Lingo-Judge Score of 74.2 ... AlpaSim Score of 0.81 ± 0.01 ... minADE_6 at 6.4s of 1.11m",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1.5's release scope is split-licensed: model weights are under a non-commercial license (commercial licensing available upon request) while inference code is Apache 2.0, hosted at github.com/NVlabs/alpamayo1.5.",
+    "quote": "The model weights are released under a non-commercial license ... This model is ready for non-commercial use. Commercial licensing available upon request. ... [inference code] Apache 2.0 license ... https://github.com/NVlabs/alpamayo1.5",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "a774676f7da1224a2",
+  "url": "https://github.com/NVlabs/alpamayo",
+  "publishDate": "Repo created 2025-11-19; README \"Updates\" entries dated January–May 2026; last push 2026-05-29 (GitHub API)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "According to the official NVlabs/alpamayo README, NVIDIA Alpamayo was released at CES 2026, and in January 2026 the model previously called Alpamayo-R1 was renamed to Alpamayo 1.",
+    "quote": "[January 2026] Following the release of [NVIDIA Alpamayo](https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development) at CES 2026, Alpamayo-R1 has been renamed to Alpamayo 1.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1.5 was released in March 2026 as a separate GitHub repository (NVlabs/alpamayo1.5), positioned as the recommended successor with improved performance and new features; fine-tuning/post-training scripts for Alpamayo 1 were released April 2026 and moved to NVlabs/alpamayo-recipes in May 2026.",
+    "quote": "[March 2026] [🏔️ Alpamayo 1.5](https://github.com/NVlabs/alpamayo1.5) has been released! We recommend all users check out the new version for improved performance, new features, and continued support! 🚀 ... [May 2026] Fine-tuning and post-training scripts moved to [Alpamayo Recipes](https://github.com/NVlabs/alpamayo-recipes)",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1 implements the architecture of the arXiv paper 2511.00088 ('Alpamayo-R1: Bridging Reasoning and Action Prediction for Generalizable Autonomous Driving in the Long Tail'): a Vision-Language-Action model with a Cosmos-Reason backbone plus action expert, Chain-of-Causation (CoC) reasoning labeled via hybrid auto-labeling with human in the loop, and trajectory prediction over a 6.4 s horizon with 64 waypoints at 10 Hz.",
+    "quote": "Alpamayo 1 implements the architecture described in our paper \"Alpamayo-R1: Bridging Reasoning and Action Prediction for Generalizable Autonomous Driving in the Long Tail\" ... **Chain-of-Causation (CoC) reasoning** | Hybrid auto-labeling with human in the loop for reasoning traces | ✅ Included ... **Vision-Language-Action architecture** | Cosmos-Reason backbone + action expert | ✅ Included ... **Trajectory prediction** | 6.4s horizon, 64 waypoints at 10 Hz | ✅ Included",
+    "importance": "central"
+   },
+   {
+    "claim": "The released Alpamayo 1 (10B) model takes only multi-camera video and egomotion history as inputs — no navigation/route conditioning, no meta-actions/general VQA — outputs trajectory + reasoning trace, and has NOT undergone RL post-training (RL code via Cosmos-RL is included, but RL-post-trained weights are not released).",
+    "quote": "The current release takes multi-camera video and egomotion history as inputs, without explicit navigation or route inputs (e.g., waypoints, turn-by-turn navigation instructions). ... Alpamayo 1 is designed specifically for trajectory prediction with Chain-of-Causation reasoning, producing trajectory + reasoning trace outputs. ... The current 10B model release has **not** undergone RL post-training.",
+    "importance": "central"
+   },
+   {
+    "claim": "Public availability/licensing of Alpamayo 1: inference code is Apache 2.0, but the 10B model weights (Hugging Face nvidia/Alpamayo-R1-10B, ~22 GB download, gated access) are under a non-commercial research-only license, and the gated Physical AI AV Dataset (nvidia/PhysicalAI-Autonomous-Vehicles) is required; inference needs an NVIDIA GPU with ≥24 GB VRAM.",
+    "quote": "**Inference code**: Apache License 2.0 - see [LICENSE](./LICENSE) for details. - **Model weights**: Non-commercial license - see [HuggingFace Model Card](https://huggingface.co/nvidia/Alpamayo-R1-10B) for details. ... The model requires access to gated resources ... 🤗 [Physical AI AV Dataset](https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles)",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "a1220caaf85f36ed9",
+  "url": "https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2",
+  "publishDate": "2026-06-01",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "Alpamayo 2 Super is built on the Cosmos 3 Super Reasoner VLM backbone with 32 billion parameters, which is 3x the parameter count of prior Alpamayo models (previous generations were 10B parameters).",
+    "quote": "Alpamayo 2 Super is built on the Cosmos 3 Super Reasoner 32-billion parameter VLM backbone (3x the number of parameters as prior Alpamayo models) ... Alpamayo 2 Super scales to 32B parameters (compared to previous 10B-parameter generations)",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 2 Super expands camera input coverage from front-focused cameras (used in prior versions) to 360-degree situational awareness across front, side and rear views.",
+    "quote": "Expands from front-focused cameras to 360-degree situational awareness across front, side and rear views",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 2 Super adds Meta-Action outputs (macro driving actions such as yield, lane change, stop) as a new output modality, in addition to trajectories and chain-of-causation (CoC) reasoning traces.",
+    "quote": "Meta-Action outputs — macro actions such as yield, lane change and stop — so the model predicts high-level driving decisions for downstream planning in addition to trajectories and chain-of-causation (CoC) traces.",
+    "importance": "central"
+   },
+   {
+    "claim": "The Alpamayo platform was introduced at CES 2026, expanded at GTC 2026, and won the Computex 2026 Best Choice Award in the Vehicle Technology & Smart Cockpit category; Alpamayo 2 Super model weights were NOT yet released at publication (June 1, 2026) and are slated for summer 2026.",
+    "quote": "Introduced at CES 2026 ... expanded at GTC 2026 ... Computex 2026 Best Choice Award in the Vehicle Technology & Smart Cockpit category ... Alpamayo 2 Super Model Weights → coming summer 2026",
+    "importance": "central"
+   },
+   {
+    "claim": "AlpaGym is announced as an open-source, high-throughput, closed-loop RL framework that runs models through continuous decision/observation cycles in AlpaSim (with GRPO support, code due before mid-June 2026), and Alpamayo reasoning models have collectively surpassed 400,000 downloads; linked HF repos include nvidia/PhysicalAI-Autonomous-Vehicles, nvidia/PhysicalAI-Autonomous-Vehicles-NuRec, and nvidia/Cosmos3-Super-Reasoner.",
+    "quote": "AlpaGym is an open source, high‑throughput, closed‑loop reinforcement learning (RL) framework ... runs models through continuous decision and observation cycles in AlpaSim ... Alpamayo reasoning models collectively surpassing 400,000 downloads to date.",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "a81be4bfb2f759375",
+  "url": "https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development",
+  "publishDate": "2026-01-05",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "At CES on January 5, 2026, NVIDIA announced Alpamayo 1 as a 10-billion-parameter reasoning VLA model that takes video input and outputs driving trajectories together with reasoning traces (chain-of-thought explanations of each decision).",
+    "quote": "With a 10-billion-parameter architecture, Alpamayo 1 uses video input to generate trajectories alongside reasoning traces, showing the logic behind each decision.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1 was released with open model weights and open-source inference scripts, hosted on Hugging Face (the page references the model as nvidia/Alpamayo-R1-10B), i.e., the initial public release scope is weights + inferencing code rather than full training pipeline.",
+    "quote": "open model weights and open-source inferencing scripts",
+    "importance": "central"
+   },
+   {
+    "claim": "NVIDIA stated at the CES 2026 announcement that future Alpamayo family models would have larger parameter counts, more detailed reasoning, more input/output flexibility, and options for commercial usage — implying Alpamayo 1's initial license did not permit commercial use and foreshadowing the Alpamayo 1.5/2 releases.",
+    "quote": "Future models in the family will feature larger parameter counts, more detailed reasoning capabilities, more input and output flexibility, and options for commercial usage.",
+    "importance": "central"
+   },
+   {
+    "claim": "AlpaSim was released at CES 2026 as a fully open-source, end-to-end AV simulation framework available on GitHub (NVlabs/alpasim), providing realistic sensor modeling, configurable traffic dynamics, and scalable closed-loop testing; AlpaGym is not mentioned anywhere in this CES press release.",
+    "quote": "A fully open‑source, end-to-end simulation framework for high‑fidelity AV development, available on GitHub. It provides realistic sensor modeling, configurable traffic dynamics and scalable closed‑loop testing environments",
+    "importance": "central"
+   },
+   {
+    "claim": "Alongside Alpamayo 1, NVIDIA released an open Physical AI autonomous-vehicle dataset on Hugging Face containing 1,700+ hours of driving data (at CES 2026), and mobility partners Lucid, JLR, Uber, and Berkeley DeepDrive were named as showing interest in Alpamayo.",
+    "quote": "NVIDIA offers the most diverse large-scale, open dataset for AV that contains 1,700+ hours of driving data collected across the widest range of geographies and conditions",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "a7b1679f5503f6537",
+  "url": "https://huggingface.co/blog/drmapavone/nvidia-alpamayo",
+  "publishDate": "2026-01-05",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "On January 5, 2026, NVIDIA released Alpamayo as an open ecosystem of models, simulation tools, and datasets for reasoning-based AV development. Note: this launch post covers only 'Alpamayo 1' — it contains no mention of Alpamayo 1.5 / Alpamayo 2 / Alpamayo 2 Super, no AlpaGym, no license terms, and no explicit reference to CES 2026 or any event.",
+    "quote": "NVIDIA today released Alpamayo, an open ecosystem of models, simulation tools, and datasets to enable development of reasoning-based autonomous vehicle (AV) architectures.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1 (published on Hugging Face as nvidia/Alpamayo-R1-10B, code at github.com/NVlabs/alpamayo, paper at research.nvidia.com/publication/2025-10_alpamayo-r1) is an open 10B-parameter chain-of-thought reasoning VLA model built on NVIDIA's Cosmos-Reason VLM backbone, targeted at the AV research community.",
+    "quote": "Alpamayo 1 is an open, 10B-parameter chain-of-thought reasoning VLA model built on the Cosmos-Reason VLM backbone and designed for the autonomous vehicle research community.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1's input is multi-camera video and its outputs are driving trajectories plus explicit reasoning traces; the post claims state-of-the-art performance across reasoning quality, trajectory accuracy, alignment, safety, and latency but gives no quantitative benchmark numbers.",
+    "quote": "driving trajectories and reasoning traces that expose the logic behind each decision ... State-of-the-art performance in multiple aspects (reasoning quality, trajectory accuracy, alignment, safety, latency, and more) ... Local-friendly 10B-parameter size for rapid development and research",
+    "importance": "supporting"
+   },
+   {
+    "claim": "The co-released Physical AI AV Dataset (huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles) comprises 1,727 hours of driving in 300,000+ clips of 20 seconds each, recorded across 25 countries and 2,500+ cities, with multi-camera and LiDAR coverage for all clips and radar for more than half of the clips.",
+    "quote": "Composed of 1,727 hours of driving (300,000+ clips, each 20 seconds long) recorded in 25 countries and 2,500+ cities. ... multi-camera and LiDAR coverage for all clips, and radar coverage for more than half clips",
+    "importance": "central"
+   },
+   {
+    "claim": "AlpaSim (github.com/NVlabs/alpasim) was released as an open-source end-to-end AV simulation platform for research and development, with 900+ reconstructed scenarios available on Hugging Face.",
+    "quote": "AlpaSim is an open-source end-to-end AV simulation platform designed specifically for research and development. ... 900+ reconstructed scenarios available on Hugging Face",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "aab016a870caa4434",
+  "url": "https://github.com/NVlabs/alpagym",
+  "publishDate": "2026-05-19 (repository created per GitHub API; README itself undated; last push 2026-07-08)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "AlpaGym is NVIDIA's reinforcement-learning framework for end-to-end autonomous-driving policies that trains a policy in closed loop inside a simulator (scoring resulting drives and training on them), taking camera, ego, and route observations as inputs and producing a trajectory as output.",
+    "quote": "AlpaGym is a reinforcement-learning framework for end-to-end autonomous-driving policies. ... runs a policy in closed loop inside a simulator, scores the resulting drives, and trains on them.",
+    "importance": "central"
+   },
+   {
+    "claim": "As of the current README, AlpaGym supports exactly one Alpamayo model version: Alpamayo 1.5 with 10B parameters (requiring dual GPUs); Alpamayo 1/R1, 2, and 2 Super are not listed as supported.",
+    "quote": "currently supports the Alpamayo 1.5 model with 10b parameters",
+    "importance": "central"
+   },
+   {
+    "claim": "In the Alpamayo ecosystem architecture, AlpaSim serves as AlpaGym's closed-loop simulation environment while Cosmos-RL handles distributed rollout and training orchestration as the trainer.",
+    "quote": "AlpaSim provides the closed-loop simulator (the environment), and Cosmos-RL provides distributed rollout and training orchestration (the trainer).",
+    "importance": "central"
+   },
+   {
+    "claim": "AlpaGym's RL training pipeline uses GRPO (the trainer takes GRPO steps on rollout artifacts and syncs updated weights back to rollout workers); the framework is described as in early but active development, with roadmap focus on throughput/scaling and supporting more models and training algorithms.",
+    "quote": "the trainer consumes the artifacts and takes a GRPO step; updated weights sync back to the rollout workers. ... AlpaGym is in early but active development",
+    "importance": "supporting"
+   },
+   {
+    "claim": "The NVlabs/alpagym repository is open-source under the Apache-2.0 license and was created on 2026-05-19 (per GitHub API), i.e., released publicly in the Computex/GTC Taipei 2026 timeframe, with active pushes as recently as 2026-07-08.",
+    "quote": "\"created_at\": \"2026-05-19T15:28:57Z\" ... \"spdx_id\": \"Apache-2.0\" (GitHub API for NVlabs/alpagym); README: Licensed under Apache-2.0.",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "a1ddc74bea6734e77",
+  "url": "https://www.alphaxiv.org/overview/2511.00088v2",
+  "publishDate": "2026-01-07 (alphaXiv 페이지 표기 'January 7, 2026' = arXiv v2 개정일; v1 최초 제출 2025-10-30, arxiv.org/abs/2511.00088에서 교차 확인)",
+  "sourceQuality": "secondary",
+  "claims": [
+   {
+    "claim": "Alpamayo-R1(AR1, arXiv 2511.00088)은 NVIDIA의 자율주행 VLA 모델로, Physical AI용으로 사전학습된 Cosmos-Reason VLM 백본과 diffusion 기반 trajectory decoder를 결합한 모듈러 아키텍처이며, 멀티카메라·멀티타임스텝 관측 + egomotion 이력(+선택적 텍스트)을 입력받아 Chain-of-Thought reasoning과 실시간 동역학적으로 실행 가능한 궤적을 출력한다.",
+    "quote": "a modular VLA architecture combining Cosmos-Reason, a vision-language model pre-trained for Physical AI, with a diffusion-based trajectory decoder that generates dynamically feasible trajectories in real time ... AR1 employs a modular architecture that processes multi-camera, multi-timestep observations along with egomotion history and optional textual inputs.",
+    "importance": "central"
+   },
+   {
+    "claim": "AR1 학습 파이프라인은 hybrid auto-labeling + human-in-the-loop으로 구축한 Chain of Causation(CoC) 데이터셋을 사용하며, 3단계 학습(Stage 1 Action Modality Injection[이산 궤적 토큰 + conditional flow matching action expert] → Stage 2 SFT → Stage 3 GRPO 기반 RL post-training)으로 진행된다.",
+    "quote": "the Chain of Causation (CoC) dataset, built through a hybrid auto-labeling and human-in-the-loop pipeline producing decision-grounded, causally linked reasoning traces aligned with driving behaviors ... Stage 3: RL-Based Post-Training. This crucial stage employs Group Relative Policy Optimization (GRPO) with a comprehensive reward signal",
+    "importance": "central"
+   },
+   {
+    "claim": "벤치마크 성능(논문 초록 기준): trajectory-only baseline 대비 어려운 케이스 planning accuracy 최대 12% 개선, closed-loop 시뮬레이션 close encounter rate 35% 감소(본문 세부: 11% vs 17%), RL post-training으로 reasoning quality 45%(3.1→4.5)·reasoning-action consistency 37%(0.62→0.85) 향상, 0.5B→7B 파라미터 스케일링에서 일관된 성능 향상.",
+    "quote": "AR1 achieves up to a 12% improvement in planning accuracy on challenging cases compared to a trajectory-only baseline, with a 35% reduction in close encounter rate in closed-loop simulation. RL post-training improves reasoning quality by 45% and reasoning-action consistency by 37%. Model scaling from 0.5B to 7B parameters shows consistent improvements.",
+    "importance": "central"
+   },
+   {
+    "claim": "10B 모델(Alpamayo-R1-10B)은 'AlpaSim public benchmark'에서 0.5B 모델 대비 at-fault close encounter rate 55% 감소(4% vs 9%), AlpaSim score 2배 이상 개선(0.72 vs 0.35)을 기록 — AlpaSim이 Alpamayo-R1 평가용 공개 벤치마크로 사용됨을 뒷받침(주의: 이 수치는 alphaXiv AI 요약 본문 수치로, 논문 원문 표와 대조 검증 권장).",
+    "quote": "On the AlpaSim public benchmark, the 10B parameter model showed a 55% reduction in at-fault close encounter rate (4% vs 9%) and a 2x improvement in the AlpaSim score (0.72 vs 0.35) over the 0.5B model.",
+    "importance": "central"
+   },
+   {
+    "claim": "공개 범위·실차 검증: NVIDIA는 Alpamayo-R1-10B 모델 가중치와 추론 코드를 공개했고(arXiv 원문 초록에서 URL 확인: huggingface.co/nvidia/Alpamayo-R1-10B, github.com/NVlabs/alpamayo), 도심 실차 주행 테스트에서 NVIDIA RTX 6000 Pro Blackwell 플랫폼 기준 99ms 추론 지연의 실시간 성능을 확인했다. 라이선스 종류는 이 페이지에 미기재(확인 불가).",
+    "quote": "The system achieves real-time performance with 99ms inference latency on an NVIDIA RTX 6000 Pro Blackwell platform. ... NVIDIA's decision to release the Alpamayo-R1-10B model weights and inference code, alongside evaluation on public datasets, provides a substantial contribution to the research community",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "abbf420d7faae9907",
+  "url": "https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/",
+  "publishDate": "2026-05-21 (live-updates blog; sections timestamped through 2026-05-31 PT)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "At NVIDIA's GTC Taipei at COMPUTEX 2026 keynote (blog section timestamped Sunday, May 31, 2026, 8:00 p.m. PT, i.e., June 1 Taipei time), NVIDIA introduced Alpamayo 2 Super, described as an open AV reasoning model for understanding complex driving scenes and supporting end-to-end decision-making.",
+    "quote": "NVIDIA introduced Alpamayo 2 Super, an open AV reasoning model built to understand complex driving scenes and support end-to-end decision-making.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 2 is paired with AlpaGym, a closed-loop reinforcement learning framework for AV policy training, and with OmniDreams, which generates photorealistic driving scenarios — indicating the ecosystem tooling shifted from AlpaSim (listed with Alpamayo 1/1.5) to AlpaGym + OmniDreams at the Alpamayo 2 announcement.",
+    "quote": "Alpamayo 2 is paired with AlpaGym, a closed-loop reinforcement learning framework for AV policy training, and OmniDreams, which can generate photorealistic driving scenarios",
+    "importance": "central"
+   },
+   {
+    "claim": "As of May 21, 2026 (pre-keynote Best Choice Awards section), the Alpamayo open platform consisted of Alpamayo 1.5 and Alpamayo 1 — characterized as 10-billion-parameter chain-of-thought reasoning vision language action models for AV research — plus AlpaSim (open-source end-to-end simulation framework) and NVIDIA Physical AI Open Datasets with more than 1,700 hours of driving data.",
+    "quote": "The Alpamayo open platform includes Alpamayo 1.5 and Alpamayo 1, 10-billion-parameter chain-of-thought reasoning vision language action models for AV research; AlpaSim, an open source, end-to-end simulation framework for high-fidelity AV development; and NVIDIA Physical AI Open Datasets, which include more than 1,700 hours of driving data across geographies and conditions.",
+    "importance": "central"
+   },
+   {
+    "claim": "NVIDIA Alpamayo won the Vehicle Technology and Smart Cockpit Category Award at the COMPUTEX 2026 Best Choice Awards, announced in the blog section timestamped Thursday, May 21, 2026, 9 a.m. PT.",
+    "quote": "Plus, NVIDIA Alpamayo won the Vehicle Technology and Smart Cockpit Category Award for pioneering open, reasoning-based autonomous vehicle development.",
+    "importance": "supporting"
+   },
+   {
+    "claim": "In a section timestamped Sunday, May 31, 2026, 10 p.m. PT, NVIDIA stated that Alpamayo open models running on DGX Station bring its AV research stack to the desktop, with closed-loop driving scenarios inside virtual environments generated by NVIDIA Cosmos world foundation models.",
+    "quote": "in automotive, NVIDIA Alpamayo open models with DGX Station brings NVIDIA's autonomous vehicle research stack to the desktop, with a closed-loop driving scenario inside a virtual environment generated by NVIDIA Cosmos world foundation models.",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "aba762f2fe21e4c3a",
+  "url": "https://techcrunch.com/2026/01/05/nvidia-launches-alpamayo-open-ai-models-that-allow-autonomous-vehicles-to-think-like-a-human/",
+  "publishDate": "2026-01-05",
+  "sourceQuality": "secondary",
+  "claims": [
+   {
+    "claim": "NVIDIA launched Alpamayo at CES 2026 (article dated January 5, 2026) as a family of open-source AI models, simulation tools, and datasets for autonomous vehicle reasoning — and TechCrunch refers to the core model as 'Alpamayo 1' (not 'Alpamayo-R1'), with no mention of Alpamayo 1.5 or Alpamayo 2 in this article.",
+    "quote": "At CES 2026, Nvidia launched Alpamayo, a new family of open source AI models, simulation tools, and datasets for training physical robots and vehicles that are designed to help autonomous vehicles reason through complex driving situations.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1 is a 10 billion-parameter chain-of-thought, reasoning-based vision-language-action (VLA) model intended to let an AV handle complex edge cases (e.g., a traffic light outage at a busy intersection) without prior experience.",
+    "quote": "At the core of Nvidia's new family is Alpamayo 1, a 10 billion-parameter chain-of-thought, reason-based vision language action (VLA) model that allows an AV to think more like a human so it can solve complex edge cases — like how to navigate a traffic light outage at a busy intersection — without previous experience.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1's underlying code was made available on Hugging Face at launch (per TechCrunch; the article describes the models as 'open source' but does not specify license terms).",
+    "quote": "Alpamayo 1's underlying code is available on Hugging Face.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alongside Alpamayo 1, NVIDIA released an open driving dataset with more than 1,700 hours of driving data collected across a range of geographies and conditions, covering rare and complex real-world scenarios (TechCrunch does not name it 'Physical AI AV Dataset' or give sensor details).",
+    "quote": "As part of the Alpamayo rollout, Nvidia is also releasing an open dataset with more than 1,700 hours of driving data collected across a range of geographies and conditions, covering rare and complex real-world scenarios.",
+    "importance": "central"
+   },
+   {
+    "claim": "NVIDIA also launched AlpaSim at CES 2026, an open-source simulation framework for validating autonomous driving systems, available on GitHub and designed to recreate real-world driving conditions from sensors to traffic (no mention of AlpaGym in this article).",
+    "quote": "The company is additionally launching AlpaSim, an open source simulation framework for validating autonomous driving systems. Available on GitHub, AlpaSim is designed to recreate real-world driving conditions, from sensors to traffic, so developers can safely test systems at scale.",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "ad757dd7ef6c9d2c9",
+  "url": "https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/",
+  "publishDate": "not stated on page (undated solutions hub; references CES 2026 video and links to GTC Taipei/COMPUTEX 2026 news, so current as of mid-2026)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "NVIDIA's official Alpamayo page states the open reasoning VLA model family is offered at 10B parameters as 'Alpamayo 1 Nano' and 'Alpamayo 1.5 Nano', and scales to 32B parameters as 'Alpamayo 2 Super' (note: the page does not use the names 'Alpamayo-R1' or plain 'Alpamayo 2').",
+    "quote": "It's available in 10 B parameters with Alpamayo 1 Nano and 1.5 Nano, and scales to 32 B with Alpamayo 2 Super.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 2 Super is a 32-billion-parameter reasoning-based vision language action (VLA) model positioned for Level 4 robotaxi development, extending the Alpamayo family of open models, simulation frameworks, and physical AI datasets.",
+    "quote": "Alpamayo 2 Super is a 32 billion-parameter reasoning‑based vision language action (VLA) model. It extends the NVIDIA Alpamayo family of open AI models, simulation frameworks, and physical AI datasets for safe robotaxi (Level 4) development.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo is built on NVIDIA Cosmos as its backbone; its inputs are multi-camera video, navigation inputs, and driving context, and its outputs are trajectories plus Chain-of-Causation reasoning traces.",
+    "quote": "An open reasoning VLA model for autonomous driving, Alpamayo is built on NVIDIA Cosmos™ and processes multi-camera video, navigation inputs, and driving context to generate trajectories and Chain-of-Causation reasoning traces.",
+    "importance": "central"
+   },
+   {
+    "claim": "The Alpamayo ecosystem's training/validation pipeline comprises AlpaGym, a high-throughput closed-loop reinforcement-learning training framework used to train and post-train the Alpamayo VLA models, and AlpaSim, an open-source closed-loop AV simulation framework for validating model decisions (repos at github.com/NVlabs/alpasim and github.com/NVlabs/alpamayo-recipes).",
+    "quote": "NVIDIA AlpaGym is a high-throughput closed-loop RL training framework, training AV models through continuous decision and observation cycles, producing models validated against the full complexity of real-world driving. ... An open-source closed-loop AV simulation framework, AlpaSim validates model decisions against real-world consequences, accelerating safety validation without scaling physical test fleets.",
+    "importance": "central"
+   },
+   {
+    "claim": "NVIDIA claims the Physical AI Open Datasets are the largest open multi-sensor driving dataset available, containing real-world driving data with Chain-of-Causation reasoning labels collected across 25 countries (hosted at huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles); separately, the page states Alpamayo won the COMPUTEX Best Choice Award and links to NVIDIA's GTC Taipei/COMPUTEX 2026 news roundup.",
+    "quote": "The largest open multi-sensor driving dataset available, Physical AI Open Datasets provide real-world driving data with Chain-of-Causation reasoning labels across 25 countries, purpose-built for long-tail scenario coverage.",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "a4ec75fb0354f4830",
+  "url": "https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis",
+  "publishDate": "2026-05-31",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "NVIDIA introduced Alpamayo 2 Super at GTC Taipei (press release dated May 31, 2026) as an open 34-billion-parameter reasoning-based vision language action (VLA) model for level 4 robotaxi development. The 34B figure is verified in the raw page HTML; note the GTC Taipei livestream ASR transcript renders it as '32 billion', a discrepancy likely due to ASR error but worth cross-checking against the Hugging Face model card.",
+    "quote": "NVIDIA GTC Taipei — NVIDIA today introduced NVIDIA Alpamayo 2 Super, a 34-billion-parameter reasoning‑based vision language action (VLA) model that extends the NVIDIA Alpamayo family of open AI models, simulation frameworks and physical AI datasets for safe, level 4 robotaxi development.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 2 Super is built on NVIDIA Cosmos world foundation models and scales ~3x versus previous 10-billion-parameter generations, which the release explicitly names as 'NVIDIA Alpamayo 1 Nano' and 'NVIDIA Alpamayo 1.5 Nano'; it is positioned as a teacher model whose distilled compact models run on NVIDIA DRIVE AGX Thor in-vehicle.",
+    "quote": "As the teacher model scales from 10-billion-parameter models like NVIDIA Alpamayo 1 Nano and NVIDIA Alpamayo 1.5 Nano to 34 billion parameters with Alpamayo 2 Super, a downstream AV stack built on Alpamayo inherits higher‑quality reasoning and perception from a single open release, without requiring each manufacturer to rebuild from scratch.",
+    "importance": "central"
+   },
+   {
+    "claim": "A new capability in Alpamayo 2 Super is reasoning auto-labeling with 2D grounding, which NVIDIA claims compresses annotation cycles from months to days; the model also outputs improved chain-of-causation (CoC) traces and trajectories for long-tail scenarios.",
+    "quote": "Introduces reasoning auto‑labeling with 2D grounding so the 34-billion-parameter foundation model can provide high-quality reasoning labels, compressing annotation cycles from months to days and reshaping AV data pipeline economics.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alongside the model, NVIDIA introduced AlpaGym, a high-throughput closed-loop reinforcement learning framework that runs AV models through continuous decision/observation cycles inside NVIDIA AlpaSim (contrasted with open-loop training); the release also mentions the NVIDIA OmniDreams generative world model for photorealistic closed-loop scenario generation and integration with the Physical AI AV Dataset.",
+    "quote": "Where open‑loop training evaluates models against recorded data and generates a single round of actions, AlpaGym runs models through continuous decision and observation cycles in NVIDIA AlpaSim, with every braking, steering and navigation choice affecting the environment.",
+    "importance": "central"
+   },
+   {
+    "claim": "Public release scope: Alpamayo 2 Super was NOT yet released at announcement — availability is 'expected... this summer' (2026) via GitHub (inference code) and Hugging Face (model weights); the Alpamayo family has been downloaded close to 400,000 times since launch. Notably, the press release names NO specific license, NO benchmark names or numeric performance results, NO external partner companies, and does not mention CES 2026 or a non-Super 'Alpamayo 2'.",
+    "quote": "Alpamayo 2 Super is expected to be available this summer on GitHub for inference code and Hugging Face for model weights. [...] Since launch, Alpamayo has been downloaded close to 400,000 times.",
+    "importance": "central"
+   }
+  ]
+ },
+ {
+  "agentId": "aff3273fd37df2396",
+  "url": "https://developer.nvidia.com/blog/building-autonomous-vehicles-that-reason-with-nvidia-alpamayo/",
+  "publishDate": "2026-01-05",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "NVIDIA Alpamayo 1 is an open, 10-billion-parameter reasoning VLA (vision-language-action) model that generates both trajectory predictions and human-readable reasoning traces; the blog frames such reasoning VLAs as implicit world models operating in a semantic space.",
+    "quote": "Part 1: Introducing NVIDIA Alpamayo 1, an open, 10B reasoning VLA model, as well as how to use the model to both generate trajectory predictions and review the corresponding reasoning traces. ... These models can be viewed as implicit world models operating in a semantic space, allowing AVs to solve complex problems step-by-step and to generate reasoning traces that mirror human thought processes.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alpamayo 1's pretrained weights are openly released on Hugging Face as nvidia/Alpamayo-R1-10B, with inference code on GitHub at NVlabs/alpamayo; an example model output is a natural-language driving decision paired with a predicted trajectory.",
+    "quote": "The Hugging Face repository [https://huggingface.co/nvidia/Alpamayo-R1-10B] contains pretrained model weights, which can be loaded with the corresponding code on GitHub [https://github.com/NVlabs/alpamayo]. ... an example output you may see in the notebook is 'Nudge to the left to increase clearance from the construction cones encroaching into the lane,' with the corresponding predicted trajectory and ground truth trajectory visualized below.",
+    "importance": "central"
+   },
+   {
+    "claim": "The NVIDIA Physical AI AV Dataset released with Alpamayo comprises 1,727 hours of driving from 25 countries and over 2,500 cities, split into 310,895 clips of 20 seconds each, with multi-camera and LiDAR coverage for all clips and radar coverage for 163,850 clips (gated access on Hugging Face).",
+    "quote": "It contains a total of 1,727 hours of driving recorded in 25 countries and over 2,500 cities... Overall, it consists of 310,895 clips that are each 20 seconds long. The sensor data includes multi-camera and LiDAR coverage for all clips, and radar coverage for 163,850 clips.",
+    "importance": "central"
+   },
+   {
+    "claim": "AlpaSim, released alongside Alpamayo 1, is an open-source end-to-end simulation tool built on a microservice architecture (Driver, Renderer, TrafficSim, Controller, Physics services assignable to different GPUs); it initially ships with roughly 900 NuRec-reconstructed 20-second scenes and computes a closed-loop DrivingScore metric.",
+    "quote": "Introducing NVIDIA AlpaSim, an open-source end-to-end simulation tool designed for evaluating end-to-end models ... AlpaSim is built on a microservice architecture centered around the Runtime... Individual services, such as the Driver, Renderer, TrafficSim, Controller, and Physics, run in separate processes and can be assigned to different GPUs. ... The platform also ships initially with roughly 900 reconstructed scenes, each 20 seconds long ... we compute a DrivingScore that reflects performance under realistic traffic conditions.",
+    "importance": "supporting"
+   },
+   {
+    "claim": "This CES-2026-timeframe post (published Jan 05, 2026, tagged 'CES26', author Marco Pavone) introduces Alpamayo as a family of models, simulation tools, and datasets, but covers only Alpamayo 1 — Alpamayo 1.5, Alpamayo 2, and Alpamayo 2 Super are not mentioned, and no license terms, training-pipeline details, or quantitative benchmark numbers are stated.",
+    "quote": "NVIDIA introduced Alpamayo, a family of models, simulation tools, and datasets to enable development of reasoning-based AV architectures.",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "ac238a08218d17720",
+  "url": "https://the-decoder.com/nvidia-bets-big-on-physical-ai-at-gtc-taipei-with-a-new-world-model-driving-brain-and-open-humanoid-robot/",
+  "publishDate": "2026-06-01",
+  "sourceQuality": "secondary",
+  "claims": [
+   {
+    "claim": "Alpamayo 2 Super, announced at GTC Taipei (article dated June 1, 2026), is a 32-billion-parameter model that replaces the previous top-end generation, Alpamayo 1 Nano and Alpamayo 1.5 Nano, which had 10 billion parameters each.",
+    "quote": "Previous versions included Alpamayo 1 Nano and 1.5 Nano, each with ten billion parameters. Alpamayo 2 Super replaces that generation at the top end with 32 billion parameters.",
+    "importance": "central"
+   },
+   {
+    "claim": "A new output modality in Alpamayo 2 Super is 'meta-actions' (e.g., lane change, stop, yield) delivered to a downstream planner alongside the driving trajectory.",
+    "quote": "New is the output of so-called meta-actions like 'lane change,' 'stop,' or 'yield,' which the model delivers to a downstream planner alongside the trajectory.",
+    "importance": "central"
+   },
+   {
+    "claim": "Every Alpamayo 2 Super decision is accompanied by a textual reasoning chain called a 'chain of causation,' which NVIDIA positions for safety documentation and regulatory review.",
+    "quote": "Every decision comes with a 'chain of causation,' a textual reasoning chain that Nvidia says is designed for safety documentation and regulatory review.",
+    "importance": "central"
+   },
+   {
+    "claim": "Alongside Alpamayo 2 Super, NVIDIA is releasing AlpaGym, an open-source closed-loop reinforcement-learning-in-simulation framework, and OmniDreams, a generative model for rare traffic scenarios; the article does NOT mention AlpaSim, a Physical AI Dataset, or auto-labeling.",
+    "quote": "Nvidia is also releasing AlpaGym, an open-source framework for closed-loop reinforcement learning in simulation, and OmniDreams, a generative model for rare traffic scenarios.",
+    "importance": "central"
+   },
+   {
+    "claim": "As of the article (June 1, 2026), Alpamayo 2 Super code and weights were not yet public but expected on GitHub and Hugging Face in summer 2026; no specific license is named for Alpamayo (the OpenMDW-1.1 license mention applies to Cosmos 3), and no external benchmark comparisons are provided.",
+    "quote": "Code and weights are expected to appear on GitHub and Hugging Face this summer.",
+    "importance": "supporting"
+   }
+  ]
+ },
+ {
+  "agentId": "adb379fd5cb39cae3",
+  "url": "https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/",
+  "publishDate": "2026-06-01 (UTC metadata datePublished 2026-06-01T04:49:15+00:00; page displays \"May 31, 2026\"; dateModified 2026-06-22)",
+  "sourceQuality": "primary",
+  "claims": [
+   {
+    "claim": "AlpaGym is NVIDIA's open-source, high-throughput closed-loop RL post-training framework for AV models: it connects policy training to AlpaSim closed-loop rollouts and combines AlpaSim simulator microservices, NVIDIA Physical AI Open Datasets, and the distributed NVIDIA Cosmos-RL training framework into a scalable post-training pipeline (repos: github.com/NVlabs/alpagym, NVlabs/alpasim, NVlabs/alpamayo-recipes, nvidia-cosmos/cosmos-rl).",
+    "quote": "AlpaGym connects policy training to AlpaSim closed-loop rollouts and provides an open source, high-throughput framework for closed-loop RL. The system combines AlpaSim simulator microservices, NVIDIA Physical AI Open Datasets, and distributed NVIDIA Cosmos-RL training framework into a scalable post-training pipeline.",
+    "importance": "central"
+   },
+   {
+    "claim": "As of this post (published 2026-06-01 UTC, modified 2026-06-22), AlpaGym officially supports the Alpamayo 1.5 model at 10B parameters, with the checkpoint publicly downloadable from Hugging Face as nvidia/Alpamayo-1.5-10B. The post never mentions Alpamayo 2 or Alpamayo 2 Super (0 occurrences in page text), and the conversion tooling lives under a 'packages/policies/alpamayo_r1/' path — evidence that Alpamayo 1.5 tooling is built on the Alpamayo-R1 codebase.",
+    "quote": "AlpaGym currently supports the Alpamayo 1.5 model (10B parameters), which serves as an example model here, with further detailed instructions in the NVlabs/alpagym GitHub repo for how to use your own AV model. First, download the Alpamayo 1.5 checkpoint and convert it into an AlpaGym-compatible checkpoint: ... snapshot_download('nvidia/Alpamayo-1.5-10B', ...) ... packages/policies/alpamayo_r1/scripts/convert_release_to_alpagym_checkpoint.py",
+    "importance": "central"
+   },
+   {
+    "claim": "AlpaGym's training pipeline uses AlpaSim plus Cosmos-RL as its runtime/orchestration layer with GRPO as the default RL algorithm, and ships reference reward functions (e.g., a 'progress_safety' reward shown in the launch command) tested with Alpamayo models and the Physical AI AV NuRec dataset; runs are Hydra configurations and checkpoints export to safetensors.",
+    "quote": "It integrates AlpaSim and Cosmos RL as its runtime and orchestration layer, GRPO as a default algorithm, and includes reference reward functions tested with Alpamayo models and the Physical AI AV NuRec dataset.",
+    "importance": "central"
+   },
+   {
+    "claim": "Concrete resource/scale figures: recommended >=40 GB VRAM GPU, ~100-150 GB free disk (including ~21 GB model weights), ~1.5 GB per NuRec scene and ~1.5 TB for the full 'public_2601' suite of the Physical AI AV NuRec dataset (huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles-NuRec); training the 10B model does not fit on one GPU — the smoke-test config runs on two GPUs ('tested on 2x 50GB RTX 6000 Ada', as written) and 'A distillation script to a smaller single-GPU-compatible checkpoint is planned.'",
+    "quote": "Recommended: a CUDA GPU with >=40 GB VRAM and ~100-150 GB free disk space (env + container images + ~21 GB weights), plus ~1.5 GB per NuRec scene (~1.5 TB for the full public_2601 suite).",
+    "importance": "supporting"
+   },
+   {
+    "claim": "NVIDIA launched two open AV challenges with public leaderboards at CVPR 2026: the 'AlpaSim Closed-Loop E2E Driving Challenge' (huggingface.co/spaces/nvidia/AlpasimE2EClosedLoopChallenge2026) and the 'Physical AI AV Reasoning Challenge' (huggingface.co/spaces/nvidia/PhysicalAI-AV-OOD-Reasoning-Challenge-2026); the post is tagged 'Computex 2026' and links a related post 'Taking Alpamayo to New Heights with Driving Foundation Models and Closed-Loop Training' plus the NVIDIA GTC Taipei 2026 Keynote.",
+    "quote": "To evaluate your model on a public leaderboard, see the two open AV challenges NVIDIA launched at CVPR 2026: AlpaSim Closed-Loop E2E Driving Challenge Physical AI AV Reasoning Challenge",
+    "importance": "supporting"
+   }
+  ]
+ }
+]

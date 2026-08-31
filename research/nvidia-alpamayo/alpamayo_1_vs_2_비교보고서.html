@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NVIDIA Alpamayo 1 → 2 비교 보고서</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1e2430; --sub:#5b6472;
+    --accent:#76b900; --accent-dark:#4e7a00; --line:#e3e7ee;
+    --warn-bg:#fff7e6; --warn-line:#f0c36d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Pretendard,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px}
+  header.hero{background:linear-gradient(135deg,#161b22,#243018);color:#fff;border-radius:16px;padding:36px 32px;margin-bottom:28px}
+  header.hero h1{margin:0 0 10px;font-size:1.7rem}
+  header.hero .meta{color:#b9c4a8;font-size:.9rem}
+  header.hero .meta a{color:#cfe89b}
+  h2{font-size:1.3rem;border-left:5px solid var(--accent);padding-left:10px;margin:40px 0 14px}
+  h3{font-size:1.05rem;margin:26px 0 8px;color:var(--accent-dark)}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin-bottom:20px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f0f3e8}
+  tr:nth-child(even) td{background:#fafbf7}
+  .warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.93rem}
+  .tldr{background:#f3f8ea;border:1px solid #cfe3ad;border-radius:10px;padding:14px 18px;margin:10px 0;font-size:1rem}
+  code{background:#eef1f5;border-radius:4px;padding:1px 5px;font-size:.88em}
+  figure{margin:18px 0;text-align:center}
+  figure img{max-width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+  figcaption{font-size:.85rem;color:var(--sub);margin-top:6px}
+  footer{color:var(--sub);font-size:.85rem;margin-top:30px}
+  a{color:#2b6cb0;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .small{font-size:.85rem;color:var(--sub)}
+  ul{padding-left:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>NVIDIA Alpamayo 1 → 2 무엇이 달라졌나 — 비교 보고서</h1>
+  <div class="meta">
+    작성일 2026-07-15 · 모든 출처 접근일 동일 · 상세 발췌: <a href="reference/references.md">reference/references.md</a> · 원시 기록: <a href="reference/deep_research_claims_raw.json">deep_research_claims_raw.json</a> · 그림: <a href="images/">images/</a><br>
+    검증 등급: ✅ 복수 소스 교차검증 · 🔍 원문 직접 확인 · 📄 원문 발췌 확보 · 🎥 영상 발언만(문서 미확인) — 사실 문장 뒤 괄호에 원문 링크 병기
+  </div>
+</header>
+
+<div class="warn">⚠️ <b>미리 알림</b> — ① Alpamayo 2 Super 파라미터 수는 소스 간 <b>34B(보도자료) vs 32B(그 외)</b>로 갈림 → §9.1 정리. ② "LingoQA 1위", "7+ 카메라"는 영상 발언만. ③ Mercedes CLA 탑재설 기사는 접근 실패(403)로 확인 불가. ④ 2026-07-15 현재 <b>Alpamayo 2 Super 가중치 미공개</b>(여름 공개 예정) — 스펙은 전부 발표 기준.</div>
+
+<section>
+<h2>1. 한눈 요약</h2>
+<div class="tldr"><b>Alpamayo 2는 "같은 모델의 개선판"이 아니라 세대 교체다.</b> 10B급 연구용 모델(1, 1.5 — 공식 명칭 "Nano")에서 34B급 robotaxi(Level 4)용 teacher 모델("Super")로 커졌고, 모델과 함께 학습 방법 자체(closed-loop RL, AlpaGym)가 바뀌었다.</div>
+<table>
+<tr><th>달라진 것</th><th>Alpamayo 1 / 1.5 (Nano)</th><th>Alpamayo 2 Super</th><th>근거</th></tr>
+<tr><td>크기·백본</td><td>10B (백본 Cosmos-Reason/Reason2 8.2B + action expert 2.3B)</td><td>34B 전체, 백본 Cosmos 3 Super Reasoner 32B — 약 3배</td><td>🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a> · <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a> · <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a> · <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a></td></tr>
+<tr><td>카메라 인지 범위</td><td>전방 중심 4카메라</td><td>360° (전·측·후방)</td><td>🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a> · <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a></td></tr>
+<tr><td>출력</td><td>궤적 + 추론 텍스트(CoC)</td><td>+ <b>Meta-Action</b> (yield / lane change / stop 같은 상위 판단)</td><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a></td></tr>
+<tr><td>새 용도</td><td>주행 모델</td><td>+ <b>auto-labeling 모델 겸용</b> (2D grounding 라벨 생성, 어노테이션 "수개월→수일" 주장)</td><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a></td></tr>
+<tr><td>학습 생태계</td><td>AlpaSim (평가용 시뮬레이터)</td><td>+ <b>AlpaGym</b> (closed-loop RL 학습 프레임워크) + OmniDreams (시나리오 생성)</td><td>✅ <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a> · <a href="https://github.com/NVlabs/alpagym">GitHub alpagym</a> · <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a></td></tr>
+<tr><td>타깃</td><td>AV 연구 커뮤니티</td><td>Level 4 robotaxi 개발, teacher → distill → 차량(DRIVE AGX Thor) 탑재</td><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a></td></tr>
+</table>
+</section>
+
+<section>
+<h2>2. 배경 — Alpamayo가 뭔지 3분 정리</h2>
+<p><b>Alpamayo = NVIDIA의 오픈 자율주행 "reasoning" 생태계.</b> 모델 하나가 아니라 ①모델 시리즈 + ②시뮬레이터(AlpaSim) + ③RL 학습 프레임워크(AlpaGym) + ④대규모 공개 데이터셋 + ⑤auto-labeling 파이프라인 묶음. CES 2026(2026-01-05)에서 플랫폼으로 공식 발표. (🔍 <a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">CES 보도자료</a>)</p>
+<p>핵심 아이디어: 기존 end-to-end 자율주행 모델은 영상→궤적을 바로 뽑는다("블랙박스"). Alpamayo는 궤적을 내기 <b>전에 "왜 그렇게 운전하는지" 텍스트로 추론 과정을 먼저 생성</b>한다. NVIDIA는 이 추론 강제가 long-tail 상황에서 더 안전한 행동을 만들고, 안전 문서화·규제 대응에도 쓰인다고 주장. (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a>, 📄 <a href="https://the-decoder.com/nvidia-bets-big-on-physical-ai-at-gtc-taipei-with-a-new-world-model-driving-brain-and-open-humanoid-robot/">The Decoder</a>)</p>
+<figure>
+  <img src="images/ar1_fig1_architecture.png" alt="Alpamayo-R1 아키텍처 개요">
+  <figcaption>Alpamayo-R1 아키텍처 — 멀티카메라 영상·egomotion → vision encoder → Cosmos-Reason 백본 → diffusion 기반 trajectory decoder. 출처: <a href="https://arxiv.org/html/2511.00088v2">arXiv 2511.00088v2 Figure 1</a> (NVIDIA)</figcaption>
+</figure>
+<h3>용어 최소셋</h3>
+<table>
+<tr><th>용어</th><th>뜻</th></tr>
+<tr><td>VLA (Vision-Language-Action)</td><td>영상+텍스트를 입력받아 "행동"(여기서는 주행 궤적)을 출력하는 모델</td></tr>
+<tr><td>CoC (Chain-of-Causation)</td><td>Alpamayo의 추론 텍스트 형식. "원인→결정" 인과 구조로 설계·라벨링 (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a>)</td></tr>
+<tr><td>Meta-Action</td><td>"차선 변경", "정지", "양보" 같은 상위 수준 주행 판단 (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a>)</td></tr>
+<tr><td>Cosmos-Reason / Cosmos 3 Super Reasoner</td><td>NVIDIA Physical AI용 비전-언어 백본 계열 (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a> · <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a>)</td></tr>
+<tr><td>Action Expert</td><td>백본 표현을 궤적으로 바꾸는 diffusion 디코더 (1/1.5에서 2.3B) (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td></tr>
+<tr><td>Open-loop / Closed-loop</td><td>open-loop = 녹화 데이터 1회 예측·채점. closed-loop = 시뮬레이터와 상호작용하며 자기 행동의 결과를 겪음 (📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a>)</td></tr>
+<tr><td>AlpaSim</td><td>오픈소스 end-to-end AV 시뮬레이터. NuRec 재구성 씬, 마이크로서비스 구조 (✅ <a href="https://developer.nvidia.com/blog/building-autonomous-vehicles-that-reason-with-nvidia-alpamayo/">developer blog</a> · <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/">솔루션 페이지</a>)</td></tr>
+<tr><td>AlpaGym</td><td>AlpaSim(환경) + Cosmos-RL(분산 학습)로 closed-loop RL post-training. GRPO 기본 (✅ <a href="https://github.com/NVlabs/alpagym">GitHub</a> · <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">블로그</a>)</td></tr>
+<tr><td>Nano / Super</td><td>공식 크기 표기. 10B = "1 Nano", "1.5 Nano" / 34B = "2 Super" (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a> · <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/">솔루션 페이지</a>)</td></tr>
+<tr><td>Distillation</td><td>teacher 능력을 작은 모델로 압축 — 차량 탑재(DRIVE AGX Thor) 경로 (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</td></tr>
+</table>
+</section>
+
+<section>
+<h2>3. 버전 타임라인</h2>
+<table>
+<tr><th>시점</th><th>이벤트</th><th>근거</th></tr>
+<tr><td>2025-10-30</td><td>arXiv 논문 v1 "Alpamayo-R1..." 제출</td><td>🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a></td></tr>
+<tr><td>2025-12-01</td><td>NeurIPS 2025에서 <b>DRIVE Alpamayo-R1</b> 오픈 공개("세계 최초 오픈 reasoning VLA for AV" 주장) + AlpaSim 공개</td><td>📄 <a href="https://blogs.nvidia.com/blog/neurips-open-source-digital-physical-ai/">NeurIPS 블로그</a></td></tr>
+<tr><td>2025-12-03</td><td>HF 가중치 <code>nvidia/Alpamayo-R1-10B</code> 릴리스</td><td>🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a></td></tr>
+<tr><td>2026-01-05</td><td><b>CES 2026: Alpamayo 플랫폼 발표.</b> Alpamayo-R1 → <b>Alpamayo 1</b> 개명. Physical AI AV Dataset(1,727시간) 공개</td><td>✅ <a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">CES 보도자료</a> · <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a> · <a href="https://github.com/NVlabs/alpamayo">GitHub</a></td></tr>
+<tr><td>2026-01-07</td><td>arXiv v2 (개명 반영)</td><td>📄 <a href="https://arxiv.org/html/2511.00088v2">arXiv v2</a></td></tr>
+<tr><td>2026-03-19</td><td><b>Alpamayo 1.5</b> HF 릴리스 (코드 repo 분리)</td><td>🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a> · <a href="https://github.com/NVlabs/alpamayo">GitHub</a></td></tr>
+<tr><td>2026-05-19</td><td>NVlabs/alpagym repo 생성 (GitHub API)</td><td>📄 <a href="https://github.com/NVlabs/alpagym">GitHub alpagym</a></td></tr>
+<tr><td>2026-05-21</td><td>COMPUTEX 2026 Best Choice Awards — Vehicle Technology &amp; Smart Cockpit 부문 수상</td><td>📄 <a href="https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/">GTC 뉴스 블로그</a></td></tr>
+<tr><td>2026-05-31</td><td><b>GTC Taipei 키노트: Alpamayo 2 Super 발표</b> + AlpaGym·OmniDreams</td><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a> · 📄 <a href="https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/">GTC 뉴스</a></td></tr>
+<tr><td>2026-06-01</td><td>Pavone HF 블로그(Alpamayo 2) + AlpaGym how-to 게시. AlpaGym 코드 공개는 이 무렵 라이브스트림 중</td><td>🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a> · 📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a> · 🎥 <a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">라이브스트림</a></td></tr>
+<tr><td>2026-06 (CVPR)</td><td>공개 챌린지 2종: <a href="https://huggingface.co/spaces/nvidia/AlpasimE2EClosedLoopChallenge2026">AlpaSim Closed-Loop E2E</a> / <a href="https://huggingface.co/spaces/nvidia/PhysicalAI-AV-OOD-Reasoning-Challenge-2026">Physical AI AV Reasoning</a></td><td>📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a></td></tr>
+<tr><td>2026 여름 (예정)</td><td>2 Super 가중치·코드 공개 예정 — <b>2026-07-15 현재 미공개 확인</b></td><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a> · HF 검색 직접 확인</td></tr>
+</table>
+</section>
+
+<section>
+<h2>4. 버전별 상세 비교표</h2>
+<table>
+<tr><th>항목</th><th>Alpamayo 1 (= Alpamayo-R1)</th><th>Alpamayo 1.5</th><th>Alpamayo 2 Super</th></tr>
+<tr><td>발표</td><td>NeurIPS 2025 (R1) → CES 2026 개명 (📄 <a href="https://blogs.nvidia.com/blog/neurips-open-source-digital-physical-ai/">NeurIPS 블로그</a>, 🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td><td>2026-03-19 HF 릴리스 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>2026-05-31 GTC Taipei (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</td></tr>
+<tr><td>파라미터</td><td>10B = 백본 8.2B + action expert 2.3B (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td><td>10B 동일 구성 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td><b>34B</b> (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>) / 백본 32B (🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그</a>) — §9.1</td></tr>
+<tr><td>백본</td><td>Cosmos-Reason (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a>)</td><td><b>Cosmos-Reason2</b> (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td><b>Cosmos 3 Super Reasoner</b> (🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그</a>)</td></tr>
+<tr><td>카메라 입력</td><td>4개 고정(front-wide/front-tele/cross-left/cross-right), 10Hz 0.4s 히스토리 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td><td>4개 기본 + <b>flexible camera counts</b> (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td><b>360°</b> 전·측·후방, 개수 미명시 — 영상에선 "7+" (🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그</a>, 🎥 <a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">영상</a>)</td></tr>
+<tr><td>그 외 입력</td><td>egomotion만, <b>navigation 없음</b> (🔍 <a href="https://github.com/NVlabs/alpamayo">GitHub</a>)</td><td>+ <b>navigation guidance</b>(텍스트), 사용자 질문 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>navigation 포함(플랫폼 설명) (✅ <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/">솔루션 페이지</a>)</td></tr>
+<tr><td>출력</td><td>CoC 추론 + 6.4s 궤적(64 waypoints @10Hz) (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td><td>+ <b>VQA 답변</b> (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>+ <b>Meta-Action</b> + 2D grounding 라벨 (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</td></tr>
+<tr><td>학습</td><td>CoC 데이터셋 → SFT → RL(GRPO). <b>공개 가중치는 RL 미적용</b> (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a> · <a href="https://github.com/NVlabs/alpamayo">GitHub</a>)</td><td><b>RL post-trained 공개</b> (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>+ <b>closed-loop RL(AlpaGym)</b> (✅ <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a> · <a href="https://github.com/NVlabs/alpagym">GitHub</a>)</td></tr>
+<tr><td>학습 데이터</td><td>80,000시간, CoC 700K (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td><td>80,000시간(10억+ 이미지), <b>CoC 3M</b> (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>미공개</td></tr>
+<tr><td>벤치마크</td><td>AlpaSim 0.73±0.01, minADE_6@6.4s 1.22m (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>). 논문: +12% planning, -35% close encounter, 실차 99ms (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a>)</td><td>AlpaSim <b>0.81±0.01</b>, minADE <b>1.11m</b>, LingoQA Lingo-Judge <b>74.2</b> (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>수치 미공개 (🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그</a>)</td></tr>
+<tr><td>공개 상태</td><td>가중치+코드 공개(gated, ~22GB) (📄 <a href="https://github.com/NVlabs/alpamayo">GitHub</a>)</td><td>가중치+코드 공개 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td><b>미공개</b>, 여름 예정 (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</td></tr>
+<tr><td>라이선스</td><td>가중치 non-commercial / 코드 Apache 2.0 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</td><td>동일 구조 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</td><td>미발표 (📄 <a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">CES 보도자료</a>: "상업 옵션" 예고)</td></tr>
+<tr><td>추론 GPU</td><td>≥24GB VRAM (🔍 <a href="https://github.com/NVlabs/alpamayo">GitHub</a>)</td><td>동급 10B · AlpaGym 학습 ≥40GB GPU 2장 (📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">블로그</a>)</td><td>미공개</td></tr>
+<tr><td>코드</td><td><a href="https://github.com/NVlabs/alpamayo">NVlabs/alpamayo</a></td><td><a href="https://github.com/NVlabs/alpamayo1.5">NVlabs/alpamayo1.5</a> · <a href="https://github.com/NVlabs/alpamayo-recipes">recipes</a></td><td>미공개 (예정: GitHub+HF)</td></tr>
+</table>
+<p>정리: <b>1 → 1.5</b>는 같은 10B 틀의 기능 확장(RL 공개, navigation/VQA/유연 카메라, CoC 4배). <b>1.5 → 2 Super</b>는 크기(3배)·인지(360°)·출력(meta-action)·용도(auto-labeler)·학습(closed-loop RL)이 함께 바뀌는 세대 전환.</p>
+</section>
+
+<section>
+<h2>5. Alpamayo 2에서 달라진 것 — 상세</h2>
+
+<h3>5.1 모델: 10B Nano → 34B Super, 백본 세대 교체</h3>
+<ul>
+<li>"a 34-billion-parameter reasoning-based vision language action (VLA) model" — 이전 세대를 "Alpamayo 1 Nano / 1.5 Nano"로 명명, teacher 스케일업 설명. (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료 5/31</a>)</li>
+<li>백본 Cosmos-Reason(1) → Cosmos-Reason2(1.5) → <b>Cosmos 3 Super Reasoner 32B</b>(2 Super). "3x the number of parameters as prior Alpamayo models". (🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a>)</li>
+<li>포지셔닝: 연구용 10B (📄 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo">HF 런치 블로그</a>) → "safe robotaxi (Level 4) development" + <b>distill → DRIVE AGX Thor 탑재</b> 구도 공식화. (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</li>
+</ul>
+
+<h3>5.2 인지: 전방 중심 → 360° 서라운드</h3>
+<ul>
+<li>1/1.5: 전방 광각+망원, 좌우 크로스 4카메라 — 후방 없음. (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a> · <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>)</li>
+<li>2 Super: "Expands from front-focused cameras to 360-degree situational awareness across front, side and rear views" — 개수 미명시("7+"는 영상 발언). (🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 2</a>, 🎥 <a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">영상</a>)</li>
+<li>무인 robotaxi 전제에서 후·측방 인지 필수 — Level 4 타깃과 맞물림.</li>
+</ul>
+
+<h3>5.3 출력: Meta-Action 추가</h3>
+<ul>
+<li>"Adds Meta-Action output — including macro actions such as yield, lane change and stop". (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</li>
+<li><b>downstream planner가 소비할 상위 판단</b>을 궤적과 병행 출력. (📄 <a href="https://the-decoder.com/nvidia-bets-big-on-physical-ai-at-gtc-taipei-with-a-new-world-model-driving-brain-and-open-humanoid-robot/">The Decoder</a>)</li>
+<li>참고: meta-action 개념은 R1 논문 실험에도 등장(Fig 7) — <b>공식 출력으로 제품화된 게 2 Super의 변화</b>. (📄 <a href="https://arxiv.org/html/2511.00088v2">arXiv v2</a>)</li>
+<li>추상 3층: 텍스트 CoC(왜) → meta-action(무엇을) → 궤적(어떻게).</li>
+</ul>
+
+<h3>5.4 새 용도: Reasoning Auto-Labeling (2D grounding)</h3>
+<ul>
+<li>"reasoning auto-labeling with 2D grounding ... compressing annotation cycles from months to days". (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</li>
+<li>2 Super는 주행 모델 + <b>다른 모델 학습용 CoC 라벨 생성기</b> 겸용. CoC 700K(1) → 3M(1.5) 확장도 auto-labeling 덕 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a> · <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>) — 2 Super는 라벨러를 모델 기능으로 흡수 + 근거를 이미지 내 위치(2D grounding)로 연결.</li>
+<li>"수개월→수일"은 NVIDIA 주장 — 독립 검증 없음.</li>
+</ul>
+
+<h3>5.5 학습: Closed-loop RL 정식화 (AlpaGym)</h3>
+<figure>
+  <img src="images/ar1_fig5_training_pipeline.png" alt="Alpamayo-R1 3단계 학습 파이프라인">
+  <figcaption>Alpamayo-R1 3단계 학습 — (1) Action Modality Injection (2) SFT (3) RL post-training. 출처: <a href="https://arxiv.org/html/2511.00088v2">arXiv 2511.00088v2 Figure 5</a></figcaption>
+</figure>
+<figure>
+  <img src="images/ar1_fig6_rl_posttraining.png" alt="RL post-training 보상 구조">
+  <figcaption>RL post-training 보상 — reasoning 품질·reasoning-행동 일관성·궤적 품질. 출처: <a href="https://arxiv.org/html/2511.00088v2">arXiv 2511.00088v2 Figure 6</a></figcaption>
+</figure>
+<ul>
+<li>1의 논문 RL(GRPO)은 <b>open-loop</b> 중심, 1.5에서 RL post-training 공개 가중치 첫 적용. (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a> · <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a> · <a href="https://github.com/NVlabs/alpamayo">GitHub</a>)</li>
+<li><b>AlpaGym</b> = 시뮬레이터 in-the-loop: AlpaSim(환경) ↔ rollout ↔ Cosmos-RL(GRPO 분산 학습). (✅ <a href="https://github.com/NVlabs/alpagym">GitHub alpagym</a> · <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a>)</li>
+</ul>
+<figure>
+  <img src="images/alpagym_closedloop_diagram.png" alt="AlpaGym closed-loop 구조">
+  <figcaption>AlpaGym closed-loop 순환 — Physical AI Dataset → AlpaSim ↔ Alpamayo → Cosmos-RL → 가중치 갱신. 출처: <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">HF 블로그 "NVIDIA Alpamayo 2"</a> (Marco Pavone, 2026-06-01)</figcaption>
+</figure>
+<ul>
+<li>closed-loop 필요 이유(🎥 <a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">영상</a>): ①covariate shift — 자기 실수 복구는 전문가 데이터에 없음 ②인과 혼동 — "빨간불이라 정지" vs "앞차가 서니 정지" 구분엔 개입(시뮬레이션) 필요.</li>
+<li>현재: <b>지원 모델 Alpamayo 1.5 10B뿐</b>(2 Super 미지원), 10B 학습 GPU 2장, ≥40GB VRAM 권장, NuRec 데이터 ~1.5TB. (📄 <a href="https://github.com/NVlabs/alpagym">GitHub</a> · <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">블로그</a>)</li>
+<li><b>OmniDreams</b>: 포토리얼 시나리오 생성 — 재구성(NuRec) → 생성형 확장 방향. (📄 <a href="https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/">GTC 뉴스</a> · <a href="https://the-decoder.com/nvidia-bets-big-on-physical-ai-at-gtc-taipei-with-a-new-world-model-driving-brain-and-open-humanoid-robot/">Decoder</a>)</li>
+</ul>
+</section>
+
+<section>
+<h2>6. 실제 활용 동향</h2>
+<div class="tldr">상용 채택 공식 사례는 <b>PlusAI(트럭) 1건</b> 확인. 나머지는 "관심 표명" + 연구 커뮤니티 활용(다운로드·서드파티 최적화·챌린지) 단계.</div>
+<h3>6.1 상용/산업 채택</h3>
+<table>
+<tr><th>주체</th><th>내용</th><th>근거</th></tr>
+<tr><td><b>PlusAI</b> (자율 트럭)</td><td>Alpamayo foundation model을 대형 트럭용으로 적응 중. "10-billion-parameter reasoning VLA ... trained using reinforcement learning against safety constraints and traffic rules" + <b>teacher→student distill로 500M 엣지 모델</b>. DRIVE Hyperion(HW)·Halos(안전) 3축 결합. 협력: Scania·MAN·International(TRATON), Hyundai, Iveco 등</td><td>🔍 <a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI 2026-03-16</a></td></tr>
+<tr><td>관심 표명 (CES)</td><td>Lucid, JLR, Uber, Berkeley DeepDrive</td><td>📄 <a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">CES 보도자료</a></td></tr>
+<tr><td>Mercedes CLA 탑재설</td><td>기사 403으로 Alpamayo 명시 여부 <b>확인 불가</b> — NVIDIA DRIVE 풀스택 보도와 혼동 가능성. 인용 보류</td><td>❌ <a href="https://aibusiness.com/intelligent-automation/nvidia-s-ai-driving-tech-debuts-in-mercedes-cla-by-2026">aibusiness</a></td></tr>
+</table>
+<h3>6.2 연구 커뮤니티·생태계 지표</h3>
+<ul>
+<li><b>다운로드</b>: 공식 "close to 400,000 times" (2026-05-31 누적, 자체 집계). (🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>) HF 최근 30일(2026-07-15 확인 🔍): 1.5-10B <b>58.2k</b>, R1-10B 20.1k — 1.5로 무게중심 이동.</li>
+<li><b>서드파티 최적화</b>: z-lab <a href="https://huggingface.co/z-lab/Alpamayo-R1-10B-DFlash">R1-10B-DFlash</a> · <a href="https://huggingface.co/z-lab/Alpamayo-1.5-10B-DFlash">1.5-10B-DFlash</a> 추론 가속판 (🔍 HF 검색). 영상에서 UCSD 최적화 언급(🎥) — z-lab=UCSD 연결은 문서 미확인.</li>
+<li><b>공개 챌린지</b>: CVPR 2026 리더보드 2종 — <a href="https://huggingface.co/spaces/nvidia/AlpasimE2EClosedLoopChallenge2026">AlpaSim Closed-Loop E2E</a>, <a href="https://huggingface.co/spaces/nvidia/PhysicalAI-AV-OOD-Reasoning-Challenge-2026">Physical AI AV Reasoning</a>. (📄 <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym 블로그</a>)</li>
+<li><b>수상</b>: COMPUTEX 2026 Best Choice Awards — Vehicle Technology &amp; Smart Cockpit. (📄 <a href="https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/">GTC 뉴스</a>)</li>
+<li><b>DGX Station</b>: 데스크톱에서 Alpamayo + Cosmos 가상환경 closed-loop 데모 — 연구 스택의 데스크톱화. (📄 <a href="https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/">GTC 뉴스</a>)</li>
+<li>영상 발언(문서 미확인 🎥): "HF 로보틱스 오픈 모델 다운로드 2위", "개발자들이 구성요소 부분 채택 중".</li>
+</ul>
+<h3>6.3 읽는 법</h3>
+<p>배포 전략: 연구용 10B 오픈(1/1.5) → 챌린지·리더보드로 생태계 형성 → 34B teacher(2 Super) + closed-loop RL 도구 → <b>파트너가 distill해 자사 차량/칩(DRIVE AGX Thor) 탑재</b>. PlusAI(10B teacher → 500M student)가 이 경로의 첫 공개 실증. (🔍 <a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI</a> · <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료</a>)</p>
+</section>
+
+<section>
+<h2>7. 다른 주행 VLA 모델과 비교 (핵심만)</h2>
+<div class="tldr">"언어로 추론하는 주행 모델" 자체는 Waymo·Wayve·중국 OEM도 보유. Alpamayo의 차별점은 성능 주장보다 <b>"모델+시뮬레이터+RL 프레임워크+데이터셋 전부 오픈"이라는 공개 범위</b>.</div>
+<table>
+<tr><th>모델</th><th>개발사</th><th>공개 여부</th><th>기반/구조</th><th>출력</th><th>비고</th></tr>
+<tr><td><b>Alpamayo 1/1.5/2 Super</b></td><td>NVIDIA</td><td>가중치+코드+시뮬+데이터셋 오픈 (2 Super 예정)</td><td>Cosmos-Reason 계열 + diffusion action expert</td><td>궤적 + CoC (+meta-action, VQA)</td><td>"세계 최초 오픈 reasoning VLA for AV"는 NVIDIA 주장 (📄 <a href="https://blogs.nvidia.com/blog/neurips-open-source-digital-physical-ai/">NeurIPS 블로그</a>)</td></tr>
+<tr><td><b>EMMA</b></td><td>Waymo</td><td>비공개 (논문만)</td><td>Google <b>Gemini</b> 파인튜닝</td><td>planner 궤적, perception 객체, road graph</td><td>한계 자인: 장시간 영상 제약, LiDAR/radar 미활용 (🔍 <a href="https://waymo.com/blog/2024/10/introducing-emma">Waymo 블로그 2024-10</a>)</td></tr>
+<tr><td><b>LINGO-2</b></td><td>Wayve</td><td>비공개</td><td>비전 모델 + 자기회귀 언어 모델 (VLAM)</td><td>궤적 + 설명 텍스트/VQA</td><td>"최초 closed-loop 공도 테스트 VLAM" 주장, 2024-04 (🔍 <a href="https://wayve.ai/thinking/lingo-2-driving-with-language/">Wayve 블로그</a>)</td></tr>
+<tr><td><b>MindVLA</b></td><td>Li Auto (理想)</td><td>비공개 (양산 지향)</td><td>자체 LLM(MoE+Sparse Attention) + 3D 공간 인코더 + diffusion 궤적 디코더</td><td>액션 토큰→궤적, 음성 지시 대응</td><td>GTC 2025(2025-03) 공개, Li i8부터 양산 적용 계획 (🔍 <a href="https://cnevpost.com/2025/03/18/li-auto-unveils-mindvla-autonomous-driving-architecture/">CnEVPost</a>)</td></tr>
+<tr><td><b>OpenEMMA</b></td><td>학술(TAMU 주도)</td><td>오픈 (Apache-2.0)</td><td>GPT-4o/LLaVA/Llama-3.2-V/Qwen2-VL 위 EMMA 재현</td><td>경로 예측 + 판단 근거</td><td>EMMA 비공개에 대한 커뮤니티 대응 (🔍 <a href="https://github.com/taco-group/OpenEMMA">GitHub</a>, <a href="https://arxiv.org/abs/2412.15208">arXiv 2412.15208</a>)</td></tr>
+<tr><td><b>OpenDriveVLA</b></td><td>학술 (AAAI 2026)</td><td>오픈 (Apache-2.0, 0.5B)</td><td>오픈 LLM + 2D/3D instance-aware 표현</td><td>언어 조건 주행 액션</td><td>소형·학술 규모 (🔍 <a href="https://github.com/DriveVLA/OpenDriveVLA">GitHub</a>, 📄 <a href="https://ojs.aaai.org/index.php/AAAI/article/view/38386">AAAI</a>)</td></tr>
+<tr><td><b>AutoVLA</b></td><td>학술</td><td>논문 공개</td><td>adaptive reasoning + RL fine-tuning</td><td>궤적+추론</td><td>Alpamayo adaptive thinking과 같은 문제의식 (📄 <a href="https://arxiv.org/abs/2506.13757">arXiv 2506.13757</a> — 제목·초록 수준만 확인)</td></tr>
+</table>
+<p>포지셔닝(위 표 기반 판단): <b>폐쇄 진영</b>(EMMA·LINGO-2·MindVLA)은 자사 차량/서비스용, 방법만 공개. <b>오픈 학술 진영</b>(OpenEMMA·OpenDriveVLA·AutoVLA)은 재현 가능하나 소규모. <b>Alpamayo</b>는 유일하게 "산업 규모 모델(10B→34B) + 전용 시뮬레이터 + closed-loop RL + 1,727시간 데이터셋 + 리더보드"를 한 묶음으로 오픈. 단 가중치는 non-commercial — "오픈소스"보다 <b>"오픈 웨이트"</b>에 가깝고 상용은 별도 라이선스. (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">R1 카드</a>)</p>
+</section>
+
+<section>
+<h2>8. (부록) Alpamayo 1 학습 파이프라인 요약</h2>
+<p>논문 기준: ① CoC 데이터셋 — hybrid auto-labeling + human-in-the-loop ② Stage 1 Action Modality Injection(궤적 토큰+flow matching action expert) → Stage 2 SFT(reasoning 유도) → Stage 3 GRPO 기반 RL ③ RL 효과: reasoning quality +45%, reasoning-action consistency +37%. (🔍 <a href="https://arxiv.org/abs/2511.00088">arXiv</a>, 📄 <a href="https://arxiv.org/html/2511.00088v2">arXiv v2 본문</a>) — 그림은 §5.5.</p>
+</section>
+
+<section>
+<h2>8B. (부록) AI 배경지식 없는 독자용 — 개념 사다리 &amp; 참고자료</h2>
+<p>이 보고서는 §2 용어표만으로 따라올 수 있게 썼지만, "왜 그게 되는지"까지 이해하려면 아래 개념이 바탕. <b>볼드 3개만 읽어도 본문 이해엔 충분.</b></p>
+<h3>8B.1 개념 사다리 (아래→위로 쌓임)</h3>
+<table>
+<tr><th>#</th><th>개념</th><th>한 줄 설명</th><th>Alpamayo에서의 역할</th><th>대표 참고자료</th></tr>
+<tr><td>1</td><td>딥러닝/신경망</td><td>데이터에서 패턴을 스스로 학습하는 함수 근사기</td><td>모든 것의 토대</td><td>입문은 강의: <a href="https://www.3blue1brown.com/topics/neural-networks">3Blue1Brown Neural Networks</a></td></tr>
+<tr><td>2</td><td>Transformer</td><td>토큰 열 처리의 표준 아키텍처. LLM의 뼈대</td><td>백본(Cosmos-Reason)의 기본 구조</td><td><a href="https://arxiv.org/abs/1706.03762">"Attention Is All You Need" (arXiv 1706.03762)</a></td></tr>
+<tr><td>3</td><td>LLM + <b>Chain-of-Thought</b></td><td>답 전에 중간 추론을 텍스트로 생성시키면 성능↑</td><td><b>CoC의 원형</b> — 주행용 인과 구조로 변형</td><td><a href="https://arxiv.org/abs/2201.11903">CoT Prompting (arXiv 2201.11903)</a></td></tr>
+<tr><td>4</td><td>VLM (비전-언어)</td><td>이미지·텍스트를 같은 표현 공간에서 처리</td><td>카메라 영상 ↔ 언어 추론 연결층</td><td><a href="https://arxiv.org/abs/2103.00020">CLIP (arXiv 2103.00020)</a></td></tr>
+<tr><td>5</td><td><b>VLA (비전-언어-행동)</b></td><td>VLM에 "행동 출력"을 붙인 것 — 로보틱스 유래</td><td>Alpamayo의 정체. 로봇 팔 대신 주행 궤적 출력</td><td><a href="https://arxiv.org/abs/2307.15818">RT-2, Google DeepMind (arXiv 2307.15818)</a> — VLA 용어 정착</td></tr>
+<tr><td>6</td><td>End-to-End 자율주행</td><td>perception→planning 모듈 분리 대신 센서→행동 한 모델</td><td>Alpamayo가 속한 패러다임 (+추론 텍스트가 차별점)</td><td><a href="https://arxiv.org/abs/2212.10156">UniAD (arXiv 2212.10156)</a> — CVPR 2023 best paper</td></tr>
+<tr><td>7</td><td>Diffusion 모델</td><td>노이즈에서 점진적으로 출력 복원하는 생성 모델</td><td><b>Action Expert</b>가 diffusion 기반 궤적 생성</td><td><a href="https://arxiv.org/abs/2006.11239">DDPM (arXiv 2006.11239)</a> — "여러 후보 궤적을 자연스럽게 뽑는 생성기"로 이해해도 충분</td></tr>
+<tr><td>8</td><td>RL 후처리 + <b>GRPO</b></td><td>보상 신호로 출력을 다듬는 후반 학습. GRPO는 LLM용 RL</td><td>Stage 3·AlpaGym 핵심 알고리즘</td><td><a href="https://arxiv.org/abs/2203.02155">InstructGPT (arXiv 2203.02155)</a> · <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath — GRPO 제안 (arXiv 2402.03300)</a></td></tr>
+<tr><td>9</td><td>Knowledge Distillation</td><td>큰 teacher 출력을 작은 student가 모방</td><td>34B Super → 차량용 소형(예: PlusAI 500M)</td><td><a href="https://arxiv.org/abs/1503.02531">Hinton et al. (arXiv 1503.02531)</a></td></tr>
+<tr><td>10</td><td>World Model / Cosmos</td><td>물리 세계 전개를 예측·생성하는 기반 모델</td><td>백본 계열 출신. OmniDreams도 이 계열</td><td>🔍 <a href="https://arxiv.org/abs/2501.03575">Cosmos WFM Platform (arXiv 2501.03575)</a> · 🔍 <a href="https://arxiv.org/abs/2503.15558">Cosmos-Reason1 (arXiv 2503.15558)</a> — 제목 직접 확인</td></tr>
+</table>
+<h3>8B.2 주행 VLA 전체 조망 (서베이 2편)</h3>
+<ul class="small">
+<li><a href="https://arxiv.org/html/2506.24044v1">A Survey on VLA Models for Autonomous Driving (arXiv 2506.24044)</a></li>
+<li><a href="https://arxiv.org/html/2512.16760v1">VLA Models for AD: Past, Present, and Future (arXiv 2512.16760)</a> — 2025-12 최신 조망</li>
+</ul>
+<p class="small">(두 편 모두 검색으로 존재 확인, 본문 미검토 — §7 비교표를 깊게 팔 때 출발점)</p>
+<h3>8B.3 읽기 순서 제안</h3>
+<ul>
+<li><b>최단(30분)</b>: §2 용어표 → §1 한눈 요약 → §4 비교표.</li>
+<li><b>개념 보강(반나절)</b>: CoT 초록(#3) → RT-2 초록(#5) → 본 보고서 전체 → HF 블로그 2편(<a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo">런치</a>·<a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">Alpamayo 2</a>) — <b>가장 쉬운 공식 입문 문서가 이 블로그 2편</b>.</li>
+<li><b>기술 검증 수준</b>: <a href="https://arxiv.org/abs/2511.00088">논문</a> 전문 + <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">모델카드</a> + 서베이(8B.2).</li>
+</ul>
+<p class="small">참고: #2·3·4·5·7·8·9는 분야 표준 논문(고전)이라 arXiv ID 안정적. Cosmos 2편(#10)은 2026-07-15 제목 직접 확인 🔍. 서베이 2편은 존재만 확인.</p>
+</section>
+
+<section>
+<h2>9. 미확인·주의 사항</h2>
+<h3 id="91">9.1 파라미터 수: 34B vs 32B</h3>
+<table>
+<tr><th>소스</th><th>표기</th></tr>
+<tr><td>🔍 <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">공식 보도자료 5/31</a></td><td><b>34B</b> (본문 2회)</td></tr>
+<tr><td>🔍 <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">공식 HF 블로그 6/1</a></td><td><b>백본 32B</b> (Cosmos 3 Super Reasoner), 전체 수치 미명시</td></tr>
+<tr><td>✅ <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/">공식 솔루션 페이지</a></td><td>"scales to 32 B with Alpamayo 2 Super"</td></tr>
+<tr><td>📄 <a href="https://the-decoder.com/nvidia-bets-big-on-physical-ai-at-gtc-taipei-with-a-new-world-model-driving-brain-and-open-humanoid-robot/">The Decoder</a>, 🎥 <a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">라이브스트림</a></td><td>32B</td></tr>
+</table>
+<div class="warn"><b>추정(출처 없음, 계산상 정합)</b>: 1/1.5처럼 백본+action expert 합산이면 32B(백본)+~2B(expert)≈34B(전체) — 두 표기가 모순이 아닐 수 있음. 공식 문서가 관계를 명시한 적 없어 추정으로만 기재. 본 보고서는 "전체 34B(보도자료 기준), 백본 32B" 병기.</div>
+<h3>9.2 기타 미확인</h3>
+<table>
+<tr><th>항목</th><th>상태</th></tr>
+<tr><td>"LingoQA 1위" (1.5)</td><td>🎥 영상 발언만. 문서 확인은 Lingo-Judge 74.2뿐 (🔍 <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">1.5 카드</a>). 리더보드 미확인</td></tr>
+<tr><td>"7+ 카메라" (2 Super)</td><td>🎥 영상 발언만. 공식 문서는 "360°"만. 단 <a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">데이터셋 카드</a>가 <b>카메라 7개 구성</b>(전방 광각/망원, 크로스 L/R, 후방 L/R, 후방 망원) 명시(🔍 2026-07-15) — 발언과 정합. 모델 입력 스펙 문서는 미공개</td></tr>
+<tr><td>Mercedes CLA에 Alpamayo 탑재</td><td>기사 403 — 원문 확인 불가, 미채택. NVIDIA DRIVE 풀스택 보도와 구분 필요</td></tr>
+<tr><td>카메라 외 센서(LiDAR 등) 입력</td><td>1/1.5는 카메라+egomotion만 (🔍 모델카드). 2 Super 상세 미공개. 데이터셋 자체는 LiDAR 1기·radar 최대 10기 포함(🔍 <a href="https://huggingface.co/datasets/nvidia/PhysicalAI-Autonomous-Vehicles">카드</a>)</td></tr>
+<tr><td>2 Super 벤치마크</td><td>미공개. "state-of-the-art" 주장만</td></tr>
+<tr><td>2 Super 라이선스</td><td>미발표. CES 시점 "상업 옵션" 예고 (📄 <a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">CES 보도자료</a>)</td></tr>
+<tr><td>"Alpamayo 2" vs "2 Super"</td><td>공식 문서엔 모델명 "2 Super"만. 영상에선 "2 = 2 Super + AlpaGym" 구성 설명 🎥</td></tr>
+<tr><td>off-road/close-encounter 세부</td><td><a href="https://arxiv.org/abs/2511.00088">arXiv 초록</a> "close encounter -35%" vs <a href="https://research.nvidia.com/labs/avg/publication/wang.luo.etal.arxiv2025/">Research 페이지</a> "off-road -35%, close encounter -25%" — 논문 본문 표로 확정 필요</td></tr>
+<tr><td>다운로드 "400,000회"</td><td>공식 2개 소스 일치 — 자체 집계</td></tr>
+<tr><td>z-lab = UCSD 연결</td><td>🎥 영상 "UCSD 최적화" 발언 + HF z-lab 모델 존재 확인. 동일 주체 문서 근거 없음</td></tr>
+<tr><td>라이브스트림 날짜</td><td>페이지 확인 불가. 내용상 2026-06 추정</td></tr>
+</table>
+</section>
+
+<section>
+<h2>10. 레퍼런스</h2>
+<p class="small">전체 발췌·검증 상태: <a href="reference/references.md">reference/references.md</a> · 원시 기록: <a href="reference/deep_research_claims_raw.json">deep_research_claims_raw.json</a> · 이미지 출처는 각 그림 캡션</p>
+<h3>NVIDIA 공식</h3>
+<ul class="small">
+<li><a href="https://arxiv.org/abs/2511.00088">arXiv 2511.00088 — Alpamayo-R1 논문</a> (v1 2025-10-30, v2 2026-01-07) · <a href="https://arxiv.org/html/2511.00088v2">HTML v2</a></li>
+<li><a href="https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development">보도자료: Alpamayo 플랫폼 (CES 2026)</a> 2026-01-05 · <a href="https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis">보도자료: Alpamayo 2 Super (GTC Taipei)</a> 2026-05-31</li>
+<li><a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo">HF 블로그: NVIDIA Alpamayo</a> 2026-01-05 · <a href="https://huggingface.co/blog/drmapavone/nvidia-alpamayo-2">NVIDIA Alpamayo 2</a> 2026-06-01</li>
+<li><a href="https://huggingface.co/nvidia/Alpamayo-R1-10B">모델카드: Alpamayo-R1-10B</a> 2025-12-03 · <a href="https://huggingface.co/nvidia/Alpamayo-1.5-10B">Alpamayo-1.5-10B</a> 2026-03-19</li>
+<li>GitHub: <a href="https://github.com/NVlabs/alpamayo">alpamayo</a> · <a href="https://github.com/NVlabs/alpamayo1.5">alpamayo1.5</a> · <a href="https://github.com/NVlabs/alpagym">alpagym</a> · <a href="https://github.com/NVlabs/alpasim">alpasim</a> · <a href="https://github.com/NVlabs/alpamayo-recipes">alpamayo-recipes</a></li>
+<li><a href="https://developer.nvidia.com/blog/building-autonomous-vehicles-that-reason-with-nvidia-alpamayo/">developer blog: Building AVs That Reason</a> 2026-01-05 · <a href="https://developer.nvidia.com/blog/how-to-post-train-autonomous-vehicle-models-in-closed-loop-with-nvidia-alpamayo/">AlpaGym closed-loop post-training</a> 2026-06-01</li>
+<li><a href="https://blogs.nvidia.com/blog/neurips-open-source-digital-physical-ai/">블로그: NeurIPS 2025</a> 2025-12-01 · <a href="https://blogs.nvidia.com/blog/nvidia-gtc-taipei-computex-2026-news/">GTC Taipei/COMPUTEX 2026 뉴스</a></li>
+<li><a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/">Alpamayo 솔루션 페이지</a> · <a href="https://research.nvidia.com/labs/avg/publication/wang.luo.etal.arxiv2025/">Research 논문 페이지</a></li>
+<li><a href="https://www.youtube.com/watch?v=kJRVwaYwvt0">라이브스트림 영상</a> — 자막: reference/youtube_Alpamayo 2 Super</li>
+</ul>
+<h3>활용 동향</h3>
+<ul class="small">
+<li><a href="https://www.plus.ai/news-and-insights/2026-03-16-nvidia-alpamayo">PlusAI: Alpamayo 채택 발표</a> 2026-03-16</li>
+<li>챌린지: <a href="https://huggingface.co/spaces/nvidia/AlpasimE2EClosedLoopChallenge2026">AlpaSim Closed-Loop E2E</a> · <a href="https://huggingface.co/spaces/nvidia/PhysicalAI-AV-OOD-Reasoning-Challenge-2026">Physical AI AV Reasoning</a></li>
+<li>z-lab: <a href="https://huggingface.co/z-lab/Alpamayo-R1-10B-DFlash">R1-10B-DFlash</a> · <a href="https://huggingface.co/z-lab/Alpamayo-1.5-10B-DFlash">1.5-10B-DFlash</a></li>
+</ul>
+<h3>타 VLA 비교</h3>
+<ul class="small">
+<li><a href="https://waymo.com/blog/2024/10/introducing-emma">Waymo: Introducing EMMA</a> 2024-10 · <a href="https://wayve.ai/thinking/lingo-2-driving-with-language/">Wayve: LINGO-2</a> 2024-04-17 · <a href="https://cnevpost.com/2025/03/18/li-auto-unveils-mindvla-autonomous-driving-architecture/">CnEVPost: Li Auto MindVLA</a> 2025-03-18</li>
+<li><a href="https://github.com/taco-group/OpenEMMA">OpenEMMA</a> (<a href="https://arxiv.org/abs/2412.15208">arXiv 2412.15208</a>) · <a href="https://github.com/DriveVLA/OpenDriveVLA">OpenDriveVLA</a> (AAAI 2026) · <a href="https://arxiv.org/abs/2506.13757">AutoVLA (arXiv 2506.13757)</a></li>
+</ul>
+<h3>서드파티 보도</h3>
+<ul class="small">
+<li><a href="https://techcrunch.com/2026/01/05/nvidia-launches-alpamayo-open-ai-models-that-allow-autonomous-vehicles-to-think-like-a-human/">TechCrunch CES 2026</a> · <a href="https://the-decoder.com/nvidia-bets-big-on-physical-ai-at-gtc-taipei-with-a-new-world-model-driving-brain-and-open-humanoid-robot/">The Decoder</a> · <a href="https://www.alphaxiv.org/overview/2511.00088v2">alphaXiv</a>(AI 요약 — 수치 인용 금지 처리)</li>
+<li>❌ 접근 실패: <a href="https://aibusiness.com/intelligent-automation/nvidia-s-ai-driving-tech-debuts-in-mercedes-cla-by-2026">aibusiness Mercedes CLA 기사</a> (403)</li>
+</ul>
+</section>
+
+<footer>본 보고서의 모든 사실 주장은 위 레퍼런스에서 확인된 범위로 한정. 미확인 항목은 §9에 명시. 작성: 2026-07-15.</footer>
+</div>
+</body>
+</html>
