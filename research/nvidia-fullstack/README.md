@@ -1,6 +1,6 @@
 # NVIDIA 차량용 풀스택 소프트웨어 조사
 
-> **작성일**: 2026-09-02 · **상태**: 3장·7장·부록 A 작성 중(조사 진행), 나머지 장은 다른 담당자 작성 예정
+> **작성일**: 2026-09-02 · **상태**: 3장·7장·부록 A 초판 완료(📄 등급 출처의 원문 재확인은 후속 과제), 나머지 장은 다른 담당자 작성 예정
 > **목적**: NVIDIA가 차량(자율주행·ADAS)용으로 제공하는 하드웨어부터 에이전틱 AI까지 풀스택을 7개 장으로 나눠 조사하고, 마지막에 "Tier-1이 NVIDIA 위에서 무엇을 더 만들어야 하는가"를 정리한다.
 
 ## 문서 목록
@@ -9,13 +9,13 @@
 |---|---|---|---|
 | 1. 차량 플랫폼 HW | (예정) | 팀 | 미작성 |
 | 2. DriveOS / Halos | (예정) | 팀 | 미작성 |
-| **3. 자율주행 스택** | [03-autonomous-driving-stack.md](03-autonomous-driving-stack.md) | 본 폴더 작성자 | 작성 중 |
+| **3. 자율주행 스택** | [03-autonomous-driving-stack.md](03-autonomous-driving-stack.md) | 본 폴더 작성자 | ✅ 초판 |
 | 4. AI 학습 스택 | (예정) | 팀 | 미작성 |
 | 5. AI 추론 스택 | (예정) | 팀 | 미작성 |
 | 6. 에이전틱 AI 스택 | (예정) | 팀 | 미작성 |
-| **7. Physical AI / Cosmos** | [07-physical-ai-cosmos.md](07-physical-ai-cosmos.md) | 본 폴더 작성자 | 작성 중 |
-| **부록 A. Tier-1 관점 작업 범위** | [appendix-a-tier1-workscope.md](appendix-a-tier1-workscope.md) | 본 폴더 작성자 | 작성 중 |
-| 출처 목록 | [reference/references.md](reference/references.md) · [reference/images.md](reference/images.md) | — | 작성 중 |
+| **7. Physical AI / Cosmos** | [07-physical-ai-cosmos.md](07-physical-ai-cosmos.md) | 본 폴더 작성자 | ✅ 초판 |
+| **부록 A. Tier-1 관점 작업 범위** | [appendix-a-tier1-workscope.md](appendix-a-tier1-workscope.md) | 본 폴더 작성자 | ✅ 초판 |
+| 출처 목록 | [reference/references.md](reference/references.md) · [reference/images.md](reference/images.md) | — | ✅ |
 
 ## 팀 합의 전체 목차
 
