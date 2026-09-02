@@ -16,7 +16,7 @@
 | **7. Physical AI / Cosmos** | [07-physical-ai-cosmos.md](07-physical-ai-cosmos.md) | 본 폴더 작성자 | ✅ 초판 |
 | **부록 A. Tier-1 관점 작업 범위** | [appendix-a-tier1-workscope.md](appendix-a-tier1-workscope.md) | 본 폴더 작성자 | ✅ 초판 |
 | 출처 목록 | [reference/references.md](reference/references.md) · [reference/images.md](reference/images.md) | — | ✅ |
-| **HTML 통합본** | [report.html](report.html) — 3장·7장·부록 A를 사이드바 목차·카드·배지로 재구성한 웹 버전. `python3 build_html.py`로 md에서 재생성 | 본 폴더 작성자 | ✅ |
+| **설명형 보고서 (HTML)** | [report.html](report.html) — 처음 읽는 사람을 위해 3장·7장·부록 A를 "질문 → 쉬운 설명 → 비유 → 사실 정리 → 근거"로 다시 쓴 보고서. 사실·수치·출처는 md 원본과 동일하게 전부 포함(3분 요약, 핵심 용어 10개, 사이드바 목차 포함). md 3종은 사실 목록 형식의 조사 원본 | 본 폴더 작성자 | ✅ |
 
 ## 팀 합의 전체 목차
 
