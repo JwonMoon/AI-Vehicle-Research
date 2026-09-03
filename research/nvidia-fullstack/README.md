@@ -16,7 +16,7 @@
 | **7. Physical AI / Cosmos** | [07-physical-ai-cosmos.md](07-physical-ai-cosmos.md) | 본 폴더 작성자 | ✅ 초판 |
 | **부록 A. Tier-1 관점 작업 범위** | [appendix-a-tier1-workscope.md](appendix-a-tier1-workscope.md) | 본 폴더 작성자 | ✅ 초판 |
 | 출처 목록 | [reference/references.md](reference/references.md) · [reference/images.md](reference/images.md) | — | ✅ |
-| **3장 보고서 (HTML)** | [report-03-autonomous-driving-stack.html](report-03-autonomous-driving-stack.html) — Alpamayo↔DRIVE AV 관계를 맨 앞에 두고, 핵심 타임라인 4개·버전 비교표 5행·"Alpamayo만 특별한 학습" 3가지·도입 사례를 명확한 순서(풀스택 양산 → 계약 → 칩+OS → 칩만 → 불분명)로 정리한 설명형 보고서 | 본 폴더 작성자 | ✅ |
+| **3장 보고서 (HTML)** | [report-03-autonomous-driving-stack.html](report-03-autonomous-driving-stack.html) — Alpamayo↔DRIVE AV 관계를 맨 앞에 두고, 핵심 타임라인 4개·버전 비교표 5행·"Alpamayo만 특별한 학습" 3가지·도입 사례를 명확한 순서(풀스택 양산 → 계약 → 칩+OS → 칩만 → 불분명)로 정리한 설명형 보고서. AlpaSim(폐루프 시뮬레이터)·AlpaGym(강화학습 하니스) 절 포함 | 본 폴더 작성자 | ✅ |
 | **7장 보고서 (HTML)** | [report-07-physical-ai-cosmos.html](report-07-physical-ai-cosmos.html) — 세계 모델 개념, Cosmos 세대별 이야기(1→2→2.5→Cosmos 3, 비교표는 접힘), 데이터 파이프라인, Omniverse vs Cosmos 역할 구분, 활용 패턴 A~D("언제·누가·주의"), 채택사·한계·성숙도 | 본 폴더 작성자 | ✅ |
 | **부록 A 보고서 (HTML)** | [report-appendix-a-tier1.html](report-appendix-a-tier1.html) — Android 대입표, 11개 계층별 "NVIDIA가 주는 것 / Tier-1이 해야 할 일" 카드, 차별화 매트릭스, 실제 Tier-1 사례, 세 가지 결론 | 본 폴더 작성자 | ✅ |
 

@@ -33,7 +33,7 @@ NVIDIA의 자율주행 스택은 **"학습된 엔드투엔드 AI 스택 + 병렬
 | **DRIVE AV (상용 스택)** | AGX(차량) | L3~L5 | E2E AI 스택 + 클래식 안전 스택, 인식~제어 | ④ 1개 양산차(Mercedes CLA, 2026 미국 L2++) ✅ / L4는 ③ 파트너 시범 | Stellantis SOP 2028 ✅, Mercedes S-Class L4 📄 |
 | **DriveWorks SDK** | AGX | L2 SDK | 센서 추상화·캘리브레이션·에고모션·DNN 실행 | ⑤ 다수 양산(Orin 세대), DriveOS 7에 통합 📄 | DriveOS 7.2.5(2026-08) 📄 |
 | **Hyperion 10 L4 스택** | AGX | L0~L3 레퍼런스 | 2×Thor + 센서 세트 + DriveOS + DRIVE AV L4 | ③ 파트너 시범(Nuro/Lucid 시험 운행, Waabi/Volvo 트럭) ✅ | Uber 2027, Stellantis 2028 ✅ |
-| **AlpaSim / AlpaGym** | OVX(시뮬) | L4 시뮬·데이터 | 폐루프 평가·RL (7장 상세) | ② 오픈소스(Apache-2.0, 2025-10 / 2026-06) 🔍 | Traffic Simulator "coming soon" 🔍 |
+| **AlpaSim / AlpaGym** | OVX(시뮬) | L4 시뮬·데이터 | 폐루프 평가·RL (3.3 상세, Cosmos-RL은 7장) | ② 오픈소스(Apache-2.0, 2025-10 / 2026-06) 🔍 | Traffic Simulator "coming soon" 🔍 |
 
 성숙도 척도: ① 연구·프리뷰 → ② 오픈 가중치/SDK 공개 → ③ 파트너 시범 → ④ 1개 이상 양산차 → ⑤ 다수 OEM 양산.
 
@@ -379,6 +379,78 @@ DRIVE AV 개발 루프에 시뮬·데이터 도구가 붙는 지점은 CES 2026 
 | 센서 | 데이터셋 카메라 구성 🔍 | Hyperion 인증 센서 스위트 + SAL 플러그인 📄 |
 | 시뮬 | AlpaSim·AlpaGym 🔍 | Omniverse/Cosmos 검증 파이프라인(NVIDIA 내부·파트너) 📄 |
 | 인증 | 없음 | DriveOS ASIL D(Orin), TÜV 평가, Halos 검사랩(2장) ✅ |
+
+---
+
+## 3.3 AlpaSim / AlpaGym (폐루프 시뮬레이션·강화학습 도구)
+
+| 항목 | 내용 |
+|---|---|
+| 전체 그림 속 위치 | OVX(시뮬레이션 컴퓨터), L4 시뮬·데이터 층. 학습 컴퓨터의 Alpamayo를 불러와 굴리고 결과를 학습으로 되돌린다 |
+| 담당 역할 | AlpaSim: 장면(재구성/생성) + 정책 → 폐루프 주행 로그 → 메트릭. AlpaGym: AlpaSim(환경) + Cosmos-RL(학습기)을 정책에 잇는 RL 하니스 |
+| 현재 위치 | ② 오픈소스. AlpaSim 2025-10(Apache-2.0, 스타 약 1.2k) 🔍, AlpaGym 2026-06-16(Apache-2.0, 스타 142) 🔍. AlpaSim 2026-08 Alpamayo 2 드라이버 추가 🔍 |
+| 다음 이정표 | 신경망 교통 시뮬레이터 "coming soon" 🔍; AlpaGym 처리량·확장, 모델·알고리즘 추가 🔍 |
+
+### 3.3.1 AlpaSim 정의·용도·설계 원칙
+
+- **정의**: "연구·개발 전용으로 설계된 오픈소스 자율주행 시뮬레이션 플랫폼. 모듈형·확장 가능한 테스트베드 안에서 사실적인 센서 데이터·차량 동역학·교통 시나리오를 시뮬레이션해 엔드투엔드 AV 정책을 폐루프로 시험" ([NVlabs/alpasim README](https://github.com/NVlabs/alpasim)) 🔍.
+- **용도 4가지**(README): 알고리즘 검증 / 엣지 케이스 안전 분석 / 성능 벤치마크·회귀 테스트 / 디버깅 🔍.
+- **설계 원칙 3 + 비목표**: 센서 충실도, 수평 확장성, 연구용 해킹 용이성; "실시간과 매우 정밀한 물리는 비목표"([DESIGN.md](https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md)) 🔍.
+- **구현**: Python 마이크로서비스 + gRPC. 런타임이 중심 노드(서비스 간 중계·부하 분산, "다른 서비스를 합친 만큼 IO가 많다"). 복제 우선순위 "ego policy > renderer > controller sim > traffic sim > physics sim". 단일 머신은 docker compose, 클러스터는 Slurm 🔍.
+- **CES 2026 문장**: "폐루프 정책 평가는 AlpaSim으로 GPU 규모에서 실행" ([뉴스룸](https://nvidianews.nvidia.com/news/alpamayo-autonomous-vehicle-development)) 📄.
+
+### 3.3.2 서비스 구성과 한 틱의 흐름 (DESIGN.md 🔍)
+
+| 서비스 | 역할 | 상태 |
+|---|---|---|
+| Wizard | 시뮬레이션 설정 생성·서비스 기동 | 공개 |
+| runtime | 세계 상태·로그, 루프 구동, gRPC 클라이언트(일회성)/서버(데몬) | 공개 |
+| trafficsim | 세계 상태를 바운딩 박스로 받아 비자차 액터 구동(신경망 교통 모델) | "coming soon" |
+| renderer | 세계 상태 → 자차 카메라 프레임. 기본 NuRec(NRE), 같은 엔드포인트를 OmniDreams 비디오 모델로 대체 가능 | NuRec 재구성은 NVIDIA 서비스 호출 |
+| driver | 정책 실행. 지원: Alpamayo-R1, Alpamayo 1.5, Alpamayo 2 Super(2026-08 `driver=alpamayo2`), VaVAM, LTFv6(NAVSIM, 임시) | 공개 |
+| controller | 단순 차량 제어기 + 차량 모델 → (미보정) 자차 운동 | 공개 |
+| physics | 자차·액터에 지면 구속 적용 | 공개 |
+| eval | 루프 밖에서 로그를 읽어 메트릭 계산 | 공개 |
+
+흐름: Wizard → runtime 세계 상태 → trafficsim(액터) · renderer(프레임) → driver(궤적) → controller(자차 운동) → physics(구속) → runtime 로그 → 반복; 종료 후 eval 🔍.
+
+### 3.3.3 렌더러와 장면 데이터
+
+| 렌더러 | 방식 | 제약 |
+|---|---|---|
+| NuRec (기본) | 실주행 로그를 3D 가우시안 장면으로 재구성해 새 시점·궤적으로 렌더 | 재구성 서비스는 NVIDIA 제공, 장면당 약 1.5GB 🔍 |
+| OmniDreams via FlashDreams (옵션) | 비디오 세계 모델이 HD맵 렌더·액터 큐보이드 조건으로 청크 단위 생성, "동적·비강체 물체에서 더 나은 시각 품질" | 단일 뷰, VRAM 48GB(FlashDreams)/96GB(Alpamayo 1.5), 카메라 오버라이드 시 "드리프트·정렬 이탈 가능" ([VIDEO_MODEL.md](https://raw.githubusercontent.com/NVlabs/alpasim/main/docs/VIDEO_MODEL.md)) 🔍 |
+
+공개 장면 스위트 ([data/scenes/README](https://github.com/NVlabs/alpasim/blob/main/data/scenes/README.md)) 🔍 — 데이터셋 `nvidia/PhysicalAI-Autonomous-Vehicles-NuRec`(HF 게이트):
+
+| 스위트 | 장면 수 | 내용 |
+|---|---|---|
+| `public_2601` | 913 | 권장. 26.01 릴리스 916개 중 913개, ClipGT 지도 729개 + XODR만 184개. 비디오 모델 경로용 부분집합 `public_2601_video_model` 729개 |
+| `public_2604` | 1,606 | 26.04 릴리스 1,607개 중 1,606개. 2601과 159개만 겹침. 전부 비디오 모델 경로 호환 |
+| `public_2507` | 910 | 레거시 25.07(HF 25.05 리비전) |
+
+- 전체 `public_2601` 약 1.5TB, 장면당 약 1.5GB ([AlpaGym ONBOARDING](https://github.com/NVlabs/alpagym/blob/main/docs/ONBOARDING.md)) 🔍.
+- 2026-07/08 공개 동기화 ([CHANGELOG](https://github.com/NVlabs/alpasim/blob/main/CHANGELOG.md)) 🔍: 롤아웃 실패 자동 재시도(기본 2회), 렌더러 부하 기반 장면 배치(`max_renderers_per_scene` 등), 스위트 CSV의 `uuid` 고정, GPU 이미지 디코딩·리사이즈(Alpamayo 1·1.5, 320×576 미만 이미지 거부), `driver=alpamayo2`(다중 카메라·다중 후보 궤적·배치), VaVAM/Transfuser 핀홀 직접 렌더, Slurm enroot 배포.
+
+### 3.3.4 AlpaGym 구성과 실행 흐름 ([NVlabs/alpagym README](https://github.com/NVlabs/alpagym)) 🔍
+
+- **정의**: "E2E 자율주행 정책을 위한 RL 프레임워크. 정책을 시뮬레이터 안에서 폐루프로 돌리고, 나온 주행에 점수를 매기고, 그것으로 학습한다 — 정책은 기록된 정답만이 아니라 자기 조향의 결과로 배운다." 세 축: AlpaSim(환경) + [Cosmos-RL](https://github.com/nvidia-cosmos/cosmos-rl)(분산 롤아웃·학습 오케스트레이션) + AlpaGym(하니스, "어느 하나든 교체 가능하게 인터페이스를 작게").
+- **패키지**: `host`(CLI·Hydra 설정·AlpaSim 체크아웃/기동·Slurm 제출·실행 아티팩트 디렉터리, 로그인 노드) / `runtime`(GPU 컨테이너: Cosmos-RL 어댑터, 롤아웃 루프, gRPC egodriver, 배치 추론, 정책 어댑터, 보상 항, 에피소드 전송) / `policies`(Alpamayo 1.5 번들·설정·토크나이저·체크포인트 변환) / `alpasim_configs` / `plugins`.
+- **실행 흐름 7단계**: 호스트 ① Hydra 설정 합성·고정 ② AlpaSim 체크아웃 캐시 ③ AlpaSim Wizard 기동·gRPC 엔드포인트 공개 ④ Cosmos-RL 런타임 시작 → 런타임 ⑤ 롤아웃 백엔드가 장면을 뽑아 에피소드 실행("매 틱 AlpaSim이 카메라·자차·경로 관측을 egodriver gRPC 서버로 보내면 정책이 궤적을 돌려주고 AlpaSim이 자차를 전진시킨 뒤 다시 묻는다") ⑥ 완료 에피소드 채점·아티팩트 기록 ⑦ 트레이너가 GRPO 스텝 후 가중치를 롤아웃 워커에 동기화.
+- **현황**: Alpamayo 1.5(10B)만 지원, "초기 단계이지만 활발히 개발 중", 처리량·확장과 모델·학습 알고리즘 추가가 현재 작업. 보상 예 `reward=progress_safety`. 처리량 수치 미공개 ⚠️.
+- **요구 사양**(ONBOARDING) 🔍: GPU 2장(40GB 이상, 예 A6000; 작은 모델은 1장 동거 가능), 디스크 100~150GB(uv 환경·컨테이너·가중치 약 21GB) + NuRec 장면당 1.5GB, Docker Compose, Redis(Cosmos-RL이 기동), NCCL·cuDNN 헤더, HF 게이트 데이터셋 접근, W&B 선택.
+- **공개**: 2026-06-16 초기 커밋 "Introducing AlpaGym, an E2E closed-loop RL pipeline for AV policies" ([커밋 이력](https://github.com/NVlabs/alpagym/commits/main)) 🔍, Apache-2.0, 스타 142(2026-09-02) 🔍.
+
+![AlpaGym 폐루프 RL 루프](images/3-3-alpagym-loop.svg)
+
+*그림 3-6. AlpaGym 폐루프 강화학습 루프(AlpaSim 환경 ↔ 정책 gRPC 루프, Cosmos-RL 롤아웃·채점·GRPO·가중치 동기화). AlpaGym README·ONBOARDING, AlpaSim DESIGN.md·data/scenes/README를 읽어 자체 작성 🔍. 실선 = 코드·문서로 확인.*
+
+### 3.3.5 한계·미확인
+
+- 연구·개발 전용, 정밀 물리·실시간 비목표 → 인증 근거·HIL 대체 아님 🔍.
+- 교통 시뮬레이터 미공개("coming soon"), AlpaGym 지원 모델 1개, 처리량 수치 없음 🔍⚠️.
+- NuRec 재구성 서비스는 소스 미공개(서비스 호출), 장면 데이터셋 게이트, 생성 렌더러 단일 뷰 🔍.
+- DRIVE AV 상용 검증 파이프라인(NVIDIA 내부·파트너)과 AlpaSim의 코드·장면 공유 여부 미확인 ⚠️.
 
 ---
 

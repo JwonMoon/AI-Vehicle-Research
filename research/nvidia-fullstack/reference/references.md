@@ -39,6 +39,10 @@
 | A28 | radiancefields GTC 2026 인터뷰 | https://radiancefields.com/inside-nvidia-s-alpamayo-1.5-nurec-and-alpadreams-a-gtc-conversation-with-matt-cragun | 2차 | 2026-03 | 1.5·NuRec·AlpaDreams 프리뷰 | 📄 |
 | A29 | unite.ai Alpamayo 2 Super | https://www.unite.ai/nvidias-alpamayo-2-super-opens-robotaxi-development-to-commercial-use/ | 2차 | 2026-08 | OpenMDW-1.1 Linux Foundation 2026-05-28, NVIDIA 채택 | 📄 |
 | A30 | NVIDIA/Cosmos LICENSE (OpenMDW-1.1 원문) | https://raw.githubusercontent.com/NVIDIA/Cosmos/main/LICENSE | 1차 GitHub | 2026-05 | 무제한 사용·수정·공유, 출력물 무제한, 특허 보복 종료, 고지 유지 | 🔍 |
+| A31 | NVlabs/alpasim CHANGELOG | https://github.com/NVlabs/alpasim/blob/main/CHANGELOG.md | 1차 GitHub | 2026-07~08 | 2026-07/08 공개 동기화: 롤아웃 재시도, 장면 배치, GPU 이미지 전처리, driver=alpamayo2, Slurm enroot | 🔍 |
+| A32 | NVlabs/alpasim data/scenes/README | https://github.com/NVlabs/alpasim/blob/main/data/scenes/README.md | 1차 GitHub | 2026 | 공개 스위트 public_2601(913)/2604(1,606)/2507(910), HF NuRec 데이터셋 리비전 | 🔍 |
+| A33 | NVlabs/alpagym docs/ONBOARDING.md | https://github.com/NVlabs/alpagym/blob/main/docs/ONBOARDING.md | 1차 GitHub | 2026-06 | 요구 사양(2×40GB GPU, 디스크 100~150GB, 장면당 1.5GB, 전체 ~1.5TB), 설치 절차 | 🔍 |
+| A34 | NVlabs/alpasim docs/DESIGN.md | https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md | 1차 GitHub | 2025-10 | 설계 원칙 3·비목표, 서비스 구성, 데이터 흐름, 복제 우선순위 | 🔍 |
 
 ## B. DRIVE AV · DriveWorks · Hyperion 10 · 도입 사례 (3장 3.2)
 
