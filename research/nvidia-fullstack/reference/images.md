@@ -8,7 +8,7 @@
 |---|---|---|
 | `3-0-av-stack-map-v2.svg` | NVIDIA 자율주행 스택 계층·3-computer 위치·성숙도 요약 지도 (현행판: 블록 안 챕터 표기 제거, 텍스트가 블록 안에 들어오도록 열 폭·줄바꿈 조정, 증류 경로를 블록 사이로 배선, 열 제목의 원 번호·상단 범례 제거, 파랑은 Alpamayo·DRIVE AV 블록만, 열 제목은 블록이 아닌 텍스트+밑줄, 블록 사이 화살표에 관계 라벨: 사전학습 백본 → 학습 레시피 → 모델 가중치, 학습 데이터, 합성·재구성 데이터, 폐루프 RL, 증류, 검증) | 3장 3.0.3 · report-03 그림 1 |
 | `3-0-av-stack-map.svg` | 위 지도의 원판 (블록 안에 담당 장 표기 포함). 참고용으로 유지 | — |
-| `3-1-alpamayo1-vs-2-architecture.svg` | Alpamayo 1(R1)과 2 Super의 추론 파이프라인 비교 도식. 공식 Alpamayo 1 그림은 arXiv·HF에만 있어 접근 불가, NVlabs/alpamayo·alpamayo2 저장소 코드를 읽어 자체 작성 (입력·토큰화·VLM·expert·행동 공간·출력 6단 + 차이점 요약) | 3장 3.1.2 · report-03 그림 3 |
+| `3-1-alpamayo1-vs-2-architecture.svg` | Alpamayo 1(R1)과 2 Super의 추론 파이프라인 비교 도식. 공식 Alpamayo 1 그림은 arXiv·HF에만 있어 접근 불가, NVlabs/alpamayo·alpamayo2 저장소 코드를 읽어 자체 작성. 형식은 NVIDIA 공식 Alpamayo 2 Super 도식(입력 → 토큰 → 모델 상자[인코더·백본·Action Expert] → 토큰 → 출력)을 따라 세대별 2단 패널로 그리고, 2 Super에서 새로 생긴 입력·출력(자동 라벨 프롬프트, 메타액션·2D 그라운딩, 자동 라벨)은 NEW 태그, 1.5부터 생긴 것은 1.5+ 태그, 미지원은 점선 회색으로 표시 | 3장 3.1.2 · report-03 그림 3 |
 | `7-0-cosmos-map.svg` | Cosmos 모델군·Omniverse 위치·역할·성숙도 요약 지도 | 7장 7.0.3 |
 | `7-2-data-flywheel.svg` | AV 데이터 플라이휠에서 Cosmos/Omniverse 구성 요소가 붙는 지점 | 7장 7.2.4 |
 | `7-3-omniverse-cosmos-pipeline.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 | 7장 7.3.3 |
