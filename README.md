@@ -24,6 +24,7 @@
 
 | 주제 | 요약 | 작성 | 핵심 문서 |
 |---|---|---|---|
+| [nvidia-fullstack](research/nvidia-fullstack/) | NVIDIA 차량용 풀스택 SW 7장 분담 조사 — 3장 자율주행 스택(Alpamayo 1→2 Super, AlpaSim·AlpaGym 폐루프 시뮬·RL, DRIVE AV 듀얼 스택, Hyperion 10), 7장 Physical AI/Cosmos(세대·데이터 파이프라인·Omniverse 역할 구분·활용 패턴), 부록 Tier-1 관점 작업 범위(Android 대입) | 2026-09 | [3장 보고서 (HTML)](research/nvidia-fullstack/report-03-autonomous-driving-stack.html) · [7장 보고서 (HTML)](research/nvidia-fullstack/report-07-physical-ai-cosmos.html) · [부록 A 보고서 (HTML)](research/nvidia-fullstack/report-appendix-a-tier1.html) · md 원본: [3장](research/nvidia-fullstack/03-autonomous-driving-stack.md) · [7장](research/nvidia-fullstack/07-physical-ai-cosmos.md) · [부록 A](research/nvidia-fullstack/appendix-a-tier1-workscope.md) · [폴더 안내](research/nvidia-fullstack/README.md) |
 | [flashdrive](research/flashdrive/) | Z Lab(UCSD)의 자율주행 VLA 추론 4.5× 가속 논문 분석 — Alpamayo 1.5를 716→159ms로 | 2026-09 | [분석 보고서](research/flashdrive/flashdrive_analysis.md) |
 | [nvidia-alpamayo](research/nvidia-alpamayo/) | NVIDIA Alpamayo(추론형 주행 VLA)와 자율주행 패러다임 전환 — 종합·1vs2 비교·SW/HW 요구사항 | 2026-07 | [종합 보고서](research/nvidia-alpamayo/alpamayo_종합보고서.md) · [1 vs 2 비교](research/nvidia-alpamayo/alpamayo_1_vs_2_비교보고서.md) · [SW/HW 요구사항](research/nvidia-alpamayo/alpamayo_sw_hw_요구사항.md) |
 | [tractus-x](research/tractus-x/) | Eclipse Tractus-X — Catena-X 자동차 데이터 스페이스 오픈소스 조사 | 2026-07 | [보고서](research/tractus-x/tractus-x-report.md) · [상세 자료집](research/tractus-x/tractus-x-research.md) |
