@@ -475,6 +475,64 @@ DRIVE AV 개발 루프에 시뮬·데이터 도구가 붙는 지점은 CES 2026 
 
 ---
 
+## 3.10 자사 관점 (LG전자 VS사업본부: 차량용 HPC·AI 플랫폼)
+
+> 3장 조사 결과를 자사 관점으로 다시 읽은 절. NVIDIA 쪽 사실은 3.1~3.3·부록 A의 출처를 따르고, LG 쪽 사실은 공개 발표 3건만 쓴다. VS 내부 계획은 공개 자료로 알 수 없으므로 그에 기대는 판단은 모두 ⚠️(추정).
+
+### 3.10.1 공개된 LG–NVIDIA 접점 (사실)
+
+- LG전자: "자사 IVI 역량을 NVIDIA DRIVE Hyperion(DRIVE AGX Thor 2개 통합)과 결합해 차세대 ADAS를 포함한 모빌리티 AI 시스템 고도화"; LG이노텍: "Hyperion 최적화 통신 모듈·센싱 솔루션·차량용 조명" ([PR Newswire LG–NVIDIA](https://www.prnewswire.com/news-releases/lg-teams-with-nvidia-to-shape-the-future-with-map-mobility--ai-infra--physical-ai-302793797.html)) 📄.
+- LG전자 × aiMotive: IVI/ADAS 통합 컨트롤러 CES 2026 공개 ([PR Newswire aiMotive–LG](https://www.prnewswire.com/news-releases/aimotive-and-lg-to-unveil-advanced-integrated-iviadas-controller-at-ces-2026-302645698.html), [헤럴드경제](https://mbiz.heraldcorp.com/article/10847536)) 📄.
+- 세 발표 모두 "무엇을 함께 한다"까지이며 대상 차량·시점·층위는 미공개 ⚠️.
+
+### 3.10.2 이 장의 특이사항 (자사 관점)
+
+| # | 특이사항 | 근거 절 |
+|---|---|---|
+| 1 | 두뇌(Alpamayo, OpenMDW-1.1)는 열려 있고 완제품(DRIVE AV)은 계약. teacher→student 증류 방법 비공개 | 3.1.6, 3.2.8 |
+| 2 | "NVIDIA 채택" 대부분은 칩+DriveOS까지. 풀스택 양산은 CLA 1건. DriveOS 위층이 Tier-1·OEM 영역 | 3.2.7 |
+| 3 | 세대 교체 속도: Alpamayo 8개월 4버전, 백본 Qwen2.5-VL → Qwen3-VL → Cosmos 3. 파인튜닝 자산의 이관 부담 | 3.1.1, 3.1.2 |
+| 4 | 모든 것이 Thor로 수렴(Hyperion 10 = 2×Thor, 2 Super = Thor용 teacher). 확인된 Thor 양산차 1건(Zeekr 9X), DriveOS 7/Thor 인증 미확인 | 3.1.5, 3.2.4, 3.9 |
+| 5 | Hyperion 생태계의 컴퓨트 ECU 슬롯 경쟁: Quanta·Desay SV IPU14·Lenovo AD1·Magna·Bosch·Continental | 부록 A A.3 |
+| 6 | AlpaSim·AlpaGym은 연구 전용(정밀 물리·실시간 비목표), 상용 검증 파이프라인 비공개 | 3.3.5 |
+
+### 3.10.3 접점 지도 (계층별)
+
+| 층 | NVIDIA 제공(사실) | VS 접점(추정 ⚠️) |
+|---|---|---|
+| L0 ECU | Thor SoC·개발 키트, 양산 ECU는 Tier-1 공급 ✅ | 차량용 HPC = Hyperion 호환 컴퓨트 ECU 슬롯(가장 직접적, 경쟁 최다) |
+| L1 DriveOS·BSP | 레퍼런스 보드 SDK, 커스텀 보드는 PDK 계약 ✅ | 자체 보드 PDK 계약·브링업, 세이프티 MCU·폴백 컴퓨터 자체 설계 |
+| L2 DriveWorks·SAL | 센서 추상화·플러그인 SDK ✅ | LG이노텍 카메라·통신 모듈 = SAL 플러그인 대상. 그룹 내 센서+컴퓨트 = Hyperion "검증된 ECU+센서 스위트" 조달 모델과 정합 |
+| L3~L4 주행 SW | DRIVE AV 라이선스 또는 DriveOS 위 자체 스택 ✅ | 선택 지점: 단계 B(DRIVE AV) vs C/D(자체·파트너 스택). aiMotive 협업은 후자의 신호 |
+| L5 IVI·HMI | DRIVE AV 범위 밖(DRIVE IX 별도) ⚠️ | 공개된 방향(IVI+Hyperion). NVIDIA가 주지 않는 층 → 차별화 최대. 선례: Desay SV IPU14 원칩 콕핏·주행 통합 |
+| AI 플랫폼 | Alpamayo 가중치·레시피, AlpaSim·AlpaGym, Physical AI AV 데이터셋(게이트) 🔍 | Alpamayo를 자사 student의 teacher로, AlpaSim·AlpaGym을 자체 정책 폐루프 평가·RL에. 학습 데이터 110k h는 NVIDIA 독점 → 자사 플릿 데이터 필수 |
+
+### 3.10.4 협업 고려사항
+
+1. **채택 단계 선결**(B/C/D): 라이선스·안전 케이스 범위·조직 역량이 달라짐. aiMotive 스택과 DRIVE AV는 같은 층 → 채널 정리 필요 ⚠️.
+2. **Thor 조달·PDK·인증**: 커스텀 HPC는 PDK 계약 전제 ✅, 세이프티 MCU·폴백 컴퓨터는 Tier-1 몫 ✅, DriveOS 7/Thor 인증 미확인·Thor 양산 1건 → SOP 위험 ⚠️.
+3. **모델 수명 주기**: 백본 교체 주기 짧음, 증류 코드 비공개 → 기준 버전·재학습 비용 계획. Cosmos ≤2.5세대 사용 시 NOML 조건(7장) 📄.
+4. **데이터·지역 ODD**: 자사 플릿 수집·법적 근거, 한국 도로·표지 튜닝은 NVIDIA 미제공. 공개 데이터셋은 게이트·연구 조건 🔍.
+5. **검증 체계**: AlpaSim은 연구용 → 인증용 SIL/HIL·시나리오 DB·실차 마일리지 별도. 세계 모델 시뮬의 인증 근거 사례 없음 ⚠️.
+6. **안전 케이스**: NVIDIA 부품 SEooC, Halos 랩은 검사 기관 → 아이템 수준 안전 케이스·형식승인은 자사 몫 ✅ (부록 A A.2-8).
+7. **차별화 축**: 칩·OS·SDK는 동일 → IVI+ADAS 통합, 그룹 센서·통신 모듈, 데이터 사이클, 검증·안전 승인 서비스(Magna·Bosch 벤치마크) ✅.
+8. **도구·인력**: DriveWorks 바이너리, DRIVE AV 계약 기반 → 소스 접근 제한. CUDA/TensorRT·데이터·시뮬·안전 인력 선행 확보 📄.
+
+### 3.10.5 결정 항목
+
+| 결정 항목 | 선택지·확인 사항 | 근거 |
+|---|---|---|
+| 채택 단계 | B 풀스택 라이선스 / C 칩+DriveOS+자체(파트너) 스택 / D 칩만 | 3.2.7 |
+| HPC 포지션 | Hyperion 호환 컴퓨트 ECU(경쟁 다수) vs 콕핏+ADAS 통합 컨트롤러(차별화) | 부록 A A.3 |
+| PDK·Thor 조달 | PDK 계약 범위, Thor 리드타임·수량, DriveOS 7/Thor 인증 일정 | 부록 A A.2-1·2, 3.9 |
+| 모델 기준 버전 | 2 Super(Cosmos 3) vs 1.5(Qwen3-VL): 재학습 주기·라이선스 | 3.1.2, 3.1.6 |
+| 데이터·ODD | 자사 플릿·법적 근거·한국 ODD, Physical AI 데이터셋 조건 | 3.1.3, 부록 A A.2-6 |
+| 검증 체계 | AlpaSim(연구) 외 인증용 SIL/HIL·시나리오 DB·실차 | 3.3.5, 부록 A A.2-7 |
+| 안전 케이스 | SEooC 사용 가정, 아이템 정의·HARA, SOTIF·PAS 8800, 형식승인 | 부록 A A.2-8 |
+| 인력·도구 | CUDA/TensorRT·데이터·시뮬·안전 역량, NVONLINE·PDK 접근 | 부록 A A.2-11 |
+
+---
+
 ## 용어집
 
 [^vla]: VLA(Vision-Language-Action): 시각·언어 입력을 받아 행동(여기서는 주행 궤적)을 직접 출력하는 모델. 언어 추론 능력을 행동 생성에 연결한다.

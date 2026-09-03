@@ -43,6 +43,8 @@
 | A32 | NVlabs/alpasim data/scenes/README | https://github.com/NVlabs/alpasim/blob/main/data/scenes/README.md | 1차 GitHub | 2026 | 공개 스위트 public_2601(913)/2604(1,606)/2507(910), HF NuRec 데이터셋 리비전 | 🔍 |
 | A33 | NVlabs/alpagym docs/ONBOARDING.md | https://github.com/NVlabs/alpagym/blob/main/docs/ONBOARDING.md | 1차 GitHub | 2026-06 | 요구 사양(2×40GB GPU, 디스크 100~150GB, 장면당 1.5GB, 전체 ~1.5TB), 설치 절차 | 🔍 |
 | A34 | NVlabs/alpasim docs/DESIGN.md | https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md | 1차 GitHub | 2025-10 | 설계 원칙 3·비목표, 서비스 구성, 데이터 흐름, 복제 우선순위 | 🔍 |
+| A35 | PR Newswire aiMotive–LG CES 2026 | https://www.prnewswire.com/news-releases/aimotive-and-lg-to-unveil-advanced-integrated-iviadas-controller-at-ces-2026-302645698.html | 파트너 보도자료 | 2025-12 | LG전자–aiMotive IVI/ADAS 통합 컨트롤러 CES 2026 공개 | 📄 |
+| A36 | 헤럴드경제 LG–aiMotive | https://mbiz.heraldcorp.com/article/10847536 | 2차 보도 | 2025 | LG전자 IVI/ADAS 통합 컨트롤러(aiMotive) | 📄 |
 
 ## B. DRIVE AV · DriveWorks · Hyperion 10 · 도입 사례 (3장 3.2)
 

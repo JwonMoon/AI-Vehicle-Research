@@ -141,6 +141,11 @@ figcaption b{color:var(--ink)}
   <a class="nav-h2" href="#s5">5. 도입 사례: 명확한 것부터</a>
   <a class="nav-h2" href="#s6">6. 성숙도 한눈에</a>
   <a class="nav-h2" href="#s7">7. 아직 확인 못 한 것</a>
+  <a class="nav-h2" href="#s8">8. 자사 관점: LG전자 VS</a>
+  <a class="nav-h3" href="#s8-1">8.1 특이사항</a>
+  <a class="nav-h3" href="#s8-2">8.2 접점 지도</a>
+  <a class="nav-h3" href="#s8-3">8.3 협업 고려사항</a>
+  <a class="nav-h3" href="#s8-4">8.4 결정 항목</a>
   <a class="nav-h2" href="#sources">출처</a>
   <div class="other">다른 보고서<a href="report-07-physical-ai-cosmos.html">7장 Physical AI / Cosmos</a><a href="report-appendix-a-tier1.html">부록 A Tier-1이 해야 할 일</a><a href="README.md">폴더 안내</a></div>
   <div class="legend">검증 등급<br><span class="g g-ok">✅</span> 두 출처 교차검증<br><span class="g g-src">🔍</span> 1차 출처 원문 확인<br><span class="g g-sec">📄</span> 검색 요약·2차 출처만<br><span class="g g-warn">⚠️</span> 미확인·추정</div>
@@ -160,6 +165,7 @@ figcaption b{color:var(--ink)}
   <div class="item"><div class="qq">스택은 어떻게 생겼나?</div>운전을 통째로 배운 <b>AI 스택</b>과, 그 옆에서 감시하는 <b>규칙 기반 안전 스택</b>이 나란히 도는 듀얼 스택이다. 개발은 학습 컴퓨터(DGX) → 시뮬레이션 컴퓨터(Omniverse+Cosmos) → 차량 컴퓨터(DRIVE AGX)의 세 단계로 흐른다 <span class="g g-ok">✅</span>.</div>
   <div class="item"><div class="qq">Alpamayo의 차별점은?</div>궤적만 내지 않고 <b>"왜 이렇게 운전하는지"를 인과 사슬로 설명</b>한 뒤 궤적을 낸다. 학습 데이터에 드문 상황(롱테일)에서 더 안전하고 설명 가능하다는 것이 NVIDIA의 주장이다. 최신 Alpamayo 2 Super는 34B 파라미터로 2026-08-04 상용 가중치가 공개됐다 <span class="g g-ok">✅</span>.</div>
   <div class="item"><div class="qq">AlpaSim과 AlpaGym은 무엇인가?</div>Alpamayo를 실주행 재구성 장면 위에서 <b>굴려 보는 폐루프 시뮬레이터</b>(AlpaSim)와, 굴려 본 결과에 점수를 매겨 <b>모델을 고치는 강화학습 하니스</b>(AlpaGym)다. 둘 다 오픈소스이고 Alpamayo 1.5의 RL 후학습이 실사용 예이지만, "연구·개발 전용"이며 정밀 물리와 실시간은 비목표다 <span class="g g-src">🔍</span>.</div>
+  <div class="item"><div class="qq">자사(LG전자 VS)와는 어디서 만나나?</div>차량용 HPC는 Hyperion 생태계의 <b>컴퓨트 ECU 슬롯</b>(Quanta·Desay SV·Lenovo·Magna와 경쟁)에, AI 플랫폼은 <b>Alpamayo를 teacher로 쓰는 자체 student 모델과 자체 검증 체계</b>에 놓인다. 공개된 접점은 IVI+Hyperion 통합, LG이노텍 센서·통신 모듈, aiMotive와의 IVI/ADAS 통합 컨트롤러다 <span class="g g-sec">📄</span>. 협업의 첫 결정은 채택 단계(풀스택 라이선스 / 칩+OS / 칩만)다 <span class="g g-warn">⚠️</span>.</div>
   <div class="item"><div class="qq">지금 어디까지 왔나?</div>2026년 9월 기준 <b>풀스택 DRIVE AV 양산차는 Mercedes-Benz CLA(L2++, 미국 2026) 하나</b>다. L4(Uber 2027 상반기, Stellantis 2028)는 목표 단계이고, Hyperion 10 로보택시는 시험 운행 중이다. 나머지 대부분의 "NVIDIA 채택"은 칩이나 OS까지만 쓰고 소프트웨어는 직접 만든다 <span class="g g-ok">✅</span>.</div>
 </div>
 
@@ -496,6 +502,60 @@ figcaption b{color:var(--ink)}
 <tr><td>오픈 AlpaSim과 DRIVE AV 상용 검증 파이프라인(내부·파트너)의 코드·장면 공유 여부</td><td>미확인 <span class="g g-warn">⚠️</span></td><td>NVIDIA 원문·파트너 발표</td></tr>
 <tr><td>AlpaGym 처리량(에피소드/시간)·보상 항 정의</td><td>미공개 <span class="g g-warn">⚠️</span></td><td>저장소 코드·후속 문서</td></tr>
 </table></div>
+
+<h2 id="s8">8. 자사 관점: LG전자 VS와의 접점과 협업 고려사항</h2>
+<div class="q"><b>이 절의 질문</b> 차량용 HPC와 AI 플랫폼을 개발하는 LG전자 VS사업본부(이하 VS)가 이 장을 읽으면 무엇이 특이하고, 어디서 NVIDIA 스택과 만나며, 협업할 때 무엇을 따져야 하나?</div>
+<p>이 절은 앞의 조사 결과를 자사 관점으로 다시 읽은 것이다. NVIDIA 쪽 사실은 2~7절의 출처를 그대로 따르고, LG 쪽 사실은 공개 발표 세 건만 쓴다. VS의 내부 계획은 공개 자료로 알 수 없으므로, 그에 기대는 판단은 모두 추정(<span class="g g-warn">⚠️</span>)으로 표시했다.</p>
+<div class="warn"><b>공개된 LG–NVIDIA 접점(사실).</b> LG전자는 "자사 IVI 역량을 NVIDIA DRIVE Hyperion(DRIVE AGX Thor 2개 통합)과 결합해 차세대 ADAS를 포함한 모빌리티 AI 시스템을 고도화"한다고 발표했고, LG이노텍은 "Hyperion에 최적화된 통신 모듈·센싱 솔루션·차량용 조명"을 개발한다 <a class="cite" href="https://www.prnewswire.com/news-releases/lg-teams-with-nvidia-to-shape-the-future-with-map-mobility--ai-infra--physical-ai-302793797.html">PR Newswire LG–NVIDIA</a><span class="g g-sec">📄</span>. 별도로 LG전자는 aiMotive와 함께 IVI/ADAS 통합 컨트롤러를 CES 2026에 공개했다 <a class="cite" href="https://www.prnewswire.com/news-releases/aimotive-and-lg-to-unveil-advanced-integrated-iviadas-controller-at-ces-2026-302645698.html">PR Newswire aiMotive–LG</a><a class="cite" href="https://mbiz.heraldcorp.com/article/10847536">헤럴드경제</a><span class="g g-sec">📄</span>. 세 발표 모두 "무엇을 함께 한다"까지이고, 어느 차·언제·어느 층까지인지는 공개되지 않았다 <span class="g g-warn">⚠️</span>.</div>
+
+<h3 id="s8-1">8.1 이 장의 특이사항 여섯 가지</h3>
+<ol>
+  <li><b>두뇌는 열려 있고 완제품은 닫혀 있다.</b> Alpamayo는 OpenMDW-1.1로 제한 없이 공개됐지만(2.6절), 차에 들어가는 DRIVE AV는 계약이고 teacher→student 증류 방법은 비공개다(0절). "모델을 받는 것"과 "양산 스택을 갖는 것"은 전혀 다른 일이다.</li>
+  <li><b>"NVIDIA 채택"의 대부분은 칩+DriveOS까지다.</b> 풀스택 양산은 Mercedes CLA 한 건이고, HMG·Volvo·Toyota·GM은 DriveOS 위에 자기 소프트웨어를 올린다(5절 단계 C). DriveOS 위층은 여전히 Tier-1·OEM의 사업 영역이다.</li>
+  <li><b>세대 교체가 매우 빠르다.</b> Alpamayo는 8개월에 4버전, 백본은 Qwen2.5-VL → Qwen3-VL → Cosmos 3로 바뀌었다(2.7절). 특정 버전에 맞춘 파인튜닝 자산은 6~12개월 안에 이관 부담이 생긴다.</li>
+  <li><b>모든 것이 Thor로 수렴한다.</b> Hyperion 10은 2×Thor이고 Alpamayo 2 Super는 Thor용 student의 teacher다(2.5절, 4.4절). 그런데 확인된 Thor 양산차는 Zeekr 9X 하나이고 DriveOS 7/Thor의 인증 상태는 미확인이다(6절, 7절).</li>
+  <li><b>Hyperion 생태계의 "컴퓨트 ECU" 자리는 경쟁 중이다.</b> Quanta·Desay SV(IPU14)·Lenovo(AD1)·Magna·Bosch·Continental이 Thor 기반 ECU를 공급한다고 공개했다(<a href="report-appendix-a-tier1.html#s4">부록 A 4절</a>). 이 자리가 VS의 차량용 HPC와 정확히 겹친다.</li>
+  <li><b>AlpaSim·AlpaGym은 연구 전용이다.</b> 정밀 물리·실시간은 비목표이고 상용 검증 파이프라인은 비공개다(3.6절). 양산 검증 체계는 따로 있어야 한다.</li>
+</ol>
+
+<h3 id="s8-2">8.2 접점 지도: 계층별로 어디서 만나나</h3>
+<p>1절의 계층 지도(L0 하드웨어 → L5 앱)에 VS의 두 축, 차량용 HPC와 AI 플랫폼을 얹으면 접점이 층마다 다르게 나온다. 공개 발표로 확인되는 것은 L5(IVI)와 부품(LG이노텍)뿐이고, 나머지는 이 장의 사실에서 끌어낸 추정이다.</p>
+<div class="tbl"><table>
+<tr><th>층</th><th>NVIDIA가 주는 것 (3장 사실)</th><th>VS와의 접점 (추정 <span class="g g-warn">⚠️</span>)</th><th>참고</th></tr>
+<tr><td>L0 하드웨어·ECU</td><td>Thor SoC와 개발 키트. 양산 ECU는 Tier-1이 공급 <span class="g g-ok">✅</span></td><td>차량용 HPC = Hyperion 호환 컴퓨트 ECU 슬롯. 가장 직접적인 접점이지만 경쟁자가 가장 많은 자리</td><td>4.4절, 부록 A 1층</td></tr>
+<tr><td>L1 DriveOS·BSP</td><td>레퍼런스 보드용 SDK. 커스텀 보드는 PDK 별도 계약 <span class="g g-ok">✅</span></td><td>자체 HPC 보드는 PDK 계약 + 브링업 + 세이프티 MCU·폴백 컴퓨터 자체 설계</td><td>부록 A 2층</td></tr>
+<tr><td>L2 DriveWorks·SAL</td><td>센서 추상화 프레임워크와 플러그인 SDK <span class="g g-ok">✅</span></td><td>LG이노텍 카메라·통신 모듈은 SAL 플러그인 대상. 그룹 안에 센서와 컴퓨트가 같이 있다는 점은 Hyperion의 "검증된 ECU+센서 스위트" 조달 모델과 맞는다</td><td>4.3절, 부록 A 3층</td></tr>
+<tr><td>L3~L4 주행 소프트웨어</td><td>DRIVE AV 상용 스택(라이선스) 또는 DriveOS 위 자체 스택 <span class="g g-ok">✅</span></td><td><b>선택 지점.</b> DRIVE AV 라이선스(단계 B, Mercedes형)와 Thor+DriveOS 위 자체·파트너 스택(단계 C/D) 중 하나. aiMotive 협업은 후자의 신호로 읽힌다</td><td>0절, 5절</td></tr>
+<tr><td>L5 IVI·HMI</td><td>DRIVE AV 범위 밖(코크핏은 DRIVE IX 별도) <span class="g g-warn">⚠️</span></td><td>이미 공개된 방향(IVI+Hyperion 통합). NVIDIA가 주지 않는 층이라 차별화 여지가 가장 크다. Desay SV IPU14의 "원칩 콕핏·주행 통합"이 같은 방향의 선례</td><td>부록 A 9층</td></tr>
+<tr><td>AI 플랫폼 (학습·시뮬 컴퓨터)</td><td>Alpamayo 오픈 가중치·레시피, AlpaSim·AlpaGym, Physical AI AV 데이터셋(게이트) <span class="g g-src">🔍</span></td><td>Alpamayo를 자사 student 모델의 teacher로, AlpaSim·AlpaGym을 자체 정책의 폐루프 평가·RL에 쓸 수 있다. 다만 학습 데이터의 대부분(110k시간)은 NVIDIA 내부 독점이라 자사 플릿 데이터가 있어야 의미가 있다</td><td>2.3절, 3절</td></tr>
+</table></div>
+<div class="analogy"><b>비유로 이해하기.</b> Android 때 Google이 준 것과 우리가 만든 것의 경계(<a href="report-appendix-a-tier1.html">부록 A</a>)를 그대로 대입하면, VS의 HPC는 "보드+BSP"이고 AI 플랫폼은 "프레임워크 위 확장 스택"이다. 다른 점은 안전 인증 축과 데이터 사이클이 새로 얹힌다는 것이다.</div>
+
+<h3 id="s8-3">8.3 협업 시 고려사항</h3>
+<ol>
+  <li><b>채택 단계를 먼저 정한다.</b> B(DRIVE AV 라이선스)·C(칩+OS)·D(칩만) 중 무엇이냐에 따라 라이선스 구조, 안전 케이스 범위, 필요한 조직 역량이 전부 달라진다. aiMotive 스택과 DRIVE AV는 같은 층을 두고 겹치므로 채널 정리가 필요하다 <span class="g g-warn">⚠️</span>.</li>
+  <li><b>Thor 조달·PDK·인증.</b> 커스텀 HPC는 PDK 계약이 전제이고, 세이프티 MCU와 폴백 컴퓨터는 Tier-1 몫이다. DriveOS 7/Thor 인증 상태는 미확인이고 Thor 양산 실적은 1건이라 SOP 일정 위험을 봐야 한다 <span class="g g-ok">✅</span><span class="g g-warn">⚠️</span>.</li>
+  <li><b>모델 수명 주기.</b> 백본 교체 주기가 짧고 증류 코드가 비공개다. "어느 버전을 기준으로 파인튜닝·증류·양자화할지"와 재학습 비용을 계획에 넣어야 한다. Cosmos 2.5세대 이하를 쓰면 NOML 조건(가드레일 우회 금지·표시 의무)도 붙는다(<a href="report-07-physical-ai-cosmos.html">7장</a>).</li>
+  <li><b>데이터와 지역 ODD.</b> 자사 플릿 수집 체계와 법적 근거, 한국 도로·표지 튜닝은 NVIDIA가 주지 않는다. 공개 데이터셋은 게이트·연구 조건이다 <span class="g g-src">🔍</span>.</li>
+  <li><b>검증 체계.</b> AlpaSim은 연구용이므로 인증용 SIL/HIL·시나리오 DB·실차 마일리지는 별도로 구축해야 하고, 세계 모델 시뮬 결과를 인증 근거로 쓴 사례는 아직 없다 <span class="g g-warn">⚠️</span>.</li>
+  <li><b>안전 케이스.</b> NVIDIA 부품은 SEooC 평가이고 Halos 랩은 검사 기관이지 인증 기관이 아니다. 아이템 수준 안전 케이스와 형식승인은 자사 몫이다(<a href="report-appendix-a-tier1.html#s2-8">부록 A 8층</a>) <span class="g g-ok">✅</span>.</li>
+  <li><b>차별화 축.</b> 칩·OS·SDK는 경쟁사와 같다. 차별화는 IVI+ADAS 통합, 그룹 내 센서·통신 모듈, 데이터 사이클, 검증·안전 승인 서비스에서 생긴다. Magna·Bosch가 파는 서비스 목록이 그 벤치마크다 <span class="g g-ok">✅</span>.</li>
+  <li><b>도구·인력.</b> DriveWorks는 바이너리이고 DRIVE AV 상용 스택은 계약 기반이라 소스 접근이 Android보다 좁다. CUDA/TensorRT·데이터 엔지니어링·시뮬·안전 인력을 선행 확보해야 한다 <span class="g g-sec">📄</span>.</li>
+</ol>
+
+<h3 id="s8-4">8.4 결정 항목 정리</h3>
+<div class="tbl"><table>
+<tr><th>결정 항목</th><th>선택지 또는 확인할 것</th><th>이 장의 근거</th></tr>
+<tr><td>채택 단계</td><td>B 풀스택 라이선스 / C 칩+DriveOS+자체(파트너) 스택 / D 칩만</td><td>5절 도입 사례 표</td></tr>
+<tr><td>HPC 포지션</td><td>Hyperion 호환 컴퓨트 ECU(경쟁 다수) vs 콕핏+ADAS 통합 컨트롤러(차별화)</td><td>부록 A 4절, Desay SV IPU14</td></tr>
+<tr><td>PDK·Thor 조달</td><td>PDK 계약 범위, Thor 리드타임·수량, DriveOS 7/Thor 인증 일정</td><td>부록 A 1~2층, 7절 미확인</td></tr>
+<tr><td>모델 기준 버전</td><td>Alpamayo 2 Super(Cosmos 3 백본) vs 1.5(Qwen3-VL) — 재학습 주기·라이선스</td><td>2.2절, 2.6절, 2.7절</td></tr>
+<tr><td>데이터·ODD</td><td>자사 플릿 수집·법적 근거, 한국 ODD 튜닝, Physical AI 데이터셋 사용 조건</td><td>2.3절, 부록 A 6층</td></tr>
+<tr><td>검증 체계</td><td>AlpaSim(연구) 외 인증용 SIL/HIL·시나리오 DB·실차 마일리지</td><td>3.6절, 부록 A 7층</td></tr>
+<tr><td>안전 케이스</td><td>SEooC 사용 가정 검증, 아이템 정의·HARA, SOTIF·PAS 8800, 형식승인</td><td>부록 A 8층</td></tr>
+<tr><td>인력·도구</td><td>CUDA/TensorRT·데이터·시뮬·안전 역량, NVONLINE·PDK 접근</td><td>부록 A 11층</td></tr>
+</table></div>
+<div class="oneline"><b>한 줄 정리.</b> VS의 HPC는 Hyperion의 "컴퓨트 ECU" 자리에, AI 플랫폼은 "Alpamayo를 teacher로 쓰는 자체 student 모델 + 자체 검증 체계" 자리에 놓인다. 접점은 분명하지만 경쟁도 분명하고, 차별화는 NVIDIA가 주지 않는 IVI 통합·센서·데이터·안전 승인에서 생긴다. 세부는 <a href="03-autonomous-driving-stack.md">md 원본 3.10</a>과 <a href="report-appendix-a-tier1.html">부록 A</a>.</div>
 
 <h2 id="sources">출처</h2>
 <p>본문의 인용은 모두 둥근 칩으로 링크되어 있다. 통합 목록(128건, 유형·날짜·확인 사실·등급)은 <a href="reference/references.md">reference/references.md</a>, 그림 출처는 <a href="reference/images.md">reference/images.md</a>, 이 장의 사실 목록 원본은 <a href="03-autonomous-driving-stack.md">03-autonomous-driving-stack.md</a>에 있다. 가장 많이 기댄 출처는 <a href="https://raw.githubusercontent.com/NVlabs/alpamayo/main/README.md">NVlabs/alpamayo README</a> 🔍, <a href="https://raw.githubusercontent.com/NVlabs/alpamayo2/main/README.md">alpamayo2 README</a> 🔍, <a href="https://raw.githubusercontent.com/NVlabs/alpamayo-recipes/main/README.md">alpamayo-recipes</a> 🔍, <a href="https://arxiv.org/abs/2511.00088">Alpamayo-R1 논문</a> 📄, <a href="https://www.nvidia.com/en-us/solutions/autonomous-vehicles/drive-av/">DRIVE AV 제품 페이지</a> 📄, <a href="https://blogs.nvidia.com/blog/drive-av-software-mercedes-benz-cla/">Mercedes CLA 블로그</a> ✅, <a href="https://nvidianews.nvidia.com/news/nvidia-uber-robotaxi">Hyperion 10 뉴스룸</a> ✅, <a href="https://investor.uber.com/news-events/news/press-release-details/2026/NVIDIA-to-Launch-L4-Software-Driven-Robotaxis-on-Uber-Across-28-Cities-by-2028/default.aspx">Uber IR 2026-03</a> ✅다.</p>
