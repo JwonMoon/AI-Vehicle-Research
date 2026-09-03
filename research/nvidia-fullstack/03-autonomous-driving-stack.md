@@ -23,7 +23,7 @@ NVIDIA의 자율주행 스택은 **"학습된 엔드투엔드 AI 스택 + 병렬
 
 ### 3.0.3 요약 지도
 
-![3장 요약 지도](images/3-0-av-stack-map.svg)
+![3장 요약 지도](images/3-0-av-stack-map-v2.svg)
 
 *그림 3-1. NVIDIA 자율주행 스택의 계층과 3-computer 속 위치. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
 
