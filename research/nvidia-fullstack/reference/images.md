@@ -10,7 +10,8 @@
 | `3-0-av-stack-map.svg` | 위 지도의 원판 (블록 안에 담당 장 표기 포함). 참고용으로 유지 | — |
 | `3-3-alpagym-loop.svg` | AlpaGym 폐루프 강화학습 루프 도식: AlpaSim 환경(runtime·renderer·trafficsim·controller/physics·장면·eval) ↔ 정책(Alpamayo 1.5) gRPC 관측/궤적 루프, Cosmos-RL 학습기(롤아웃·채점·GRPO·가중치 동기화). NVlabs/alpagym README·ONBOARDING, NVlabs/alpasim DESIGN.md·data/scenes/README 기반 자체 작성 | 3장 3.3.4 · report-03 그림 5 |
 | `3-1-alpamayo1-vs-2-architecture.svg` | Alpamayo 1(R1)과 2 Super의 추론 파이프라인 비교 도식. 공식 Alpamayo 1 그림은 arXiv·HF에만 있어 접근 불가, NVlabs/alpamayo·alpamayo2 저장소 코드를 읽어 자체 작성. 형식은 NVIDIA 공식 Alpamayo 2 Super 도식(입력 → 토큰 → 모델 상자[인코더·백본·Action Expert] → 토큰 → 출력)을 따라 세대별 2단 패널로 그리고, 2 Super에서 새로 생긴 입력·출력(자동 라벨 프롬프트, 메타액션·2D 그라운딩, 자동 라벨)은 NEW 태그, 1.5부터 생긴 것은 1.5+ 태그, 미지원은 점선 회색으로 표시 | 3장 3.1.2 · report-03 그림 3 |
-| `7-0-cosmos-map.svg` | Cosmos 모델군·Omniverse 위치·역할·성숙도 요약 지도 | 7장 7.0.3 |
+| `7-0-cosmos-map-v2.svg` | Cosmos·Omniverse 위치·역할·성숙도 요약 지도 (현행판: 3장 v2와 같은 규칙 — 열 제목은 텍스트+밑줄·번호 없음, 초록=Cosmos·주황=Omniverse만 채색하고 Alpamayo·AlpaSim·데이터셋은 회색, 텍스트가 블록 안에 들어오도록 조정, 화살표마다 관계 라벨, 범례 줄 삭제) | 7장 7.0.3 · report-07 그림 1 |
+| `7-0-cosmos-map.svg` | 위 지도의 원판 (열 번호·범례 줄 포함). 참고용으로 유지 | — |
 | `7-2-data-flywheel.svg` | AV 데이터 플라이휠에서 Cosmos/Omniverse 구성 요소가 붙는 지점 | 7장 7.2.4 |
 | `7-3-omniverse-cosmos-pipeline.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 | 7장 7.3.3 |
 | `appendix-a-tier1-workmap.svg` | NVIDIA 제공 범위 vs Tier-1 책임 레이어 지도 + 차별화 매트릭스 | 부록 A A.3 |

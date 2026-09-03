@@ -23,7 +23,7 @@ Cosmos는 **"세계를 예측(Predict)·변환(Transfer)·이해(Reason)하는 �
 
 ### 7.0.3 요약 지도
 
-![7장 요약 지도](images/7-0-cosmos-map.svg)
+![7장 요약 지도](images/7-0-cosmos-map-v2.svg)
 
 *그림 7-1. Cosmos 모델군과 Omniverse의 위치·역할. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
 
@@ -58,6 +58,8 @@ Cosmos는 **"세계를 예측(Predict)·변환(Transfer)·이해(Reason)하는 �
 NVIDIA의 AV용 3-computer 설명은 다음과 같다. "AV 개발은 세 대의 서로 다른 컴퓨터로 가능해진다. 데이터센터에서 AI 스택을 학습하는 DGX, 시뮬레이션과 합성 데이터 생성을 위해 OVX에서 도는 Omniverse, 그리고 안전을 위해 실시간 센서 데이터를 처리하는 차량 내 AGX 컴퓨터." "3-computer 솔루션에 Cosmos가 더해지면 개발자는 수천 마일의 사람 주행을 수십억 마일의 가상 주행으로 바꾸는 데이터 플라이휠을 얻는다" ([NVIDIA 블로그 2025-01](https://blogs.nvidia.com/blog/three-computer-cosmos-ces/)) 📄. 로봇용 설명도 같은 구조(DGX / Omniverse+OVX / Jetson AGX)다 📄.
 
 **왜 세계 모델인가.** CES 2025 보도자료: "Physical AI 모델은 개발 비용이 크고 방대한 실세계 데이터와 테스트가 필요하다. Cosmos WFM은 기존 모델을 학습·평가하기 위한 대량의 포토리얼·물리 기반 합성 데이터를 쉽게 생성하는 방법을 제공한다" 📄. Predict1 README는 WFM의 세 가지 주 분기를 "cosmos-predict, cosmos-transfer, cosmos-reason"으로 정의한다 ([cosmos-predict1](https://github.com/nvidia-cosmos/cosmos-predict1)) 🔍.
+
+**Cosmos 플랫폼 구성(개념).** Cosmos는 모델 하나가 아니라 "세계 모델·데이터셋·도구의 오픈 플랫폼"([NVIDIA/Cosmos README](https://github.com/NVIDIA/Cosmos)) 🔍이다. 구성 부류 6개: (1) Predict — 텍스트·이미지·비디오(+행동) → 다음 장면 비디오; (2) Transfer — 깊이·세그·엣지·LiDAR·HDMap 도면 → 사실적 비디오; (3) Reason — 비디오+질문 → 설명·판단·라벨(VLM); (4) Tokenizer·Guardrail — 비디오↔토큰 압축, 입출력 안전 필터; (5) Curator·Framework·Cosmos-RL·Evaluator — 데이터 정제, 학습·후학습, 생성물 채점; (6) 데이터셋 — Physical AI AV(7카메라 1,700 h대) 등 🔍. 실행 위치: Reason·도구 = DGX, Predict·Transfer = OVX, Cosmos 3 Edge 4B = Jetson·Thor 대상 🔍. 배포: GitHub(`nvidia-cosmos`, `NVIDIA/Cosmos`)·HF·NIM·build.nvidia.com; 라이선스 NOML(1~2.5세대)/OpenMDW-1.1(Cosmos 3) 🔍. 이름 구분: Cosmos(플랫폼) ≠ Cosmos-Drive-Dreams(Transfer 기반 AV 합성 파이프라인) ≠ Cosmos-Dreams(CES 2026 마케팅명, 공개 저장소 없음) ≠ Cosmos Curator(데이터 도구). Cosmos가 아닌 것: 물리 시뮬레이터 엔진(Omniverse), 주행 스택(Alpamayo·DRIVE AV), 물리 정확성 보장(README 한계 목록 🔍).
 
 ### 7.1.2 1세대 — CES 2025 (Cosmos 1.0 / Predict1)
 
@@ -273,6 +275,13 @@ GPU 가속 수치: NVDEC/NVENC로 "디코딩·트랜스코딩 3× 가속"(NeMo C
 ---
 
 ## 7.3 Omniverse와의 역할 구분
+
+### 7.3.0 Omniverse 개념
+
+- **정의**: NVIDIA의 3D 시뮬레이션·디지털 트윈 플랫폼. 공통 데이터 모델 OpenUSD, 렌더링 RTX 광선 추적. AV용 문구: "물리적으로 정확한 센서 시뮬레이션을 가능하게 하는 마이크로서비스… OpenUSD 프레임워크 위에 RTX 광선 추적·신경 렌더링"(Sensor RTX, CVPR 2024) ✅. 앱 프레임워크 Omniverse Kit는 클로즈드 🔍.
+- **자율주행에서 쓰는 부품**: Sensor RTX/ovrtx(센서 물리 렌더; ovrtx 0.4 프리릴리스, NVIDIA Software License) 🔍 · Replicator(깊이·법선·세그 정답 라벨 합성 데이터; 2022 자료 기준 결정론) 📄 · NuRec + 3DGRUT(실주행 로그 → 3D 가우시안 재구성, AlpaSim 기본 렌더러; 3DGRUT Apache-2.0, 재구성 서비스는 NVIDIA 제공) 🔍 · Blueprint for AV simulation(참조 워크플로, CES 2025; 자가 서비스 다운로드 미확인) ✅⚠️ · Isaac Sim 5.0(로봇용, NuRec·Cosmos Transfer용 Replicator 라이터 포함, 오픈소스) 🔍 · DRIVE Sim(옛 이름, 단종 선언 없음) ⚠️.
+- **Cosmos와의 차이 한 줄**: Omniverse는 물리를 계산해 장면과 정답 라벨을 만들고, Cosmos는 학습한 분포대로 그린다(다양하지만 정확성 미보장).
+- **3-computer 위치**: OVX(Cosmos Predict·Transfer와 같은 자리).
 
 ### 7.3.1 Omniverse 쪽: 물리 기반 렌더, 정답 라벨, 신경 재구성
 

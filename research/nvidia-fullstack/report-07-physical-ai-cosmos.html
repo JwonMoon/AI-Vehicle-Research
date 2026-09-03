@@ -115,7 +115,8 @@ figcaption b{color:var(--ink)}
   <a class="nav-h2" href="#summary">3분 요약</a>
   <a class="nav-h2" href="#howto">읽기 전에</a>
   <a class="nav-h2" href="#s0">0. Physical AI와 세계 모델</a>
-  <a class="nav-h2" href="#s1">1. Cosmos 가족: 세대별 이야기</a>
+  <a class="nav-h2" href="#s1">1. Cosmos</a>
+  <a class="nav-h3" href="#s1-0">1.0 Cosmos란 무엇인가</a>
   <a class="nav-h3" href="#s1-1">1.1 1세대 (CES 2025)</a>
   <a class="nav-h3" href="#s1-2">1.2 2세대 (GTC 2025~)</a>
   <a class="nav-h3" href="#s1-3">1.3 2.5세대 (2025 하반기)</a>
@@ -126,7 +127,8 @@ figcaption b{color:var(--ink)}
   <a class="nav-h3" href="#s2-2">2.2 공개 데이터셋</a>
   <a class="nav-h3" href="#s2-3">2.3 자동 라벨링과 합성 데이터</a>
   <a class="nav-h3" href="#s2-4">2.4 데이터 플라이휠</a>
-  <a class="nav-h2" href="#s3">3. Omniverse와 Cosmos의 역할 구분</a>
+  <a class="nav-h2" href="#s3">3. Omniverse와 역할 구분</a>
+  <a class="nav-h3" href="#s3-0">3.0 Omniverse란 무엇인가</a>
   <a class="nav-h3" href="#s3-1">3.1 Omniverse 쪽</a>
   <a class="nav-h3" href="#s3-2">3.2 Cosmos 쪽</a>
   <a class="nav-h3" href="#s3-3">3.3 둘을 잇는 방법</a>
@@ -186,7 +188,7 @@ figcaption b{color:var(--ink)}
 </div>
 <p><b>세 대의 컴퓨터 속 위치.</b> NVIDIA의 설명은 이렇다. "AV 개발은 세 대의 서로 다른 컴퓨터로 가능해진다. 데이터센터에서 AI 스택을 학습하는 DGX, 시뮬레이션과 합성 데이터 생성을 위해 OVX에서 도는 Omniverse, 그리고 안전을 위해 실시간 센서 데이터를 처리하는 차량 내 AGX 컴퓨터." 그리고 "3-computer 솔루션에 Cosmos가 더해지면 개발자는 수천 마일의 사람 주행을 수십억 마일의 가상 주행으로 바꾸는 데이터 플라이휠을 얻는다" <a class="cite" href="https://blogs.nvidia.com/blog/three-computer-cosmos-ces/">NVIDIA 블로그 2025-01</a><span class="g g-sec">📄</span>. 로봇용 설명도 같은 구조(DGX / Omniverse+OVX / Jetson AGX)다 <span class="g g-sec">📄</span>.</p>
 <div class="analogy"><b>비유로 이해하기.</b> 비행 조종사 훈련을 생각하면 된다. 실제 비행(플릿 데이터)은 비싸고 위험하니 시뮬레이터에서 수천 시간을 탄다. Omniverse는 정밀하게 만든 물리 시뮬레이터이고, Cosmos는 "실제 비행 영상 수천만 시간을 본 AI가 즉석에서 만들어 주는 시뮬레이터"다. 후자는 만들기 쉽고 다양하지만 물리를 정확히 지킨다는 보장은 없다. 이 차이가 3절의 핵심이다.</div>
-<figure><img src="images/7-0-cosmos-map.svg" alt="Cosmos 요약 지도"><figcaption><b>그림 1. Cosmos 모델군과 Omniverse의 위치.</b> 왼쪽 학습 컴퓨터에 Reason·Curator·RL이, 가운데 시뮬레이션 컴퓨터에 Omniverse(주황)와 Transfer·Predict(초록)가, 오른쪽 차량에 Alpamayo와 Cosmos 3 Edge가 놓인다. 2026-05의 Cosmos 3가 위 모델들을 하나로 합쳤다. 실선은 확인, 점선은 추정. 자체 작성.</figcaption></figure>
+<figure><img src="images/7-0-cosmos-map-v2.svg" alt="Cosmos와 Omniverse 요약 지도"><figcaption><b>그림 1. Cosmos와 Omniverse의 위치와 역할.</b> 왼쪽 학습 컴퓨터에 Reason·Curator·학습 도구가, 가운데 시뮬레이션 컴퓨터에 Omniverse(주황, 정밀 도면)와 Transfer·Predict(초록, 도면 위에 채색)가 놓이고, 2026-05의 Cosmos 3가 모델들을 하나로 합쳤다. 오른쪽 차량·로봇 열의 Alpamayo는 3장 범위(회색), Cosmos 3 Edge는 차량 적용이 미확인이라 점선이다. 화살표 라벨이 각 관계의 뜻이며, 실선은 출처로 확인, 점선은 추정. 자체 작성.</figcaption></figure>
 <details class="ev"><summary>근거 상세 펼치기 — 기술별 위치·역할·성숙도 카드</summary>
 <div class="tbl"><table>
 <tr><th>기술</th><th>3-computer 위치</th><th>담당 역할</th><th>현재 위치 (성숙도)</th><th>다음 이정표</th></tr>
@@ -201,8 +203,26 @@ figcaption b{color:var(--ink)}
 </details>
 <div class="oneline"><b>한 줄 정리.</b> Cosmos는 "데이터로 학습한 시뮬레이터"이고, 예측·변환·추론 세 모델로 시작해 2026년 Cosmos 3 하나로 합쳐졌다. NVIDIA는 이를 세 컴퓨터 중 시뮬레이션 컴퓨터에 놓는다.</div>
 
-<h2 id="s1">1. Cosmos 가족: 세대별 이야기</h2>
-<div class="q"><b>이 절의 질문</b> 2025년 1월부터 2026년 9월까지 Cosmos는 어떻게 변했고, 지금 무엇을 써야 하나?</div>
+<h2 id="s1">1. Cosmos: 무엇이고 어떻게 변해 왔나</h2>
+<div class="q"><b>이 절의 질문</b> Cosmos는 정확히 무엇이고, 2025년 1월부터 2026년 9월까지 어떻게 변했으며, 지금 무엇을 써야 하나?</div>
+<h3 id="s1-0">1.0 Cosmos란 무엇인가: 개념부터</h3>
+<p>세대 이야기로 들어가기 전에 Cosmos라는 이름이 가리키는 범위를 먼저 정한다. Cosmos는 모델 하나의 이름이 아니라 NVIDIA가 2025년 1월 CES에서 내놓은 <b>Physical AI용 세계 모델 플랫폼</b>의 이름이다. 저장소 정의를 다시 쓰면 "로봇·자율주행차·스마트 인프라 등을 위한 Physical AI를 구축할 수 있게 하는 세계 모델·데이터셋·도구의 오픈 플랫폼"이다 <a class="cite" href="https://github.com/NVIDIA/Cosmos">NVIDIA/Cosmos README</a><span class="g g-src">🔍</span>. 한 문장으로 줄이면, <b>수천만 시간의 영상을 학습해 "이 장면 다음에 세상이 어떻게 변할지"를 그려 내는 모델과, 그 모델을 만들고 쓰는 도구의 묶음</b>이다.</p>
+<p>플랫폼 안에는 여섯 부류가 들어 있다. 이 장 전체에서 이 이름들이 반복되므로 표로 정리한다.</p>
+<div class="tbl"><table>
+<tr><th>부류</th><th>무엇인가</th><th>무엇을 넣으면 무엇이 나오나</th><th>이 장에서</th></tr>
+<tr><td>Predict (예측 모델)</td><td>비디오 세계 모델. 세계 모델의 본체</td><td>텍스트 · 이미지 · 비디오(+행동) → 다음 장면 비디오</td><td>1.1~1.4, 패턴 B</td></tr>
+<tr><td>Transfer (변환 모델)</td><td>구조를 지키며 외형을 바꾸는 생성 모델</td><td>깊이 · 세그멘테이션 · 엣지 · 라이다 · HD맵 도면 → 사실적 비디오</td><td>1.2~1.3, 3절, 패턴 A</td></tr>
+<tr><td>Reason (추론 모델)</td><td>영상을 보고 말로 판단하는 비전-언어 모델(VLM)</td><td>비디오 + 질문 → 설명 · 판단 · 라벨</td><td>1.2~1.3, 패턴 D</td></tr>
+<tr><td>Tokenizer · Guardrail</td><td>영상을 토큰으로 압축하는 부품과, 입력·출력을 거르는 안전 필터</td><td>비디오 ↔ 토큰 / 부적절한 프롬프트·출력 차단</td><td>1.1</td></tr>
+<tr><td>Curator · Framework · RL · Evaluator</td><td>데이터를 다듬고(Curator), 모델을 학습·후학습하고(Framework, Cosmos-RL), 생성 결과를 채점하는(Evaluator) 도구</td><td>원시 영상 → 학습 데이터 / 모델 → 파인튜닝 모델 / 생성물 → 점수</td><td>2절, 패턴 C</td></tr>
+<tr><td>데이터셋</td><td>Physical AI 데이터셋 묶음. 자율주행은 7카메라 1,700시간대</td><td>학습·평가용 실주행 클립, NuRec 재구성 장면, 합성 시나리오</td><td>2.2</td></tr>
+</table></div>
+<p>세 모델은 2025년에는 따로 나왔고(Predict1 → Transfer1·Reason1 → 2.5세대), 2026년 5월 <b>Cosmos 3</b>에서 하나의 모델로 합쳐졌다. 그래서 이 장의 세대 이야기는 "따로 → 하나로"의 이야기다. 실행 위치는 세 대의 컴퓨터로 나뉜다. Reason과 도구는 학습 컴퓨터(DGX), Predict·Transfer는 시뮬레이션 컴퓨터(OVX), Cosmos 3 Edge(4B)는 Jetson·Thor 같은 엣지 장치가 대상이다 <span class="g g-src">🔍</span>. 받는 곳은 GitHub(<code>nvidia-cosmos</code> 조직과 <code>NVIDIA/Cosmos</code>)와 Hugging Face 가중치, 그리고 NIM 마이크로서비스·build.nvidia.com이며, 라이선스는 1~2.5세대가 NVIDIA Open Model License, Cosmos 3가 OpenMDW-1.1이다 <span class="g g-src">🔍</span>(1.5절).</p>
+<div class="term"><b>잠깐, 이름 정리.</b> 비슷한 이름이 넷 있다. <b>Cosmos</b>는 플랫폼 전체, <b>Cosmos-Drive-Dreams</b>는 Transfer로 자율주행 합성 데이터를 만드는 파이프라인(2025-06, 2.3절), <b>Cosmos-Dreams</b>는 CES 2026의 마케팅명으로 공개 저장소가 없으며(패턴 B), <b>Cosmos Curator</b>는 데이터 정제 도구다(2.1절).</div>
+<div class="warn"><b>Cosmos가 아닌 것.</b> 물리를 계산하는 시뮬레이터 엔진이 아니다(그것은 3절의 Omniverse). 주행 스택도 아니다(그것은 3장의 Alpamayo·DRIVE AV). 그리고 물리적 정확성을 보장하지 않는다. NVIDIA 스스로 "부정확한 3D 구조, 비현실적 물리 동역학"을 한계로 적었다(1.4절) <span class="g g-src">🔍</span>.</div>
+<div class="oneline"><b>한 줄 정리.</b> Cosmos = 세계를 그리는 모델 셋(예측·변환·추론) + 만들고 쓰는 도구(토크나이저·가드레일·큐레이터·학습·평가) + 데이터셋. 2026년부터는 모델 셋이 Cosmos 3 하나다.</div>
+
+<h4>세대 한눈에</h4>
 <p>변화 속도가 빠르다. 2025년 한 해에 1세대(1월), 2세대(3~6월), 2.5세대(10~12월)가 나왔고 2026년 5월 말에 Cosmos 3가 이전 모델을 모두 흡수했다. 이전 저장소는 전부 "유지보수 모드, Cosmos 3로 이관" 상태다 <span class="g g-src">🔍</span>. 파이프라인을 특정 세대에 고정하면 6~12개월 안에 이관 부담이 생긴다는 뜻이다. 아래 네 절은 세대마다 "무엇이 새로 생겼나"를 한 문단으로 말하고, 수치는 표와 접힌 근거로 뺐다.</p>
 <ul class="timeline">
   <li><span class="d">2025-01-06</span>1세대. CES에서 Predict1·토크나이저·가드레일·Curator 공개. "세계 모델"이라는 도구가 처음 생겼다.</li>
@@ -295,6 +315,7 @@ figcaption b{color:var(--ink)}
 
 <h2 id="s2">2. 데이터 파이프라인: 공장 라인으로 보기</h2>
 <div class="q"><b>이 절의 질문</b> 수집한 영상이 학습 데이터가 되기까지 어떤 공정을 거치고, Cosmos는 그중 어디를 자동화하나?</div>
+<div class="term"><b>개념 먼저.</b> <b>데이터 파이프라인</b>은 차가 모아 온 원시 영상을 모델이 배울 수 있는 형태로 바꾸는 공정의 연쇄다. <b>큐레이션</b>은 쓸 만한 장면만 고르고 중복을 빼고 설명을 붙이는 일, <b>라벨링</b>은 각 장면에 정답(무엇이 어디에 있고 왜 그렇게 운전했는지)을 다는 일, <b>합성 데이터</b>는 실제로 찍지 않은 장면을 시뮬레이션이나 생성 모델로 만들어 보태는 일이다. 이 셋을 학습·평가와 이어 한 바퀴 돌게 만든 것이 <b>데이터 플라이휠</b>이다. Cosmos는 이 공정에서 큐레이션(Curator), 라벨링(Reason), 합성(Transfer), 평가(Evaluator)에 붙는다.</div>
 
 <h3 id="s2-1">2.1 Cosmos Curator: 영상을 학습용으로 다듬는 라인</h3>
 <p>플릿에서 모은 영상은 그대로 학습에 쓸 수 없다. 장면 단위로 자르고, 정지 화면이나 저품질을 걸러내고, 무엇이 찍혔는지 글로 적고, 중복을 빼야 한다. Cosmos Curator가 이 공정을 GPU 위에서 자동으로 돌린다. 정의는 "고급 AI 모델과 분산 컴퓨팅으로 비디오 콘텐츠를 처리·분석·조직하는 강력한 비디오 큐레이션 시스템… GPU 가속 스트리밍 파이프라인에 최적화된 프레임워크 위에 구축되었고, 그 프레임워크는 Cosmos-Xenna로 별도 오픈소스화" <a class="cite" href="https://github.com/NVIDIA/cosmos-curator">cosmos-curator README</a><span class="g g-src">🔍</span>.</p>
@@ -344,8 +365,23 @@ figcaption b{color:var(--ink)}
 </table></div>
 <div class="oneline"><b>한 줄 정리.</b> Cosmos는 큐레이션·라벨링·합성·평가 공정을 자동화하지만, 수집 체계와 "무엇이 부족한가"를 판단해 다시 모으는 운영은 사용자 몫이다. <a href="report-appendix-a-tier1.html">부록 A</a>에서 다시 만난다.</div>
 
-<h2 id="s3">3. Omniverse와 Cosmos의 역할 구분</h2>
-<div class="q"><b>이 절의 질문</b> 둘 다 "시뮬레이션"인데 무엇이 다르고, NVIDIA는 어떻게 나눠 쓰라고 하는가?</div>
+<h2 id="s3">3. Omniverse: 무엇이고 Cosmos와 무엇을 나눠 맡나</h2>
+<div class="q"><b>이 절의 질문</b> Omniverse는 무엇이고, 둘 다 "시뮬레이션"인데 Cosmos와 무엇이 다르며, NVIDIA는 어떻게 나눠 쓰라고 하는가?</div>
+<h3 id="s3-0">3.0 Omniverse란 무엇인가: 개념부터</h3>
+<p>Omniverse는 Cosmos보다 오래된 NVIDIA의 <b>3D 시뮬레이션·디지털 트윈 플랫폼</b>이다. 장면을 계산으로 만든다는 점에서 데이터로 학습한 Cosmos와 출발이 다르다. 공통 데이터 모델은 Pixar가 만든 3D 장면 기술 형식 <b>OpenUSD</b>이고, 그림은 <b>RTX 광선 추적</b>으로 그린다. 자율주행용 설명이 이를 압축한다. "물리적으로 정확한 센서 시뮬레이션을 가능하게 하는 마이크로서비스… OpenUSD 프레임워크 위에 RTX 광선 추적·신경 렌더링" <span class="g g-ok">✅</span>. 앱을 만드는 프레임워크 Omniverse Kit는 클로즈드 소스다 <span class="g g-src">🔍</span>.</p>
+<p>자율주행 개발자가 실제로 마주치는 것은 플랫폼 전체가 아니라 그 위의 몇 가지 부품이다. 이 장에서 쓰는 이름을 표로 정리한다.</p>
+<div class="tbl"><table>
+<tr><th>부품</th><th>무엇인가</th><th>자율주행에서 하는 일</th><th>개방성</th></tr>
+<tr><td>Sensor RTX / ovrtx</td><td>카메라·레이더·라이다를 광선 추적으로 물리 시뮬레이션하는 마이크로서비스·라이브러리</td><td>센서가 "보는" 것을 물리 법칙대로 계산</td><td>ovrtx 0.4 프리릴리스, NVIDIA Software License(오픈소스 아님) <span class="g g-src">🔍</span></td></tr>
+<tr><td>Replicator</td><td>렌더 결과에서 깊이·법선·세그멘테이션 같은 정답 라벨을 함께 뽑는 합성 데이터 도구</td><td>라벨이 붙은 학습 데이터 생성. 2022 자료 기준 결정론적 <span class="g g-sec">📄</span></td><td>Isaac Sim 안에 포함 <span class="g g-src">🔍</span></td></tr>
+<tr><td>NuRec (+ 3DGRUT)</td><td>실주행 로그를 3D 가우시안 장면으로 재구성해 새 시점·궤적으로 다시 재생하는 라이브러리</td><td>"그 날 그 도로"를 가상에서 다르게 달려 보기. AlpaSim의 기본 렌더러</td><td>3DGRUT 오픈소스(Apache-2.0), 재구성 서비스는 NVIDIA 제공 <span class="g g-src">🔍</span></td></tr>
+<tr><td>Blueprint for AV simulation</td><td>위 부품을 묶은 참조 워크플로(CES 2025)</td><td>실센서 데이터로 디지털 트윈 구축, 재생, 새 정답 생성, 폐루프 테스트 <span class="g g-ok">✅</span></td><td>자가 서비스 다운로드 미확인 <span class="g g-warn">⚠️</span></td></tr>
+<tr><td>Isaac Sim</td><td>로봇용 Omniverse 앱. NuRec와 Cosmos Transfer용 Replicator 라이터 포함</td><td>로봇 쪽 대응물. 자율주행은 AlpaSim·CARLA가 같은 NuRec을 쓴다</td><td>Isaac Sim 5.0 오픈소스 <span class="g g-src">🔍</span></td></tr>
+<tr><td>DRIVE Sim</td><td>옛 자율주행 시뮬레이터 이름</td><td>2026 자료에서는 언급 없음. 어휘가 Blueprint + Sensor RTX로 바뀜</td><td>단종 선언 없음 <span class="g g-warn">⚠️</span></td></tr>
+</table></div>
+<p>세 대의 컴퓨터 속 위치는 Cosmos의 Predict·Transfer와 같은 시뮬레이션 컴퓨터(OVX)다. 같은 자리에 있으면서 하는 일이 다르다는 것이 이 절의 주제다. Omniverse는 <b>계산한다</b>. 도로의 기하, 물체의 위치, 빛이 튀는 경로를 물리 법칙으로 풀고, 그 부산물로 "이 픽셀은 무엇"이라는 정답 라벨을 낸다. Cosmos는 <b>학습한 대로 그린다</b>. 물리를 풀지 않고 수천만 시간의 영상에서 배운 분포를 따라 그리므로, 다양하지만 정확성을 보장하지 않는다.</p>
+<div class="oneline"><b>한 줄 정리.</b> Omniverse = OpenUSD + RTX 위의 물리 시뮬레이션 플랫폼. 자율주행에서는 Sensor RTX(센서 물리), Replicator(정답 라벨), NuRec(실주행 재구성)이 쓰이고, 열려 있는 것은 3DGRUT 정도다.</div>
+
 <div class="analogy"><b>비유로 이해하기.</b> Omniverse는 <b>측량해서 그린 정밀 도면</b>이다. 도로의 기하, 물체의 위치, 광선이 튀는 물리를 정확히 계산하고, 그 결과로 "이 픽셀은 차, 저 픽셀은 차선"이라는 정답 라벨까지 낸다. Cosmos는 <b>그 도면 위에 그림을 그리는 화가</b>다. 비 오는 밤, 안개 낀 아침, 도쿄 거리처럼 외형을 무한히 바꿔 그리지만, 도면이 틀리면 그림도 틀리고 화가가 물리를 완벽히 지킨다는 보장은 없다. NVIDIA의 분담은 정확히 이것이다.</div>
 <figure><img src="images/7-3-omniverse-cosmos-pipeline.svg" alt="Omniverse × Cosmos 결합"><figcaption><b>그림 9. Omniverse 출력이 Cosmos Transfer의 조건 입력이 되는 구조.</b> 실주행 로그·3D 자산·시나리오 정의가 Omniverse(NuRec, Sensor RTX, World Scenario 렌더)를 거쳐 깊이·세그·HD맵 영상이 되고, Cosmos Transfer가 이를 조건으로 사실적인 변주 영상을 만든다. 라벨은 Omniverse 쪽에서 나온 것이 그대로 따라간다. 자체 작성.</figcaption></figure>
 
@@ -408,6 +444,7 @@ figcaption b{color:var(--ink)}
 
 <h2 id="s4">4. 활용 패턴 4가지: 언제, 누가, 무엇을 조심해서</h2>
 <div class="q"><b>이 절의 질문</b> 자율주행 개발에서 Cosmos를 실제로 어떻게 쓰나? 각 패턴은 어느 정도 검증됐나?</div>
+<div class="term"><b>개념 먼저.</b> 여기서 <b>활용 패턴</b>이란 "Cosmos의 어느 모델을 개발 루프의 어느 자리에 꽂는가"의 유형이다. A <b>합성 데이터</b>는 학습 데이터를 불리는 자리, B <b>폐루프 평가</b>는 모델이 낸 행동의 결과를 되먹여 시험하는 자리, C <b>정책 학습</b>은 그 시험 결과로 모델을 고치는 자리, D <b>추론 백본</b>은 라벨러·채점자·주행 모델의 두뇌로 Reason을 빌려 쓰는 자리다. 각 패턴은 성숙도가 다르므로 "누가 실제로 썼나"를 함께 본다.</div>
 <p>네 패턴을 순서대로 보면 데이터를 만드는 일(A)에서 정책을 평가하고(B) 고치고(C) 그 두뇌를 빌려 쓰는 일(D)로 이어진다. 패턴마다 "언제 쓰나 / 누가 썼나 / 주의점" 세 가지만 답한다.</p>
 
 <h3 id="s4-1">패턴 A — 합성 데이터·증강 (Transfer)</h3>
