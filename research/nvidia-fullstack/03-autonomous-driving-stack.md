@@ -107,6 +107,10 @@ GitHub는 이를 "Cosmos-Reason 백본 + action expert(디퓨전 expert)"로 요
 | 추가 기능 | — | RL 포스트트레이닝, 내비 조건("200m 앞 좌회전"), 일반 VQA 🔍📄 | "한 번의 순회로 궤적·인과 설명·메타액션 생성" 📄 |
 | 추론 VRAM | ≥24GB 🔍 | 단일 24GB / 16샘플 40GB / CFG 60GB 🔍 | H100 80GB 테스트 🔍 |
 
+![Alpamayo 1 vs 2 Super 추론 파이프라인 비교](images/3-1-alpamayo1-vs-2-architecture.svg)
+
+*그림 3-3. Alpamayo 1(R1)과 2 Super의 추론 파이프라인 비교. 공식 Alpamayo 1 아키텍처 그림은 논문·HF 모델카드에만 있어 접근하지 못했고, [NVlabs/alpamayo](https://github.com/NVlabs/alpamayo)·[NVlabs/alpamayo2](https://github.com/NVlabs/alpamayo2) 코드(`alpamayo_r1.py`, `alpamayo2_super.py`, `expert.py`, `input_profiles.py`, `load_physical_aiavdataset.py`)를 읽어 자체 작성 🔍. 공통 뼈대: VLM이 CoC 텍스트를 자기회귀 생성 → 그 KV 캐시를 조건으로 디퓨전 expert가 미래 토큰만 비인과 어텐션으로 노이즈 제거(flow matching) → unicycle 행동 공간 → 64점 궤적. 차이: (1) 백본 Cosmos-Reason 1세대 → Cosmos 3 Super Reasoner 32B, (2) expert가 1에서는 VLM 텍스트 설정을 복제한 부속 모듈(`deepcopy(vlm.config.text_config)`)이고 2 Super에서는 자체 `llm_config`를 가진 별도 2B `ExpertModel`로 classifier-free guidance(내비 조건) 지원, (3) 입력 카메라 4대(전방 위주) → 6대(태스크별 프로파일), 이력 토큰 48·미래 토큰 128, (4) 출력 궤적+CoC 한 가지 → trajectory·meta_action·auto_labeling·vqa·grounding 5개 태스크. 1의 VLM·expert 파라미터 분할은 미공개 ⚠️.*
+
 **Chain of Causation.** 논문은 CoC 데이터셋을 "하이브리드 자동 라벨링 + 사람 개입 파이프라인으로 만든, 주행 행동과 정렬된 **결정 기반·인과적으로 연결된 추론 트레이스**"라고 정의한다 ✅📄. Alpamayo 2 자동 라벨링 코드는 4단계 구조를 드러낸다: `critical_components_analysis` → `ego_vehicle_motion_analysis` → `trajectory_analysis` → `chain_of_causation` ([text_tasks.py](https://raw.githubusercontent.com/NVlabs/alpamayo2/main/src/alpamayo2_super/text_tasks.py)) 🔍. 즉 "무엇이 중요한가 → 자차가 무엇을 하고 있나 → 궤적은 어떤가 → 왜 그렇게 하는가" 순으로 인과를 서술한다.
 
 **출처 상충**: 궤적 길이는 README "6.4초" vs 논문 요약 "6초"이나 64×0.1초 = 6.4초가 산술적으로 맞다. 2 Super 크기는 발표 당일 X 포스트 "32B" vs 이후 "34B(32B+2B)"로 정리한다 ⚠️.
@@ -322,11 +326,11 @@ DRIVE AV 개발 루프에 시뮬·데이터 도구가 붙는 지점은 CES 2026 
 
 ![AlpaSim 구조](images/3-2-alpasim-architecture.png)
 
-*그림 3-3. AlpaSim 마이크로서비스 구조(센서 시뮬 → 카메라 프레임 → 에고 정책 → 궤적 → 물리 → 런타임 → 메트릭, 트래픽 모델). 출처: [NVlabs/alpasim DESIGN.md](https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md), Apache-2.0.*
+*그림 3-4. AlpaSim 마이크로서비스 구조(센서 시뮬 → 카메라 프레임 → 에고 정책 → 궤적 → 물리 → 런타임 → 메트릭, 트래픽 모델). 출처: [NVlabs/alpasim DESIGN.md](https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md), Apache-2.0.*
 
 ![AlpaSim 데모](images/3-2-alpasim-demo.gif)
 
-*그림 3-4. AlpaSim 폐루프 시뮬레이션 데모(NuRec 렌더). 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim), Apache-2.0.*
+*그림 3-5. AlpaSim 폐루프 시뮬레이션 데모(NuRec 렌더). 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim), Apache-2.0.*
 
 ### 3.2.7 도입 사례
 

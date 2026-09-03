@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="790" viewBox="0 0 1240 790" font-family="Helvetica, Arial, 'Noto Sans KR', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#555"/></marker>
+  </defs>
+  <rect id="bg" width="1240" height="790" fill="#ffffff"/>
+  <text x="20" y="28" font-size="18" font-weight="bold" fill="#222">Alpamayo 1 (R1) vs Alpamayo 2 Super — 추론 파이프라인 비교 (공개 코드 기준)</text>
+
+  <!-- column headings -->
+  <text x="20" y="62" font-size="14.5" font-weight="bold" fill="#222">Alpamayo 1 (R1) · 10B · 2026-01 공개</text>
+  <line x1="20" y1="70" x2="610" y2="70" stroke="#222" stroke-width="2"/>
+  <text x="630" y="62" font-size="14.5" font-weight="bold" fill="#222">Alpamayo 2 Super · 34B (32B VLM + 2B expert) · 2026-08 상용 가중치</text>
+  <line x1="630" y1="70" x2="1220" y2="70" stroke="#222" stroke-width="2"/>
+
+  <!-- ===== LEFT: Alpamayo 1 ===== -->
+  <rect x="40" y="90" width="400" height="70" fill="#f5f5f5" stroke="#999"/>
+  <text x="240" y="110" text-anchor="middle" font-weight="bold" fill="#333">입력</text>
+  <text x="240" y="128" text-anchor="middle" fill="#333">카메라 4대 × 4프레임 (좌·정면광각·우 120°, 정면망원 30°)</text>
+  <text x="240" y="146" text-anchor="middle" fill="#333">자차 운동 이력 16스텝 @10Hz (1.6초)</text>
+
+  <rect x="40" y="180" width="400" height="56" fill="#f5f5f5" stroke="#999"/>
+  <text x="240" y="200" text-anchor="middle" font-weight="bold" fill="#333">토큰화</text>
+  <text x="240" y="218" text-anchor="middle" fill="#333">영상 → 시각 토큰 · 이력 → delta 토크나이저(1,000 bins) → 이력 토큰</text>
+
+  <rect x="40" y="256" width="400" height="90" fill="#dbe9ff" stroke="#3b6fd6"/>
+  <text x="240" y="276" text-anchor="middle" font-weight="bold" fill="#1d3f86">VLM 백본: Cosmos-Reason (1세대)</text>
+  <text x="240" y="295" text-anchor="middle" fill="#333">자기회귀로 Chain-of-Causation 텍스트 생성</text>
+  <text x="240" y="313" text-anchor="middle" fill="#333">이산 궤적 토큰은 마스킹, 종료 토큰 ⟨traj_future_start⟩에서 정지</text>
+  <text x="240" y="331" text-anchor="middle" fill="#333">태스크: 궤적 + 인과 설명 한 가지</text>
+
+  <rect x="40" y="366" width="400" height="100" fill="#dbe9ff" stroke="#3b6fd6"/>
+  <text x="240" y="386" text-anchor="middle" font-weight="bold" fill="#1d3f86">Action expert: VLM 텍스트 설정을 복제한 트랜스포머</text>
+  <text x="240" y="404" text-anchor="middle" fill="#333">VLM의 KV 캐시(장면 + 인과 설명)에 붙어 미래 토큰만 비인과 어텐션</text>
+  <text x="240" y="422" text-anchor="middle" fill="#333">노이즈 행동 + 시간 → MLP·Fourier 투영 → 속도장 예측</text>
+  <text x="240" y="440" text-anchor="middle" fill="#333">flow matching, Euler 10 스텝 (CFG 없음)</text>
+  <text x="240" y="458" text-anchor="middle" fill="#333">VLM·expert 파라미터 분할은 미공개</text>
+
+  <rect x="40" y="486" width="400" height="50" fill="#f5f5f5" stroke="#999"/>
+  <text x="240" y="506" text-anchor="middle" font-weight="bold" fill="#333">행동 공간 → 궤적</text>
+  <text x="240" y="524" text-anchor="middle" fill="#333">unicycle(가속도·곡률) 64점 × 0.1초 → 위치·자세 웨이포인트</text>
+
+  <rect x="40" y="556" width="400" height="60" fill="#f5f5f5" stroke="#999"/>
+  <text x="240" y="576" text-anchor="middle" font-weight="bold" fill="#333">출력</text>
+  <text x="240" y="594" text-anchor="middle" fill="#333">6.4초 궤적(64 웨이포인트) + 인과 설명 텍스트</text>
+  <text x="240" y="610" text-anchor="middle" fill="#333">SFT 가중치만 공개 (RL 후학습 가중치 없음)</text>
+
+  <!-- left: unsupported side boxes -->
+  <rect x="452" y="256" width="150" height="90" fill="#ffffff" stroke="#bbb" stroke-dasharray="4,3"/>
+  <text x="527" y="284" text-anchor="middle" fill="#888" font-size="11">VQA · 메타액션</text>
+  <text x="527" y="301" text-anchor="middle" fill="#888" font-size="11">· 그라운딩</text>
+  <text x="527" y="322" text-anchor="middle" fill="#888" font-size="11">미지원</text>
+  <rect x="452" y="366" width="150" height="100" fill="#ffffff" stroke="#bbb" stroke-dasharray="4,3"/>
+  <text x="527" y="398" text-anchor="middle" fill="#888" font-size="11">내비게이션·경로</text>
+  <text x="527" y="415" text-anchor="middle" fill="#888" font-size="11">조건 입력</text>
+  <text x="527" y="438" text-anchor="middle" fill="#888" font-size="11">미지원</text>
+
+  <!-- left arrows -->
+  <line x1="240" y1="160" x2="240" y2="180" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="240" y1="236" x2="240" y2="256" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="240" y1="346" x2="240" y2="366" stroke="#555" marker-end="url(#arr)"/>
+  <text x="248" y="360" fill="#555" font-size="10.5">KV 캐시 + 인과 설명을 조건으로</text>
+  <line x1="240" y1="466" x2="240" y2="486" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="240" y1="536" x2="240" y2="556" stroke="#555" marker-end="url(#arr)"/>
+
+  <!-- ===== RIGHT: Alpamayo 2 Super ===== -->
+  <rect x="650" y="90" width="400" height="70" fill="#f5f5f5" stroke="#999"/>
+  <text x="850" y="110" text-anchor="middle" font-weight="bold" fill="#333">입력</text>
+  <text x="850" y="128" text-anchor="middle" fill="#333">카메라 6대 × 4프레임 (주행: 좌·정면광각·우·후좌·후우·정면망원)</text>
+  <text x="850" y="146" text-anchor="middle" fill="#333">자차 이력 16 웨이포인트 (이력 토큰 48) · 텍스트 프롬프트(태스크)</text>
+
+  <rect x="650" y="180" width="400" height="56" fill="#f5f5f5" stroke="#999"/>
+  <text x="850" y="200" text-anchor="middle" font-weight="bold" fill="#333">토큰화</text>
+  <text x="850" y="218" text-anchor="middle" fill="#333">영상 → 시각 토큰 · 이력 → delta 토크나이저 → 이력 토큰 (구조 동일)</text>
+
+  <rect x="650" y="256" width="400" height="90" fill="#dbe9ff" stroke="#3b6fd6"/>
+  <text x="850" y="276" text-anchor="middle" font-weight="bold" fill="#1d3f86">VLM 백본: Cosmos 3 Super Reasoner 32B</text>
+  <text x="850" y="295" text-anchor="middle" fill="#333">자기회귀로 Chain-of-Causation 텍스트 생성 (Qwen3-VL 메시지 규약)</text>
+  <text x="850" y="313" text-anchor="middle" fill="#333">태스크 5종: trajectory · meta_action · auto_labeling · vqa · grounding</text>
+  <text x="850" y="331" text-anchor="middle" fill="#333">태스크별 카메라 프로파일 (VQA는 후방망원, 주행은 정면망원)</text>
+
+  <rect x="650" y="366" width="400" height="100" fill="#dbe9ff" stroke="#3b6fd6"/>
+  <text x="850" y="386" text-anchor="middle" font-weight="bold" fill="#1d3f86">Action expert: 별도 2B 디퓨전 expert 모델</text>
+  <text x="850" y="404" text-anchor="middle" fill="#333">VLM의 KV 캐시에 붙어 미래 토큰(128)만 비인과 어텐션 — 방식 동일</text>
+  <text x="850" y="422" text-anchor="middle" fill="#333">자체 설정(llm_config)의 독립 모듈, VLM은 고정(frozen) 가능</text>
+  <text x="850" y="440" text-anchor="middle" fill="#333">flow matching + classifier-free guidance (내비 조건 강도 조절)</text>
+  <text x="850" y="458" text-anchor="middle" fill="#333">내비 CFG 데모: VLM과 expert를 H100 80GB 두 장에 나눠 배치</text>
+
+  <rect x="650" y="486" width="400" height="50" fill="#f5f5f5" stroke="#999"/>
+  <text x="850" y="506" text-anchor="middle" font-weight="bold" fill="#333">행동 공간 → 궤적</text>
+  <text x="850" y="524" text-anchor="middle" fill="#333">unicycle(가속도·곡률) 64점 × 0.1초 → 위치·자세 웨이포인트 (동일)</text>
+
+  <rect x="650" y="556" width="400" height="60" fill="#f5f5f5" stroke="#999"/>
+  <text x="850" y="576" text-anchor="middle" font-weight="bold" fill="#333">출력</text>
+  <text x="850" y="594" text-anchor="middle" fill="#333">6.4초 궤적 + 인과 설명 + 메타액션(종·횡·차선)</text>
+  <text x="850" y="610" text-anchor="middle" fill="#333">+ VQA 답변 + 2D 그라운딩 + 자동 라벨(JSON)</text>
+
+  <!-- right: side boxes -->
+  <rect x="1062" y="256" width="150" height="90" fill="#eef7dd" stroke="#76b900"/>
+  <text x="1137" y="280" text-anchor="middle" fill="#3f6a00" font-size="11" font-weight="bold">텍스트 태스크 출력</text>
+  <text x="1137" y="298" text-anchor="middle" fill="#333" font-size="11">메타액션 · VQA</text>
+  <text x="1137" y="314" text-anchor="middle" fill="#333" font-size="11">그라운딩 · 자동 라벨</text>
+  <text x="1137" y="333" text-anchor="middle" fill="#666" font-size="10.5">(expert 없이 VLM만)</text>
+  <rect x="1062" y="366" width="150" height="100" fill="#eef7dd" stroke="#76b900"/>
+  <text x="1137" y="392" text-anchor="middle" fill="#3f6a00" font-size="11" font-weight="bold">내비게이션 조건</text>
+  <text x="1137" y="410" text-anchor="middle" fill="#333" font-size="11">경로·지시 입력</text>
+  <text x="1137" y="427" text-anchor="middle" fill="#333" font-size="11">CFG로 반영 강도 조절</text>
+  <text x="1137" y="449" text-anchor="middle" fill="#666" font-size="10.5">(1.5부터 지원)</text>
+
+  <!-- right arrows -->
+  <line x1="850" y1="160" x2="850" y2="180" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="850" y1="236" x2="850" y2="256" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="850" y1="346" x2="850" y2="366" stroke="#555" marker-end="url(#arr)"/>
+  <text x="858" y="360" fill="#555" font-size="10.5">KV 캐시 + 인과 설명을 조건으로</text>
+  <line x1="850" y1="466" x2="850" y2="486" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="850" y1="536" x2="850" y2="556" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="1050" y1="301" x2="1062" y2="301" stroke="#555" marker-end="url(#arr)"/>
+  <line x1="1062" y1="416" x2="1050" y2="416" stroke="#555" marker-end="url(#arr)"/>
+
+  <!-- what changed strip -->
+  <rect x="20" y="640" width="1200" height="132" fill="#fafafa" stroke="#ccc"/>
+  <text x="35" y="664" font-weight="bold" fill="#222">무엇이 같고 무엇이 달라졌나</text>
+  <text x="35" y="688" fill="#333">• 같은 뼈대: VLM이 먼저 말로 인과를 쓰고, 그 KV 캐시를 조건으로 디퓨전 expert가 64점 궤적을 다듬는다. 토크나이저·행동 공간·궤적 길이도 같다.</text>
+  <text x="35" y="708" fill="#333">• 두뇌 교체: Cosmos-Reason 1세대(10B 전체) → Cosmos 3 Super Reasoner 32B. 두뇌가 커진 만큼 출력이 "궤적 하나"에서 "다섯 태스크"로 늘었다.</text>
+  <text x="35" y="728" fill="#333">• expert 분리: 1은 VLM 설정을 복제한 부속 모듈, 2 Super는 자체 설정을 가진 2B 독립 모델이며 classifier-free guidance로 내비 조건을 받는다.</text>
+  <text x="35" y="748" fill="#333">• 시야 확대: 카메라 4대(전방 위주) → 6대(360°). 미래 토큰 128, 이력 토큰 48로 토큰 예산도 커졌다.</text>
+  <text x="35" y="766" fill="#777" font-size="11">근거: NVlabs/alpamayo · NVlabs/alpamayo2 저장소 코드·README 원문 🔍. 1의 VLM·expert 파라미터 분할은 미공개 ⚠️. 실선 = 코드로 확인. 자체 작성.</text>
+</svg>

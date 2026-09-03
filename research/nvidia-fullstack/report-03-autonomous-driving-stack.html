@@ -225,6 +225,7 @@ figcaption b{color:var(--ink)}
 <tr><td>출력</td><td>6.4초 궤적(64점 @10Hz) + 인과 설명 <span class="g g-src">🔍</span></td><td>동일 + 내비게이션·텍스트 지시 반영</td><td>궤적 + 인과 설명 + 메타액션(종·횡·차선) + 질문응답 + 2D 그라운딩 + 자동 라벨 <span class="g g-src">🔍</span></td></tr>
 <tr><td>새로 생긴 능력</td><td>인과 사슬 추론</td><td>강화학습 후학습, "200m 앞 좌회전" 같은 지시 조건, 일반 질문응답</td><td>한 번의 순회로 궤적·설명·메타액션 동시 생성, 자동 라벨러 역할 <span class="g g-sec">📄</span></td></tr>
 </table></div>
+<figure><img src="images/3-1-alpamayo1-vs-2-architecture.svg" alt="Alpamayo 1과 2 Super의 추론 파이프라인 비교"><figcaption><b>그림 3. Alpamayo 1과 2 Super의 추론 파이프라인 비교.</b> 두 세대 모두 "VLM이 인과 설명을 쓰고 → 그 KV 캐시를 조건으로 디퓨전 expert가 64점 궤적을 다듬는" 같은 뼈대다. 달라진 것은 두뇌(Cosmos-Reason 1세대 → Cosmos 3 Super Reasoner 32B), expert의 독립성(VLM 설정 복제 → 별도 2B 모델 + CFG), 시야(카메라 4대 → 6대), 출력(궤적 하나 → 다섯 태스크)이다. Alpamayo 1의 공식 아키텍처 그림은 논문·모델카드에만 있어 접근하지 못했고, 두 저장소의 코드를 읽어 자체 작성했다 <span class="g g-src">🔍</span>. 1의 VLM·expert 파라미터 분할은 미공개 <span class="g g-warn">⚠️</span>.</figcaption></figure>
 <details class="ev"><summary>근거 상세 펼치기 — 출처 상충</summary>
 <ul>
 <li>2 Super 크기: 발표 당일 X 포스트는 "32B", 이후 블로그·README는 "34B(32B + 2B)", 블로그는 디코더를 2.3B로 표기. 이 보고서는 34B로 정리 <span class="g g-warn">⚠️</span>.</li>
@@ -325,7 +326,7 @@ figcaption b{color:var(--ink)}
 <h3 id="s3-6">3.6 시뮬레이션 연계</h3>
 <div class="q"><b>이 절의 질문</b> 개발 루프에서 시뮬레이션·데이터 도구는 어디에 붙나? (상세는 7장)</div>
 <p>CES 2026 발표 문장이 가장 압축적이다. "실주행 로그는 Omniverse NuRec으로 상호작용 시뮬레이션에 재구성되고, 포토리얼 합성 시나리오는 Cosmos-Dreams로 생성되며, 폐루프 정책 평가는 AlpaSim으로 GPU 규모에서 실행된다" <span class="g g-sec">📄</span>. AlpaSim은 GitHub에서 확인된다. Apache-2.0, "연구·개발 전용", 실주행 재구성(NuRec)을 기본 렌더러로 쓰고 비디오 세계 모델 렌더링은 옵션이며, 설계 문서는 "실시간과 매우 정밀한 물리는 비목표"라고 명시한다 <a class="cite" href="https://github.com/NVlabs/alpasim">NVlabs/alpasim</a><span class="g g-src">🔍</span>. 옛 이름 DRIVE Sim은 2026 자료에서 언급이 없고 공식 단종 선언도 없다 <span class="g g-warn">⚠️</span>.</p>
-<figure><img src="images/3-2-alpasim-architecture.png" alt="AlpaSim 구조"><figcaption><b>그림 3. AlpaSim의 구조.</b> 센서 시뮬이 카메라 프레임을 만들고, 에고 정책(Alpamayo 등)이 궤적을 내며, 물리·런타임이 다음 상태를 만들어 다시 렌더한다. 출처: <a href="https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md">NVlabs/alpasim DESIGN.md</a>, Apache-2.0.</figcaption></figure>
+<figure><img src="images/3-2-alpasim-architecture.png" alt="AlpaSim 구조"><figcaption><b>그림 4. AlpaSim의 구조.</b> 센서 시뮬이 카메라 프레임을 만들고, 에고 정책(Alpamayo 등)이 궤적을 내며, 물리·런타임이 다음 상태를 만들어 다시 렌더한다. 출처: <a href="https://github.com/NVlabs/alpasim/blob/main/docs/DESIGN.md">NVlabs/alpasim DESIGN.md</a>, Apache-2.0.</figcaption></figure>
 
 <h2 id="s4">4. 도입 사례: 명확한 것부터</h2>
 <div class="q"><b>이 절의 질문</b> "NVIDIA 채택" 뉴스가 많은데, 실제로 무엇을 채택한 것인가?</div>
