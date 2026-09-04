@@ -162,6 +162,13 @@
 | D25 | AV 세계 모델 서베이 | https://arxiv.org/pdf/2501.11260 | 논문 | 2025-01 | 분포 이동 시 성능 저하 | 📄 |
 | D26 | TeraSim-World | https://arxiv.org/html/2509.13164v1 | 논문 | 2025-09 | Cosmos-Drive 사용 | 📄 |
 | D27 | Axios Cosmos 3 | https://www.axios.com/2026/06/01/nvidia-ai-push-cosmos-3-world-model | 2차 | 2026-06-01 | 출시일 | 📄 |
+| D28 | NVIDIA/nurec-skills README | https://github.com/NVIDIA/nurec-skills | 1차 GitHub | 2026-04-30 | NuRec 스택 = physical-ai-datasets·ncore·nre·asset-harvester·nurec-fixer 5개 스킬, NRE NGC 컨테이너(독점) | 🔍 |
+| D29 | nurec-skills nurec-index workflows.md | https://raw.githubusercontent.com/NVIDIA/nurec-skills/main/skills/nurec-index/references/workflows.md | 1차 GitHub | 2026-04 | 워크플로 A~G: 기록 → NCore → NRE 학습 → USDZ → 렌더/serve-grpc → 시뮬레이터, 객체 편집, Fixer, 데이터셋 크기 | 🔍 |
+| D30 | nurec-skills nre SKILL.md | https://raw.githubusercontent.com/NVIDIA/nurec-skills/main/skills/nre/SKILL.md | 1차 GitHub | 2026-04-30 | NRE release 26.04, 3DGUT/3DGRT 학습, aux 데이터, carline adaptation, serve-grpc sensorsim API, USDZ 구성, VRAM 24~48 GB | 🔍 |
+| D31 | nurec-skills nurec-fixer SKILL.md | https://raw.githubusercontent.com/NVIDIA/nurec-skills/main/skills/nurec-fixer/SKILL.md | 1차 GitHub | 2026-04 | NuRec Fixer = DiffusionHarmonizer, Cosmos-Predict2 0.6B 기반, NOML, arXiv 2602.24096 | 🔍 |
+| D32 | NVIDIA/ncore README | https://github.com/NVIDIA/ncore | 1차 GitHub | 2026 | NCore: 오픈 다중 센서 데이터 플랫폼, Apache-2.0, 신경 재구성용 형식·센서 모델·변환기 | 🔍 |
+| D33 | NVIDIA/instant-nurec README | https://github.com/NVIDIA/instant-nurec | 1차 GitHub | 2026-07 | 피드포워드 3DGS 재구성, NCore V4 입력, PLY + 하늘 큐브맵 출력, NRE 초기화 가능, Apache-2.0 | 🔍 |
+| D34 | nv-tlabs/3dgrut README (export 절) | https://github.com/nv-tlabs/3dgrut#exporting-trained-scenes-usd-ply-nurec | 1차 GitHub | 2026-06 | USD ParticleField / NuRec USDZ / PLY 내보내기, Isaac Sim 6.0에서 NuRec USDZ 폐기 예정, NCore v4 학습 지원(2026-03) | 🔍 |
 
 ## E. Tier-1 관점·파트너 경계 (부록 A)
 

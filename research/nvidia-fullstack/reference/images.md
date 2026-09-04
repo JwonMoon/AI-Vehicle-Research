@@ -17,6 +17,7 @@
 | `7-2-data-flywheel.svg` | 위 도식의 원판 (범례 줄·챕터 표기 포함). 참고용으로 유지 | — |
 | `7-3-omniverse-cosmos-pipeline-v2.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 (현행판: 열 제목은 텍스트+밑줄, 주황=Omniverse·초록=Cosmos만 채색하고 입력원·산출물은 흰색·회색, 텍스트가 블록 안에 들어오도록 조정, 화살표마다 관계 라벨(재구성·렌더·3D 투영, 각 출력을 조건으로, 변주 영상 출력, 생성물 채점), 상단 범례 줄 삭제) | 7장 7.3.3 · report-07 그림 9 |
 | `7-3-omniverse-cosmos-pipeline.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 | 원판, 참고용 유지 |
+| `7-3-nurec-architecture.svg` | Omniverse NuRec 파이프라인 도식: 센서 로그 → NCore V4(오픈) → NRE 재구성(NGC 컨테이너·독점: nre-tools 보조 데이터 → 3DGUT/3DGRT 학습 → carline adaptation) → USDZ 장면 → serve-grpc 렌더 서비스 → 시뮬레이터(CARLA·Isaac Sim·AlpaSim·커스텀), 부속 Instant NuRec·Asset Harvester·NuRec Fixer(DiffusionHarmonizer, 초록 = Cosmos 기반), 공개 데이터셋, 오픈·독점·게이트 경계. 공식 도식(docs.nvidia.com/nurec)은 접근 불가라 NVIDIA/nurec-skills·ncore·instant-nurec·3dgrut·CARLA 문서를 읽고 자체 작성 | 7장 7.3.1 · report-07 그림 11 |
 | `appendix-a-tier1-workmap.svg` | NVIDIA 제공 범위 vs Tier-1 책임 레이어 지도 + 차별화 매트릭스 | 부록 A A.3 |
 
 규약: 실선 = 출처로 확인, 점선 = 추정. 색: 파랑 = 3장 범위, 초록 = Cosmos, 주황 = Omniverse, 회색 = 다른 장/NVIDIA 제공, 노랑·빨강 = Tier-1 책임.
@@ -53,3 +54,5 @@
 | Omniverse Blueprint for AV simulation 다이어그램 | https://nvidianews.nvidia.com/news/nvidia-expands-omniverse-with-generative-physical-ai | nvidianews 차단 |
 | DRIVE AGX Thor 개발 키트 보드 사진 | https://developer.nvidia.com/drive/agx | developer.nvidia.com 차단 |
 | 3DGRUT 플레이그라운드 GIF | https://github.com/nv-tlabs/3dgrut | Git LFS 포인터만 반환 |
+| NuRec "How NuRec Works" 아키텍처 도식 | https://docs.nvidia.com/nurec/basics/how-nurec-works.html | docs.nvidia.com 차단 (자체 도식 `7-3-nurec-architecture.svg`로 대체) |
+| "Accelerating AV Simulation with Neural Reconstruction and WFM" 블로그 그림 | https://developer.nvidia.com/blog/accelerating-av-simulation-with-neural-reconstruction-and-world-foundation-models/ | developer.nvidia.com 차단 |

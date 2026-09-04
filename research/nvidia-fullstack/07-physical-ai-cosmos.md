@@ -293,8 +293,8 @@ GPU 가속 수치: NVDEC/NVENC로 "디코딩·트랜스코딩 3× 가속"(NeMo C
 |---|---|
 | 전체 그림 속 위치 | OVX 시뮬 컴퓨터, L4 시뮬 층 |
 | 담당 역할 | OpenUSD[^usd] 장면 + RTX 광선 추적으로 카메라·레이더·라이다를 물리적으로 시뮬레이션하고 깊이·세그멘테이션 등 **정답 라벨**을 낸다. NuRec은 실로그를 3D 장면으로 재구성해 새 시점·궤적으로 재생한다 |
-| 현재 위치 | ③ NuRec가 Isaac Sim 5.0(2025-08)·CARLA 0.9.16(2025-09)·AlpaSim에 통합 🔍; 3DGRUT 오픈소스(Apache-2.0) 🔍; Sensor RTX는 라이브러리 ovrtx 0.4 프리릴리스(독점 라이선스) 🔍; Omniverse Kit는 클로즈드 🔍 |
-| 다음 이정표 | NuRec Fixer(2026), Isaac Sim 6.0의 USD ParticleField 표준화 🔍 |
+| 현재 위치 | ③ NuRec가 Isaac Sim 5.0(2025-08)·CARLA 0.9.16(2025-09)·AlpaSim에 통합 🔍; 3DGRUT 오픈소스(Apache-2.0) 🔍; NRE 컨테이너 26.04·nurec-skills(2026-04-30)·Instant NuRec(2026-07)·NuRec Fixer(DiffusionHarmonizer) 공개 🔍; Sensor RTX는 라이브러리 ovrtx 0.4 프리릴리스(독점 라이선스) 🔍; Omniverse Kit는 클로즈드 🔍 |
+| 다음 이정표 | Isaac Sim 6.0의 USD ParticleField 표준화(NuRec 전용 USDZ 폐기 예정) 🔍; NRE 26.04 이후 갱신 주기·Instant NuRec 동적 객체 지원 미공개 ⚠️ |
 
 - **Sensor RTX**: "물리적으로 정확한 센서 시뮬레이션을 가능하게 하는 마이크로서비스… OpenUSD 프레임워크 위에 RTX 광선 추적·신경 렌더링" (CVPR 2024 발표) ✅; CES 2025 조기 접근 "카메라·레이더·라이다" 📄. 오픈 라이브러리 형태 **ovrtx**: "카메라·라이다·레이더 등 센서의 물리적으로 정확한 시뮬레이션", "RL in-the-loop 초당 수만 프레임부터 실시간 포토리얼 뷰포트까지"; 0.4 프리릴리스, NVIDIA Software License(오픈소스 아님) ([NVIDIA-Omniverse/ovrtx](https://github.com/NVIDIA-Omniverse/ovrtx)) 🔍.
 - **정답 라벨·결정론**: 2022 DRIVE Sim/Replicator 블로그 "RTX 렌더러가 RGB 카메라와 깊이·법선·세그멘테이션 정답 센서를 물리 기반 광선 추적으로 시뮬레이션… 시간 정확·결정론적이라 반복 생성 가능", LED 플리커·모션 블러·롤링 셔터·라이다 빔 발산·도플러 효과 반영 📄. 2025~26 Blueprint/ovrtx에 대한 결정론 재확인 문장은 찾지 못함 ⚠️.
@@ -302,9 +302,15 @@ GPU 가속 수치: NVDEC/NVENC로 "디코딩·트랜스코딩 3× 가속"(NeMo C
 - **DRIVE Sim 상태**: 개발자 페이지는 남아 있으나 2025~26 제품 언어는 "Omniverse Blueprint for AV simulation + Sensor RTX API". 공식 단종·개명 선언은 없음 ⚠️.
 - **Blueprint for AV simulation**(CES 2025): "Sensor RTX API 등 API·서비스로 실센서 데이터에서 디지털 트윈을 구축·강화하고, 동적 물체의 물리·행동을 모델링하며, 물리적으로 정확하고 다양한 센서 데이터를 생성… 주행 데이터 재생, 새 정답 생성, 폐루프 테스트" ✅. 자가 서비스 오픈소스 다운로드는 확인되지 않음 ⚠️.
 
+- **NuRec 파이프라인(2026)**: ① 센서 로그 → [NCore V4](https://github.com/NVIDIA/ncore)(오픈 데이터 표준, Apache-2.0; 변환기 PAI·Waymo·nuScenes·PandaSet·COLMAP 내장) 🔍 → ② NRE(Neural Reconstruction Engine, NGC 컨테이너 `nvcr.io/nvidia/nre/{nre,nre-tools}` 독점·NGC 키, release 26.04): `nre-tools` 보조 데이터(세그·깊이·ego 마스크·DINOv2·LiDAR-seg) → 3DGUT/3DGRT 가우시안 학습(Hydra 레시피 예 `car2sim_6cam`, 24~48 GB VRAM, PSNR·SSIM·LPIPS) → carline adaptation(다른 차량 리그로 적응) → ③ USDZ 장면(가우시안 + `rig_trajectories` + `sequence_tracks` + `map.xodr` + 메시; USD ParticleField는 Isaac Sim 6.0 표준) → ④ `serve-grpc` sensorsim gRPC API(카메라 위치 + 시각 → RGB/LiDAR 스윕, actor 추가·삭제·교체) → ⑤ CARLA 0.9.16·Isaac Sim·AlpaSim·커스텀 시뮬 ([NVIDIA/nurec-skills](https://github.com/NVIDIA/nurec-skills) README·`nurec-index/references/workflows.md`·`nre/SKILL.md`, 2026-04-30) 🔍. 부속: [Instant NuRec](https://github.com/NVIDIA/instant-nurec)(2026-07, Apache-2.0, 피드포워드 10~20 s 클립 → 3DGS 약 1.5 s, NRE 초기화용) 🔍; NuRec Fixer = DiffusionHarmonizer(Cosmos-Predict2 0.6B 기반, NOML, `nurec-fixer/SKILL.md`) 🔍; Asset Harvester(오픈, 객체별 3DGS PLY → `export-external-assets`) 🔍; 데이터셋 `PhysicalAI-Autonomous-Vehicles-NuRec`(약 1.5 TB)·`-Robotics-NuRec`(62.9 GB)·`-NuRec-PPISP`(15 GB) 게이트 🔍. 공식 아키텍처 도식(docs.nvidia.com/nurec "How NuRec Works")은 접근 불가 ⚠️.
+
+![Omniverse NuRec 파이프라인](images/7-3-nurec-architecture.svg)
+
+*그림 7-10. Omniverse NuRec 파이프라인: 센서 로그 → NCore V4 → NRE 재구성(보조 데이터 → 3DGUT/3DGRT 학습 → carline adaptation) → USDZ → serve-grpc → 시뮬레이터, 부속 Instant NuRec·Asset Harvester·NuRec Fixer(초록 = Cosmos 기반), 오픈·독점·게이트 경계. NVIDIA/nurec-skills·ncore·instant-nurec·3dgrut·CARLA 문서 기반 자체 작성. 실선 = 출처로 확인, 점선 = 추정.*
+
 ![CARLA–NuRec API](images/7-3-carla-nurec-api.svg)
 
-*그림 7-10. CARLA 0.9.16의 NuRec 연동 구조. 출처: [carla-simulator/carla Docs/img/carla-nurec-api.svg](https://github.com/carla-simulator/carla/blob/ue4-dev/Docs/nvidia_nurec.md), MIT(CARLA), © CARLA.*
+*그림 7-11. CARLA 0.9.16의 NuRec 연동 구조. 출처: [carla-simulator/carla Docs/img/carla-nurec-api.svg](https://github.com/carla-simulator/carla/blob/ue4-dev/Docs/nvidia_nurec.md), MIT(CARLA), © CARLA.*
 
 ### 7.3.2 Cosmos 쪽: 생성형 변주·증폭
 
@@ -326,7 +332,7 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ![Omniverse × Cosmos 결합](images/7-3-omniverse-cosmos-pipeline-v2.svg)
 
-*그림 7-11. Omniverse(물리 렌더·NuRec) 출력이 Cosmos Transfer의 조건 입력이 되는 결합 구조. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
+*그림 7-12. Omniverse(물리 렌더·NuRec) 출력이 Cosmos Transfer의 조건 입력이 되는 결합 구조. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
 
 | 패턴 | 구체 연결 | 근거 |
 |---|---|---|
@@ -339,11 +345,11 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ![Transfer2.5 World Scenario 렌더링](images/7-3-transfer25-world-scenario-rendering.png)
 
-*그림 7-12. RDS-HQ 라벨을 HD맵 선+박스(V1) 또는 3D "world scenario"(V3)로 렌더해 Transfer 1/2 AV 모델의 조건으로 쓰는 방식. 출처: [nvidia-cosmos/cosmos-transfer2.5 docs](https://github.com/nvidia-cosmos/cosmos-transfer2.5/blob/main/docs/world_scenario_video_generation.md), © NVIDIA.*
+*그림 7-13. RDS-HQ 라벨을 HD맵 선+박스(V1) 또는 3D "world scenario"(V3)로 렌더해 Transfer 1/2 AV 모델의 조건으로 쓰는 방식. 출처: [nvidia-cosmos/cosmos-transfer2.5 docs](https://github.com/nvidia-cosmos/cosmos-transfer2.5/blob/main/docs/world_scenario_video_generation.md), © NVIDIA.*
 
 ![OmniDreams HD맵 오버레이](images/7-3-omnidreams-hdmap-overlay.png)
 
-*그림 7-13. AlpaSim의 OmniDreams 비디오 세계 모델 렌더러가 조건으로 받는 HD맵 2D 렌더 오버레이. 출처: [NVlabs/alpasim VIDEO_MODEL.md](https://github.com/NVlabs/alpasim/blob/main/docs/VIDEO_MODEL.md), Apache-2.0, © NVIDIA.*
+*그림 7-14. AlpaSim의 OmniDreams 비디오 세계 모델 렌더러가 조건으로 받는 HD맵 2D 렌더 오버레이. 출처: [NVlabs/alpasim VIDEO_MODEL.md](https://github.com/NVlabs/alpasim/blob/main/docs/VIDEO_MODEL.md), Apache-2.0, © NVIDIA.*
 
 ### 7.3.4 역할 구분표
 
@@ -394,7 +400,7 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ![Cosmos-RL 구조](images/7-4-cosmos-rl-infra.svg)
 
-*그림 7-14. Cosmos-RL의 정책–롤아웃–컨트롤러 분리 구조. 출처: [nvidia-cosmos/cosmos-rl](https://github.com/nvidia-cosmos/cosmos-rl) `assets/rl_infra.svg`, Apache-2.0, © NVIDIA.*
+*그림 7-15. Cosmos-RL의 정책–롤아웃–컨트롤러 분리 구조. 출처: [nvidia-cosmos/cosmos-rl](https://github.com/nvidia-cosmos/cosmos-rl) `assets/rl_infra.svg`, Apache-2.0, © NVIDIA.*
 
 - Cosmos-RL: 정책/롤아웃 replica 비동기, TP/SP/CP/FSDP/PP, FP8 학습·FP8/FP4 롤아웃, 단일 컨트롤러·동적 NCCL 그룹 🔍. Alpamayo 오픈루프 RL(GRPO, 640 GPU) 레시피가 이를 사용(3장 3.1.3) 🔍.
 - AlpaGym: AlpaSim=환경, Cosmos-RL=분산 롤아웃·학습, 보상 예 `progress_safety`, Alpamayo 1.5(10B)만 지원, 처리량 수치 미공개 🔍.
@@ -455,6 +461,7 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 | Drive-Dreams·Cosmos 합성 데이터의 AV 정량 효과 | 미확보 ⚠️ | arXiv 2506.09042 원문 |
 | Omniverse vs Cosmos 역할 키노트 원문 문장 | 3자 요약만 ⚠️ | 키노트 트랜스크립트 |
 | DRIVE Sim 단종 여부 | 진술 없음 ⚠️ | NVIDIA 제품 페이지 |
+| NuRec 공식 아키텍처 도식·"How NuRec Works" 원문 | 차단 ⚠️ | docs.nvidia.com/nurec, 개발자 블로그 |
 | Blueprint/ovrtx 결정론 재확인 | 2022 자료만 ⚠️ | Sensor RTX 문서 |
 | NVIDIA Open Model License 정확 조항 | 원문 미열람 ⚠️ | 라이선스 PDF |
 | Curator 기본 캡셔닝 모델 | 미명시 ⚠️ | docs |
