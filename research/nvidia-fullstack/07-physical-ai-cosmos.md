@@ -167,6 +167,10 @@ GTC 2025(2025-03-18) 보도자료: "새 Cosmos WFM 주요 릴리스, Physical AI
 
 ### 7.1.5 세대·모델별 비교표
 
+![Cosmos 세 세대 입력·모델·출력 비교](images/7-1-cosmos-generations-compare.svg)
+
+*그림 7-6. Cosmos 1 → 2·2.5 → 3의 입력·모델·출력 비교(입력 → 토큰 → 모델 → 토큰 → 출력 틀). Cosmos 1은 텍스트·이미지·비디오 → 미래 비디오만; 2·2.5세대는 제어 도면·행동 입력과 이미지·텍스트·변주 영상 출력이 추가되며 Predict·Transfer·Reason 세 모델로 분화; Cosmos 3는 옴니모달 토크나이저 + Reasoner + Generator(Mixture-of-Transformers) 한 모델에 행동·오디오 입출력까지. NEW = 그 세대에서 새로 생김, 점선 회색 = 미지원. 각 저장소 README 🔍 기반 자체 작성, 학습 규모는 📄.*
+
 | 모델 | 세대/날짜 | 아키텍처 | 입력 → 출력 | 파라미터 | 가중치 라이선스 | 배포 | 학습 데이터 공개 |
 |---|---|---|---|---|---|---|---|
 | Cosmos-Predict1 | Gen1 2025-01-06 | 디퓨전(DiT, T5) + 자기회귀(이산 토큰+디퓨전 디코더) | 텍스트/비디오 → 비디오 | 디퓨전 7B/14B, AR 4B/12B, 5B/13B | NVIDIA Open Model License(NOML) | HF·NGC·GitHub | ~2,000만h → ~1억 클립 📄 |
@@ -196,7 +200,7 @@ GTC 2025(2025-03-18) 보도자료: "새 Cosmos WFM 주요 릴리스, Physical AI
 
 ![Cosmos Curator 파이프라인](images/7-2-cosmos-curator-pipelines.png)
 
-*그림 7-6. Cosmos Curator의 split-annotate / dedup / shard 파이프라인. 출처: [NVIDIA/cosmos-curator](https://github.com/NVIDIA/cosmos-curator) `docs/assets/cosmos-curator-pipelines.png`, © NVIDIA.*
+*그림 7-7. Cosmos Curator의 split-annotate / dedup / shard 파이프라인. 출처: [NVIDIA/cosmos-curator](https://github.com/NVIDIA/cosmos-curator) `docs/assets/cosmos-curator-pipelines.png`, © NVIDIA.*
 
 정의: "고급 AI 모델과 분산 컴퓨팅으로 비디오 콘텐츠를 처리·분석·조직하는 강력한 비디오 큐레이션 시스템… GPU 가속 스트리밍 파이프라인에 최적화된 프레임워크 위에 구축되었고, 그 프레임워크는 Cosmos-Xenna로 별도 오픈소스화" ([cosmos-curator README](https://github.com/NVIDIA/cosmos-curator)) 🔍.
 
@@ -253,13 +257,13 @@ GPU 가속 수치: NVDEC/NVENC로 "디코딩·트랜스코딩 3× 가속"(NeMo C
 
 ### 7.2.4 데이터 플라이휠
 
-![데이터 플라이휠](images/7-2-data-flywheel.svg)
+![데이터 플라이휠](images/7-2-data-flywheel-v2.svg)
 
-*그림 7-7. AV 데이터 플라이휠에서 Cosmos 각 모델이 붙는 지점. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
+*그림 7-8. AV 데이터 플라이휠의 여덟 단계와 각 단계에 붙는 도구(현행판 v2: 회색 상자 = 단계, 안의 색 상자 = 도구, 초록 = Cosmos, 주황 = Omniverse NuRec, 흰색 = NVIDIA 제공 밖인 플릿 수집·갭 기반 재수집; 화살표마다 흐르는 데이터 라벨). 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
 
 ![Cosmos-Drive-Dreams 티저](images/7-2-drive-dreams-teaser.png)
 
-*그림 7-8. Cosmos-Drive-Dreams가 그린 데이터 플라이휠(Cosmos WFM으로 확장 → 다운스트림 학습 → 데이터 갭 평가 → 큐레이션)과 다양성·멀티뷰·코너케이스·LiDAR 생성 예. 출처: [nv-tlabs/Cosmos-Drive-Dreams](https://github.com/nv-tlabs/Cosmos-Drive-Dreams) `assets/teaser.png`, Apache-2.0, © NVIDIA.*
+*그림 7-9. Cosmos-Drive-Dreams가 그린 데이터 플라이휠(Cosmos WFM으로 확장 → 다운스트림 학습 → 데이터 갭 평가 → 큐레이션)과 다양성·멀티뷰·코너케이스·LiDAR 생성 예. 출처: [nv-tlabs/Cosmos-Drive-Dreams](https://github.com/nv-tlabs/Cosmos-Drive-Dreams) `assets/teaser.png`, Apache-2.0, © NVIDIA.*
 
 | 루프 단계 | 붙는 Cosmos/Omniverse 구성 요소 | 근거 |
 |---|---|---|
@@ -300,7 +304,7 @@ GPU 가속 수치: NVDEC/NVENC로 "디코딩·트랜스코딩 3× 가속"(NeMo C
 
 ![CARLA–NuRec API](images/7-3-carla-nurec-api.svg)
 
-*그림 7-9. CARLA 0.9.16의 NuRec 연동 구조. 출처: [carla-simulator/carla Docs/img/carla-nurec-api.svg](https://github.com/carla-simulator/carla/blob/ue4-dev/Docs/nvidia_nurec.md), MIT(CARLA), © CARLA.*
+*그림 7-10. CARLA 0.9.16의 NuRec 연동 구조. 출처: [carla-simulator/carla Docs/img/carla-nurec-api.svg](https://github.com/carla-simulator/carla/blob/ue4-dev/Docs/nvidia_nurec.md), MIT(CARLA), © CARLA.*
 
 ### 7.3.2 Cosmos 쪽: 생성형 변주·증폭
 
@@ -322,7 +326,7 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ![Omniverse × Cosmos 결합](images/7-3-omniverse-cosmos-pipeline-v2.svg)
 
-*그림 7-10. Omniverse(물리 렌더·NuRec) 출력이 Cosmos Transfer의 조건 입력이 되는 결합 구조. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
+*그림 7-11. Omniverse(물리 렌더·NuRec) 출력이 Cosmos Transfer의 조건 입력이 되는 결합 구조. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
 
 | 패턴 | 구체 연결 | 근거 |
 |---|---|---|
@@ -335,11 +339,11 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ![Transfer2.5 World Scenario 렌더링](images/7-3-transfer25-world-scenario-rendering.png)
 
-*그림 7-11. RDS-HQ 라벨을 HD맵 선+박스(V1) 또는 3D "world scenario"(V3)로 렌더해 Transfer 1/2 AV 모델의 조건으로 쓰는 방식. 출처: [nvidia-cosmos/cosmos-transfer2.5 docs](https://github.com/nvidia-cosmos/cosmos-transfer2.5/blob/main/docs/world_scenario_video_generation.md), © NVIDIA.*
+*그림 7-12. RDS-HQ 라벨을 HD맵 선+박스(V1) 또는 3D "world scenario"(V3)로 렌더해 Transfer 1/2 AV 모델의 조건으로 쓰는 방식. 출처: [nvidia-cosmos/cosmos-transfer2.5 docs](https://github.com/nvidia-cosmos/cosmos-transfer2.5/blob/main/docs/world_scenario_video_generation.md), © NVIDIA.*
 
 ![OmniDreams HD맵 오버레이](images/7-3-omnidreams-hdmap-overlay.png)
 
-*그림 7-12. AlpaSim의 OmniDreams 비디오 세계 모델 렌더러가 조건으로 받는 HD맵 2D 렌더 오버레이. 출처: [NVlabs/alpasim VIDEO_MODEL.md](https://github.com/NVlabs/alpasim/blob/main/docs/VIDEO_MODEL.md), Apache-2.0, © NVIDIA.*
+*그림 7-13. AlpaSim의 OmniDreams 비디오 세계 모델 렌더러가 조건으로 받는 HD맵 2D 렌더 오버레이. 출처: [NVlabs/alpasim VIDEO_MODEL.md](https://github.com/NVlabs/alpasim/blob/main/docs/VIDEO_MODEL.md), Apache-2.0, © NVIDIA.*
 
 ### 7.3.4 역할 구분표
 
@@ -390,7 +394,7 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ![Cosmos-RL 구조](images/7-4-cosmos-rl-infra.svg)
 
-*그림 7-13. Cosmos-RL의 정책–롤아웃–컨트롤러 분리 구조. 출처: [nvidia-cosmos/cosmos-rl](https://github.com/nvidia-cosmos/cosmos-rl) `assets/rl_infra.svg`, Apache-2.0, © NVIDIA.*
+*그림 7-14. Cosmos-RL의 정책–롤아웃–컨트롤러 분리 구조. 출처: [nvidia-cosmos/cosmos-rl](https://github.com/nvidia-cosmos/cosmos-rl) `assets/rl_infra.svg`, Apache-2.0, © NVIDIA.*
 
 - Cosmos-RL: 정책/롤아웃 replica 비동기, TP/SP/CP/FSDP/PP, FP8 학습·FP8/FP4 롤아웃, 단일 컨트롤러·동적 NCCL 그룹 🔍. Alpamayo 오픈루프 RL(GRPO, 640 GPU) 레시피가 이를 사용(3장 3.1.3) 🔍.
 - AlpaGym: AlpaSim=환경, Cosmos-RL=분산 롤아웃·학습, 보상 예 `progress_safety`, Alpamayo 1.5(10B)만 지원, 처리량 수치 미공개 🔍.
@@ -456,6 +460,61 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 | Curator 기본 캡셔닝 모델 | 미명시 ⚠️ | docs |
 | Physical AI AV 데이터셋 규모 표기(1,700h/306k vs 1,727h/311k) | 표기 차 ⚠️ | HF 카드 |
 | XPENG·Li Auto·Toyota 등 구체 사용 진술 | 미확인 ⚠️ | 각사 자료 |
+
+---
+
+## 7.10 자사 관점 (LG전자 VS)
+
+> 이 절은 앞의 조사 결과를 자사(LG전자 VS사업본부, 차량용 HPC·AI 플랫폼 개발 중) 관점으로 다시 읽은 것이다. NVIDIA 쪽 사실은 7.0~7.9의 출처를 따르고, LG 쪽 사실은 3장 3.10에서 쓴 공개 발표 세 건(LG–NVIDIA IVI+Hyperion 통합 [E19], LG이노텍 Hyperion 최적화 부품 [E19], LG–aiMotive IVI/ADAS 통합 컨트롤러 [A35][A36])만 쓴다. VS 내부 계획은 공개 자료로 알 수 없으므로 그에 기대는 판단은 모두 추정 ⚠️이다. 3장의 자사 관점이 "차 안의 스택"이었다면 이 절은 "차를 만드는 공장", 즉 학습·시뮬레이션 컴퓨터 쪽의 접점이다. 설명형 서술은 [report-07-physical-ai-cosmos.html §7](report-07-physical-ai-cosmos.html#s7).
+
+### 7.10.1 특이사항
+
+| # | 특이사항 | 근거 |
+|---|---|---|
+| 1 | Cosmos는 차량 탑재 제품이 아니라 개발 도구다. Cosmos 3 Edge 4B가 Jetson·Thor를 대상으로 하지만 차량 적용은 미확인 | 7.1.4 🔍 ⚠️ |
+| 2 | 12개월에 4세대(1 → 2 → 2.5 → 3), 이전 저장소는 유지보수 모드. 라이선스는 1~2.5세대 NVIDIA Open Model License(가드레일 우회 시 종료·표시 의무), Cosmos 3 OpenMDW-1.1로 두 갈래 | 7.1.5 🔍 📄 |
+| 3 | 정확해야 하는 것은 Omniverse, 많아야 하는 것은 Cosmos. NVIDIA 자신도 폐루프 평가 기본값을 재구성(NuRec)에 두고, 세계 모델 시뮬 결과가 인증 근거로 쓰인 사례는 없음 | 7.3.4, 7.4.6 🔍 |
+| 4 | 도구(Curator·Reason·Transfer)는 열렸지만 수집 체계와 "무엇이 부족한가" 판단·재수집 운영은 사용자 몫. 자율주행 다운스트림 정량 효과 수치는 미공개 | 7.2.3, 7.2.4 🔍 ⚠️ |
+| 5 | 개방성 편차: 3DGRUT·Cosmos 코드는 오픈소스, Sensor RTX(ovrtx)·Omniverse Kit·NuRec 재구성 서비스는 독점, 데이터셋은 게이트 | 7.3.1 🔍 |
+| 6 | 채택사 명단(Uber·Foretellix·CARLA·Wayve·Waabi·Plus·Oxa·Voxel51)에 Tier-1 없음. Bosch·Magna 등의 Cosmos 사용 진술은 찾지 못함 | 7.4.5 📄 ⚠️ |
+
+### 7.10.2 접점 지도 (세 대의 컴퓨터별)
+
+| 자리 | NVIDIA가 주는 것 | VS와의 접점 (추정 ⚠️) | 참고 |
+|---|---|---|---|
+| 학습 컴퓨터(DGX) — 데이터 공정 | Cosmos Curator(분할·필터·중복 제거·캡셔닝), Reason 자동 라벨러·크리틱, Cosmos-RL·Framework 🔍 | 자사 플릿 데이터의 큐레이션·라벨링 자동화. 라벨 정책·품질 관리·한국 데이터 보강은 자체 몫 | 7.2.1, 7.2.3 |
+| 학습 컴퓨터 — 기준 데이터 | Physical AI AV 데이터셋(7카메라 f-theta, LiDAR, 레이더 9, 게이트) 🔍 | 사실상의 참조 센서 형식. LG이노텍 카메라 등 자사 센서 구성과의 정합 여부가 모델 재사용성을 결정 | 7.2.2 |
+| 시뮬레이션 컴퓨터(OVX) — 합성 데이터 | Cosmos Transfer(도면 → 사실화, 7뷰), Drive-Dreams 파이프라인 🔍 | 자사 센서 구성으로 만든 도면(HD맵·박스)에서 날씨·조명·지역 변주. 멀티뷰 체크포인트는 7카메라 기준이라 재학습 필요 가능 | 7.3.3, 7.4.1 |
+| 시뮬레이션 컴퓨터 — 재구성·폐루프 | Omniverse NuRec(실로그 → 3D 장면), AlpaSim(폐루프), OmniDreams 옵션 🔍 | 자사 플릿 로그를 재구성해 자체 정책을 폐루프로 시험. 재구성 서비스는 NVIDIA 제공이라 의존 지점 | 7.3.1, 7.4.2, 3장 3.3 |
+| 시뮬레이션 컴퓨터 — 검증 | Cosmos Evaluator(Reason 기반 채점), Data Factory Blueprint 📄 | 생성 데이터의 품질 게이트로는 사용 가능하나 인증 근거는 아님. 인증용 검증은 Omniverse·실차·자체 SIL/HIL | 7.2.3, 7.4.6 |
+| 차량 컴퓨터(DRIVE AGX / HPC) | Cosmos 3 Edge 4B(Jetson·Thor 대상, 차량 적용 미확인) 🔍 ⚠️ | 자사 HPC 위의 차량 내 세계 모델은 아직 근거 없음. 현재의 차량 접점은 Reason 백본이 들어간 Alpamayo(3장)뿐 | 7.1.4, 3장 3.1 |
+| 인프라·비용 | Transfer 7뷰 = 7~8 GPU, CARLA→Transfer 왕복 1~2분/클립, Curator 예시 H100 2,000장 🔍 📄 | DGX 자체 구축 또는 클라우드. 데이터 사이클을 돌릴 GPU 예산이 협업 규모를 정함 | 7.3.3, 7.4.6 |
+
+### 7.10.3 협업 고려사항
+
+1. **세대 기준 고정** — 새로 시작하면 Cosmos 3(OpenMDW-1.1) 기준. 단 자율주행 특화 자산(Transfer2.5 7뷰 auto multiview, Drive-Dreams, Predict2.5 멀티뷰)은 2.5세대에 있으므로 Cosmos 3 Transfer 컨트롤로의 이관 시점을 정한다 (7.1.4, 7.1.5 🔍).
+2. **Omniverse 의존 지점 분리** — 재구성(NuRec 서비스)·센서 물리(ovrtx)는 독점. 오픈 3DGRUT·CARLA 통합을 대안으로 병행하고, NVIDIA 서비스 없이 멈추는 공정을 표로 남긴다 (7.3.1 🔍).
+3. **Cosmos의 자리를 "학습 데이터·탐색"으로 한정** — 인증 근거는 Omniverse·실차·자체 SIL/HIL, 세계 모델 시뮬은 롱테일 탐색·데이터 증강. NVIDIA 자신의 평가 기본값이 재구성이라는 점이 근거 (7.3.4, 7.4.2 🔍).
+4. **센서 정합 우선** — 공개 데이터셋·멀티뷰 체크포인트는 7카메라 f-theta 기준. 자사 구성이 다르면 Transfer·Predict 멀티뷰와 Alpamayo 입력 프로파일을 함께 재학습 (7.2.2 ⚠️).
+5. **정량 효과는 자체 실험으로** — 합성 데이터의 AV 다운스트림 개선 수치 미공개. 자사 태스크(차선·객체 검출, 정책) A/B 실험 설계 선행 (7.2.3, 7.9 ⚠️).
+6. **데이터 주권·라이선스** — Physical AI 데이터셋은 게이트·NVIDIA AV Dataset License, 가드레일 비활성화는 사용자 책임. 플릿 데이터를 NVIDIA 도구에 넣을 때의 소유권·개인정보 처리는 계약으로 (7.1.5, 7.2.2 🔍).
+7. **컴퓨트 예산은 사이클 단위** — "수집 → 큐레이션 → 합성 → 학습 → 평가"가 반복. 7뷰 Transfer·대형 Reason 추론은 H100급 다수 요구 (7.3.3, 7.4.6 🔍).
+8. **선례 없음을 계획에 반영** — Data Factory Blueprint 사용자·Cosmos 채택사에 Tier-1 없음. Uber·Foretellix의 시나리오·검증 툴체인 통합이 가장 가까운 참고. 데이터 엔지니어링·시뮬 인력 선행 확보 (7.4.5 📄 ⚠️).
+
+### 7.10.4 결정 항목
+
+| 결정 항목 | 선택지 또는 확인할 것 | 근거 절 |
+|---|---|---|
+| 세대 기준 | Cosmos 3(OpenMDW) 기준 + 2.5세대 AV 자산 이관 시점 | 7.1.4, 7.1.5 |
+| Cosmos 역할 범위 | 학습 데이터 증강·롱테일 탐색·자동 라벨링까지 / 인증 근거 제외 | 7.3.4, 7.4.6 |
+| 재구성·센서 물리 경로 | NuRec 서비스·ovrtx 의존 vs 3DGRUT·CARLA 병행 | 7.3.1, 7.3.3 |
+| 센서 형식 | 7카메라 f-theta 참조 형식 채택 여부, 멀티뷰 모델 재학습 범위 | 7.2.2, 3장 3.2.4 |
+| 데이터 공정 소유 | Curator·Reason 도입 후 남는 라벨 정책·품질 관리·재수집 운영 조직 | 7.2.1, 7.2.4 |
+| 효과 검증 | 자사 태스크 A/B 실험 설계(합성 데이터 비율, 롱테일 지표) | 7.2.3, 7.4.1 |
+| 라이선스·데이터 주권 | NOML vs OpenMDW, AV Dataset License, 가드레일 책임, 플릿 데이터 계약 | 7.1.5, 7.2.2 |
+| 인프라·인력 | DGX 구축 vs 클라우드, 사이클당 GPU 예산, 데이터·시뮬 엔지니어 | 7.3.3, 7.4.6, 부록 A A.2 6·11층 |
+
+**한 줄 정리**: VS의 AI 플랫폼은 Cosmos·Omniverse를 "데이터 공장의 설비"로 빌려 쓰는 자리이고, 차량용 HPC와의 접점은 아직 없다 ⚠️. 원재료(플릿 데이터)·품질 기준(라벨·검증 논거)·공장 운영(재수집 판단)이 우리 몫이며, 세대 고정·Omniverse 의존 분리·센서 정합이 첫 결정이다. 3장 자사 관점은 [03-autonomous-driving-stack.md §3.10](03-autonomous-driving-stack.md#310-자사-관점-lg전자-vs사업본부-차량용-hpcai-플랫폼), Tier-1 작업 범위는 [부록 A](appendix-a-tier1-workscope.md).
 
 ---
 
