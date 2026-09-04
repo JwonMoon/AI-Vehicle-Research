@@ -320,7 +320,7 @@ Transfer2.5 README의 두 모드가 역할을 가장 정확히 말한다. "**Sim
 
 ### 7.3.3 결합 패턴
 
-![Omniverse × Cosmos 결합](images/7-3-omniverse-cosmos-pipeline.svg)
+![Omniverse × Cosmos 결합](images/7-3-omniverse-cosmos-pipeline-v2.svg)
 
 *그림 7-10. Omniverse(물리 렌더·NuRec) 출력이 Cosmos Transfer의 조건 입력이 되는 결합 구조. 실선 = 출처로 확인, 점선 = 추정. 자체 작성.*
 

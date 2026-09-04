@@ -13,7 +13,8 @@
 | `7-0-cosmos-map-v2.svg` | Cosmos·Omniverse 위치·역할·성숙도 요약 지도 (현행판: 3장 v2와 같은 규칙 — 열 제목은 텍스트+밑줄·번호 없음, 초록=Cosmos·주황=Omniverse만 채색하고 Alpamayo·AlpaSim·데이터셋은 회색, 텍스트가 블록 안에 들어오도록 조정, 화살표마다 관계 라벨, 범례 줄 삭제) | 7장 7.0.3 · report-07 그림 1 |
 | `7-0-cosmos-map.svg` | 위 지도의 원판 (열 번호·범례 줄 포함). 참고용으로 유지 | — |
 | `7-2-data-flywheel.svg` | AV 데이터 플라이휠에서 Cosmos/Omniverse 구성 요소가 붙는 지점 | 7장 7.2.4 |
-| `7-3-omniverse-cosmos-pipeline.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 | 7장 7.3.3 |
+| `7-3-omniverse-cosmos-pipeline-v2.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 (현행판: 열 제목은 텍스트+밑줄, 주황=Omniverse·초록=Cosmos만 채색하고 입력원·산출물은 흰색·회색, 텍스트가 블록 안에 들어오도록 조정, 화살표마다 관계 라벨(재구성·렌더·3D 투영, 각 출력을 조건으로, 변주 영상 출력, 생성물 채점), 상단 범례 줄 삭제) | 7장 7.3.3 · report-07 그림 9 |
+| `7-3-omniverse-cosmos-pipeline.svg` | Omniverse 출력 → Cosmos Transfer 조건 입력 결합 구조 | 원판, 참고용 유지 |
 | `appendix-a-tier1-workmap.svg` | NVIDIA 제공 범위 vs Tier-1 책임 레이어 지도 + 차별화 매트릭스 | 부록 A A.3 |
 
 규약: 실선 = 출처로 확인, 점선 = 추정. 색: 파랑 = 3장 범위, 초록 = Cosmos, 주황 = Omniverse, 회색 = 다른 장/NVIDIA 제공, 노랑·빨강 = Tier-1 책임.
