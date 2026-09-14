@@ -317,6 +317,105 @@ h2{margin-top:.2rem}
 </section>
 <section id="4-소프트웨어-대응의-지형-5계층"><p class="eyebrow"><span class="no">04</span></p><h2>소프트웨어 대응의 지형 — 5계층</h2>
 <figure><img src="images/s2-sw-stack.svg" alt="SW 대응 5계층"><figcaption>그림 2. 소프트웨어 대응 5계층. 계층 구분과 명칭은 </em><em>본 보고서의 정리</em><em>이며 표준 용어가 아니다. 각 층의 대표 연구·특허는 §4~§7 본문 참조.</figcaption></figure>
+<h3 id="먼저-답부터-소프트웨어로-복구-보상하는-알고리즘이-실제로-있는가">먼저 답부터 — "소프트웨어로 복구·보상하는 알고리즘이 실제로 있는가?"</h3>
+<p>있다. 다만 <strong>오염이 광자를 왜곡했는가, 차단했는가</strong>에 따라 되는 것과 안 되는 것이 갈린다. 아래는 이 보고서가 원문으로 확인한 사례를 "복구 / 보상 / 강건화 / 양산 적용" 네 묶음으로 압축한 것이다. 상세 근거는 이어지는 5계층 절(§4.1~§4.5)과 특허 절(§5)에 있다.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>묶음</th>
+<th>무엇을 하는가</th>
+<th>확인된 알고리즘 · 사례</th>
+<th>효과 (원문 수치)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>복구</strong> (잃은 픽셀·포인트를 되살림)</td>
+<td>국소 비·먼지 아티팩트 제거</td>
+<td>Eigen, Krishnan, Fergus — ICCV 2013 CNN</td>
+<td>분야의 출발점, 국소 아티팩트 한정</td>
+</tr>
+<tr>
+<td></td>
+<td>주행 영상 물방울 제거</td>
+<td>Wen, Wu, Chen — 다중 프레임 시공간 융합 (arXiv:2302.05916)</td>
+<td>실주행 물방울 복원</td>
+</tr>
+<tr>
+<td></td>
+<td>악천후 → 맑음 변환 후 검출</td>
+<td>Wang &amp; Zhao — LP-GAN + YOLOv5 (<em>PLOS One</em> 2025)</td>
+<td>mAP 비 0.68→<strong>0.81</strong>, 안개 0.62→<strong>0.78</strong> — <strong>CARLA 시뮬</strong></td>
+</tr>
+<tr>
+<td></td>
+<td>라이다 비·눈 노이즈 포인트 제거</td>
+<td>DROR/DSOR 통계 필터 (Kurup &amp; Bos 2021), WeatherNet CNN (Heinzler, RA-L 2020), 4DenoiseNet</td>
+<td>DSOR: 재현율 +4%, 시간 −28% vs DROR. "물방울 = 유령 장애물 → 급정지" 방지</td>
+</tr>
+<tr>
+<td></td>
+<td>흐림 판정 후 카메라 설정 보정</td>
+<td>GM 특허 US11979655 — 라플라시안 분산 → 노출·게인 피드백</td>
+<td>임계 이상까지 반복 조정</td>
+</tr>
+<tr>
+<td><strong>보상</strong> (못 보는 센서를 다른 센서·정보로 메움)</td>
+<td>센서별 신뢰도로 융합 가중치 이동</td>
+<td>Bijelic et al., CVPR 2020 — 엔트로피 조향 융합</td>
+<td>짙은 안개서 라이다 AP 29.0으로 붕괴 → 융합은 <strong>87.7</strong> 유지</td>
+</tr>
+<tr>
+<td></td>
+<td>신뢰도 가중 교차 어텐션</td>
+<td>ReliFusion (2025), SB-BEVFusion (2026)</td>
+<td>LiDAR 결손·오작동에서 BEVFusion 능가</td>
+</tr>
+<tr>
+<td></td>
+<td>오염 원인별 가중치 축소·재보정</td>
+<td>Zoox 특허 US11120538</td>
+<td>물리 오염 → 세정, 광학 현상 → 가중치↓</td>
+</tr>
+<tr>
+<td></td>
+<td>가려진 영역의 검출 결과 억제</td>
+<td>Tesla 특허 US20230406356 — 가시성 그리드 0–3</td>
+<td>유령 물체 제동 억제, 임계 초과 시 감속·해제</td>
+</tr>
+<tr>
+<td><strong>강건화</strong> (오염을 견디게 학습)</td>
+<td>오염 패턴 합성 증강</td>
+<td>Uřičář et al. 2019 — GAN</td>
+<td>오염 검출 정확도 <strong>+18%</strong></td>
+</tr>
+<tr>
+<td></td>
+<td>물리 기반 안개 합성 학습</td>
+<td>Hahner et al., ICCV 2021</td>
+<td>실안개 3D 검출 "유의미하게 향상"</td>
+</tr>
+<tr>
+<td></td>
+<td>실오염 데이터 학습</td>
+<td>LIDAROC (2024), Robo3D 밀도 비민감 학습 (2023)</td>
+<td>"clean만 학습한 모델은 오염에서 흔들림"</td>
+</tr>
+<tr>
+<td><strong>양산 적용</strong></td>
+<td>오염 시 기능 축퇴</td>
+<td>Hyundai LKA — "Camera obscured" 비활성</td>
+<td>매뉴얼 명시</td>
+</tr>
+<tr>
+<td></td>
+<td>센서 중복 + 자동 세정 병용</td>
+<td>Waymo 6세대 Driver</td>
+<td>"카메라 제한 시 라이다·레이더가 중복 제공", 세정·가열 병용</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>그리고 한계.</strong> 복구 성공 사례는 전부 <strong>국소·투명 오염</strong> 아니면 <strong>시뮬레이션</strong>이다. 렌즈 대부분이 불투명 오염된 경우의 복원 사례는 본 조사에서 <strong>찾지 못했다.</strong> 융합도 만능이 아니다 — Yu et al.(CVPRW 2023)은 "대부분의 융합 방법은 LiDAR 입력이 교란되면 불가피하게 실패"한다고 보고했고, 라이다 커버 이슬은 "완전 실명"을 만든다(Schlager 2022) — 포인트가 0이면 필터할 것이 없다. 카메라 전용 노선의 Tesla가 2025년 렌즈 와이퍼 특허를 낸 것이 이 한계의 산업적 증거다. 즉 <strong>소프트웨어의 역할은 "닦는 동안 버티기"와 "못 닦으면 안전하게 멈추기"이고, 오염 자체의 제거는 하드웨어 몫</strong>이다. <em>(정리는 본 보고서 해석, 각 수치는 표 안 출처)</em></p>
 <p>아래로 갈수록 "오염을 없애는" 전략에서 "오염과 함께 사는" 전략으로 바뀐다. 다섯 층은 대안이 아니라 <strong>누적</strong>이다 — L2 복원을 하려면 L1 검출이 먼저 있어야 하고, L4 융합이 가중치를 옮기려면 L1이 "어느 센서가" 오염됐는지 알려줘야 한다.</p>
 <h3 id="4-1-l1-검출-자기진단">4.1 L1 — 검출·자기진단</h3>
 <p><strong>핵심 문제: 오염이 있는가, 어디에, 얼마나, 무엇 때문에.</strong></p>
