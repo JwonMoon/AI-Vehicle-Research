@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>센서 오염과 소프트웨어 보상</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f7f9; --surface:#fdfdfd; --surface-2:#eff1f4;
+  --ink:#15181d; --ink-2:#4d545e; --muted:#848a94; --hairline:#e2e5ea;
+  --accent:#1c5cab; --accent-soft:#e6eef8;
+  --warn-bg:#fdf6e7; --warn-edge:#d9a63f;
+  --ok-bg:#e9f6f0; --ok-edge:#1baf7a;
+  --code-bg:#eef0f3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16px;line-height:1.78;-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+a:hover{border-bottom-color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:2.5rem;
+  max-width:76rem;margin:0 auto;padding:0 1.5rem 6rem}
+nav.toc{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto;
+  padding:2.5rem 0 2rem;font-size:.86rem}
+nav.toc .toc-title{font-family:Archivo,sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+nav.toc a{display:block;color:var(--ink-2);padding:.28rem 0 .28rem .7rem;
+  border-left:2px solid var(--hairline);border-bottom:none;line-height:1.45}
+nav.toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+nav.toc a.sub{padding-left:1.5rem;font-size:.81rem;color:var(--muted)}
+
+main{min-width:0;max-width:50rem}
+header.hero{padding:3.5rem 0 2rem;border-bottom:1px solid var(--hairline)}
+.kicker{font-family:Archivo,sans-serif;font-size:.75rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .9rem}
+h1{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-size:clamp(1.8rem,4.4vw,2.5rem);
+  font-weight:800;line-height:1.16;letter-spacing:-.01em;margin:0 0 .5rem;text-wrap:balance}
+.subtitle{color:var(--ink-2);font-size:1.02rem;margin:0 0 1.4rem}
+.byline{color:var(--muted);font-size:.86rem;margin:0}
+.statstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1px;
+  background:var(--hairline);border:1px solid var(--hairline);border-radius:10px;
+  overflow:hidden;margin-top:1.9rem}
+.stat{background:var(--surface);padding:.9rem 1rem}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:1.2rem;font-weight:600;display:block;line-height:1.35}
+.stat .k{font-size:.73rem;color:var(--muted);letter-spacing:.04em}
+
+section{margin-top:3.4rem;scroll-margin-top:1.5rem}
+.eyebrow{font-family:Archivo,sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+.eyebrow .no{color:var(--accent);margin-right:.5em;font-family:"IBM Plex Mono",monospace}
+h2{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-size:1.5rem;font-weight:700;
+  margin:0 0 1rem;letter-spacing:-.005em;text-wrap:balance}
+h3{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-size:1.06rem;font-weight:700;
+  margin:2.2rem 0 .6rem;scroll-margin-top:1.5rem}
+p{margin:0 0 1rem}
+ul,ol{margin:0 0 1rem;padding-left:1.3rem}
+li{margin-bottom:.45rem}
+code{font-family:"IBM Plex Mono",monospace;font-size:.84em;background:var(--code-bg);
+  padding:.12em .4em;border-radius:4px}
+blockquote{margin:1.25rem 0;padding:.2rem 0 .2rem 1.1rem;border-left:3px solid var(--accent);
+  color:var(--ink-2);font-size:.95rem}
+
+table{width:100%;border-collapse:collapse;margin:1.3rem 0;font-size:.88rem;
+  background:var(--surface);border:1px solid var(--hairline);border-radius:8px;overflow:hidden}
+th,td{text-align:left;padding:.6rem .75rem;border-bottom:1px solid var(--hairline);vertical-align:top}
+th{background:var(--surface-2);font-weight:700;font-size:.8rem;letter-spacing:.02em}
+tr:last-child td{border-bottom:none}
+.tablewrap{overflow-x:auto}
+
+figure{margin:1.9rem 0}
+figure img{width:100%;height:auto;display:block;background:#fff;
+  border:1px solid var(--hairline);border-radius:10px}
+figure.photos{display:grid;gap:.8rem}
+figure.photos .row{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr))}
+figure.photos img{border-radius:10px;padding:.6rem}
+figcaption{font-size:.8rem;color:var(--muted);margin-top:.6rem;line-height:1.6}
+figcaption strong{color:var(--ink-2)}
+
+.callout{border-radius:0 8px 8px 0;padding:.85rem 1.15rem;margin:1.5rem 0;font-size:.9rem;color:var(--ink-2)}
+.callout.warn{background:var(--warn-bg);border-left:3px solid var(--warn-edge)}
+.callout.ok{background:var(--ok-bg);border-left:3px solid var(--ok-edge)}
+.callout.note{background:var(--accent-soft);border-left:3px solid var(--accent)}
+.callout strong{color:var(--ink)}
+
+.tldr{display:grid;gap:.9rem;margin:1.6rem 0}
+.tldr .item{background:var(--surface);border:1px solid var(--hairline);
+  border-left:4px solid var(--accent);border-radius:10px;padding:1rem 1.2rem;font-size:.95rem}
+.tldr .n{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent);margin-right:.5em}
+
+footer{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--hairline);
+  font-size:.82rem;color:var(--muted)}
+
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:2rem 0 0;
+    border-bottom:1px solid var(--hairline);padding-bottom:1.2rem}
+  nav.toc .links{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+  nav.toc a{border-left:none;padding-left:0}
+  nav.toc a.sub{display:none}
+}
+
+figure img{padding:.4rem}
+.eyebrow .no{font-size:.72rem}
+blockquote strong{color:var(--ink)}
+h2{margin-top:.2rem}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <div class="toc-title">목차</div>
+  <div class="links">
+<a href="#0-세-줄-요약">0. 세 줄 요약</a>
+<a href="#1-왜-이-보고서인가">1. 왜 이 보고서인가</a>
+<a href="#2-오염이-인지-판단에-미치는-실제-영향">2. 오염이 인지·판단에 미치는 실제 영향</a>
+<a href="#3-규제-표준은-무엇을-요구하나">3. 규제·표준은 무엇을 요구하나</a>
+<a href="#4-소프트웨어-대응의-지형-5계층">4. 소프트웨어 대응의 지형 — 5계층</a>
+<a href="#5-특허가-그리는-폐루프">5. 특허가 그리는 폐루프</a>
+<a href="#6-소프트웨어의-한계-무엇을-복원할-수-없는가">6. 소프트웨어의 한계 — 무엇을 복원할 수 없는가</a>
+<a href="#7-시사점-인지-아키텍처-설계자-체크리스트">7. 시사점 — 인지 아키텍처 설계자 체크리스트</a>
+<a href="#8-출처">8. 출처</a>
+<a href="#부록-확인하지-못한-항목-출처-미확인">부록. 확인하지 못한 항목 (출처 미확인)</a>
+  </div>
+  <div class="toc-title" style="margin-top:1.4rem">시리즈</div>
+  <div class="links">
+    <a href="aumovio-sensor-cleaning.html">1편 · AUMOVIO 세정 하드웨어</a>
+    <a href="sensor-soiling-sw-compensation.html" style="color:var(--accent);border-left-color:var(--accent)">2편 · 오염의 영향과 SW 대응</a>
+  </div>
+</nav>
+<main>
+<header class="hero">
+  <p class="kicker">Research · Sensor Soiling × Perception Software · Part 2</p>
+  <h1>센서 오염은 인지를 어떻게 무너뜨리고, 소프트웨어는 어디까지 막아내는가</h1>
+  <p class="subtitle">오염의 실측 영향 · 검출–복원–강건화–융합–축퇴 5계층 · 20년 특허 폐루프 · 복원 불가능의 경계</p>
+  <p class="byline">작성일 2026-09-14 · AUMOVIO 센서 세정 리서치 2편 · 학술 / 특허 / 규제 / 기업 / 보도 구분 표기 · 미확인 항목은 부록에 명시</p>
+  <div class="statstrip">
+    <div class="stat"><span class="v">88.7→56.9%</span><span class="k">보행자 검출, 오염 Lv1→Lv3</span></div>
+    <div class="stat"><span class="v">73.5→29.0</span><span class="k">라이다 3D AP, 맑음→짙은 안개</span></div>
+    <div class="stat"><span class="v">−6 dB</span><span class="k">레이더 편도 감쇠 = 사거리 50%</span></div>
+    <div class="stat"><span class="v">5계층</span><span class="k">검출·복원·강건화·융합·축퇴</span></div>
+    <div class="stat"><span class="v">2005→2025</span><span class="k">Mobileye에서 Tesla 와이퍼까지</span></div>
+  </div>
+  <div class="callout warn" style="margin-top:1.6rem">
+    <strong>출처 원칙</strong> — 학술 논문, 특허 공보, 규제·표준, 기업 공식, 서드파티 보도를 구분해 표기한다.
+    원문을 확인하지 못한 항목은 <strong>“출처 미확인”</strong> 또는 <strong>“2차 인용”</strong>, 공개 자료로부터 재구성한 부분은
+    <strong>“본 보고서 해석”</strong>으로 명시한다. 원본 마크다운: <a href="sensor-soiling-sw-compensation.md">sensor-soiling-sw-compensation.md</a>
+  </div>
+</header>
+<section id="0-세-줄-요약"><p class="eyebrow"><span class="no">00</span></p><h2>세 줄 요약</h2>
+<ol>
+<li><strong>오염의 영향은 '조금 나빠지는' 수준이 아니다.</strong> 카메라 오염 심각도가 1→3단계로 오르면 보행자 검출률이 88.7%→56.9%로 떨어지고(Yang et al., <em>Sensors</em> 2026), 라이다는 짙은 안개에서 3D 검출 AP가 73.5→29.0으로 무너지며(Bijelic et al., CVPR 2020), 라이다 커버의 <strong>이슬</strong>만으로도 "완전 실명"이 관측됐다(Schlager et al., IEEE OJITS 2022). 레이더는 젖은 진흙에서 −10~−20 dB 감쇠를 겪고, 편도 −6 dB면 탐지거리가 절반이 된다(Kang et al., <em>Sensors</em> 2025).</li>
+<li><strong>소프트웨어 대응은 5계층으로 정리된다</strong> — ① 검출·자기진단, ② 복원·보정, ③ 강건화 학습, ④ 융합·중복, ⑤ 축퇴·인계. 특허는 이 다섯을 <strong>"품질 관측 → 원인 분류 → 대응 선택 → 재검증"</strong> 폐루프로 묶는다. Mobileye(2005)·Waymo(2012)·NVIDIA(2017)·Zoox(2019)·GM(2021)·Tesla(2022)의 청구항이 모두 같은 골격을 공유한다.</li>
+<li><strong>소프트웨어의 한계는 물리적이다.</strong> 투명 오염(물방울·유막)은 광자를 <em>왜곡</em>하므로 복원이 통하지만, 불투명 오염(진흙·벌레)은 광자를 <em>차단</em>하므로 추정만 가능하다. 그래서 가장 앞선 카메라 전용 진영조차 결국 물리 세정으로 돌아왔다 — Tesla는 2022년 "가시성 그리드" 특허에 이어 2025년 렌즈 와이퍼 특허를 출원했다. 1편의 AUMOVIO 세정 하드웨어와 이 편의 소프트웨어는 대체재가 아니라 <strong>한 폐루프의 두 절반</strong>이다.</li>
+</ol>
+<hr />
+</section>
+<section id="1-왜-이-보고서인가"><p class="eyebrow"><span class="no">01</span></p><h2>왜 이 보고서인가</h2>
+<p>1편은 AUMOVIO가 "공기·액체·가열·검출" 네 수단으로 센서를 닦는 방법을 다뤘다. 그 보고서를 쓰면서 답하지 못한 질문이 남았다.</p>
+<ul>
+<li>오염이 인지 결과를 "치명적으로" 망친다는데, <strong>얼마나</strong> 망치는가? 검출률 몇 %가 몇 %로 떨어지는가?</li>
+<li>닦지 않고 <strong>소프트웨어로</strong> 버틸 수는 없는가? 오염을 검출하고, 지워진 픽셀을 복원하고, 다른 센서로 메우는 연구는 어디까지 왔는가?</li>
+<li>그런 방법을 누가 <strong>특허</strong>로 잡고 있는가? 규제는 무엇을 요구하는가?</li>
+</ul>
+<p>이 세 질문을 원문 근거로 답하는 것이 이 보고서의 목표다. 결론부터 말하면, 소프트웨어는 놀랄 만큼 많은 일을 하지만 <strong>"광자가 도달하지 않은 영역"은 어떤 알고리즘도 복구하지 못한다</strong>는 경계가 분명히 존재하고, 산업계의 특허 지형이 그 경계를 그대로 반영하고 있다.</p>
+<hr />
+</section>
+<section id="2-오염이-인지-판단에-미치는-실제-영향"><p class="eyebrow"><span class="no">02</span></p><h2>오염이 인지·판단에 미치는 실제 영향</h2>
+<h3 id="2-1-실측-수치">2.1 실측 수치</h3>
+<figure><img src="images/s1-impact-numbers.svg" alt="센서별 정량 영향"><figcaption>그림 1. 센서별 오염·악천후 영향 실측치. 각 카드는 서로 다른 연구·데이터셋·모델의 결과이므로 카드 간 직접 비교는 불가하다. </em><em>본 보고서 자작 도해</em><em>, 출처는 각 카드 하단 및 아래 본문.</figcaption></figure>
+<p><strong>카메라</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>조건</th>
+<th>결과</th>
+<th>출처 (학술)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>렌즈 오염 심각도 Lv1 → Lv3 (5단계 척도)</td>
+<td>보행자 검출률 <strong>88.7% → 56.9%</strong>. 통제 실험에서 심각도 증가에 따라 인지 IoU <strong>84.85%</strong> 감소</td>
+<td>Yang, Duan, Li, Zhang, "A Static-to-Temporal Framework for Interpretable Camera Lens Soiling Severity Estimation in Autonomous Driving," <em>Sensors</em> 26(11):3533, 2026. <a href="https://doi.org/10.3390/s26113533">doi:10.3390/s26113533</a></td>
+</tr>
+<tr>
+<td>BEV 3D 검출, nuScenes-C 코럽션</td>
+<td>BEVFormer-base NDS: clean <strong>0.517</strong> → 안개 0.407 → 카메라 크래시 0.315 → <strong>눈 0.186 (−64%)</strong></td>
+<td>Xie et al., "RoboBEV: Towards Robust Bird's Eye View Perception under Corruptions," <a href="https://arxiv.org/abs/2304.06719">arXiv:2304.06719</a> (TPAMI 2025 확장판 있음)</td>
+</tr>
+<tr>
+<td>우천 시 카메라 렌즈 물방울</td>
+<td>보행자 검출 정확도 <strong>8.3%</strong> → 공기압 차단 장치 적용 후 <strong>41.6%</strong></td>
+<td>Sabry, Gorospe, Olaverri-Monreal, <a href="https://arxiv.org/abs/2602.17472">arXiv:2602.17472</a> (2026)</td>
+</tr>
+<tr>
+<td>CARLA 시뮬레이션 악천후</td>
+<td>YOLOv5 mAP: 비 <strong>0.68</strong>, 안개 <strong>0.62</strong>, 야간 <strong>0.54</strong> (맑음 대비)</td>
+<td>Wang &amp; Zhao, <em>PLOS One</em> 2025, <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0333928">doi:10.1371/journal.pone.0333928</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>카메라 계열 결과에서 가장 중요한 발견은 Yang et al.의 <strong>"같은 면적 ≠ 같은 심각도"</strong>다. 동일한 픽셀 면적을 덮어도 투명 얼룩과 불투명 진흙은 인지 열화가 다르고, 면적 기반 점수는 외부 데이터에서 상관계수 ρ=0.32에 그친 반면 구조화 점수는 ρ=0.79였다. 즉 <strong>"얼마나 더러운가"는 면적이 아니라 광학적 성질로 재야 한다.</strong> 이 통찰은 1편의 AUMOVIO 설계 원칙("먼지는 공기만으로, 진흙은 액체로")과 정확히 맞물린다.</p>
+<p><strong>라이다</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>조건</th>
+<th>결과</th>
+<th>출처 (학술)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>짙은 안개 (실도로 10,000 km 수집)</td>
+<td>라이다 단독 3D 검출 AP <strong>73.46 → 28.98 (−45.38)</strong>. 같은 조건에서 카메라 단독은 85.43 → 87.89로 유지</td>
+<td>Bijelic et al., "Seeing Through Fog Without Seeing Fog," CVPR 2020, <a href="https://arxiv.org/abs/1902.08913">arXiv:1902.08913</a></td>
+</tr>
+<tr>
+<td>커버 오염 6종 (이슬·먼지·인공 오염·거품·물·기름)</td>
+<td>RIEGL LD05-A20·Ouster OS1-64 실험. <strong>이슬·인공 오염·거품 → "완전 센서 실명(complete sensor blindness)"</strong></td>
+<td>Schlager, Gölles, Muckenhuber, Watzenig, <em>IEEE Open J. ITS</em>, 2022, <a href="https://ieeexplore.ieee.org/document/9916511/">doi:10.1109/OJITS.2022.3214094</a> · 데이터 <a href="https://zenodo.org/records/6780361">Zenodo 6780361</a></td>
+</tr>
+<tr>
+<td>커버 오염 8종 (clean·cover·water·mud·dust·salt·oil·foam), RS-Ruby 128ch</td>
+<td>"깨끗한 데이터로만 학습한 모델은 오염 조건에서 흔들린다" — 오염 데이터를 학습에 포함해야 함</td>
+<td>Jati et al., "LIDAROC," <em>IEEE Sensors Letters</em> 8(9), 2024 · 데이터 <a href="https://zenodo.org/records/12800039">Zenodo 12800039</a></td>
+</tr>
+<tr>
+<td>비·눈 노이즈 포인트</td>
+<td>"물방울이 전방 물체로 오인되어 로봇을 완전 정지시킬 수 있다"</td>
+<td>Heinzler, Piewak, Schindler, Stork, "CNN-based Lidar Point Cloud De-Noising in Adverse Weather," <em>IEEE RA-L</em> 2020, <a href="https://arxiv.org/abs/1912.03874">arXiv:1912.03874</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>라이다에서 주목할 점은 두 가지다. 첫째, <strong>오염이 아니라 이슬</strong>처럼 사소해 보이는 것이 실명을 일으킨다 — 커버 표면의 미세 수막이 레이저를 되반사시켜 근거리 허위 반사를 만들기 때문이다(Schlager et al.). 둘째, 오염은 <strong>정보 손실</strong>(포인트 결손)뿐 아니라 <strong>허위 정보</strong>(물방울 = 유령 장애물)도 만든다. 후자가 "유령 제동(phantom braking)"의 라이다판 원인이다.</p>
+<p><strong>레이더</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>조건</th>
+<th>결과 (76–81 GHz)</th>
+<th>출처 (학술)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>순수 물 (두꺼운 영역)</td>
+<td>감쇠 <strong>−20 dB 초과</strong></td>
+<td>Kang, Hamidi, Vanäs, Eidevåg, Nilsson, Friel, "Effects of Dust and Moisture Surface Contaminants on Automotive Radar Sensor Frequencies," <em>Sensors</em> 2025, <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11991060/">PMC11991060</a></td>
+</tr>
+<tr>
+<td>건조 먼지</td>
+<td>최대 <strong>−3 dB</strong>, 탐지거리 약 <strong>10%</strong> 감소</td>
+<td>동일</td>
+</tr>
+<tr>
+<td>젖은 진흙 → 건조 후</td>
+<td><strong>−10 ~ −20 dB</strong> → 잔류 <strong>−1 ~ −3 dB</strong></td>
+<td>동일</td>
+</tr>
+<tr>
+<td>기준</td>
+<td>편도 −6 dB = 탐지거리 <strong>50%</strong> 손실 (왕복 −12 dB)</td>
+<td>동일</td>
+</tr>
+</tbody>
+</table></div>
+<p>레이더는 흔히 "악천후에 강하다"고 알려져 있고 건조 먼지에는 실제로 강하다. 그러나 <strong>수분</strong>이 개입하는 순간 라이다·카메라 못지않게 취약해진다. 즉 "레이더가 있으니 오염은 괜찮다"는 가정은 물이 없는 조건에서만 성립한다. <em>(수치는 논문, 해석은 본 보고서)</em></p>
+<h3 id="2-2-인지-열화가-판단-제어로-번지는-방식">2.2 인지 열화가 판단·제어로 번지는 방식</h3>
+<p>수치는 "검출률"에서 멈추지만, 실제 사고 경로는 그 뒤에서 만들어진다. 공개 자료에서 확인되는 세 가지 전파 경로:</p>
+<ol>
+<li><strong>유령 물체 → 불필요한 제동.</strong> Tesla 특허 US20230406356A1은 "가시성이 낮은 상황에서 유령 물체(phantom object)가 검출될 수 있고, 가시성 정보를 이용해 그 원인이 시야 저하임을 식별하여 제동 같은 특정 자율 동작을 억제"한다고 명시한다. (<a href="https://patents.google.com/patent/US20230406356A1/en">Google Patents</a>) 즉 Tesla 스스로가 <strong>오염·안개 → 유령 검출 → 급제동</strong> 경로를 문제로 인식하고 청구항에 적었다.</li>
+<li><strong>검출 실패 → 기능 침묵.</strong> Hyundai 차주 매뉴얼은 "전면 윈드실드나 센서가 눈·비 등 이물질로 덮이면 검출 성능이 저하되어 차로 유지 보조가 일시 제한·해제될 수 있다"며 <strong>"Lane Safety system disabled. Camera obscured."</strong> 경고를 띄운다고 적는다. (<a href="https://ownersmanual.hyundai.com/docview/webhelp/Hyundai/1aa2eedf-82a4-476b-a451-67be24fecd21/id967b1c2c00e.html">Hyundai 매뉴얼</a>) 이것은 오염이 <strong>양산차 ADAS를 실제로 꺼버린다</strong>는 1차 증거다.</li>
+<li><strong>시스템 수준 반응의 편차.</strong> NHTSA·VTTI의 2025년 12월 보고서는 카메라·레이더·라이다에 가림·도로 오물·부적절 수리·긁힘을 각 3단계 심각도로 가하고, 시스템 수준 반응이 "기능 완전 정지부터 성능 저하, 측정 가능한 영향 없음까지" 갈렸다고 밝혔다 — 차이는 <strong>차량 아키텍처가 오염 데이터를 어떻게 처리하고 센서 융합 같은 중복을 쓰는가</strong>에서 나왔다. (Virginia Tech Transportation Institute / NHTSA, "Safety Implications of Potential ADAS Sensor Degradation," 2025-12, <a href="https://rosap.ntl.bts.gov/view/dot/88134">ROSA P dot:88134</a>)</li>
+</ol>
+<p>세 번째가 핵심이다. <strong>같은 오염이라도 소프트웨어 아키텍처에 따라 결과가 "정지"와 "무영향" 사이에서 갈린다.</strong> 이것이 이 보고서의 나머지 절이 다룰 내용이다.</p>
+<hr />
+</section>
+<section id="3-규제-표준은-무엇을-요구하나"><p class="eyebrow"><span class="no">03</span></p><h2>규제·표준은 무엇을 요구하나</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>문서</th>
+<th>요구 내용</th>
+<th>확인 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ISO 21448:2022 (SOTIF)</strong></td>
+<td>고장이 아닌 <strong>기능적 불충분(functional insufficiency)</strong>과 그것을 촉발하는 <strong>트리거링 컨디션</strong>을 식별·평가. "카메라의 센서 손상 같은 E/E 오작동이 직접 일으키는 위험은 다루지 않는다" — 즉 <strong>오염은 손상이 아니라 성능 한계로 취급</strong></td>
+<td>해설 자료 확인 (<a href="https://report.asam.net/iso-21448-sotif">ASAM</a>); 표준 원문은 유료 — <strong>원문 조항 미확인</strong></td>
+</tr>
+<tr>
+<td><strong>UN Regulation No. 157 (ALKS)</strong></td>
+<td>인지 서브시스템의 최소 시야(FOV)와 <strong>"FOV 범위를 저해하는 조건을 검출할 능력"</strong> 요구. 감지 성능 저하 시 전환 요구(transition demand) 및 최소 위험 조작(MRM)</td>
+<td>2차 자료 확인 (<a href="https://www.otobrite.com/news/understanding-un-vehicle-safety-regulations-and-how-sensors-help-vehicles-comply/detail">oToBrite 해설</a>, <a href="https://regulations.ai/regulations/RAI-IO-UNECE-R157-2021">regulations.ai</a>); UNECE 원문 PDF는 접근 차단(HTTP 403) — <strong>조항 번호·정확한 문구 미확인</strong></td>
+</tr>
+<tr>
+<td><strong>SAE J3016 (2021)</strong></td>
+<td><strong>최소 위험 상태(minimal risk condition)</strong>: "주행을 계속할 수 없거나 계속해서는 안 될 때 사용자 또는 ADS가 DDT fallback 수행 후 차량을 가져가는 안정된 정지 상태." L4/L5 ADS는 ODD 이탈이나 성능 관련 고장 시 자동으로 달성해야 함</td>
+<td>원문 PDF 확인 (<a href="https://ca-times.brightspotcdn.com/54/02/2d5919914cfe9549e79721b12e66/j3016-202104.pdf">SAE J3016_202104</a>)</td>
+</tr>
+<tr>
+<td><strong>Euro NCAP 2026</strong></td>
+<td>강건성(robustness) 시험 도입 — 기본 시나리오에 속도·오프셋 변형을 주어 실제 조건 재현. <strong>"센서 차폐" 전용 프로토콜은 확인되지 않음</strong></td>
+<td>2차 자료 확인 (<a href="https://www.abdynamics.com/euro-ncap-2026-what-does-it-mean-for-adas-testing-and-development/">AB Dynamics</a>); 공식 프로토콜 내 오염 시험 조항 <strong>미확인</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>정리하면 규제는 "오염을 없애라"가 아니라 <strong>"오염을 알아차리고(검출), 못 보게 됐음을 인정하고(전환 요구), 안전하게 멈춰라(MRM)"</strong>를 요구한다. 이것이 5계층 중 L1과 L5가 법적 의무에 가장 가까운 이유다. <em>(정리는 본 보고서 해석)</em></p>
+<hr />
+</section>
+<section id="4-소프트웨어-대응의-지형-5계층"><p class="eyebrow"><span class="no">04</span></p><h2>소프트웨어 대응의 지형 — 5계층</h2>
+<figure><img src="images/s2-sw-stack.svg" alt="SW 대응 5계층"><figcaption>그림 2. 소프트웨어 대응 5계층. 계층 구분과 명칭은 </em><em>본 보고서의 정리</em><em>이며 표준 용어가 아니다. 각 층의 대표 연구·특허는 §4~§7 본문 참조.</figcaption></figure>
+<p>아래로 갈수록 "오염을 없애는" 전략에서 "오염과 함께 사는" 전략으로 바뀐다. 다섯 층은 대안이 아니라 <strong>누적</strong>이다 — L2 복원을 하려면 L1 검출이 먼저 있어야 하고, L4 융합이 가중치를 옮기려면 L1이 "어느 센서가" 오염됐는지 알려줘야 한다.</p>
+<h3 id="4-1-l1-검출-자기진단">4.1 L1 — 검출·자기진단</h3>
+<p><strong>핵심 문제: 오염이 있는가, 어디에, 얼마나, 무엇 때문에.</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>연구</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SoilingNet</strong> (Valeo)</td>
+<td>서라운드뷰 카메라 오염을 <strong>불투명/투명</strong>으로 분류하는 CNN. 물체 검출과 멀티태스크 학습, GAN 증강. "카메라는 다른 센서보다 오염에 의한 성능 저하가 훨씬 크다"</td>
+<td>Uřičář, Křížek, Sistu, Yogamani, <a href="https://arxiv.org/abs/1905.01492">arXiv:1905.01492</a>, 2019</td>
+</tr>
+<tr>
+<td><strong>WoodScape</strong> (Valeo)</td>
+<td>4개 어안 카메라, 1만+ 인스턴스 분할 이미지, 9개 태스크 중 하나가 <strong>오염 검출</strong>. 오염 서브셋은 clean·transparent·semi-transparent·opaque 4클래스 5,000장</td>
+<td>Yogamani et al., ICCV 2019, <a href="https://arxiv.org/abs/1905.01489">arXiv:1905.01489</a> · <a href="https://woodscape.valeo.com/dataset">woodscape.valeo.com</a></td>
+</tr>
+<tr>
+<td><strong>SoildNet</strong> (Valeo)</td>
+<td>1280×768 입력을 64×64 타일로 나눠 검출. 압축 모델이 기본 네트워크 대비 <strong>9.72% 파라미터</strong>로 동일 정확도, 약 1 TOPS 임베디드 대상</td>
+<td>Das, NeurIPS 2019 ML4AD 워크숍, <a href="https://arxiv.org/abs/1911.01054">arXiv:1911.01054</a></td>
+</tr>
+<tr>
+<td><strong>Let's Get Dirty</strong></td>
+<td>GAN으로 미관측 오염 패턴 합성 + 마스크 자동 생성 → 검출 정확도 <strong>18%</strong> 향상</td>
+<td>Uřičář et al., <a href="https://arxiv.org/abs/1912.02249v2">arXiv:1912.02249</a>, 2019</td>
+</tr>
+<tr>
+<td><strong>WoodScape 재검토</strong></td>
+<td>원본 오염 데이터셋에 <strong>데이터 누수와 부정확한 주석</strong>이 있어 새 서브셋 구성. 타일 분류 대신 <strong>의미 분할</strong>로 재정식화</td>
+<td>Beránek, Diviš, Gruber, <a href="https://arxiv.org/abs/2511.09740">arXiv:2511.09740</a>, 2025</td>
+</tr>
+<tr>
+<td><strong>Static-to-Temporal 심각도 추정</strong></td>
+<td>5단계 심각도, 50,458장 외부 테스트. 시간적 안정화로 지터 51.5% 감소. 면적 기반 점수 ρ=0.32 vs 구조화 점수 ρ=0.79</td>
+<td>Yang et al., <em>Sensors</em> 2026, <a href="https://doi.org/10.3390/s26113533">doi:10.3390/s26113533</a></td>
+</tr>
+<tr>
+<td><strong>GSHI (Global Sensor Health Index)</strong></td>
+<td>단일 RGB에서 열화 유형·심각도·불확실성 맵을 동시 추정. YOLOv8 검출 실패보다 평균 <strong>0.47±0.25 심각도 단위 앞서</strong> 조기 경보</td>
+<td>Aher, <a href="https://arxiv.org/abs/2605.05439">arXiv:2605.05439</a>, 2026</td>
+</tr>
+<tr>
+<td><strong>특징 기반 열화 인식</strong></td>
+<td>소수의 유의 특징 선택으로 소규모 데이터에서도 렌즈 오염·열화 유형 분류</td>
+<td>Bauer, <a href="https://arxiv.org/abs/2303.07100">arXiv:2303.07100</a>, 2023</td>
+</tr>
+<tr>
+<td><strong>레이더 차폐 검출</strong></td>
+<td>정지 구조물 반사의 <strong>클러터 리지(clutter ridge)</strong> 형태로 차폐 판정 — 시동 후 수 초 내 판정</td>
+<td>Valeo Radar Systems, <a href="https://patents.google.com/patent/US10162046B2/en">US10162046B2</a> (우선일 2016-03-17)</td>
+</tr>
+<tr>
+<td><strong>라이다 오염 고장 진단</strong></td>
+<td>"오염 유형마다 증상 조합이 달라 고장 검출·격리(FDI)에 활용 가능"</td>
+<td>Schlager et al., IEEE OJITS 2022 (위 인용)</td>
+</tr>
+</tbody>
+</table></div>
+<p>L1의 연구 흐름은 명확하다. <strong>(a) "있다/없다" → "어디에" (타일) → "얼마나" (심각도) → "왜" (원인)</strong>로 정보량이 늘고, <strong>(b) 단일 프레임 → 시간 축</strong>으로 안정화되며, <strong>(c) 사후 검출 → 조기 경보</strong>로 이동한다. 실무적으로 중요한 것은 Beránek et al.(2025)의 지적이다 — 이 분야의 기준 데이터셋 자체에 누수가 있었다. 즉 <strong>지금까지 보고된 오염 검출 정확도 일부는 과대평가됐을 가능성</strong>이 있다. <em>(마지막 문장은 본 보고서 해석)</em></p>
+<h3 id="4-2-l2-복원-보정">4.2 L2 — 복원·보정</h3>
+<p><strong>핵심 문제: 잃어버린 픽셀·포인트를 어디까지 되돌릴 수 있는가.</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>연구</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Eigen, Krishnan, Fergus (ICCV 2013)</strong></td>
+<td>"창문 너머로 찍은 사진에서 국소적 비·먼지 아티팩트 제거." 깨끗/오염 쌍으로 특수 CNN 학습 — 이 분야의 출발점</td>
+<td><a href="https://openaccess.thecvf.com/content_iccv_2013/papers/Eigen_Restoring_an_Image_2013_ICCV_paper.pdf">ICCV 2013 Open Access</a>, doi:10.1109/ICCV.2013.84</td>
+</tr>
+<tr>
+<td><strong>비디오 물방울 제거</strong> (주행 장면)</td>
+<td>다중 프레임의 시공간 표현을 어텐션으로 융합. 합성 데이터 + 실이미지 교차 학습</td>
+<td>Wen, Wu, Chen, <a href="https://arxiv.org/abs/2302.05916">arXiv:2302.05916</a>, 2023</td>
+</tr>
+<tr>
+<td><strong>악천후 → 맑음 변환 후 검출</strong></td>
+<td>LP-GAN(Pix2Pix 경량화) → YOLOv5. mAP 비 0.68→<strong>0.81</strong>, 안개 0.62→<strong>0.78</strong>, 야간 0.54→<strong>0.76</strong>. <strong>CARLA 시뮬 4만 장</strong>, 실도로 아님</td>
+<td>Wang &amp; Zhao, <em>PLOS One</em> 2025 (위 인용)</td>
+</tr>
+<tr>
+<td><strong>LiDAR 눈 제거 — DROR/DSOR</strong></td>
+<td>포인트 밀도 변화를 고려한 통계 필터. DSOR이 DROR 대비 <strong>재현율 4%↑, 실행 시간 28%↓</strong>. WADS 데이터셋(미시간 어퍼 페닌슐라 겨울)</td>
+<td>Kurup &amp; Bos, <a href="https://arxiv.org/abs/2109.07078">arXiv:2109.07078</a>, 2021</td>
+</tr>
+<tr>
+<td><strong>WeatherNet</strong></td>
+<td>최초 CNN 기반 라이다 악천후 노이즈 제거. 기하 필터 대비 "유의미한 성능 향상"</td>
+<td>Heinzler et al., RA-L 2020 (위 인용)</td>
+</tr>
+<tr>
+<td><strong>4DenoiseNet</strong></td>
+<td>인접 프레임 시공간 문맥으로 실시간 노이즈 제거</td>
+<td><a href="https://arxiv.org/pdf/2209.07121">arXiv:2209.07121</a></td>
+</tr>
+<tr>
+<td><strong>노출·게인 재조정</strong> (GM 특허)</td>
+<td>와이퍼·제상·강수 센서 작동을 트리거로 ROI의 <strong>라플라시안 분산</strong>을 계산해 흐림 판정 → 카메라 캡처 설정(노출·대비·게인)을 임계 이상까지 피드백 조정</td>
+<td>GM Global Technology Operations, <a href="https://patents.google.com/patent/US11979655B2/en">US11979655B2</a> (우선일 2021-09-30)</td>
+</tr>
+</tbody>
+</table></div>
+<p>L2에서 반드시 짚어야 할 경계가 있다. <strong>복원이 "검출을 돕는가"와 "정보를 되살리는가"는 다른 질문</strong>이다. PLOS One 결과(0.68→0.81)는 전자를 시뮬레이션에서 보였을 뿐이고, Eigen et al.이 다룬 것은 <strong>국소적</strong> 아티팩트다. 진흙이 렌즈 절반을 덮은 경우 GAN은 "그럴듯한 픽셀"을 생성할 수는 있어도 <strong>실제 장면</strong>을 만들 수는 없다. 이 문제는 §8에서 다시 다룬다.</p>
+<h3 id="4-3-l3-강건화-학습">4.3 L3 — 강건화 학습</h3>
+<p><strong>핵심 문제: 오염을 처음부터 견디도록 훈련할 수 있는가.</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>연구</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>안개 시뮬레이션 학습</strong></td>
+<td>맑은 날 실측 포인트클라우드에 물리 기반 안개를 합성해 학습 → STF 실안개에서 3D 검출 "유의미하게 향상"</td>
+<td>Hahner, Sakaridis, Dai, Van Gool, ICCV 2021, <a href="https://arxiv.org/abs/2108.05249">arXiv:2108.05249</a></td>
+</tr>
+<tr>
+<td><strong>Robo3D</strong></td>
+<td>라이다 코럽션 8종(안개·눈·젖은 노면·모션블러·빔 결손·크로스토크·불완전 에코·센서 교차). "SOTA 3D 모델은 코럽션에 취약" → <strong>밀도 비민감 학습 + 유연 복셀화</strong> 제안</td>
+<td>Kong et al., ICCV 2023, <a href="https://arxiv.org/abs/2303.17597">arXiv:2303.17597</a></td>
+</tr>
+<tr>
+<td><strong>RoboBEV</strong></td>
+<td>카메라 BEV 모델 30종을 nuScenes-C로 벤치마크. 사전학습·깊이 무관(depth-free) BEV 변환·장기 시간 융합이 강건성에 기여</td>
+<td>Xie et al. (위 인용)</td>
+</tr>
+<tr>
+<td><strong>LIDAROC</strong></td>
+<td>"오염 데이터를 학습 단계에 포함하는 것이 필수"</td>
+<td>Jati et al., 2024 (위 인용)</td>
+</tr>
+<tr>
+<td><strong>GAN 오염 증강</strong></td>
+<td>+18% (L1 항목과 동일 연구)</td>
+<td>Uřičář et al., 2019</td>
+</tr>
+</tbody>
+</table></div>
+<p>L3의 공통 결론은 단순하다 — <strong>오염을 본 적 없는 모델은 오염 앞에서 무너진다.</strong> 그리고 실제 오염 데이터는 모으기 어렵고(눈 오는 날을 기다려야 한다) 주석은 더 어렵기 때문에, <strong>물리 기반 시뮬레이션과 GAN 합성</strong>이 사실상 표준이 됐다. 다만 RoboBEV가 지적하듯 "clean 성능이 좋은 모델이 corrupted 성능도 좋다"는 보장은 없고, 순위가 뒤바뀐다.</p>
+<h3 id="4-4-l4-융합-중복">4.4 L4 — 융합·중복</h3>
+<p><strong>핵심 문제: 한 센서가 더러워졌을 때 다른 센서가 메울 수 있는가.</strong></p>
+<figure><img src="images/s6-fusion-asymmetry.svg" alt="융합의 비대칭"><figcaption>그림 3. 왼쪽은 STF(CVPR 2020) 실측 AP, 오른쪽은 Yu et al.(CVPRW 2023)의 결론. 서로 다른 데이터셋·모델이므로 '방향'만 비교한다. </em><em>본 보고서 자작 도해.</em>**</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>연구</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>엔트로피 조향 융합</strong></td>
+<td>센서별 <strong>측정 엔트로피</strong>로 융합 가중치를 적응 조정. 짙은 안개에서 라이다 29.0, 카메라 87.9일 때 융합 <strong>87.7</strong> 달성 — 무너진 센서에 끌려가지 않음</td>
+<td>Bijelic et al., CVPR 2020 (위 인용)</td>
+</tr>
+<tr>
+<td><strong>LiDAR-카메라 융합 강건성 벤치마크</strong></td>
+<td>nuScenes·Waymo 기반. <strong>"대부분의 융합 방법은 LiDAR 입력이 교란되면 불가피하게 실패"</strong>, 카메라 입력의 기여는 LiDAR에 비해 "현저히 열등"</td>
+<td>Yu et al., <a href="https://arxiv.org/abs/2205.14951">arXiv:2205.14951</a> / CVPRW 2023</td>
+</tr>
+<tr>
+<td><strong>MultiCorrupt</strong></td>
+<td>10종 다중 모달 코럽션(눈·안개·공간/시간 오정렬 등). "융합 전략에 따라 강건성이 갈린다"</td>
+<td>Beemelmanns, Zhang, Geller, Eckstein, <a href="https://arxiv.org/abs/2402.11677">arXiv:2402.11677</a></td>
+</tr>
+<tr>
+<td><strong>ReliFusion</strong></td>
+<td>신뢰도 모듈이 모달별 신뢰 점수를 부여하고 <strong>신뢰도 가중 상호 교차 어텐션</strong>으로 균형. LiDAR 제한 FOV·심각한 오작동에서 BEVFusion 능가</td>
+<td>Sadeghian et al., <a href="https://arxiv.org/abs/2502.01856">arXiv:2502.01856</a>, 2025</td>
+</tr>
+<tr>
+<td><strong>SB-BEVFusion</strong></td>
+<td>결손·오염 모달리티 시나리오에서 BEVFusion 개선</td>
+<td><a href="https://arxiv.org/abs/2605.11799">arXiv:2605.11799</a>, 2026</td>
+</tr>
+</tbody>
+</table></div>
+<p>두 결과를 겹쳐 보면 융합에 대한 단순한 낙관이 깨진다. STF는 "안개에서 카메라가 라이다를 구한다"를 보여주고, Yu et al.은 "오늘의 융합 모델은 LiDAR가 흔들리면 함께 무너진다"를 보여준다. 모순이 아니다 — <strong>어느 센서가 오염됐느냐에 따라 취약성이 완전히 달라진다</strong>는 뜻이다. 따라서 L1 검출은 "오염이 있다"가 아니라 <strong>"어느 센서의 어느 영역이 얼마나"</strong>까지 알려줘야 L4가 가중치를 옮길 수 있다. <em>(본 보고서 해석)</figcaption></figure>
+<p>Waymo의 공식 서술도 같은 구조다. "카메라 시야가 제한되는 조건에서 라이다와 레이더가 필요한 중복을 제공한다"(6세대 Driver 소개, <a href="https://waymo.com/blog/2024/08/meet-the-6th-generation-waymo-driver/">Waymo 블로그 2024-08</a>). 그리고 그 Waymo도 <strong>자동 세정 시스템과 가열 요소</strong>를 함께 쓴다(<a href="https://waymo.com/blog/2025/10/creating-an-all-weather-driver/">Waymo 블로그 2025-10</a>) — 융합만으로 충분했다면 세정이 필요 없었을 것이다.</p>
+<h3 id="4-5-l5-축퇴-인계">4.5 L5 — 축퇴·인계</h3>
+<p><strong>핵심 문제: 더 이상 못 보겠다고 언제, 어떻게 인정할 것인가.</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>사례</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tesla 특허</strong></td>
+<td>전방 영상에서 가시성 값 2(부분 가림)가 <strong>임계 개수 초과</strong>면 감속; 높은 가시성 손실은 <strong>자율 모드 해제 → 운전자 제어</strong></td>
+<td><a href="https://patents.google.com/patent/US20230406356A1/en">US20230406356A1</a></td>
+</tr>
+<tr>
+<td><strong>NVIDIA 특허</strong></td>
+<td>블록 점수가 임계 초과 시 <strong>경보 신호</strong> → "차량 제어를 조정하거나 인간 제어자에게 경고"</td>
+<td><a href="https://patents.google.com/patent/US20190138821A1/en">US10769454B2 / US20190138821A1</a> (우선일 2017-11-07)</td>
+</tr>
+<tr>
+<td><strong>Hyundai 양산차</strong></td>
+<td>"Camera obscured" → 차로 유지 보조 비활성, 장애물 제거 시 복귀</td>
+<td>Hyundai 매뉴얼 (위 인용)</td>
+</tr>
+<tr>
+<td><strong>UN R157</strong></td>
+<td>감지 성능 저하 → 전환 요구 → MRM (감속 5 m/s² 초과 조건 등)</td>
+<td>2차 자료 (위 표)</td>
+</tr>
+<tr>
+<td><strong>SAE J3016</strong></td>
+<td>최소 위험 상태 = "안정된 정지 상태"; 단 "계속 주행·갓길 정차·제자리 정지의 상대 위험을 고려한 <strong>축퇴 모드 전략</strong>을 따를 수 있음"</td>
+<td>J3016_202104 (위 인용)</td>
+</tr>
+<tr>
+<td><strong>Waymo 능동 진단 특허</strong></td>
+<td>차량이 <strong>의도적으로 조향·속도 변화</strong>를 주고 센서 응답이 예측과 맞는지 비교. 편차 초과 시 경고·수동 전환 요청·시각·위치 기록</td>
+<td>Google/Waymo, <a href="https://patents.google.com/patent/US9274525B1/en">US9274525B1</a> (우선일 2012-09-28)</td>
+</tr>
+</tbody>
+</table></div>
+<p>L5는 기술적으로 가장 단순하지만 사업적으로 가장 비싸다. 로보택시가 "못 보겠다"고 멈추는 것은 곧 <strong>운행 중단</strong>이고, 1편에서 본 세정액 예산 문제와 직결된다. Tesla 특허가 "감속"과 "해제"를 가시성 값의 <strong>개수 임계</strong>로 단계화한 것은, 축퇴를 이진 스위치가 아니라 연속 다이얼로 만들려는 시도로 읽힌다. <em>(본 보고서 해석)</em></p>
+<hr />
+</section>
+<section id="5-특허가-그리는-폐루프"><p class="eyebrow"><span class="no">05</span></p><h2>특허가 그리는 폐루프</h2>
+<figure><img src="images/s3-closed-loop.svg" alt="검출→분류→대응 폐루프"><figcaption>그림 4. Mobileye·NVIDIA·Zoox·GM·Tesla 특허의 청구 구조를 한 장으로 겹친 것. 각 단계 옆 회사명은 그 단계를 명시적으로 청구한 특허. </em><em>본 보고서 자작 통합 도해.</em>**</p>
+<p>여섯 회사의 특허를 나란히 읽으면 놀랄 만큼 같은 골격이 나온다.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>Mobileye 2005</th>
+<th>NVIDIA 2017</th>
+<th>Zoox 2019</th>
+<th>GM 2021</th>
+<th>Tesla 2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>① 품질 관측</strong></td>
+<td>윈드실드 표면에 초점 맞춘 <strong>2차 카메라</strong>로 고주파 에지 검출</td>
+<td>처리 단위(PU)별 <strong>엔트로피</strong>, 히스토그램 동적 임계, 프레임 간 지속성 추적</td>
+<td><strong>스테레오 불일치 · 다크채널 · 옵티컬 플로 · ML</strong> 병용</td>
+<td>와이퍼·제상 작동을 트리거로 ROI <strong>라플라시안 분산</strong></td>
+<td>그리드별 <strong>가시성 값 0–3</strong></td>
+</tr>
+<tr>
+<td><strong>② 원인 분류</strong></td>
+<td>비·눈 / 먼지·진흙 / 김서림·결로 / 균열</td>
+<td>(블록 점수만)</td>
+<td>먼지·진흙·플레어·초점 오류 + 태양각·날씨·차량 자세 결합</td>
+<td>(흐림 판정만)</td>
+<td>안개·결로·얼음·물·비·글레어·연기·타이어 스프레이·<strong>더러운 윈드실드·데드 픽셀</strong></td>
+</tr>
+<tr>
+<td><strong>③ 대응 선택</strong></td>
+<td>와이퍼 · 세정액 · 제상 · 안개등 · 운전자 통지 · <strong>영향 받는 비전 기능 비활성</strong></td>
+<td>경보 → 제어 조정 또는 경고</td>
+<td>물리 오염 → <strong>세정</strong> / 광학 현상 → <strong>가중치 축소·차량 방향 변경</strong> / 오작동 → 재보정·속도·경로 조정 · 심하면 자율 중단</td>
+<td>카메라 설정 피드백 조정</td>
+<td>와이퍼·히터·제상 / 감속 / <strong>유령 물체 제동 억제</strong> / 자율 해제</td>
+</tr>
+<tr>
+<td><strong>출처</strong></td>
+<td><a href="https://patents.google.com/patent/US10632916B2/en">US10632916B2</a> (우선일 2005-11-23)</td>
+<td><a href="https://patents.google.com/patent/US20190138821A1/en">US10769454B2</a> (2017-11-07)</td>
+<td><a href="https://patents.google.com/patent/US11120538B2/en">US11120538B2</a> (2019-12-27)</td>
+<td><a href="https://patents.google.com/patent/US11979655B2/en">US11979655B2</a> (2021-09-30)</td>
+<td><a href="https://patents.google.com/patent/US20230406356A1/en">US20230406356A1</a> (2022-05-20)</td>
+</tr>
+</tbody>
+</table></div>
+<p>여기서 읽히는 것 세 가지. <em>(본 보고서 해석)</figcaption></figure>
+<ol>
+<li><strong>원인 분류가 특허의 핵심 차별점이다.</strong> 검출 자체(①)는 20년 전 Mobileye가 이미 청구했다. 2019년 이후 Zoox·Tesla의 청구항은 "무엇 때문에 안 보이는가"를 세분화하는 데 집중한다 — 대응(③)이 원인에 따라 갈리기 때문이다. 이것은 1편의 AUMOVIO 4대 수단(공기/액체/가열)이 오염 유형별로 나뉘는 것과 같은 논리다.</li>
+<li><strong>소프트웨어 특허가 물리 세정을 청구항 안에 품는다.</strong> Mobileye·Zoox·Tesla 모두 "세정액 분사"를 대응 중 하나로 넣었다. 즉 <strong>검출 SW와 세정 HW는 하나의 특허 안에서 폐루프를 이룬다.</strong> 1편 7장에서 지적한 "AUMOVIO 세정 매각 후 검출 SW(AUMOVIO)와 액추에이터(CERTINA)가 회사 간 인터페이스로 갈린다"는 우려가 특허 지형에서도 확인된다.</li>
+<li><strong>Tesla는 결국 하드웨어로 돌아왔다.</strong> 2022년 가시성 그리드 특허에서 대응은 와이퍼·히터·감속·억제·해제까지였다. 2025년 5월 21일 출원, 2026년 5월 26일 등록된 <strong>US 12,636,684 B1 "Lens Cleaning System"</strong>은 구면 렌즈 곡률을 따르는 소형 와이퍼와 세정액 분사를 청구하며, "카메라 피드 자체의 화질을 계속 감시해 오염 검출 시 자동으로 세정 시퀀스를 활성화"한다고 보도됐다. (<a href="https://electrek.co/2026/06/02/tesla-patents-camera-wiper-self-driving-robotaxi/">Electrek 2026-06-02</a>, <a href="https://www.notateslaapp.com/news/4207/tesla-patents-self-cleaning-camera-lens-with-built-in-wiper">Not a Tesla App</a> — <strong>서드파티 보도, Google Patents 원문은 조회 시점에 미색인(404)이라 청구항 직접 확인 실패</strong>)</li>
+</ol>
+<figure><img src="images/s5-patent-timeline.svg" alt="특허 타임라인"><figcaption>그림 5. 오염 검출·보상 특허 20년. 우선일 기준. 상단은 검출·SW 대응, 하단은 물리 세정 HW. </em><em>본 보고서 자작 도해</em><em>, 출처는 각 공보(§9).</figcaption></figure>
+<p>이 밖에 방향이 다른 특허 두 건도 기록해 둔다.</p>
+<ul>
+<li><strong>State Farm, US11189112B1</strong> (우선일 2016-01-22): 보험사가 출원. 센서 신호를 과거 세션 기준선 및 타 센서와 비교해 오작동 판정 → 자율 기능 제한·비활성·<strong>보험 조건 조정</strong>. 오염 검출이 보험 리스크 산정으로 이어지는 경로. (<a href="https://patents.google.com/patent/US11189112B1/en">Google Patents</a>)</li>
+<li><strong>Rockwell Collins, US12067813B2</strong> (우선일 2021-02-01): 항공 분야. 차량 상태·환경(안개·태양각)에서 <strong>기대 센서 출력</strong>을 계산해 실제와 비교, 0–100 열화 점수 → "환경 탓인가 고장인가" 구분. 임무 건전성 임계 미달 시 <strong>다른 차량에 임무 이관</strong>. (<a href="https://patents.google.com/patent/US12067813B2/en">Google Patents</a>) 로보택시 플릿의 "오염 차량 교체 배차"와 같은 구조다.</li>
+</ul>
+<hr />
+</section>
+<section id="6-소프트웨어의-한계-무엇을-복원할-수-없는가"><p class="eyebrow"><span class="no">06</span></p><h2>소프트웨어의 한계 — 무엇을 복원할 수 없는가</h2>
+<figure><img src="images/s4-recoverable-boundary.svg" alt="복원 가능 경계"><figcaption>그림 6. 오염이 광자를 '왜곡'했는가 '차단'했는가에 따른 복원 가능성. 투명/불투명 구분은 SoilingNet, 경계 해석은 </em><em>본 보고서</em><em>.</figcaption></figure>
+<p>여기까지의 근거를 한 문장으로 압축하면 이렇다. <em>(본 보고서 해석)</em></p>
+<blockquote>
+<p><strong>소프트웨어는 왜곡을 되돌리고, 결손을 추정하고, 신뢰를 재배분하고, 멈출 때를 안다. 그러나 렌즈에 도달하지 않은 광자를 만들어내지는 못한다.</strong></p>
+</blockquote>
+<p>근거를 다시 모으면:</p>
+<ul>
+<li>SoilingNet의 <strong>투명/불투명</strong> 구분과 Yang et al.의 <strong>"같은 면적 ≠ 같은 심각도"</strong>는 오염의 광학적 성질이 결정적임을 보여준다.</li>
+<li>Eigen et al.(2013)이 다룬 것은 <strong>국소(localized)</strong> 아티팩트였고, PLOS One의 0.68→0.81은 <strong>시뮬레이션</strong>이었다. 렌즈 대부분이 불투명하게 덮인 경우의 복원 성공 사례는 본 조사에서 <strong>확인되지 않았다</strong>.</li>
+<li>Schlager et al.의 라이다 "완전 실명"은 어떤 필터로도 되돌릴 수 없는 상태다 — 포인트가 없다.</li>
+<li>Yu et al.은 융합조차 LiDAR 결손에는 무력함을 보였다.</li>
+<li>그리고 카메라 전용 노선의 대표 주자 Tesla가 렌즈 와이퍼 특허를 냈다.</li>
+</ul>
+<p>1편과 이 편을 잇는 결론은 단순하다. <strong>오염 대응은 "닦을 것인가, 버틸 것인가"의 선택이 아니라, "얼마나 빨리 알아채고(L1), 닦는 동안 얼마나 버티며(L2–L4), 못 닦으면 얼마나 안전하게 멈추는가(L5)"의 설계 문제</strong>다. AUMOVIO의 세정 하드웨어는 이 루프에서 "닦는" 액추에이터이고, 이 편의 소프트웨어는 그 앞뒤를 채운다.</p>
+<hr />
+</section>
+<section id="7-시사점-인지-아키텍처-설계자-체크리스트"><p class="eyebrow"><span class="no">07</span></p><h2>시사점 — 인지 아키텍처 설계자 체크리스트</h2>
+<p><em>(본 보고서 해석. 특정 기업의 권고가 아니다.)</em></p>
+<ol>
+<li><strong>오염 검출 출력을 "센서·영역·심각도·원인"의 4-튜플로 정의하라.</strong> 이진 플래그로는 L4 융합도 L5 축퇴도 제대로 동작하지 않는다. Tesla의 그리드 가시성, Zoox의 원인 분류, Yang et al.의 구조화 심각도가 모두 이 방향이다.</li>
+<li><strong>면적 기반 오염 점수를 쓰지 마라.</strong> 외부 데이터 상관 ρ=0.32(면적) vs 0.79(구조화). 투명 얼룩과 불투명 진흙을 같은 점수로 취급하면 세정액도 낭비하고 축퇴 판단도 틀린다.</li>
+<li><strong>"오염을 본 적 있는" 모델만 배포하라.</strong> 시뮬레이션 안개(Hahner), GAN 오염(Uřičář), 실오염 데이터셋(LIDAROC·WADS)을 학습 파이프라인에 넣어라. clean 벤치마크 순위는 corrupted 순위를 보장하지 않는다(RoboBEV).</li>
+<li><strong>융합 모델의 LiDAR 의존도를 측정하라.</strong> LiDAR 커버 오염 시나리오를 검증 세트에 반드시 포함시켜라(Yu et al.). "레이더가 있으니 괜찮다"는 가정은 젖은 오염에서 깨진다(Kang et al.).</li>
+<li><strong>유령 물체 억제 로직에 가시성 정보를 연결하라.</strong> Tesla 특허의 핵심은 "검출됐다"와 "그 영역이 가려져 있다"를 동시에 보는 것이다. 오염 검출이 인지 파이프라인 바깥에 있으면 유령 제동을 막을 수 없다.</li>
+<li><strong>축퇴를 다이얼로 설계하라.</strong> 감속 → 기능 축소 → 인계 요구 → MRM의 연속 단계를, 가시성 임계의 <strong>개수</strong>로 구동하라(Tesla). SAE J3016은 축퇴 모드 전략을 명시적으로 허용한다.</li>
+<li><strong>세정 액추에이터와 검출 SW의 인터페이스를 계약 문서로 못 박아라.</strong> 특허들은 이 둘을 한 청구항에 넣는다. 1편에서 본 CERTINA 매각처럼 조직 경계가 갈리면, "검출 → 세정 지령 → 재검증" 루프의 지연·책임을 누가 보증하는지 사양서에 있어야 한다.</li>
+</ol>
+<hr />
+</section>
+<section id="8-출처"><p class="eyebrow"><span class="no">08</span></p><h2>출처</h2>
+<h3 id="학술-논문">학술 논문</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>자료</th>
+<th>내용</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Yang, Duan, Li, Zhang, <em>Sensors</em> 26(11):3533, 2026</td>
+<td>렌즈 오염 심각도 추정, 보행자 검출 88.7→56.9%</td>
+<td>https://doi.org/10.3390/s26113533</td>
+</tr>
+<tr>
+<td>Xie et al., RoboBEV, arXiv:2304.06719</td>
+<td>nuScenes-C, BEVFormer 눈 NDS −64%</td>
+<td>https://arxiv.org/abs/2304.06719</td>
+</tr>
+<tr>
+<td>Sabry, Gorospe, Olaverri-Monreal, arXiv:2602.17472</td>
+<td>공기압 우천 차단, 보행자 검출 8.3→41.6%</td>
+<td>https://arxiv.org/abs/2602.17472</td>
+</tr>
+<tr>
+<td>Wang &amp; Zhao, <em>PLOS One</em> 2025</td>
+<td>LP-GAN 변환 후 YOLOv5 mAP (CARLA)</td>
+<td>https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0333928</td>
+</tr>
+<tr>
+<td>Bijelic et al., CVPR 2020, arXiv:1902.08913</td>
+<td>Seeing Through Fog, 엔트로피 조향 융합, STF 데이터셋</td>
+<td>https://arxiv.org/abs/1902.08913</td>
+</tr>
+<tr>
+<td>Schlager et al., <em>IEEE OJITS</em> 2022</td>
+<td>라이다 커버 오염 6종, 완전 실명</td>
+<td>https://ieeexplore.ieee.org/document/9916511/ · https://zenodo.org/records/6780361</td>
+</tr>
+<tr>
+<td>Jati et al., LIDAROC, <em>IEEE Sensors Lett.</em> 2024</td>
+<td>라이다 커버 오염 8종 데이터셋</td>
+<td>https://zenodo.org/records/12800039</td>
+</tr>
+<tr>
+<td>Heinzler et al., <em>IEEE RA-L</em> 2020, arXiv:1912.03874</td>
+<td>WeatherNet, CNN 라이다 노이즈 제거</td>
+<td>https://arxiv.org/abs/1912.03874</td>
+</tr>
+<tr>
+<td>Kurup &amp; Bos, arXiv:2109.07078</td>
+<td>DSOR 눈 필터, WADS</td>
+<td>https://arxiv.org/abs/2109.07078</td>
+</tr>
+<tr>
+<td>4DenoiseNet, arXiv:2209.07121</td>
+<td>시공간 라이다 노이즈 제거</td>
+<td>https://arxiv.org/pdf/2209.07121</td>
+</tr>
+<tr>
+<td>Kang et al., <em>Sensors</em> 2025</td>
+<td>레이더 먼지·수분 감쇠</td>
+<td>https://pmc.ncbi.nlm.nih.gov/articles/PMC11991060/</td>
+</tr>
+<tr>
+<td>Uřičář et al., SoilingNet, arXiv:1905.01492</td>
+<td>투명/불투명 오염 검출</td>
+<td>https://arxiv.org/abs/1905.01492</td>
+</tr>
+<tr>
+<td>Yogamani et al., WoodScape, ICCV 2019, arXiv:1905.01489</td>
+<td>어안 데이터셋, 오염 태스크</td>
+<td>https://arxiv.org/abs/1905.01489</td>
+</tr>
+<tr>
+<td>Das, SoildNet, arXiv:1911.01054</td>
+<td>9.72% 파라미터 압축 오염 검출</td>
+<td>https://arxiv.org/abs/1911.01054</td>
+</tr>
+<tr>
+<td>Uřičář et al., Let's Get Dirty, arXiv:1912.02249</td>
+<td>GAN 오염 증강 +18%</td>
+<td>https://arxiv.org/abs/1912.02249v2</td>
+</tr>
+<tr>
+<td>Beránek, Diviš, Gruber, arXiv:2511.09740</td>
+<td>WoodScape 오염 데이터 누수 지적</td>
+<td>https://arxiv.org/abs/2511.09740</td>
+</tr>
+<tr>
+<td>Aher, arXiv:2605.05439</td>
+<td>GSHI 카메라 건전성 조기 경보</td>
+<td>https://arxiv.org/abs/2605.05439</td>
+</tr>
+<tr>
+<td>Bauer, arXiv:2303.07100</td>
+<td>특징 기반 열화 인식</td>
+<td>https://arxiv.org/abs/2303.07100</td>
+</tr>
+<tr>
+<td>Eigen, Krishnan, Fergus, ICCV 2013</td>
+<td>창문 너머 비·먼지 제거 CNN</td>
+<td>https://openaccess.thecvf.com/content_iccv_2013/papers/Eigen_Restoring_an_Image_2013_ICCV_paper.pdf</td>
+</tr>
+<tr>
+<td>Wen, Wu, Chen, arXiv:2302.05916</td>
+<td>비디오 물방울 제거 (주행)</td>
+<td>https://arxiv.org/abs/2302.05916</td>
+</tr>
+<tr>
+<td>Hahner et al., ICCV 2021, arXiv:2108.05249</td>
+<td>라이다 안개 시뮬레이션 학습</td>
+<td>https://arxiv.org/abs/2108.05249</td>
+</tr>
+<tr>
+<td>Kong et al., Robo3D, ICCV 2023, arXiv:2303.17597</td>
+<td>라이다 코럽션 8종 벤치마크</td>
+<td>https://arxiv.org/abs/2303.17597</td>
+</tr>
+<tr>
+<td>Yu et al., arXiv:2205.14951 / CVPRW 2023</td>
+<td>융합 강건성, LiDAR 의존</td>
+<td>https://arxiv.org/abs/2205.14951</td>
+</tr>
+<tr>
+<td>Beemelmanns et al., MultiCorrupt, arXiv:2402.11677</td>
+<td>다중 모달 코럽션 벤치마크</td>
+<td>https://arxiv.org/abs/2402.11677</td>
+</tr>
+<tr>
+<td>Sadeghian et al., ReliFusion, arXiv:2502.01856</td>
+<td>신뢰도 가중 융합</td>
+<td>https://arxiv.org/abs/2502.01856</td>
+</tr>
+<tr>
+<td>SB-BEVFusion, arXiv:2605.11799</td>
+<td>결손 모달리티 강건화</td>
+<td>https://arxiv.org/abs/2605.11799</td>
+</tr>
+<tr>
+<td>Ferreira et al., arXiv:2412.06869</td>
+<td>ML 인지 안전 모니터 서베이</td>
+<td>https://arxiv.org/abs/2412.06869</td>
+</tr>
+<tr>
+<td>Eberhardt et al., IEEE ICVES 2024</td>
+<td>센서 차폐 열화 분류 서베이 (KIT)</td>
+<td>https://ieeexplore.ieee.org/document/10927915/</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="특허-google-patents-uspto">특허 (Google Patents / USPTO)</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>공보</th>
+<th>출원인</th>
+<th>우선일</th>
+<th>요지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://patents.google.com/patent/US10632916B2/en">US10632916B2</a></td>
+<td>Mobileye Vision Technologies</td>
+<td>2005-11-23</td>
+<td>윈드실드 표면 2차 카메라 오염 검출 → 와이퍼·세정·제상·비전 비활성</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US9274525B1/en">US9274525B1</a></td>
+<td>Google / Waymo</td>
+<td>2012-09-28</td>
+<td>능동 조향으로 센서 열화 검출</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US10162046B2/en">US10162046B2</a></td>
+<td>Valeo Radar Systems</td>
+<td>2016-03-17</td>
+<td>클러터 리지 기반 레이더 차폐 검출</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US11189112B1/en">US11189112B1</a></td>
+<td>State Farm</td>
+<td>2016-01-22</td>
+<td>기준선·교차 비교 오작동 검출 → 기능 제한·보험 조정</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US20190138821A1/en">US10769454B2 / US20190138821A1</a></td>
+<td>NVIDIA</td>
+<td>2017-11-07</td>
+<td>엔트로피 시공간 카메라 블록 검출</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US11120538B2/en">US11120538B2</a></td>
+<td>Zoox</td>
+<td>2019-12-27</td>
+<td>열화 원인 분류 → 세정·가중치 축소·재보정</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US11979655B2/en">US11979655B2</a></td>
+<td>GM Global Technology Operations</td>
+<td>2021-09-30</td>
+<td>라플라시안 분산 흐림 판정 → 노출·게인 보정</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US12067813B2/en">US12067813B2</a></td>
+<td>Rockwell Collins</td>
+<td>2021-02-01</td>
+<td>기대 출력 대비 열화 점수 → 임무 이관</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US20230406356A1/en">US20230406356A1 (US12623691)</a></td>
+<td>Tesla</td>
+<td>2022-05-20</td>
+<td>가시성 그리드 0–3, 유령 제동 억제, 감속·해제</td>
+</tr>
+<tr>
+<td>US 12,636,684 B1</td>
+<td>Tesla</td>
+<td>2025-05-21 출원, 2026-05-26 등록</td>
+<td>구면 렌즈 와이퍼 + 화질 기반 세정 트리거 — <strong>원문 미확인(2차 인용)</strong></td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US20130146577A1/en">US20130146577A1</a></td>
+<td>Continental Automotive Systems</td>
+<td>2012-12-06</td>
+<td>노즐 + PTC 제상 (1편 참조)</td>
+</tr>
+<tr>
+<td><a href="https://patents.google.com/patent/US20180015907A1/en">US20180015907A1</a></td>
+<td>Uber → Aurora</td>
+<td>2016-07-18</td>
+<td>액체 + 에어 나이프 (1편 참조)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="규제-표준-정부-보고서">규제 · 표준 · 정부 보고서</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>자료</th>
+<th>URL</th>
+<th>확인 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ISO 21448:2022 (SOTIF) — ASAM 해설</td>
+<td>https://report.asam.net/iso-21448-sotif</td>
+<td>해설 확인, 원문 미확인</td>
+</tr>
+<tr>
+<td>UN Regulation No. 157 (ALKS) — 해설</td>
+<td>https://www.otobrite.com/news/understanding-un-vehicle-safety-regulations-and-how-sensors-help-vehicles-comply/detail · https://regulations.ai/regulations/RAI-IO-UNECE-R157-2021</td>
+<td>2차 자료, 원문 PDF 접근 차단</td>
+</tr>
+<tr>
+<td>SAE J3016_202104</td>
+<td>https://ca-times.brightspotcdn.com/54/02/2d5919914cfe9549e79721b12e66/j3016-202104.pdf</td>
+<td>원문 확인</td>
+</tr>
+<tr>
+<td>NHTSA / VTTI, "Safety Implications of Potential ADAS Sensor Degradation," 2025-12</td>
+<td>https://rosap.ntl.bts.gov/view/dot/88134</td>
+<td>초록 확인</td>
+</tr>
+<tr>
+<td>Euro NCAP 2026 강건성 시험 — AB Dynamics 해설</td>
+<td>https://www.abdynamics.com/euro-ncap-2026-what-does-it-mean-for-adas-testing-and-development/</td>
+<td>2차 자료</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="기업-공식-매뉴얼-보도">기업 공식 · 매뉴얼 · 보도</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>자료</th>
+<th>성격</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hyundai 차주 매뉴얼 — LKA "Camera obscured"</td>
+<td>공식 매뉴얼</td>
+<td>https://ownersmanual.hyundai.com/docview/webhelp/Hyundai/1aa2eedf-82a4-476b-a451-67be24fecd21/id967b1c2c00e.html</td>
+</tr>
+<tr>
+<td>Waymo 블로그 — 6세대 Driver (2024-08)</td>
+<td>기업 공식</td>
+<td>https://waymo.com/blog/2024/08/meet-the-6th-generation-waymo-driver/</td>
+</tr>
+<tr>
+<td>Waymo 블로그 — All-weather Driver (2025-10)</td>
+<td>기업 공식</td>
+<td>https://waymo.com/blog/2025/10/creating-an-all-weather-driver/</td>
+</tr>
+<tr>
+<td>Waymo 블로그 — Fog blog (2021-11)</td>
+<td>기업 공식</td>
+<td>https://waymo.com/blog/2021/11/a-fog-blog/</td>
+</tr>
+<tr>
+<td>Electrek — Tesla 렌즈 와이퍼 특허 (2026-06-02)</td>
+<td>서드파티 보도</td>
+<td>https://electrek.co/2026/06/02/tesla-patents-camera-wiper-self-driving-robotaxi/</td>
+</tr>
+<tr>
+<td>Not a Tesla App — Tesla 가시성 특허 해설 (2026-05)</td>
+<td>서드파티 보도</td>
+<td>https://www.notateslaapp.com/news/4162/how-tesla-vision-sees-through-inclement-weather</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="그림-출처">그림 출처</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>그림</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>그림 1–6 (SVG)</td>
+<td><strong>본 보고서 자작.</strong> 각 캡션과 도해 하단에 근거 자료 명시</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+</section>
+<section id="부록-확인하지-못한-항목-출처-미확인"><p class="eyebrow"><span class="no">부록</span></p><h2>확인하지 못한 항목 (출처 미확인)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ISO 21448:2022 원문에서 센서 오염을 다루는 조항 번호·문구</td>
+<td>표준 유료, 해설 자료로만 확인</td>
+</tr>
+<tr>
+<td>UN R157 원문의 감지 성능 저하 검출 요구 조항 번호·문구</td>
+<td>UNECE PDF 접근 차단(403), 2차 자료로만 확인</td>
+</tr>
+<tr>
+<td>Tesla US 12,636,684 B1 청구항 원문</td>
+<td>Google Patents 미색인(404), 보도로만 확인</td>
+</tr>
+<tr>
+<td>MDPI <em>Computers</em> 15(4):254 (2026) "Performance Degradation of Object Detection NN Under Natural Visual Contamination"의 진흙 커버리지별 mAP 수치</td>
+<td>본문 접근 차단(403), 초록으로만 확인 — 수치 인용 안 함</td>
+</tr>
+<tr>
+<td>LIDAROC 논문의 오염별 AP 수치</td>
+<td>PDF 접근 차단, Zenodo 메타데이터로만 확인</td>
+</tr>
+<tr>
+<td>Eberhardt et al. (KIT, ICVES 2024) 분류 체계 상세</td>
+<td>IEEE Xplore 접근 실패, 초록만 확인</td>
+</tr>
+<tr>
+<td>렌즈 대부분이 불투명 오염된 경우의 복원 성공 사례</td>
+<td>조사 범위에서 발견 못 함</td>
+</tr>
+<tr>
+<td>Euro NCAP 공식 프로토콜 내 센서 오염·차폐 시험 조항</td>
+<td>미확인</td>
+</tr>
+<tr>
+<td>Waymo·Tesla 실차의 오염 검출 알고리즘 실제 구현</td>
+<td>특허·블로그 외 비공개</td>
+</tr>
+</tbody>
+</table></div></section>
+<footer>
+  AI-Vehicle-Research · research/aumovio-sensor-cleaning · 2편 · 작성일 2026-09-14 ·
+  1편: <a href="aumovio-sensor-cleaning.html">AUMOVIO 세정 시스템 기술 해부</a>
+</footer>
+</main>
+</div>
+</body>
+</html>
