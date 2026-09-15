@@ -14,6 +14,7 @@
 | D | 3부 데이터 플라이휠·검증 |
 | P | 4부 양산 스택 |
 | F | 5부 미래 방향 |
+| V | 약한 근거 재검증 (2026-09-15) |
 
 ## [E] 1부 진화 과정 (66건)
 
@@ -484,3 +485,46 @@
 | F55 | Wikipedia, Wayve | https://en.wikipedia.org/wiki/Wayve | 📄 (Wikipedia) |
 | F56 | Wayve Blog 목록 | https://wayve.ai/thinking/ | 🔍 |
 | F57 | Wikipedia, Yinwang (Huawei) | https://en.wikipedia.org/wiki/Yinwang | 📄 (Wikipedia) |
+
+## [V] 약한 근거 재검증 (38건)
+
+| ID | 제목 | URL | 등급 |
+|---|---|---|---|
+| V1 | Nio Onvo to equip updated L90 with Shenji NX9031 (CnEVPost) (2026-04-11) | https://cnevpost.com/2026/04/11/nio-onvo-to-equip-updated-l90-with-shenji-nx9031-chip/ | 📄 |
+| V2 | 5 Major Updates We Learned at NIO IN Shanghai Event (2024-07) | https://globalchinaev.com/post/5-major-updates-we-learned-at-nio-in-shanghai-event | 📄 |
+| V3 | Nio Inc. (Wikipedia) (2026-09 조회) | https://en.wikipedia.org/wiki/Nio_Inc. | 📄 |
+| V4 | XPENG Turing AI Chip (XPeng 공식) (날짜 미표기) | https://www.xpeng.com/au/insight/xpeng_turing_ai_chip | 🔍 |
+| V5 | Xpeng details its new AI Turing chip (CarNewsChina) (2024-11-06) | https://carnewschina.com/2024/11/06/xpeng-details-its-new-ai-turing-chip-that-it-will-use-in-its-cars/ | 📄 |
+| V6 | XPENG Accelerates Global Deployment of VLA 2.0 (XPeng Pressroom) (2026-03-02) | https://www.xpeng.com/pressroom/news/019cae5e67b99c0960ee8a028129016a | 🔍 |
+| V7 | The Computing Power Race of NIO, XPeng, and Li Auto (ChinaEVHome) (2025-06-20) | https://chinaevhome.com/2025/06/20/the-computing-power-race-of-nio-xpeng-and-li-auto/ | 📄 |
+| V8 | XPeng X9 Ultra unveiled with 2250 TOPS (CarNewsChina) (2025-11-11) | https://carnewschina.com/2025/11/11/xpeng-x9-ultra-ev-unveiled-with-2250-tops-computing-power/ | 📄 |
+| V9 | Journey 6 Series (Horizon 공식) (날짜 미표기) | https://www.horizon.auto/en/solutions/horizon-journey/horizon-journey6 | 🔍 |
+| V10 | 地平线发布国产智驾芯片征程6P (车质网) (2025-04-19) | https://www.12365auto.com/news/20250419/546385.shtml | 📄 |
+| V11 | GAR UN R157 modifications (—) | https://globalautoregs.com/modifications?rule_id=247 | 📄 |
+| V12 | UN Regulation increases automated driving speed limit to 130 km/h (Future Transport-News) (2022-06) | https://futuretransport-news.com/un-regulation-increases-automated-driving-speed-limit-to-130km-h/ | 📄 |
+| V13 | InterRegs: Updated UN ECE Regulation on ALKS Published (2023-03) | https://www.interregs.com/articles/spotlight/252/updated-un-ece-regulation-on-automated-lane-keeping-systems-published- | 📄 |
+| V14 | Automated lane keeping systems (Wikipedia) (—) | https://en.wikipedia.org/wiki/Automated_lane_keeping_systems | 📄 |
+| V15 | Regulation (EU) 2019/2144 Annex II (legislation.gov.uk 원문 사본) (2019-11-27 채택) | https://www.legislation.gov.uk/eur/2019/2144/annex/II/adopted | 🔍 |
+| V16 | Information regarding type approval for Cyber Security and Software updates (Scania) (날짜 미표기) | https://bodybuilder.scania.com/content/dam/bodybuilder/bbb-files/type-approval/Type_approval_R155_and_R156.pdf | 🔍 |
+| V17 | New DCAS regulation adopted by UNECE (CAD Europe) (2025-01-08) | https://www.connectedautomateddriving.eu/blog/new-dcas-regulation-adopted-by-unece/ | 📄 |
+| V18 | UN R171 DCAS 01 series vs 00 series (ATIC) (2025-04-07) | https://www.atic-ts.com/un-r171-dcas-01-series-and-00-series-comparison-and-analysis/ | 📄 |
+| V19 | GAR WP.29/2026/86 (R171 02 series proposal) (2026-04-14) | https://globalautoregs.com/documents/42373 | 📄 |
+| V20 | Tesla FSD Regulations for the EU and UK: UN R171 Explained (2026-08-06) | https://notanfsdtracker.com/tesla-fsd-regulations-eu-uk-unece-dcas-un-r171 | 📄 |
+| V21 | NVIDIA DRIVE Hyperion 제품 페이지 (2026-09 조회) | https://www.nvidia.com/en-us/solutions/autonomous-vehicles/drive-hyperion/ | 🔍 |
+| V22 | NVIDIA Makes the World Robotaxi-Ready With Uber Partnership (Newsroom) (2025-10-28) | https://nvidianews.nvidia.com/news/nvidia-uber-robotaxi | 🔍 |
+| V23 | Physical AI Takes the Wheel (NVIDIA Blog) (2026-09-10) | https://blogs.nvidia.com/blog/robotaxi-leaders-full-stack-open-platform/ | 🔍 |
+| V24 | NVIDIA Launches Alpamayo 2 Super (Newsroom) (2026-05-31) | https://nvidianews.nvidia.com/news/nvidia-alpamayo-2-super-robotaxis | 🔍 |
+| V25 | Taking Alpamayo to New Heights (HF blog) (2026-06-01) | https://huggingface.co/blog/nvidia/nvidia-alpamayo-2 | 🔍 |
+| V26 | Alpamayo 2 Super now available for commercial use (NVIDIA Blog) (2026-08-04) | https://blogs.nvidia.com/blog/alpamayo-2-super-open-model-now-available/ | 🔍 |
+| V27 | nvidia/Alpamayo2-Super 모델카드 (2026-08-04) | https://huggingface.co/nvidia/Alpamayo2-Super | 🔍 |
+| V28 | Mercedes-Benz DRIVE PILOT 95 km/h (그룹 페이지 403 → 제목·요약만) (2024-12-17) | https://group.mercedes-benz.com/technology/autonomous-driving/driving/drive-pilot-95-kmh.html · https://www.electrive.com/2024/12/17/mercedes-receives-approval-for-new-autonomous-system-in-germany/ | 📰 |
+| V29 | Mercedes pauses Level 3 driving assistance – for now (electrive) (2026-01-12) | https://www.electrive.com/2026/01/12/mercedes-pauses-level-3-driving-assistance-for-now/ | 📄 |
+| V30 | Mercedes-Benz shifts autonomous driving tech in 2026 S-Class (WardsAuto) (2026-02-11) | https://www.wardsauto.com/news/mercedes-benz-shifts-autonomous-driving-tech-in-2026-s-class/811431/ | 📄 |
+| V31 | 工业和信息化部许可两款L3级自动驾驶车型产品 (新华网) (2025-12-15) | http://www.news.cn/tech/20251215/31e9de0148a74d20ba70d22a9cef3db0/c.html | 📄 |
+| V32 | China grants 1st L3 autonomous driving permits (CnEVPost) (2025-12-15) | https://cnevpost.com/2025/12/15/china-grants-1st-l3-autonomous-driving-permits-passenger-cars/ | 📄 |
+| V33 | China's first L3 autonomous driving permits (Xinhua EN) (2025-12-17) | https://english.news.cn/20251217/71c203bbccfa40b8af15718bff40341b/c.html | 📄 |
+| V34 | DriveOS 7.0.3 TensorRT Release Notes – New Features (—) | https://developer.nvidia.com/docs/drive/drive-os/7.0.3/public/drive-os-tensorrt-release-notes/features-enhancements.html | 🔍 |
+| V35 | NVIDIA TensorRT 11.0.1 Developer Guide, Release 7.2.5 for DriveOS (PDF) (2026-05-11) | https://developer.nvidia.com/docs/drive/drive-os/7.2.5/public/NVIDIA-TensorRT-Developer-Guide.pdf | 🔍 |
+| V36 | 2026.2.9.6 release notes (Not a Tesla App) (2026-04) | https://www.notateslaapp.com/software-updates/version/2026.2.9.6/release-notes | 📄 |
+| V37 | Tesla rolls out FSD v14.3 (Tesla Oracle) (2026-04-08) | https://www.teslaoracle.com/2026/04/08/tesla-rolls-out-fsd-v14-3-2026-2-9-6-better-reaction-time-rewritten-ai-compiler-mlir-release-notes-status/ | 📄 |
+| V38 | Tesla FSD v14.3 rolls out with MLIR rewrite (Electrek) (2026-04-07) | https://electrek.co/2026/04/07/tesla-fsd-14-3-rolling-out-mlir-lattner/ | 📰 |

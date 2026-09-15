@@ -14,7 +14,7 @@
 | 📰 | 검색 결과 요약만 확인, 원문 미열람 |
 | ⚠️ | 미확인·추정·출처 간 상충 |
 
-출처 ID 접두어: E 진화 · A Autoware · N NVIDIA · D 플라이휠·검증 · P 양산 · F 미래
+출처 ID 접두어: E 진화 · A Autoware · N NVIDIA · D 플라이휠·검증 · P 양산 · F 미래 · V 재검증
 
 ---
 
@@ -37,7 +37,7 @@
 | VLA의 추론 텍스트는 판단 이유를 설명한다 | Alpamayo-R1-10B 분석에서 추론 충실도 42.5%, "정지" 서술의 37.9%에서 계속 주행했다 | [F31] 🔍 |
 | 오픈소스 스택은 양산 준비가 됐다 | Autoware 2.0 안전성 평가 페이지는 TBD이고, S-CORE는 "not a ready-to-integrate series product"라고 스스로 밝힌다 | [A28][F41] 🔍 |
 | ASIL 표기가 있으면 인증된 것이다 | QNX Hypervisor for Safety는 "pre-certified", EB corbos Linux의 근거는 TÜV Nord "feasibility report"다 | [P9][P6] 🔍 |
-| TOPS가 온보드 AI 성능을 정한다 | Alpamayo-R1 지연 99 ms 중 70 ms가 추론 텍스트 디코딩이고, 경쟁 칩들이 메모리 대역폭(GB/s)을 사양에 올린다 | [N6b] 🔍 [F14][F15] 📄 |
+| TOPS가 온보드 AI 성능을 정한다 | Alpamayo-R1 지연 99 ms 중 70 ms가 추론 텍스트 디코딩이고, 경쟁 칩들이 메모리 대역폭(GB/s)을 사양에 올린다 | [N6b] 🔍 [V1][V10] 📄 |
 
 ## 목차
 
@@ -894,9 +894,10 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | ISO/PAS 8800:2024 | AI 안전 라이프사이클, ISO 26262·21448 확장 | 데이터·학습·모델 검증·런타임 모니터 | [D66][D67] 📄 |
 | ISO/SAE 21434 | 사이버보안 엔지니어링. DriveOS와 S-CORE가 준수 대상으로 명시 | 전 층 | [N2][P14] 🔍 (표준 원문 ⚠️) |
 | UL 4600 | 자율 제품 안전 논증(safety case). 1판 2020-04, 2판 2022-03, 3판 2023-03-17 | 시스템 전체, 운영 지표 | [P27][D68] 🔍 |
-| UN R157 (ALKS) | 2021-01-22 발효 시 60 km/h. 개정으로 130 km/h·차선 변경. 전환 요구 후 10초, MRM, DSSAD | L3 기능 스택, 기록 장치 | [P28] 📄(Wikipedia) |
-| UN R155 · R156 | 사이버보안 관리 체계 · SW 업데이트 관리 체계 | 조직·OTA·전 층 | 세부 원문 미확인 ⚠️ |
-| UN R160 / EU | EDR. EU 신규 형식 승용차 2022-07-06 의무 | 기록 서브시스템 | [P40] 📄(Wikipedia) |
+| UN R157 (ALKS) | 2021-01-22 발효 시 최대 60 km/h. 01 series(2022-06 채택, 2023-01-04 발효)는 차로변경 기능을 갖춘 시스템에만 130 km/h 허용, DSSAD 기록. 전환 요구 후 10초는 Wikipedia 기준 | L3 기능 스택, 기록 장치 | [V11][V12][V13] 📄 · [V14] 📄(Wikipedia) |
+| UN R155 · R156 | CSMS · SUMS(RXSWIN). EU는 신규 형식 2022-07-06, 전 신규 등록 2024-07-07부터 의무. 인증서 최대 3년 유효 | 조직·OTA·전 층 | [V15] 🔍 · [V16] 🔍(OEM 문서) |
+| UN R160 / EU GSR | EDR. M1·N1은 신규 형식 2022-07-06, 전 신규 등록 2024-07-07. M2·M3·N2·N3는 2026-01-07, 2029-01-07 | 기록 서브시스템 | [V15] 🔍 |
+| UN R171 (DCAS) | 00 series 2024-09 발효. 01 series 2025-09-26 발효, 고속도로 시스템 주도 차로변경. 02 series 2026-06 WP.29 채택, 비고속도로 시스템 주도 조작·hands-off 확대, 2027-01 발효 예상 | L2 계획·HMI·운전자 모니터링 | [V17][V18][V19] 📄 · 발효일 [V20] 📄 |
 | 49 CFR 563 (미국) | EDR 장착 시 트리거·기록 항목·판독 도구 요건 | 기록 서브시스템 | [P26] 🔍 |
 | EU AI Act | 차량 안전부품 AI는 고위험이지만, 형식승인 대상 제품에는 Art. 6(1)·102~109·112만 적용 | 형식승인 경로 | [P2][P3] 📄(비공식 미러) |
 | UNECE ADS 규정·GTR | 2025-09 GRVA 채택, 기술 중립, "competent and careful human driver" 기준 | 시스템 입증 방식 | [F33] 📄(Wayve 해석) |
@@ -968,7 +969,10 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 **런타임**
 
 - TensorRT는 ONNX 파서와 FP8·FP4·INT8·INT4 양자화를 지원하며, DRIVE AGX용으로 "Safety-compliant and high-performance inference"를 내세운다 [P21] 🔍(벤더 주장).
-- DriveOS 6.0.10의 TensorRT safety runtime은 kSAFETY 엔진만 지원하고, DLA를 지원하지 않으며, 실행 컨텍스트당 GPU 메모리를 4 GiB로 제한한다 [N42] 🔍. Thor 세대 사양은 미확인이다 ⚠️.
+- DriveOS 6.0.10의 TensorRT safety runtime은 kSAFETY 엔진만 지원하고, DLA를 지원하지 않으며, 실행 컨텍스트당 GPU 메모리를 4 GiB로 제한한다 [N42] 🔍.
+- Thor용 DriveOS 7.0.3의 TensorRT 릴리스 노트는 "The TensorRT safety content has been removed."라고 적었다 [V34] 🔍.
+- DriveOS 7.2.5용 TensorRT 11.0.1 가이드는 Safety Runtime을 "runs on QNX Safety and is developed to ASIL D as a SEooC"로 설명하고, Linux용 proxy는 "intended for development only"라고 적는다 [V35] 🔍.
+- 같은 가이드는 DLA가 "not supported in this release"라고 명시한다 [V35] 🔍. Thor 세대 safety runtime의 지원 정밀도와 메모리 한도는 공개 문서에서 확인하지 못했다 ⚠️.
 
 **양자화의 증거 수준**
 
@@ -976,13 +980,14 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 - 이 수치는 LLM 벤치마크다. 차량 인지·계획 모델의 NVFP4 정확도 검증 수치는 이번 조사에서 찾지 못했다 ⚠️.
 - FlashDrive(arXiv 2608.12932)는 Alpamayo 1.5-10B에 W4A8 양자화 등을 적용해 단일 GPU 지연을 717 ms에서 151 ms로 줄이고, minADE6@6.4s 변화는 0.08 m였다고 보고했다 [F5] 🔍. 초록은 GPU 모델명을 밝히지 않는다.
 - Alpamayo Recipes는 1.5용 FP8·NVFP4 혼합 정밀도 레시피를 제공한다 [N30] 🔍.
+- Tesla는 FSD v14.3(2026-04) 릴리스 노트에 "Rewrote the AI compiler and runtime from the ground up with MLIR, resulting in 20% faster reaction time"이라고 적었다 [V36][V37] ✅. 모델을 바꾸지 않고 컴파일러·런타임만으로 지연을 줄인 사례다.
 
 **툴 자격화와 무결성**
 
 - ISO 26262 Part 8의 툴 신뢰도(TCL) 개념을 DL 컴파일러에 적용한 공개 사례는 찾지 못했다 [P12] ⚠️.
 - OTA 이미지 보안 프레임워크 Uptane은 "minimize the damage of a compromise"를 목표로 한다 [P32] 🔍. 모델 파일 서명 전용 공식 규격은 찾지 못했다 ⚠️.
 
-> **분석.** 양산 추론 경로는 "인증 런타임이 지원하는 연산·정밀도"와 "성능이 나오는 양자화"의 교집합에서만 성립한다. Orin 세대 safety runtime 제약(DLA 불가, 4 GiB)과 NVFP4 같은 최신 형식 사이에 공백이 있을 수 있다. 이 공백은 Thor 세대 문서로 확인해야 한다.
+> **분석.** 양산 추론 경로는 "인증 런타임이 지원하는 연산·정밀도"와 "성능이 나오는 양자화"의 교집합에서만 성립한다. Thor 세대에서도 인증 경로는 QNX Safety 위 safety runtime뿐이고 DLA는 쓸 수 없다 [V35]. 그 런타임이 NVFP4 같은 최신 형식을 지원하는지는 공개 문서로 확인되지 않아 NVIDIA에 직접 확인해야 한다.
 
 ### 4.5 안전 감시와 폴백
 
@@ -1030,7 +1035,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 - DSSAD는 UN R157 ALKS의 작동 조건으로 기술돼 있다 [P28] 📄(Wikipedia). 기록 항목·보존 기간 원문은 확보하지 못했다 ⚠️.
 - IEEE 1616.1-2023은 L3~L5 DSSAD 데이터 요소를 정의한다 [D32] 🔍.
-- EU는 대형 차량 신규 형식에 EDR을 2026-01-07부터 의무화한다고 기술돼 있다 [P40] 📄(Wikipedia). 적용 범위의 원문은 확인하지 못했다 ⚠️.
+- EU GSR은 대형 차량(M2·M3·N2·N3) EDR을 신규 형식 2026-01-07, 전 신규 등록 2029-01-07부터 의무화했다 [V15] 🔍.
 
 **필드 운영**
 
@@ -1046,10 +1051,12 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | Waymo 6세대 Driver | L4 | 카메라 13 · LiDAR 4 · 레이더 6 · 외부 오디오 | 원격 요원은 비운전 | 발표 2024-08-19 | [P8][P17] 🔍 |
 | Zoox | L4 무수동조작 차량 | ADS | NHTSA 단계적 운영 승인 | 면제 2026-07-31 | [P48] 🔍 |
 | TIER IV · Isuzu | L4 버스 | Autoware 기반, DRIVE AGX Thor | MRM 3종 | 발표 2026-03-17 | [A118][A99] 🔍 |
+| Mercedes-Benz DRIVE PILOT | L3 (독일 95 km/h 승인) | 미확인 | 미확인 | 승인 2024-12-17. 2026-01 S-Class·EQS 페이스리프트부터 제외, L2++ MB.Drive Assist Pro로 대체 | [V28] 📰 [V29][V30] 📄 |
+| 장안 Deepal SL03 · BAIC Arcfox Alpha S | L3 조건부 제품 진입 (중국 MIIT) | 미확인 | 지정 운영주체가 지정 구간 운행 | 2025-12-15. 충칭 혼잡 단일차로 최대 50 km/h, 베이징 최대 80 km/h | [V31][V32][V33] ✅ |
 | Tesla Robotaxi | 무인 서비스 | 카메라 기반 E2E | 미확인 ⚠️ | 오스틴 2025-06-22 개시 기술 | [P13] 📄(Wikipedia) |
 
 - Waymo 6세대 Driver의 컴퓨트 사양과 백업 컴퓨트 설계는 공식 페이지에 없다 [P8] ⚠️.
-- Mercedes DRIVE PILOT(L3)의 현재 제공 상태와 중국 L3 승인 현황은 1차 출처를 확보하지 못해 이 표에서 뺐다 ⚠️.
+- Mercedes가 기존 차량에서 DRIVE PILOT을 제거했다는 주장은 원문으로 확인하지 못했다 ⚠️. 확인된 것은 신형 페이스리프트에서 제외한다는 발표다 [V29][V30] 📄.
 
 ### 4.8 정리 — 데모와 양산의 차이
 
@@ -1114,11 +1121,12 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | 칩 | AI 성능 표기 | 메모리 · 대역폭 | 출처 |
 |---|---|---|---|
 | NVIDIA DRIVE AGX Thor (DevKit) | 1,000 INT8 TOPS | 64 GB LPDDR5X · 273 GB/s | [N3] 🔍 |
-| XPeng Turing | 750 TOPS(sparse), 최대 30B 파라미터 수용 | 64 GB LPDDR5X-8533 · 273 GB/s | [F14] 📄(Wikipedia) |
-| NIO NX9031 | 약 500 TOPS(추정 표기) | 64 GB LPDDR5X-8533 · 546 GB/s | [F15] 📄(Wikipedia) |
-| Horizon Journey 6P | 560 TOPS | LPDDR5X-8533 · 204 GB/s | [F16] 📄(Wikipedia) |
+| XPeng Turing | 칩당 약 750 TOPS(3칩 합계 2,250 TOPS 보도), 최대 30B 파라미터 지원 | 비공개. 64 GB · 273 GB/s는 매체 추정 ⚠️ | [V4] 🔍 [V8][V7] 📄 |
+| NIO NX9031 | 공식 TOPS 미확인. 보도는 약 500 또는 1,016 ⚠️ | LPDDR5X-8533 · 546 GB/s. 64 GB는 제3자 보고서 인용 | [V1][V2][V3] 📄 |
+| Horizon Journey 6P | 560 TOPS (1/2 sparsity) | 205 GB/s (중국 매체) | [V9] 🔍 [V10] 📄 |
 
-- 세 중국 칩의 대역폭은 LPDDR5X-8533 속도에 버스 폭 512·256·192비트를 곱한 이론 최대값과 일치한다 [F15] ✅(산술 검증). NIO 1차 발표문의 546 GB/s 표기는 확인하지 못했다 ⚠️.
+- NIO는 NX9031의 메모리 대역폭을 546 GB/s로 밝혔다고 보도됐다 [V1] 📄. 이 값은 LPDDR5X-8533에 512비트 버스를 곱한 이론 최대값과 일치한다(계산).
+- XPeng Turing의 273 GB/s는 XPeng 공식 수치가 아니라 매체 추정치다 [V7] 📄. XPeng 보도자료는 "2,250 TOPS … per chip"이라 적어 3칩 합계라는 보도와 어긋난다 [V6] 🔍 ⚠️.
 - 모델·칩별 TOPS 표기는 정밀도(INT8·FP4)와 sparse 여부가 달라 직접 비교할 수 없다 [N3][F14] ⚠️.
 
 > **분석.** 자기회귀 디코딩은 토큰마다 가중치와 KV 캐시를 읽어야 한다. 그래서 VLA 온보드 성능은 연산량보다 메모리 대역폭에 먼저 묶인다. Alpamayo-R1에서 디코딩이 지연의 70%를 차지한 점이 이를 뒷받침한다 [N6b].
@@ -1240,10 +1248,8 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 **본문에서 제외한 주장**
 
-- Tesla FSD v14가 AI 컴파일러·런타임을 MLIR로 재작성했다는 주장은 근거를 찾지 못해 쓰지 않았다 ⚠️.
-- Mercedes DRIVE PILOT(L3)이 2026-01 기능에서 제외됐다는 기술은 Wikipedia에만 있고, Mercedes 원문은 403이었다 [P30] ⚠️.
+- Mercedes가 기존 차량에서 DRIVE PILOT을 제거했다는 Wikipedia 기술은 원문으로 확인하지 못했다 [P30] ⚠️. 신형 페이스리프트에서 제외한다는 발표만 확인했다 [V29].
 - AUMOVIO가 Aurora용 백업 컴퓨터를 공급한다는 내용은 1차 출처를 확보하지 못했다 ⚠️.
-- 중국 L3 승인(2025~2026) 현황은 1차 출처를 확보하지 못했다 ⚠️.
 - Tesla Robotaxi 확장, Cybercab, AI5 일정·차량 비적용 발언은 Wikipedia 기술만 확인됐다 [F11][F12][F13] ⚠️.
 
 **출처 간 상충**
@@ -1259,11 +1265,11 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 **접근하지 못한 원문**
 
-- ISO 26262·21448·21434·PAS 8800 원문(iso.org 403). UN R155·R156·R157·R171·R160 원문(unece.org 403, EUR-Lex 빈 본문).
+- ISO 26262·21448·21434·PAS 8800 원문(iso.org 403). UNECE 규정 원문(unece.org 403). EU 적용 일정은 GSR 원문 사본으로 확인했다 [V15].
 - RAND "Driving to Safety"(rand.org 403). Tesla 차량 안전 보고서(403). Tesla AI Day 1차 영상.
-- Thor 세대 TensorRT safety runtime 문서(403). DRIVE AV 두 스택의 중재 로직(비공개).
+- Thor 세대 TensorRT safety runtime의 지원 정밀도·메모리 한도. DRIVE AV 두 스택의 중재 로직(비공개).
 - Alpamayo의 Thor 온보드 지연 공식 수치(없음). Waymo 6세대 Driver 컴퓨트·백업 설계(공식 페이지에 없음).
-- NIO NX9031 546 GB/s 1차 발표문. Huawei ADS 4 공식 원문. Apollo 버전별 공식 날짜.
+- NIO NX9031의 NIO 뉴스룸 원문과 공식 TOPS, XPeng Turing 메모리 사양. Huawei ADS 4 공식 원문. Apollo 버전별 공식 날짜.
 - Autoware 메타 저장소 0.45.1 → 1.5.0 번호 점프 사유, 다년 로드맵의 달력 연도.
 - 업계 공통 센서→액추에이터 지연 예산 공식 수치. ML 컴파일러의 ISO 26262 툴 자격화 공개 사례.
 - 합성 데이터가 학습에서 차지하는 비중에 대한 기업 공식 수치.
@@ -1281,9 +1287,16 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | 2026-09-15 | ROS 2 Lyrical `rosidl::Buffer` | 원문 일치. 현재 `rmw_fastrtps_cpp`만 지원 | 지원 범위 추가 |
 | 2026-09-15 | "Beyond Self-Play and Scale" (arXiv 2605.10034) | 원문 일치 | 유지 |
 | 2026-09-15 | Eclipse S-CORE 인용 | 원문 일치 | 유지 |
-| 2026-09-15 | Tesla FSD v14 MLIR 주장 | 근거 미발견 | 본문 제외 |
+| 2026-09-15 | Tesla FSD v14 MLIR 주장 | 1차 조사 미발견. 재조사에서 v14.3 릴리스 노트 문구 확인 | 4.4에 추가 [V36][V37] |
 | 2026-09-15 | Alpamayo-R1 99 ms 측정 조건 | 논문 표 14: RTX 6000 Pro Blackwell | 측정 하드웨어 명시 |
 | 2026-09-15 | 본문 인용 ID | 오기 3건 | [N29]→[N13], [N40]→[N18][N19], [D37]→[D73] |
-| 2026-09-15 | EU EDR 적용 일정 문장 | 노트 표현이 모호 | 대형 신규 형식 일정만 남기고 ⚠️ 표기 |
+| 2026-09-15 | EU EDR 적용 일정 문장 | GSR Annex II 원문 사본으로 확인 | 차종별 일정으로 교체 [V15] |
+| 2026-09-15 (재검증) | NIO·XPeng·Horizon 칩 사양 | NIO 546 GB/s 보도 확인, XPeng 273 GB/s는 추정, Horizon 대역폭 204 → 205 GB/s | 5.2 표·기사 표 수정 |
+| 2026-09-15 (재검증) | UN R155·R156·R157·R171 | 날짜·요건 확인, R171 행 추가 | 4.1 표 수정 |
+| 2026-09-15 (재검증) | Mercedes DRIVE PILOT | 신형 페이스리프트 제외 확인, 기존 차량 제거는 미확인 | 4.7 표에 추가 |
+| 2026-09-15 (재검증) | 중국 L3 승인 | 2025-12-15 MIIT 첫 승인 2건 확인 | 4.7 표에 추가 |
+| 2026-09-15 (재검증) | Thor 세대 TensorRT safety runtime | QNX Safety 위 ASIL D SEooC, Linux는 proxy, DLA 미지원 | 4.4 수정 |
+| 2026-09-15 (재검증) | Hyperion 10 LiDAR 개수 | 공식 자료 간 상충 유지 | 변경 없음 |
+| 2026-09-15 (재검증) | Alpamayo 2 Super 파라미터 | 34B = 32B + 2.3B 확인 | 변경 없음 |
 
-**조사 환경.** 2026-09-15 한 세션에서 조사했다. 세션의 WebSearch 한도(200회)가 4·5부 조사 도중 소진돼, 4·5부는 알려진 URL을 WebFetch로 직접 여는 방식으로만 수집했다. 그래서 4·5부에는 교차 확인(✅) 표시가 적다. 저장소 안의 기존 리서치 자료는 참조하지 않았다. 코드 클론과 실측은 하지 않았다.
+**조사 환경.** 2026-09-15 한 세션에서 조사했다. 세션의 WebSearch 한도(200회)가 4·5부 조사 도중 소진돼, 4·5부는 알려진 URL을 WebFetch로 직접 여는 방식으로만 수집했다. 그래서 4·5부에는 교차 확인(✅) 표시가 적다. 같은 날 검색 한도를 늘린 새 세션에서 약한 근거 13개 항목을 재검증했고, 그 출처는 V 접두어로 추가했다. 저장소 안의 기존 리서치 자료는 참조하지 않았다. 코드 클론과 실측은 하지 않았다.

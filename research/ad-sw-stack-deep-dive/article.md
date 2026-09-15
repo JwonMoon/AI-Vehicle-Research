@@ -87,7 +87,7 @@ Alpamayo의 지연 수치는 읽는 법이 중요하다. 논문의 99 ms는 차�
 
 학습 모델 옆에 독립 검사기를 두는 이유도 이제 숫자로 보인다. Alpamayo-R1-10B의 추론 300회를 분석한 논문은 추론 충실도가 42.5%이고, 모델이 "정지"라고 설명한 경우의 37.9%에서 실제로는 계속 달렸다고 보고했다 [F31]. 설명 텍스트를 안전 논증으로 쓸 수 없다는 뜻이다. 양산 사례들은 이미 그렇게 설계한다. Mercedes-Benz CLA는 E2E 스택과 "a parallel classical safety stack"을 함께 돌린다 [P19]. Waymo는 "a separate and rigorous onboard validation layer"가 생성 모델의 궤적을 검증한다 [F1].
 
-추론 런타임에도 틈이 있다. DriveOS 6.0.10 문서 기준 TensorRT safety runtime은 kSAFETY 엔진만 받고, DLA를 쓰지 못하며, 컨텍스트당 GPU 메모리가 4 GiB로 제한된다 [N42]. 반면 NVFP4의 "1% or less" 정확도 저하는 LLM 벤치마크 수치다 [P53]. 인증 런타임이 허용하는 정밀도와 성능이 나오는 양자화의 교집합이 양산 가능한 모델을 정한다. Thor 세대 safety runtime 문서는 확인하지 못했다.
+추론 런타임에도 틈이 있다. DriveOS 6.0.10 문서 기준 TensorRT safety runtime은 kSAFETY 엔진만 받고, DLA를 쓰지 못하며, 컨텍스트당 GPU 메모리가 4 GiB로 제한된다 [N42]. 반면 NVFP4의 "1% or less" 정확도 저하는 LLM 벤치마크 수치다 [P53]. 인증 런타임이 허용하는 정밀도와 성능이 나오는 양자화의 교집합이 양산 가능한 모델을 정한다. Thor용 DriveOS 7.2.5 문서에서도 safety runtime은 QNX Safety 위에서만 인증 경로를 갖고, DLA는 지원되지 않는다 [V35].
 
 ## 6. 앞으로 — 크게 학습하고, 작게 배포하고, 따로 검증한다
 
@@ -95,14 +95,14 @@ Alpamayo의 지연 수치는 읽는 법이 중요하다. 논문의 99 ms는 차�
 
 ![그림 6. 미래 스택 시나리오](images/06-future-scenarios.svg)
 
-작게 배포해도 지연은 여전히 병목이다. FlashDrive는 Alpamayo 1.5-10B를 W4A8 양자화와 KV 캐시 재사용 등으로 단일 GPU에서 717 ms에서 151 ms로 줄였다 [F5]. 한 논문은 "language is expensive onboard"라고 요약했다 [F6]. 이 병목은 연산보다 메모리에 가깝다. Alpamayo-R1의 99 ms 중 70 ms가 텍스트 디코딩이었고 [N6b], 칩 사양표에는 메모리 대역폭이 올라왔다.
+작게 배포해도 지연은 여전히 병목이다. FlashDrive는 Alpamayo 1.5-10B를 W4A8 양자화와 KV 캐시 재사용 등으로 단일 GPU에서 717 ms에서 151 ms로 줄였다 [F5]. 한 논문은 "language is expensive onboard"라고 요약했다 [F6]. 이 병목은 연산보다 메모리에 가깝다. Alpamayo-R1의 99 ms 중 70 ms가 텍스트 디코딩이었고 [N6b], 칩 사양표에는 메모리 대역폭이 올라왔다. 툴체인도 변수다. Tesla는 FSD v14.3 릴리스 노트에 AI 컴파일러와 런타임을 MLIR로 다시 짜 반응 시간을 20% 줄였다고 적었다 [V36].
 
 | 칩 | 메모리 대역폭 | 출처 |
 |---|---|---|
 | NVIDIA DRIVE AGX Thor (DevKit) | 273 GB/s | [N3] |
-| XPeng Turing | 273 GB/s | [F14] (Wikipedia) |
-| NIO NX9031 | 546 GB/s | [F15] (Wikipedia) |
-| Horizon Journey 6P | 204 GB/s | [F16] (Wikipedia) |
+| XPeng Turing | 비공개 (매체 추정 273 GB/s) | [V7] |
+| NIO NX9031 | 546 GB/s | [V1] |
+| Horizon Journey 6P | 205 GB/s (중국 매체) | [V10] |
 
 학습 쪽은 폐루프와 생성형 시뮬로 간다. Waymo World Model은 카메라와 LiDAR를 함께 생성하고 [F19], Wayve GAIA-4는 AI 운전자가 브레이크를 밟으면 시뮬 시점도 느려지는 폐루프 월드모델이다 [F20]. 반대 증거도 있다. 한 벤치마크 연구는 순수 self-play 정책이 학습 상대에 과적합한다고 보고하고, 강화학습 정책과 규칙 플래너의 하이브리드를 권했다 [F25]. 규칙은 여기서도 사라지지 않는다.
 
