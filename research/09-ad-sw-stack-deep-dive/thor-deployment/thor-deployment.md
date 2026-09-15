@@ -381,6 +381,105 @@
 
 ---
 
+### 2.10 Alpamayo 1 · 1.5 · 2 Super 소스 코드 기반 컴포넌트 구조
+
+2.9절 그림이 ROS 2 통합까지 한 장에 담았다면, 이 절의 그림 4~6은 **각 업스트림 저장소의 소스 코드만** 층별로 정리한 것이다. ROS 2·Autoware 통합(alpamayo-autoware)은 넣지 않았다.
+
+- **박스 이름:** 코드 식별자 그대로 썼다(클래스·함수·모듈·스크립트 이름).
+- **박스 안 내용:** 이름만으로 역할이 드러나지 않으면 한 줄 설명을 붙였고, 파일 경로를 함께 적었다.
+- **표시 규칙:**
+  - 원 안 번호는 궤적 추론 호출 순서다.
+  - 점선 박스는 grep·find로 저장소에 없음을 확인한 항목이다.
+  - 주황 `NEW` 표시는 직전 버전 대비 새로 생기거나 역할이 크게 바뀐 컴포넌트다.
+- **근거:**
+  - 박스별 파일·줄 근거, 호출 순서, 공식 자료 대조표는 [reference/code-alpamayo-src-components.md](reference/code-alpamayo-src-components.md)에 있다 [K6][K7][K8] 💻.
+  - 역할 설명은 공식 자료와 대조했다: 모델카드 [L1][L3][L4], 논문 [L27], 블로그 [L39] 🔍.
+  - 모두 코드 읽기 기반이며 실행으로 검증하지 않았다.
+
+층은 세 그림 모두 같은 틀을 쓴다.
+
+| 층 | 담는 것 |
+|---|---|
+| L6 Applications · 실행 진입점 | 실행 스크립트, CLI, 노트북, 예제 |
+| L5 Inference API | 사용자가 부르는 공개 함수·메서드 |
+| L4 Model | 최상위 모델 클래스와 주요 하위 모듈 |
+| L3 Model Building Blocks | config, 궤적 토크나이저, logits processor, 입력 projection, flow matching, action space, CUDA graph |
+| L2 Data · Pre/Post-processing | 데이터 로더, 입력 프로필, 채팅 메시지, 출력 텍스트 파싱, 시각화 |
+| L1 Libraries · Runtime | 실제 import하는 외부 패키지와 고정 버전 |
+| L0 Platform | Python, GPU·dtype, HF 체크포인트, 데이터셋 |
+
+#### 그림 4. Alpamayo 1
+
+![그림 4. Alpamayo 1 소스 코드 기반 SW 컴포넌트 구조](images/04-alpamayo1-src-components.svg)
+
+- **구조:** `AlpamayoR1`이 `ReasoningVLA`를 상속한다. 하위 모듈은 `vlm`(`Qwen3VLForConditionalGeneration`), `expert`(VLM `text_config`를 복제해 만든 action expert), `action_in_proj`, `action_out_proj`다 [K6] 💻.
+- **추론 API:** `sample_trajectories_from_data_with_vlm_rollout`. 기본값은 `num_traj_samples=6`, top_p 0.98, temperature 0.6이다 [K6] 💻.
+- **추론 흐름:**
+  1. `vlm.generate`로 CoC 텍스트(코드 이름 `cot`)를 만든다.
+  2. `FlowMatching`이 Euler 10스텝으로 (가속도, 곡률) 64 × 2를 샘플링한다.
+  3. `UnicycleAccelCurvatureActionSpace.action_to_traj`가 이를 xyz·회전으로 적분한다 [K6] 💻.
+- **입력:** 카메라 4대 × 4프레임, 자차 이력 16점(10 Hz), 프롬프트 안 `<|traj_history|>` 48개 [K6] 💻.
+- **체크포인트:** `nvidia/Alpamayo-R1-10B`, 약 22 GB. README 기재 최소 VRAM은 24 GB다 [K6] 💻.
+- **processor 불일치:** `get_processor`는 `Qwen/Qwen3-VL-2B-Instruct`의 processor를 불러오고 토크나이저만 모델 것으로 바꾼다. config 기본 백본 경로는 `Qwen/Qwen3-VL-8B-Instruct`다 [K6] 💻.
+- **코드에 없음:** 학습(SFT·RL) 스크립트, TensorRT·ONNX·양자화. 논문의 RL post-training(GRPO)과 경로 조건 입력은 특수 토큰 이름만 남아 있다 [K6] 💻 [L27] 🔍.
+
+#### 그림 5. Alpamayo 1.5
+
+![그림 5. Alpamayo 1.5 소스 코드 기반 SW 컴포넌트 구조](images/05-alpamayo1_5-src-components.svg)
+
+- **구조:** 모델 뼈대는 1과 같다(`Alpamayo1_5` → `ReasoningVLA` → Qwen3-VL + expert) [K7] 💻.
+- **추가된 컴포넌트:**
+  - 내비게이션 조건 입력: `create_message(nav_text)`가 `<|route_start|>…<|route_end|>`를 넣고, `nav_utils`가 비교 유틸을 제공한다.
+  - 내비 CFG: `sample_trajectories_from_data_with_vlm_rollout_cfg_nav`가 내비 구간을 뺀 unguided KV 캐시를 따로 만든다. `FlowMatching._guided_v`가 `(1-α)·unguided + α·guided`를 계산한다.
+  - 텍스트 질의응답: `generate_text`, `create_vqa_message`
+  - 카메라 수 비교와 시각화: `inference_cam_num.ipynb`, `viz_utils` [K7] 💻
+- **attention:** VLM이 flash_attention_2일 때 expert만 sdpa로 강제한다(`alpamayo1_5.py:107-109`) [K7] 💻.
+- **README 기재 VRAM(H100):** 샘플 1개 약 24 GB, 16개 약 40 GB, 16개 + CFG 약 60 GB [K7] 💻.
+- **공식 자료와 불일치:** 자차 이력 길이를 모델카드는 0.4 s로 쓰는데 [L3] 🔍, 코드 로더 기본값은 16스텝(1.6 s)이다 [K7] 💻. 체크포인트 config로 덮어쓰는지는 확인하지 못했다(출처 미확인).
+
+#### 그림 6. Alpamayo 2 Super
+
+![그림 6. Alpamayo 2 Super 소스 코드 기반 SW 컴포넌트 구조](images/06-alpamayo2-src-components.svg)
+
+- **구조 재편:** `ReasoningVLA`·`base_model.py`가 없어졌다. `Alpamayo2Super`가 VLM 클래스를 `getattr(transformers, config.vlm_class)`로 동적으로 불러오고(`alpamayo2_super.py:123`), 독립 `ExpertModel`을 붙인다 [K8] 💻.
+- **추론 API:** 입력 준비가 `select_task_input` → `prepare_model_inputs` → `sample_trajectories_from_data`로 나뉘었다. `_generate_with_shared_prefill`이 prefill을 한 번만 하고 샘플끼리 공유한다 [K8] 💻.
+- **카메라 입력:** 로더는 7대를 읽고, `input_profiles`가 과제별로 6대 × 4프레임을 고른다. 궤적은 카메라 (0,1,2,3,5,6), VQA는 (0,1,2,3,4,5)다 [K8] 💻.
+- **궤적 토큰:**
+  - vocab: 1의 768 → 과거 1000 + 미래 3000 (`config.py:63-64`)
+  - 미래 궤적 토큰 수: 64 → 128 (`config.py:73`)
+  - 과거 이력: 16점 → 48토큰 (`DeltaTrajectoryTokenizer`)
+  - 생성 중 마스킹: `MaskDiscreteTrajectoryLogitsProcessor` [K8] 💻
+- **텍스트 과제:** `text_tasks`와 `chat_template.conversation`이 meta-action, auto-label JSON, VQA, 2D grounding을 맡는다 [K8] 💻.
+- **1.5와 같은 부분:** `UnicycleAccelCurvatureActionSpace`, `PerWaypointActionInProjV2`, CUDA graph helper, flow 10스텝, 샘플링 기본값, torch 2.8.0·transformers 4.57.1 [K7][K8] 💻.
+- **공개 API에서 빠진 것:** 내비 CFG는 `examples/two_gpu_nav_cfg_demo.py`에만 남았다 [K8] 💻.
+- **체크포인트:** `nvidia/Alpamayo2-Super`. 모델카드 기재는 34B, bf16이다 [L4] 🔍. VLM 층·hidden·head 수는 코드에 없고 체크포인트 `config.json`에서 읽는다 [K8] 💻.
+- **공식 자료 간 불일치:** 저장소 README는 "32B VLM backbone with a 2B diffusion expert"로 적는다(`README.md:13`) [K8] 💻. 모델카드는 action expert를 2.3B로 적는 것으로 확인됐으나 WebFetch 요약을 거쳤다 [L4] 📰.
+
+#### 세 버전 비교 요약
+
+| 항목 | Alpamayo 1 | Alpamayo 1.5 | Alpamayo 2 Super |
+|---|---|---|---|
+| 최상위 클래스 | `AlpamayoR1(ReasoningVLA)` | `Alpamayo1_5(ReasoningVLA)` | `Alpamayo2Super` (ReasoningVLA 제거) |
+| VLM 결합 | `Qwen3VLForConditionalGeneration` 고정 | 같음 | `getattr(transformers, vlm_class)` 동적 |
+| 궤적 API | `sample_trajectories_from_data_with_vlm_rollout` | 같음 + `_cfg_nav` | `sample_trajectories_from_data` (공유 prefill) |
+| 텍스트 API | 없음 | `generate_text` (VQA) | `generate_text` + `text_tasks` (meta-action·auto-label·VQA·grounding) |
+| 카메라 입력 | 4대 × 4프레임 | 기본 4대, 부분집합 가능 | 7대 로드 → 과제별 6대 × 4프레임 |
+| 궤적 토큰 vocab | 768 | 768 | 1000 + 3000 |
+| action 디코더 | `FlowMatching` Euler 10스텝 → unicycle 64 × 0.1 s | 같음 + CFG | 같음 (CFG는 예제만) |
+| 로딩 | `.to("cuda")` | `.to("cuda")` | `device_map="cuda:0"` |
+| 체크포인트 | `nvidia/Alpamayo-R1-10B` | `nvidia/Alpamayo-1.5-10B` | `nvidia/Alpamayo2-Super` |
+
+출처: [K6][K7][K8] 💻, 체크포인트 크기 [L1][L3][L4] 🔍
+
+**하위 모듈 클래스 확정 불가** [K6][K7][K8] 💻
+- diffusion, action space, projection, 토크나이저는 체크포인트 `config.json`의 hydra `_target_`으로 주입된다.
+- L3의 클래스 이름은 저장소 안에 하나뿐인 구현체라서 그것이 쓰인다고 본 것이다(출처 미확인).
+- Alpamayo 1·1.5의 `action_out_proj` 클래스는 저장소에 정의가 없다.
+
+> **분석.** 세 버전 모두 "VLM이 CoC를 생성 → expert가 VLM KV 캐시를 조건으로 flow matching → unicycle 적분"이라는 추론 뼈대는 같다. 바뀐 것은 입력 조립(카메라 프로필·내비 텍스트·과제 라우팅)과 VLM 결합 방식이다. Thor 이식 관점에서 2 Super의 동적 VLM 로딩과 공유 prefill은 TensorRT Edge-LLM이 가정하는 alpamayo_r1 구조(1.3·2.3절)와 다르므로, 1 기준 엔진 빌드 경로를 그대로 재사용할 수 없다.
+
+---
+
 ## 3부. Autoware on Thor
 
 ### 3.1 "Thor 지원"의 실체

@@ -8,9 +8,10 @@
 | 문서 | 내용 |
 |---|---|
 | [thor-deployment.md](thor-deployment.md) | 보고서. 결론, 보드 비교, Alpamayo on Thor, Autoware on Thor, 실행 계획 |
-| [images/](images/) | 플랫폼·버전 호환 지도, 단계별 로드맵, Alpamayo 2 Super SW 컴포넌트 스택(코드 기반) |
+| [images/](images/) | 플랫폼·버전 호환 지도, 단계별 로드맵, Alpamayo 2 Super SW 컴포넌트 스택(ROS 2 통합 포함), Alpamayo 1·1.5·2 Super 소스 코드 기반 컴포넌트 구조 3장 |
 | [reference/references.md](reference/references.md) | 출처 목록 (T 보드·플랫폼, L Alpamayo, W Autoware, K 소스 코드) |
 | [reference/code-alpamayo2-components.md](reference/code-alpamayo2-components.md) | Alpamayo 2 Super 코드 기반 컴포넌트 인벤토리 (파일·줄 근거) |
+| [reference/code-alpamayo-src-components.md](reference/code-alpamayo-src-components.md) | Alpamayo 1·1.5·2 Super 소스 코드 기반 컴포넌트 근거 (박스별 파일·줄, 호출 순서, 공식 자료 대조, 버전 간 차이) |
 
 배경 설명은 [자율주행 SW 스택 파헤치기 심층편](../README.md)을 참고한다.
 
