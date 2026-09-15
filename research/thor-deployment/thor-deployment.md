@@ -19,8 +19,8 @@
 
 ## 결론 먼저
 
-1. **2026-09 현재 NVIDIA는 Thor에서 Alpamayo를 공식 지원하지 않는다.** NVIDIA 포럼에서 NVIDIA 직원은 "Alpamayo is not available for AGX Thor currently"라고 답했다 [L8] 🔍.
-2. **공식 온보드 경로는 TensorRT Edge-LLM 하나이며, 지원 모델은 Alpamayo-R1-10B, 정밀도는 FP16뿐이다** [L10][L21] ✅. Alpamayo 1.5 지원은 GitHub 이슈로 요청만 된 상태다 [L22] 🔍.
+1. **2026-09 현재 Thor에서 Alpamayo를 돌리는 공식 경로는 매우 좁다.** NVIDIA 포럼에서 NVIDIA 직원은 "Alpamayo is not available for AGX Thor currently"라고 답하면서, NIM·TensorRT-LLM은 Jetson에서 지원하지 않고 Edge-LLM은 Alpamayo 1 FP16만 지원한다고 설명했다 [L8] 🔍.
+2. **공식 온보드 경로는 TensorRT Edge-LLM 하나이며, 지원 모델은 Alpamayo-R1-10B, 정밀도는 FP16뿐이다** [L10][L21] ✅. Alpamayo 1.5 지원은 GitHub 이슈로 요청만 된 상태다 [L22] 🔍. 시리즈별 가능 여부는 2.2절, 서버 실행 사례는 2.5절에 정리했다.
 3. **첫 보드는 Jetson AGX Thor가 현실적이다.**
    - 메모리가 128 GB로 DRIVE 개발킷의 64 GB보다 크다 [T25][T11] 🔍.
    - 공개 판매 중이다(US$3,499) [T14] ✅.
@@ -131,6 +131,37 @@
 
 ## 2부. Alpamayo on Thor
 
+### 2.0 먼저 읽을 것 — 이름·크기·정밀도
+
+**이름**
+- R1은 Alpamayo 1의 원래 이름이다. Hugging Face 모델명은 `Alpamayo-R1-10B`이고 [L1] 🔍, NVIDIA 제품 페이지는 1과 1.5를 "Alpamayo 1 Nano", "Alpamayo 1.5 Nano"로 부른다 [L24] 🔍.
+- 따라서 "R1"은 1.5나 2와 별개인 모델이 아니라 1세대를 가리킨다.
+
+**크기 읽는 법**
+- "10B", "34B"의 B는 billion(10억)이며 모델 파라미터(가중치) 개수를 뜻한다.
+- "22.2 GB", "71.6 GB"는 공개된 가중치 파일의 크기다 [L28][L4] 🔍.
+- 파일 크기는 대략 "파라미터 수 × 파라미터 하나당 바이트 수"로 정해진다(계산).
+
+| 정밀도 | 파라미터당 | 10B 모델 | 34B 모델 |
+|---|---|---|---|
+| BF16 / FP16 (원본) | 2 바이트 | 약 21 GB | 약 68 GB |
+| FP8 | 1 바이트 | 약 11 GB | 약 34 GB |
+| NVFP4 | 약 0.56 바이트 | 약 6~9 GB | 약 19~23 GB |
+
+- 위 표는 계산이며, NVFP4는 블록 스케일을 포함해 약 4.5비트로 가정했다 ⚠️. 범위의 큰 값은 궤적 생성부(action expert)를 원본 정밀도로 남긴 경우다.
+- **실제 실행 메모리는 파일보다 크다.** 입력 영상 버퍼, KV 캐시, 런타임 작업 공간이 더해진다. 예를 들어 Alpamayo 1.5를 FP16으로 실행하면 약 31.6 GB를 썼다 [L11] 🔍.
+- GiB는 1024³ 바이트라 GB(10⁹ 바이트)보다 약 7% 크다. 모델카드의 최대 메모리 72,115 MiB는 약 70.4 GiB, 약 75.6 GB다(계산).
+
+**정밀도와 양자화**
+- 공개 원본 가중치는 BF16이다 [L1][L3][L4] 🔍. BF16과 FP16은 둘 다 16비트라 크기가 같다.
+- **"R1 FP16"은 양자화하지 않은 원본 16비트 정밀도로 엔진을 만든다는 뜻이다.** TensorRT Edge-LLM에서 Alpamayo는 이 방식만 지원한다 [L10] 🔍.
+- 양자화는 가중치를 FP8·NVFP4·INT8 같은 8비트·4비트로 줄이는 것이다. NVIDIA 레시피로 1.5를 양자화하면 FP8 약 11 GB, AutoQuant 약 9 GB가 된다 [L7] 🔍.
+- 레시피 출력은 양자화 위치만 표시한 "fake quantization" 체크포인트다 [L7] 🔍. 실행 런타임이 저정밀 커널을 갖춰야 실제로 빨라지며, Jetson Thor PyTorch 경로에서는 오히려 느렸다는 보고가 있다 [L8] 🔍.
+
+**DLA**
+- DLA(Deep Learning Accelerator)는 Xavier·Orin SoC에 GPU와 별도로 들어간 신경망 전용 가속 블록이다(용어 설명, 출처 미확인).
+- **Thor에는 DLA가 없다.** Jetson T5000과 DRIVE Thor-X 모두 가속기는 PVA와 OFA뿐이다 [T25][T11] ✅.
+
 ### 2.1 모델 사양
 
 | 항목 | Alpamayo 1 (R1-10B) | Alpamayo 1.5 (10B) | Alpamayo 2 Super |
@@ -157,7 +188,20 @@
 
 > **분석.** 사내 실험은 가능해 보이지만, 증류 모델을 제품에 넣거나 외부에 배포하려면 법무 확인이 먼저다. 데이터셋으로 학습한 증류 모델의 배포 조건은 출처 미확인이다.
 
-### 2.2 공식 배포 경로와 그 한계
+### 2.2 시리즈별로 Thor에 올릴 수 있는가
+
+| 시리즈 | 크기 | Jetson AGX Thor (128 GB) | DRIVE AGX Thor 개발킷 (64 GB) |
+|---|---|---|---|
+| **Alpamayo 1 (R1)** | 10B · 22.2 GB | **공식 경로 있음.** TensorRT Edge-LLM, FP16 only, NVIDIA 튜토리얼 대상 [L10][L21] 🔍. 메모리 충분 [T25] 🔍. Thor 지연 공개 수치 없음 ⚠️ | **공식 조건은 충족하지만 실패 사례가 있음.** Edge-LLM이 DriveOS 7.2를 지원한다 [T26] 🔍. 다만 FP16 엔진 빌드가 GPU 메모리 부족(CUDA 가용 6.0 GB, 15.17 GB 요청)으로 실패했고 미해결이다 [L19][L31] 🔍 |
+| **Alpamayo 1.5** | 10B · 22.2 GB | **공식 지원 없음, 비공식 실행 사례 있음.** Edge-LLM 지원은 요청 단계다 [L22] 🔍. 커뮤니티 사용자가 PyTorch + SDPA로 실행해 약 14.5 GB를 썼다 [L19][L20] 🔍. 1회 추론 3,770.3 ms, FlashDrive 최적화 후 943.6 ms [L11] 🔍 | **공식 지원·실행 사례 모두 없음** ⚠️. 1과 같은 메모리 할당 제약이 걸릴 가능성이 크다(분석) |
+| **Alpamayo 2 Super** | 34B · 71.6 GB | **공식 지원·실행 사례 모두 없음** ⚠️. 원본은 계산상 128 GB에 들어가지만 여유가 적다. NVFP4로 약 23 GB가 되지만 변환·실행 도구가 없다(계산) | **사실상 불가.** 원본 71.6 GB가 64 GB를 넘는다(계산). NVFP4는 계산상 경계선이지만 도구가 없다 |
+
+- NVIDIA 직원의 "Alpamayo is not available for AGX Thor currently"라는 답변은 같은 글에서 NIM·TensorRT-LLM의 Jetson 미지원과 "Edge-LLM은 Alpamayo 1 FP16만 지원"을 함께 설명한다 [L8] 🔍.
+- NVIDIA가 말하는 "DRIVE AGX Thor용 증류·양자화 student 모델"은 공개되지 않았다 [L24][L6] ⚠️.
+
+> **분석.** 공식적으로 되는 조합은 "Alpamayo 1을 Jetson AGX Thor에서 원본 16비트로 Edge-LLM 실행" 하나다. 1.5는 Jetson에서 비공식으로만 동작하고, 2 Super는 두 보드 모두 현재 실행 경로가 없다.
+
+### 2.3 공식 배포 경로와 그 한계
 
 **NVIDIA가 말하는 경로**
 - NVIDIA는 공개 체크포인트를 "cloud-side teacher"로, 차량 내 추론을 "distilled and quantized student model on DRIVE AGX Thor via TensorRT Edge-LLM"으로 설명한다 [L24] 🔍.
@@ -180,7 +224,7 @@
 - Qwen3-VL 2B / 4B / 8B, Cosmos-Reason2 2B / 8B, Qwen2.5-VL 3B / 7B, InternVL3/3.5 1–14B
 - Cosmos-Reason2 8B NVFP4 데모는 약 4 GB다 [L10] 🔍.
 
-### 2.3 측정된 지연·메모리
+### 2.4 측정된 지연·메모리 (주요 수치)
 
 | 모델 | 하드웨어 | 조건 | 1회 추론 지연 | 메모리 | 출처 |
 |---|---|---|---|---|---|
@@ -199,7 +243,53 @@
 
 > **분석.** 공개된 Thor 수치에서 가장 빠른 값도 1회 약 0.94 s다. Alpamayo를 폐루프 제어 경로에 넣는 것은 아직 이르다. 첫 목표는 "기능 동작 + 병목 계측"으로 잡는 것이 현실적이다.
 
-### 2.4 메모리 계산 (계산)
+### 2.5 서버·워크스테이션 실행 사례
+
+측정 조건(샘플 수, 추론 텍스트 길이, 최적화 여부)이 출처마다 다르다. 같은 표 안에서도 행 사이 직접 비교는 조건을 확인한 뒤에 해야 한다.
+
+**Alpamayo 1 (R1, 10B)**
+
+| 환경 | 결과 | 출처 |
+|---|---|---|
+| RTX 6000 Pro Blackwell | 1회 **99 ms** (추론 텍스트 40토큰, 논문 표 14) | [L27] 🔍 |
+| RTX PRO 6000 | 704 → 155 ms (FlashDrive 최적화 전후) | [L12] 🔍 |
+| H100 | 모델카드 테스트 환경. 24 GB+ GPU(3090·3090 Ti·4090·A5000) 호환 표기 | [L1] 🔍 |
+| RTX 5070 Ti 16 GB | 메모리가 모자라 CPU-GPU 스와핑으로 실행, 기존 오프로드 대비 최대 3.55배 | [L13] 🔍 |
+| 테스트 차량 | 도심 공로 주행 성공 보고. 차량 컴퓨터 사양은 논문에 없음 | [L27] 🔍 |
+| 클라우드 H100 | TreeHacks 2026 프로젝트가 차량의 Jetson Thor 대신 클라우드에서 약 5초 주기로 실행 | [L38] 📄 (AI 생성 위키 경유) |
+
+**Alpamayo 1.5 (10B)**
+
+| 환경 | 결과 | 출처 |
+|---|---|---|
+| RTX PRO 6000 | 716.9 → **151.4 ms** (FlashDrive), 메모리 FP16 약 31.6 GB → W4A8 약 18.3 GB | [L11] 🔍 |
+| RTX 5090 | 878.1 → 183.7 ms (FlashDrive) | [L11] 🔍 |
+| RTX 4090 | 1,307.1 → 217.2 ms (FlashDrive) | [L11] 🔍 |
+| RTX 3090 | 1,891.9 → 382.3 ms (FlashDrive) | [L11] 🔍 |
+| RTX 5090 + CUDA 12 / B300 + CUDA 13 | NVIDIA 양자화 레시피의 실행 환경 (지연 수치 없음) | [L7] 🔍 |
+| AlpaSim 폐루프 평가 | 1.5 preset 약 96 GB VRAM 필요 | [L18] 🔍 |
+
+**Alpamayo 1.5 Autoware ROS 2 노드** — RTX PRO 6000 (96 GB), 카메라 4대 × 4프레임, 1080×1920 [L15] 🔍 (README 원문 2026-09-15 재확인)
+
+| 설정 | 지연 | FPS | 궤적 편차 |
+|---|---|---|---|
+| CPU 전처리 + 샘플링 + 기본 expert + 10스텝 (원본) | 0.820 s | 1.22 | 기준 |
+| GPU 전처리 + greedy + 기본 expert + 10스텝 | 0.820 s | 1.22 | 약 0.4% |
+| GPU 전처리 + greedy + TensorRT expert + 10스텝 | 0.700 s | 1.43 | 약 1.3% |
+| GPU 전처리 + greedy + 기본 expert + 5스텝 | 0.720 s | 1.39 | 약 0.4% |
+| GPU 상주 전처리 + greedy + TensorRT expert + 5스텝 | **0.600 s** | 1.67 | 약 1.8% |
+
+**Alpamayo 2 Super (34B)**
+
+| 환경 | 결과 | 출처 |
+|---|---|---|
+| H100 80 GB | 모델카드 테스트 환경, 최대 메모리 72,115 MiB | [L4] 🔍 |
+| H100 80 GB × 2 | 공식 데모. VLM 본체는 GPU 0, action expert는 GPU 1에 분산 | [L4] 🔍 |
+| RTX PRO 6000 (96 GB), Autoware ROS 2 노드 | 로딩 28.6 s, 1회 추론 평균 **3.35 s** / p90 3.97 s, 최대 69.1 GiB, "not usable closed-loop" | [W10] 🔍 |
+
+> **분석.** Alpamayo 1·1.5는 24 GB 이상 소비자용 GPU에서 돌아가고, 최적화하면 RTX 4090급에서 약 0.2 s다. 2 Super는 80 GB 이상 GPU가 필요하고 1회 약 3.4 s라 실시간 제어에는 느리다. 가장 빠른 99 ms는 워크스테이션 GPU 수치라 차량용 칩에 그대로 기대할 수 없다.
+
+### 2.6 메모리 계산 (계산)
 
 전제
 - 파라미터 수는 모델카드 값을 쓴다 [L1][L4].
@@ -222,7 +312,7 @@
 | Jetson T4000 | 64 GB [T25] | 가능 | 불가 | 가능 |
 | DRIVE AGX Thor 개발킷 | 64 GB, CUDA 가용 6–15 GB 보고 [L31][T7] | carveout 확대 전에는 불가 | 불가 | carveout 확대 전제로 경계선 |
 
-### 2.5 블로커 목록
+### 2.7 블로커 목록
 
 | 블로커 | 내용 | 출처 |
 |---|---|---|
@@ -234,7 +324,7 @@
 | 폐루프 평가 | AlpaSim의 Alpamayo 1.5 preset은 약 96 GB VRAM 필요 | [L18] 🔍 |
 | 데이터 | PhysicalAI-AV는 gated, 133 TB | [L16] 🔍 |
 
-### 2.6 커뮤니티가 Jetson Thor에서 쓴 절차 (참고)
+### 2.8 커뮤니티가 Jetson Thor에서 쓴 절차 (참고)
 
 아래는 NVIDIA 포럼 사용자 한 명이 보고한 절차다. NVIDIA 공식 가이드가 아니다 [L20] 🔍.
 
