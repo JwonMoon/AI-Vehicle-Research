@@ -2,101 +2,108 @@
 
 작성일: 2026-09-16 · 대상: 고정 커밋 클론(depth 1)의 코드 읽기. 실행 검증 아님. ROS 2·Autoware 통합(alpamayo-autoware)은 제외.
 
-그림 4~6의 박스별 파일·줄 근거, 추론 호출 순서, 공식 자료 대조, 이전 버전 대비 차이를 기록한다. 공식 자료(HF 모델카드·NVIDIA 블로그·arXiv 2511.00088) 대조는 WebFetch로 열람했으며 요약 경유 항목은 원문 재확인이 필요하다.
+그림 4~6의 박스별 근거, 궤적 추론 호출 순서, 공식 자료 대조, 이전 버전 대비 차이를 기록한다. 공식 자료(HF 모델카드·NVIDIA 블로그·arXiv 2511.00088)는 WebFetch로 열람했으며 요약 경유 항목은 원문 재확인이 필요하다.
 
-표기: kind=`absent`는 grep·find로 저장소에 없음을 확인한 항목. order는 궤적 추론 호출 순서 번호. 경로는 각 저장소 루트 기준.
+## 그림 읽는 법
+
+- **종류**: `class`(클래스) · `method`(`클래스.메서드`) · `function`(모듈 최상위 함수, 필요하면 `모듈.함수`) · `attribute`(모델 객체가 가진 하위 모듈, `클래스.속성`) · `module .py`(파일 전체) · `script` · `notebook` · `pip package` · `HF Hub`(체크포인트·데이터셋) · `환경` · `코드에 없음`(grep·find로 확인).
+- **이름**: 코드에 적힌 식별자 그대로.
+- **설명**: 이 문서가 붙인 한국어 역할 요약.
+- **정의 위치**: `src/<패키지>/` 기준 `파일:줄`. `pyproject.toml`·`README.md`·`notebooks/`·`examples/`는 저장소 루트 기준. `from_pretrained`는 transformers에서 상속한 메서드라 호출 위치를 적었다.
+- **단계**: 궤적 추론 호출 순서에서 이 컴포넌트가 실행되는 단계 번호(범위).
 
 ## Alpamayo 1
 
-- 저장소: https://github.com/NVlabs/alpamayo @ `11a0e01c13a5622377c45ee37d653351453ec43b` (2026-09-09) [K6]
+- 저장소: https://github.com/NVlabs/alpamayo @ `11a0e01c13a5622377c45ee37d653351453ec43b` (2026-09-09) [K6] · 패키지 경로 `src/alpamayo_r1/`
 - 그림: [04-alpamayo1-src-components.svg](../images/04-alpamayo1-src-components.svg)
 
 ### L6 Applications · 실행 진입점
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `test_inference.py` | script | `src/alpamayo_r1/test_inference.py` | 예제 clip 1개 추론 후 minADE 출력 |  |  | src/alpamayo_r1/test_inference.py:16-18 · src/alpamayo_r1/test_inference.py:56-72 · README.md:98-100 | GitHub README: Running Inference |
-| `inference.ipynb` | notebook | `notebooks/inference.ipynb` | 추론 + 카메라/궤적 시각화 |  |  | notebooks/inference.ipynb:52 · notebooks/inference.ipynb:113 · notebooks/inference.ipynb:151 | GitHub README: Interactive notebook |
-| `SFT/RL 학습 스크립트` | absent | `(alpamayo-recipes로 이전)` | 학습 코드 없음, 추론 전용 저장소 |  |  | grep -rniE 'optimizer\|deepspeed\|lora\|backward\(' → 0건 · ls docs finetune → 없음 · README.md:27 · flow_matching.py:140-173 (construct_training_data 등 손실 함수만 잔존) | GitHub README: Updates (May 2026) |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| script | `test_inference.py` | 예제 클립 1개로 궤적·CoC 추론 후 minADE 출력 (모듈 최상위 코드) | `test_inference.py:31-72` | 1–12 |  |
+| notebook | `notebooks/inference.ipynb` | 추론 + 카메라·궤적 시각화 데모 | `notebooks/inference.ipynb` |  |  |
+| 코드에 없음 | `학습 스크립트 (SFT·RL)` | 이 저장소는 추론 전용. 학습 코드는 alpamayo-recipes | `grep -rniE 'optimizer\|deepspeed\|backward\(' → 0건` |  |  |
 
 ### L5 Inference API
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `AlpamayoR1.from_pretrained` | function | `src/alpamayo_r1/models/alpamayo_r1.py` | HF PreTrainedModel 상속 로더(bf16) | 3 |  | src/alpamayo_r1/test_inference.py:35 · src/alpamayo_r1/models/alpamayo_r1.py:365-366 · src/alpamayo_r1/models/base_model.py:285 | HF model card |
-| `sample_trajectories_from_data_with_vlm_rollout` | function | `src/alpamayo_r1/models/alpamayo_r1.py` | CoC 생성 → flow matching 궤적 샘플링 | 5 |  | src/alpamayo_r1/models/alpamayo_r1.py:150-362 | arXiv 2511.00088 §3.2.2 · arXiv 2511.00088 §5.1 |
-| `fuse_traj_tokens` | function | `src/alpamayo_r1/models/base_model.py` | 과거 궤적 토큰을 placeholder에 삽입 | 6 |  | src/alpamayo_r1/models/base_model.py:168-197 · src/alpamayo_r1/models/alpamayo_r1.py:190 |  |
-| `enable_diffusion_expert_cuda_graph` | function | `src/alpamayo_r1/models/alpamayo_r1.py` | 선택: expert forward CUDA graph 재생 |  |  | src/alpamayo_r1/models/alpamayo_r1.py:130-148 · src/alpamayo_r1/models/diffusion_expert_cuda_graph.py:358-382 · README.md:109-126 | GitHub README: Optional CUDA graph acceleration |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| method | `AlpamayoR1.from_pretrained` | HF 체크포인트에서 모델 객체 생성·가중치 적재 | `상속(transformers) · 호출 test_inference.py:35` | 3 |  |
+| method | `AlpamayoR1.sample_trajectories_from_data_with_vlm_rollout` | 궤적 추론 메인 API: CoC 텍스트 생성 → 궤적 샘플링 | `models/alpamayo_r1.py:150` | 5–11 |  |
+| method | `AlpamayoR1.enable_diffusion_expert_cuda_graph` | 선택: expert 반복 계산을 CUDA graph로 가속 | `models/alpamayo_r1.py:130` |  |  |
 
 ### L4 Model
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `AlpamayoR1` | class | `src/alpamayo_r1/models/alpamayo_r1.py` | VLM + expert + 액션 헤드 최상위 모델 |  |  | src/alpamayo_r1/models/alpamayo_r1.py:80-128 | HF model card: Model Architecture · arXiv 2511.00088 §3 |
-| `ReasoningVLA` | class | `src/alpamayo_r1/models/base_model.py` | 기반 클래스: VLM·tokenizer 초기화 |  |  | src/alpamayo_r1/models/base_model.py:285-401 |  |
-| `vlm` | module | `src/alpamayo_r1/models/base_model.py` | Qwen3VLForConditionalGeneration | 7 |  | src/alpamayo_r1/models/base_model.py:367-381 · src/alpamayo_r1/models/alpamayo_r1.py:220-226 | arXiv 2511.00088 §3.1 (Cosmos-Reason) · HF model card: 8.2B backbone |
-| `expert` | module | `src/alpamayo_r1/models/alpamayo_r1.py` | text_config 복제 action expert | 10 |  | src/alpamayo_r1/models/alpamayo_r1.py:95-101 · src/alpamayo_r1/models/alpamayo_r1.py:297-304 | HF model card: 2.3B action expert · arXiv 2511.00088 §5.1 |
-| `action_in_proj` | module | `src/alpamayo_r1/models/alpamayo_r1.py` | noisy action+t → expert 임베딩 | 10 |  | src/alpamayo_r1/models/alpamayo_r1.py:109-113 · src/alpamayo_r1/models/alpamayo_r1.py:292 |  |
-| `action_out_proj` | module | `src/alpamayo_r1/models/alpamayo_r1.py` | expert hidden → 속도장 (64×2) | 10 |  | src/alpamayo_r1/models/alpamayo_r1.py:114-118 · src/alpamayo_r1/models/alpamayo_r1.py:309-311 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| class | `AlpamayoR1` | 최상위 모델. ReasoningVLA를 상속하고 expert·궤적 디코더를 추가 | `models/alpamayo_r1.py:80` | 3–11 |  |
+| class | `ReasoningVLA` | 부모 클래스. VLM·토크나이저 생성, 궤적 토큰 삽입(TrajectoryFusionMixin) | `models/base_model.py:285` | 3·6 |  |
+| attribute | `AlpamayoR1.vlm` | Qwen3VLForConditionalGeneration 객체. 이미지+프롬프트로 CoC 생성 (ReasoningVLA가 생성) | `models/base_model.py:381` | 7 |  |
+| attribute | `AlpamayoR1.expert` | action expert 트랜스포머. VLM text_config 복제(AutoModel.from_config) | `models/alpamayo_r1.py:99` | 9 |  |
+| attribute | `AlpamayoR1.action_in_proj` | 노이즈 action + 시간 t → expert 입력 임베딩 | `models/alpamayo_r1.py:109` | 9 |  |
+| attribute | `AlpamayoR1.action_out_proj` | expert 출력 → action 속도장 (64×2). 클래스 정의는 저장소에 없음 | `models/alpamayo_r1.py:114` | 9 |  |
 
 ### L3 Model Building Blocks
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `AlpamayoR1Config` | config | `src/alpamayo_r1/config.py` | 하위 모듈 hydra cfg 보관 |  |  | src/alpamayo_r1/config.py:23-50 · src/alpamayo_r1/models/base_model.py:200-239 |  |
-| `FlowMatching` | class | `src/alpamayo_r1/diffusion/flow_matching.py` | Euler 적분 샘플러 (BaseDiffusion) | 9 |  | src/alpamayo_r1/diffusion/flow_matching.py:22-138 · src/alpamayo_r1/diffusion/base.py:45 | arXiv 2511.00088 §5.1 |
-| `UnicycleAccelCurvatureActionSpace` | class | `src/alpamayo_r1/action_space/unicycle_accel_curvature.py` | 가속도·곡률 → 궤적 적분 | 11 |  | src/alpamayo_r1/action_space/unicycle_accel_curvature.py:38-102 · src/alpamayo_r1/action_space/unicycle_accel_curvature.py:307-389 | arXiv 2511.00088 §3.2.2 |
-| `PerWaypointActionInProjV2` | class | `src/alpamayo_r1/models/action_in_proj.py` | Fourier 인코딩+MLP 입력 projection |  |  | src/alpamayo_r1/models/action_in_proj.py:104-169 |  |
-| `DeltaTrajectoryTokenizer` | class | `src/alpamayo_r1/models/delta_tokenizer.py` | 과거 궤적 → 이산 delta 토큰(추정) |  |  | src/alpamayo_r1/models/delta_tokenizer.py:21-98 · src/alpamayo_r1/models/base_model.py:396-401 |  |
-| `ExpertLogitsProcessor` | class | `src/alpamayo_r1/models/alpamayo_r1.py` | 생성 중 궤적 토큰 logit을 -inf 마스킹 | 7 |  | src/alpamayo_r1/models/alpamayo_r1.py:46-77 · src/alpamayo_r1/models/alpamayo_r1.py:212-219 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| class | `AlpamayoR1Config` | 모델 설정. 하위 모듈 hydra cfg 보관 (ReasoningVLAConfig 상속) | `config.py:23` |  |  |
+| class | `FlowMatching` | AlpamayoR1.diffusion 으로 생성. 노이즈에서 Euler 10스텝으로 action 샘플링 | `diffusion/flow_matching.py:22` | 8 |  |
+| class | `UnicycleAccelCurvatureActionSpace` | AlpamayoR1.action_space 로 생성. (가속도, 곡률) → xyz·회전 적분 | `action_space/unicycle_accel_curvature.py:38` | 10 |  |
+| class | `PerWaypointActionInProjV2` | action_in_proj 구현: waypoint별 Fourier 인코딩 + MLP | `models/action_in_proj.py:104` | 9 |  |
+| class | `DeltaTrajectoryTokenizer` | hist_traj_tokenizer 구현: 과거 궤적 → 이산 토큰 | `models/delta_tokenizer.py:21` | 6 |  |
+| class | `ExpertLogitsProcessor` | CoC 생성 중 궤적 토큰이 나오지 않게 logit 마스킹 | `models/alpamayo_r1.py:46` | 7 |  |
 
 ### L2 Data · Pre/Post-processing
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `load_physical_aiavdataset` | function | `src/alpamayo_r1/load_physical_aiavdataset.py` | 4카메라×4프레임, ego 좌표계 변환(scipy) | 1 |  | src/alpamayo_r1/load_physical_aiavdataset.py:27-222 | HF model card: Input |
-| `create_message` | function | `src/alpamayo_r1/helper.py` | system/user/assistant 채팅 메시지 구성 | 2 |  | src/alpamayo_r1/helper.py:28-68 |  |
-| `get_processor` | function | `src/alpamayo_r1/helper.py` | Qwen3-VL-2B processor 구성 | 4 |  | src/alpamayo_r1/helper.py:23-25 · src/alpamayo_r1/helper.py:71-80 · src/alpamayo_r1/test_inference.py:36-45 |  |
-| `token_utils` | module | `src/alpamayo_r1/models/token_utils.py` | StopAfterEOS·extract_text_tokens 등 | 12 |  | src/alpamayo_r1/models/token_utils.py:151-169 · src/alpamayo_r1/models/token_utils.py:172-209 · src/alpamayo_r1/models/token_utils.py:212-253 |  |
-| `geometry/rotation.py` | module | `src/alpamayo_r1/geometry/rotation.py` | 2D/3D 회전행렬·yaw 변환 |  |  | src/alpamayo_r1/geometry/rotation.py:109 · src/alpamayo_r1/geometry/rotation.py:197 · src/alpamayo_r1/action_space/unicycle_accel_curvature.py:387 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| function | `load_physical_aiavdataset` | 데이터셋 클립 → 4캠×4프레임 영상, 자차 과거·미래 궤적 | `load_physical_aiavdataset.py:27` | 1 |  |
+| function | `helper.create_message` | 채팅 메시지 구성: 이미지 16장 + 궤적 자리표시 48개 | `helper.py:28` | 2 |  |
+| function | `helper.get_processor` | Qwen3-VL-2B processor에 모델 토크나이저를 결합 | `helper.py:71` | 4 |  |
+| method | `TrajectoryFusionMixin.fuse_traj_tokens` | 프롬프트의 궤적 자리표시를 과거 궤적 토큰으로 치환 (ReasoningVLA가 상속) | `models/base_model.py:168` | 6 |  |
+| function | `extract_text_tokens` | 생성 토큰에서 cot 등 텍스트 구간 추출 | `models/token_utils.py:151` | 11 |  |
+| module .py | `geometry/rotation.py` | 회전행렬·yaw 변환 유틸 | `geometry/rotation.py:25` |  |  |
 
 ### L1 Libraries · Runtime
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `torch 2.8.0` | external | `external` |  |  |  | pyproject.toml:11 · uv.lock:1165-1166 | HF model card: Runtime (PyTorch ≥2.8) |
-| `transformers 4.57.1` | external | `external` | Qwen3-VL, generate, AutoModel |  |  | pyproject.toml:13 · uv.lock:1254-1255 | HF model card: Runtime (Transformers ≥4.57.1) |
-| `flash-attn 2.8.3` | external | `external` | 기본 attn_implementation |  |  | pyproject.toml:14 · uv.lock:265-266 · src/alpamayo_r1/models/base_model.py:215 | GitHub README: Troubleshooting |
-| `hydra-core 1.3.2` | external | `external` | cfg dict로 하위 모듈 instantiate |  |  | pyproject.toml:8 · uv.lock:336-337 · src/alpamayo_r1/models/alpamayo_r1.py:103-118 |  |
-| `einops 0.8.2` | external | `external` |  |  |  | pyproject.toml:7 · uv.lock:238-239 |  |
-| `physical-ai-av 0.2.0` | external | `external` | PhysicalAI AV 데이터셋 인터페이스 |  |  | pyproject.toml:9 · uv.lock:828-829 · src/alpamayo_r1/load_physical_aiavdataset.py:21 |  |
-| `scipy 1.17.1` | external | `external` | Rotation(쿼터니언→회전행렬) |  |  | pyproject.toml:15 · uv.lock:1074-1075 · src/alpamayo_r1/load_physical_aiavdataset.py:22 |  |
-| `TensorRT / ONNX / 양자화` | absent | `(없음)` | 배포용 export·양자화 코드 없음 |  |  | grep -rniE 'tensorrt\|onnx\|quantiz\|int8\|fp8\|vllm' (*.py,*.toml,*.ipynb) → delta_tokenizer.py:91 주석(이산화)만 매칭 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| pip package | `torch 2.8.0` |  | `pyproject.toml:11` |  |  |
+| pip package | `transformers 4.57.1` | Qwen3-VL 모델·generate·AutoModel | `pyproject.toml:13` |  |  |
+| pip package | `flash-attn 2.8.3` | VLM attention 커널 | `pyproject.toml:14 (>=) · uv.lock` |  |  |
+| pip package | `hydra-core 1.3.2` | config의 _target_으로 부품 객체 생성 | `pyproject.toml:8 (>=) · uv.lock` |  |  |
+| pip package | `einops 0.8.2` |  | `pyproject.toml:7 (>=) · uv.lock` |  |  |
+| pip package | `physical_ai_av 0.2.0` | PhysicalAI AV 데이터셋 인터페이스 | `pyproject.toml:9 (>=) · uv.lock` |  |  |
+| pip package | `scipy 1.17.1` | 회전(쿼터니언→회전행렬) | `pyproject.toml:15 · uv.lock` |  |  |
+| 코드에 없음 | `TensorRT · ONNX · 양자화` | 배포용 변환·양자화 경로 없음 | `grep -rniE 'tensorrt\|onnx\|quantiz\|fp8' → 0건` |  |  |
 
 ### L0 Platform
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Python 3.12.*` | config | `pyproject.toml` |  |  |  | pyproject.toml:4 · uv.lock:3 | GitHub README: Requirements |
-| `NVIDIA CUDA GPU ≥24GB · bfloat16` | config | `src/alpamayo_r1/test_inference.py` | Linux 테스트, autocast bf16 |  |  | src/alpamayo_r1/test_inference.py:35 · src/alpamayo_r1/test_inference.py:55 · src/alpamayo_r1/models/base_model.py:214 · README.md:47-51 | HF model card: Precision BF16, ≥24GB VRAM |
-| `nvidia/Alpamayo-R1-10B` | config | `src/alpamayo_r1/test_inference.py` | HF 체크포인트 약 22GB (gated) |  |  | src/alpamayo_r1/test_inference.py:35 · README.md:94 · README.md:77 | HF model card: 10B params |
-| `nvidia/PhysicalAI-Autonomous-Vehicles` | config | `src/alpamayo_r1/load_physical_aiavdataset.py` | HF 데이터셋 스트리밍 (gated) |  |  | README.md:76 · src/alpamayo_r1/load_physical_aiavdataset.py:31 · src/alpamayo_r1/load_physical_aiavdataset.py:71 | GitHub README: Authenticate with HuggingFace |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| 환경 | `Python 3.12` |  | `pyproject.toml:4` |  |  |
+| 환경 | `NVIDIA GPU ≥24 GB · bfloat16` | CUDA 필수, 단일 GPU | `README.md:50 · test_inference.py:35` |  |  |
+| HF Hub | `nvidia/Alpamayo-R1-10B` | 가중치 약 22 GB (gated) | `test_inference.py:35 · README.md:94` |  |  |
+| HF Hub | `nvidia/PhysicalAI-Autonomous-Vehicles` | 입력 클립 데이터셋 (gated, 스트리밍) | `README.md:76` |  |  |
 
-### 궤적 추론 호출 순서
+### 궤적 추론 호출 순서 (test_inference.py 기준)
 
-1. test_inference.py → load_physical_aiavdataset(clip_id)
-2. create_message: 이미지 16장+traj_history×48+cot_start
-3. AlpamayoR1.from_pretrained(bfloat16).to("cuda")
-4. get_processor → apply_chat_template → helper.to_device
-5. sample_trajectories_from_data_with_vlm_rollout 호출
-6. fuse_traj_tokens: hist_traj_tokenizer로 placeholder 치환
-7. vlm.generate: ExpertLogitsProcessor·StopAfterEOS로 CoC
-8. traj_future_start 기준 KV cache·position_ids·mask 구성
-9. FlowMatching.sample: 노이즈 x에서 Euler 적분(기본 10 step)
-10. step_fn: action_in_proj → expert(KV cache) → action_out_proj
-11. UnicycleAccelCurvatureActionSpace.action_to_traj → xyz/rot
-12. token_utils.extract_text_tokens → extra["cot"]
-13. test_inference.py: ego_future_xyz와 비교해 minADE 출력
+| 단계 | 위치 | 내용 |
+|---|---|---|
+| 1 | `test_inference.py:31` | load_physical_aiavdataset(clip_id) → 영상·자차 궤적 로드 |
+| 2 | `test_inference.py:33` | helper.create_message → 채팅 메시지 |
+| 3 | `test_inference.py:35` | AlpamayoR1.from_pretrained(bf16).to("cuda") → AlpamayoR1·ReasoningVLA __init__에서 vlm·expert·부품 생성 |
+| 4 | `test_inference.py:36-52` | helper.get_processor → apply_chat_template → to_device |
+| 5 | `test_inference.py:56` | AlpamayoR1.sample_trajectories_from_data_with_vlm_rollout 호출 |
+| 6 | `models/alpamayo_r1.py:190` | self.fuse_traj_tokens: 과거 궤적 → hist_traj_tokenizer 토큰 삽입 |
+| 7 | `models/alpamayo_r1.py:211-220` | self.vlm.generate (+ExpertLogitsProcessor) → CoC 텍스트 + KV 캐시 |
+| 8 | `models/alpamayo_r1.py:325` | self.diffusion.sample (FlowMatching) → Euler 10스텝 시작 |
+| 9 | `models/alpamayo_r1.py:292-309` | 매 스텝: action_in_proj → expert(VLM KV 캐시 조건) → action_out_proj |
+| 10 | `models/alpamayo_r1.py:341` | self.action_space.action_to_traj → pred_xyz, pred_rot (64점) |
+| 11 | `models/alpamayo_r1.py:355` | extract_text_tokens → extra["cot"] |
+| 12 | `test_inference.py:66-72` | CoC 출력, 정답 궤적과 비교해 minADE 출력 |
 
 ### 핵심 수치
 
@@ -134,105 +141,112 @@
 
 ### 각주
 
-- diffusion_cfg·action_space_cfg·action_in_proj_cfg·action_out_proj_cfg·traj/hist_traj_tokenizer_cfg의 실제 값은 HF 체크포인트 config.json에 있으며 저장소에 없음. L3의 클래스-속성 대응(action_in_proj=PerWaypointActionInProjV2, hist_traj_tokenizer=DeltaTrajectoryTokenizer 등)은 코드 내 유일 구현체 기준 추정 (출처 미확인).
-- action_out_proj의 구체 클래스는 저장소에 정의가 없음 (in_features/out_features 인자로 보아 nn.Linear 계열 추정, 출처 미확인).
-- 헬퍼 to_device(helper.py:83-100), 로깅(common/logging.py), geometry/coordinates.py, action_space/utils.py는 사소한 유틸로 박스에서 생략.
-- DiffusionExpertCudaGraph 클래스(models/diffusion_expert_cuda_graph.py:104)는 박스 수 제한으로 L5 enable_diffusion_expert_cuda_graph에 병합.
-- tests/test_diffusion_expert_cuda_graph.py는 CUDA graph 경로의 GPU 단위 테스트(pytest)로 L6에서 생략.
-- dev 그룹: matplotlib 3.10.8, mediapy 1.2.6 (노트북 시각화 전용); 노트북은 pandas 3.0.1(uv.lock:786-787)도 사용하나 pyproject 직접 의존성에는 없음.
-- README는 이 저장소를 유지보수 모드로 표기하고 후속 버전(Alpamayo 1.5, alpamayo-recipes)을 안내함 (README.md:1-11, 29).
-- 파라미터 수(8.2B+2.3B)는 HF 모델 카드 기준이며 코드로 검증하지 않음.
+- 정의 위치 경로는 src/<패키지>/ 기준이다. pyproject.toml·README.md·notebooks/·examples/는 저장소 루트 기준이다.
+- from_pretrained는 transformers PreTrainedModel에서 상속한 메서드라 저장소에 정의가 없어, 호출 위치를 적었다.
+- L3 부품(diffusion·action_space·action_in/out_proj·궤적 토크나이저)은 체크포인트 config.json의 hydra _target_으로 주입된다. 저장소에 구현이 하나뿐인 클래스를 적었으며 실제 체크포인트 값은 확인하지 않았다(출처 미확인).
+- 코드 읽기 기반이며 실행 검증이 아니다. 근거: reference/code-alpamayo-src-components.md
+- get_processor는 Qwen/Qwen3-VL-2B-Instruct processor를 불러오지만(helper.py:25) config 기본 백본 경로는 Qwen/Qwen3-VL-8B-Instruct다(models/base_model.py:207).
+- 파라미터 수(백본 8.2B + expert 2.3B)는 HF 모델카드 기재이며 코드로 확인되지 않는다.
 
 ## Alpamayo 1.5
 
-- 저장소: https://github.com/NVlabs/alpamayo1.5 @ `36aeb4c5938cbc2eb2aed33b22434773da4ab639` (2026-09-09) [K7]
+- 저장소: https://github.com/NVlabs/alpamayo1.5 @ `36aeb4c5938cbc2eb2aed33b22434773da4ab639` (2026-09-09) [K7] · 패키지 경로 `src/alpamayo1_5/`
 - 그림: [05-alpamayo1_5-src-components.svg](../images/05-alpamayo1_5-src-components.svg)
 
 ### L6 Applications · 실행 진입점
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `test_inference.py` | script | `src/alpamayo1_5/test_inference.py` | 예제 클립 추론 후 minADE 출력 |  |  | src/alpamayo1_5/test_inference.py:29 · src/alpamayo1_5/test_inference.py:80 · README.md:88 | README Test script |
-| `inference.ipynb` | notebook | `notebooks/inference.ipynb` | 기본 궤적+CoC 추론 데모 |  |  | notebooks/inference.ipynb:cell8 · README.md:138 | README Project Structure |
-| `inference_nav.ipynb` | notebook | `notebooks/inference_nav.ipynb` | 내비 지시 조건화·CFG 비교 데모 |  | ✓ | notebooks/inference_nav.ipynb:cell11 · notebooks/inference_nav.ipynb:cell14 · README.md:140 | README FAQ Navigation |
-| `inference_cam_num.ipynb` | notebook | `notebooks/inference_cam_num.ipynb` | 카메라 1/2/4대 비교 데모 |  | ✓ | notebooks/inference_cam_num.ipynb:cell6 · README.md:139 | README FAQ cameras |
-| `inference_vqa.ipynb` | notebook | `notebooks/inference_vqa.ipynb` | 시각 질의응답(VQA) 데모 |  | ✓ | notebooks/inference_vqa.ipynb:cell12 · README.md:141 | README FAQ VQA |
-| `TensorRT/ONNX export · training scripts` | absent | `external` | 저장소에 없음(SFT/RL은 alpamayo-recipes) |  |  | grep -rnEi 'tensorrt\|onnx\|torch\.export\|quantiz\|fp8' src tests notebooks pyproject.toml README.md → 해당 없음(주석 2건만) · grep -rnE 'optimizer\|\.backward\(\|training_step\|compute_loss' src → 0건 · README.md:14 · README.md:128 | README Fine-tuning and Post-training Recipes |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| script | `test_inference.py` | 예제 클립 궤적·CoC 추론 후 minADE 출력 | `test_inference.py:29 (main)` | 1–12 |  |
+| notebook | `notebooks/inference.ipynb` | 기본 궤적 + CoC 추론 데모 | `notebooks/inference.ipynb` |  |  |
+| notebook | `notebooks/inference_nav.ipynb` | 내비 지시문 조건·CFG 비교 데모 | `notebooks/inference_nav.ipynb` |  | ✓ |
+| notebook | `notebooks/inference_cam_num.ipynb` | 카메라 1·2·4대 입력 비교 데모 | `notebooks/inference_cam_num.ipynb` |  | ✓ |
+| notebook | `notebooks/inference_vqa.ipynb` | 영상 질의응답(VQA) 데모 | `notebooks/inference_vqa.ipynb` |  | ✓ |
+| 코드에 없음 | `학습 스크립트 · TensorRT/ONNX` | 학습(SFT·RL)은 alpamayo-recipes, 배포 변환 없음 | `grep 'optimizer\|backward\|tensorrt\|onnx' → 0건` |  |  |
 
 ### L5 Inference API
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Alpamayo1_5.from_pretrained` | function | `transformers PreTrainedModel (상속)` | HF 체크포인트 로드 | 2 |  | src/alpamayo1_5/test_inference.py:39 · src/alpamayo1_5/models/alpamayo1_5.py:736 · README.md:178 | HF model card nvidia/Alpamayo-1.5-10B |
-| `sample_trajectories_from_data_with_vlm_rollout` | function | `src/alpamayo1_5/models/alpamayo1_5.py` | CoC 생성 후 궤적 샘플링(주 경로) | 6 |  | src/alpamayo1_5/models/alpamayo1_5.py:244 · README.md:102 | README Inference methods |
-| `sample_trajectories_from_data_with_vlm_rollout_cfg_nav` | function | `src/alpamayo1_5/models/alpamayo1_5.py` | 내비 CFG: 내비 제거 KV캐시 추가 구축 |  | ✓ | src/alpamayo1_5/models/alpamayo1_5.py:440 · src/alpamayo1_5/models/alpamayo1_5.py:553 · src/alpamayo1_5/models/alpamayo1_5.py:693 | README Hardware requirements (CFG ~60GB) |
-| `generate_text` | function | `src/alpamayo1_5/models/base_model.py` | 텍스트 전용 생성(VQA) |  | ✓ | src/alpamayo1_5/models/base_model.py:456 · README.md:104 | README Inference methods |
-| `compare_nav_conditions` | function | `src/alpamayo1_5/nav_utils.py` | 내비 유/무/반대방향 3조건 일괄 추론 |  | ✓ | src/alpamayo1_5/nav_utils.py:69 · src/alpamayo1_5/nav_utils.py:179 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| method | `Alpamayo1_5.from_pretrained` | HF 체크포인트에서 모델 객체 생성·가중치 적재 | `상속(transformers) · 호출 test_inference.py:39` | 3 |  |
+| method | `Alpamayo1_5.sample_trajectories_from_data_with_vlm_rollout` | 궤적 추론 메인 API: CoC 생성 → 궤적 샘플링 | `models/alpamayo1_5.py:244` | 5–12 |  |
+| method | `Alpamayo1_5.sample_trajectories_from_data_with_vlm_rollout_cfg_nav` | 내비 CFG: 내비 문장을 뺀 입력의 KV 캐시를 하나 더 만들어 궤적을 보정 | `models/alpamayo1_5.py:440` |  | ✓ |
+| method | `ReasoningVLA.generate_text` | VLM으로 텍스트만 생성 (VQA) | `models/base_model.py:456` |  | ✓ |
+| function | `nav_utils.compare_nav_conditions` | 내비 있음·없음·반대 방향 3조건 궤적 비교 | `nav_utils.py:69` |  | ✓ |
 
 ### L4 Model
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Alpamayo1_5` | class | `src/alpamayo1_5/models/alpamayo1_5.py` | VLM + expert + 확산 조립 최상위 모델 |  |  | src/alpamayo1_5/models/alpamayo1_5.py:87 · src/alpamayo1_5/models/alpamayo1_5.py:110 · src/alpamayo1_5/models/alpamayo1_5.py:114 | HF model card: 10B |
-| `ReasoningVLA` | class | `src/alpamayo1_5/models/base_model.py` | VLM·토크나이저·궤적 토크나이저 기반 클래스 |  |  | src/alpamayo1_5/models/base_model.py:292 · src/alpamayo1_5/models/base_model.py:318 |  |
-| `Qwen3VLForConditionalGeneration` | class | `external (transformers) · self.vlm` | VLM 백본(카드상 Cosmos-Reason2) |  |  | src/alpamayo1_5/models/base_model.py:31 · src/alpamayo1_5/models/base_model.py:211 · src/alpamayo1_5/models/base_model.py:390 | HF model card: Backbone 8.2B, Cosmos-Reason2, Qwen3-VL-8B-Instruct 기반 |
-| `expert` | module | `src/alpamayo1_5/models/alpamayo1_5.py (AutoModel.from_config)` | VLM text_config 복제 action expert |  |  | src/alpamayo1_5/models/alpamayo1_5.py:102 · src/alpamayo1_5/models/alpamayo1_5.py:110 · src/alpamayo1_5/models/alpamayo1_5.py:112 | HF model card: Action Expert 2.3B |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| class | `Alpamayo1_5` | 최상위 모델. ReasoningVLA를 상속하고 expert·궤적 디코더를 추가 | `models/alpamayo1_5.py:87` | 3–12 |  |
+| class | `ReasoningVLA` | 부모 클래스. VLM·토크나이저 생성, 궤적 토큰 삽입, generate_text | `models/base_model.py:292` | 3·6 |  |
+| attribute | `Alpamayo1_5.vlm` | Qwen3VLForConditionalGeneration 객체. CoC 생성 (ReasoningVLA가 생성) | `models/base_model.py:390` | 7 |  |
+| attribute | `Alpamayo1_5.expert` | action expert 트랜스포머. VLM이 flash_attention_2면 expert만 sdpa 강제 | `models/alpamayo1_5.py:110` | 10 | ✓ |
+| attribute | `Alpamayo1_5.action_in_proj` | 노이즈 action + 시간 t → expert 입력 임베딩 | `models/alpamayo1_5.py:120` | 10 |  |
+| attribute | `Alpamayo1_5.action_out_proj` | expert 출력 → action 속도장. 클래스 정의는 저장소에 없음 | `models/alpamayo1_5.py:125` | 10 |  |
 
 ### L3 Model Building Blocks
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Alpamayo1_5Config` | config | `src/alpamayo1_5/config.py` | ReasoningVLAConfig 상속·hydra cfg |  |  | src/alpamayo1_5/config.py:23 · src/alpamayo1_5/models/base_model.py:204 |  |
-| `FlowMatching` | class | `src/alpamayo1_5/diffusion/flow_matching.py` | Euler 적분 샘플러, CFG _guided_v | 10 | ✓ | src/alpamayo1_5/diffusion/flow_matching.py:22 · src/alpamayo1_5/diffusion/flow_matching.py:115 · src/alpamayo1_5/diffusion/flow_matching.py:138 | arXiv 2511.00088 (diffusion-based trajectory decoder) |
-| `UnicycleAccelCurvatureActionSpace` | class | `src/alpamayo1_5/action_space/unicycle_accel_curvature.py` | 가속도·곡률 action ↔ xyz/rot 궤적 | 11 |  | src/alpamayo1_5/action_space/unicycle_accel_curvature.py:38 · src/alpamayo1_5/action_space/unicycle_accel_curvature.py:102 · src/alpamayo1_5/action_space/unicycle_accel_curvature.py:307 |  |
-| `PerWaypointActionInProjV2` | class | `src/alpamayo1_5/models/action_in_proj.py` | noisy action+t → expert 임베딩 |  |  | src/alpamayo1_5/models/action_in_proj.py:104 · src/alpamayo1_5/models/alpamayo1_5.py:120 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| class | `Alpamayo1_5Config` | 모델 설정. 하위 모듈 hydra cfg 보관 (ReasoningVLAConfig 상속) | `config.py:23` |  |  |
+| class | `FlowMatching` | Alpamayo1_5.diffusion. Euler 10스텝 샘플링 + CFG 합성(_guided_v) | `diffusion/flow_matching.py:22` | 9 | ✓ |
+| class | `UnicycleAccelCurvatureActionSpace` | Alpamayo1_5.action_space. (가속도, 곡률) → xyz·회전 적분 | `action_space/unicycle_accel_curvature.py:38` | 11 |  |
+| class | `PerWaypointActionInProjV2` | action_in_proj 구현: waypoint별 Fourier 인코딩 + MLP | `models/action_in_proj.py:104` | 10 |  |
+| class | `DeltaTrajectoryTokenizer` | hist_traj_tokenizer 구현: 과거 궤적 → 이산 토큰 | `models/delta_tokenizer.py:21` | 6 |  |
+| class | `ExpertLogitsProcessor` | CoC 생성 중 궤적 토큰 logit 마스킹 | `models/alpamayo1_5.py:53` | 7 |  |
 
 ### L2 Data · Pre/Post-processing
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `load_physical_aiavdataset` | function | `src/alpamayo1_5/load_physical_aiavdataset.py` | 클립→영상 프레임·ego 이력/미래 | 1 |  | src/alpamayo1_5/load_physical_aiavdataset.py:27 · src/alpamayo1_5/load_physical_aiavdataset.py:208 | HF dataset nvidia/PhysicalAI-Autonomous-Vehicles |
-| `create_message` | function | `src/alpamayo1_5/helper.py` | 채팅 메시지(카메라명·route 구간 포함) | 4 | ✓ | src/alpamayo1_5/helper.py:77 · src/alpamayo1_5/helper.py:113 · src/alpamayo1_5/helper.py:38 |  |
-| `create_vqa_message` | function | `src/alpamayo1_5/helper.py` | <\|question_start\|> 질의 메시지 |  | ✓ | src/alpamayo1_5/helper.py:145 · src/alpamayo1_5/helper.py:165 |  |
-| `get_processor` | function | `src/alpamayo1_5/helper.py` | Qwen3-VL-2B 프로세서+모델 토크나이저 | 3 |  | src/alpamayo1_5/helper.py:190 · src/alpamayo1_5/helper.py:25 |  |
-| `nav_utils` | module | `src/alpamayo1_5/nav_utils.py` | swap_direction·remove_nav_text |  | ✓ | src/alpamayo1_5/nav_utils.py:199 · src/alpamayo1_5/nav_utils.py:225 · src/alpamayo1_5/nav_utils.py:251 |  |
-| `extract_text_tokens` | function | `src/alpamayo1_5/models/token_utils.py` | 출력에서 cot/meta_action/answer 추출 | 12 |  | src/alpamayo1_5/models/token_utils.py:151 · src/alpamayo1_5/models/token_utils.py:166 · src/alpamayo1_5/models/alpamayo1_5.py:430 |  |
-| `viz_utils` | module | `src/alpamayo1_5/viz_utils.py` | BEV 궤적 비교·카메라 그리드 그림 |  | ✓ | src/alpamayo1_5/viz_utils.py:97 · src/alpamayo1_5/viz_utils.py:190 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| function | `load_physical_aiavdataset` | 클립 → 카메라×4프레임 영상, 자차 궤적 (카메라 부분집합 가능) | `load_physical_aiavdataset.py:27` | 1 |  |
+| function | `helper.create_message` | 채팅 메시지: 카메라 이름·프레임 번호, 내비 문장(route) 포함 | `helper.py:77` | 2 | ✓ |
+| function | `helper.create_vqa_message` | 질문을 넣은 VQA 메시지 | `helper.py:145` |  | ✓ |
+| function | `helper.get_processor` | Qwen3-VL-2B processor + 모델 토크나이저 | `helper.py:190` | 4 |  |
+| method | `TrajectoryFusionMixin.fuse_traj_tokens` | 궤적 자리표시를 과거 궤적 토큰으로 치환 (ReasoningVLA가 상속) | `models/base_model.py:172` | 6 |  |
+| function | `extract_text_tokens` | 생성 토큰에서 cot·answer 등 텍스트 추출 | `models/token_utils.py:151` | 12 |  |
+| module .py | `nav_utils.py` | 내비 문장 조작: swap_direction, remove_nav_text | `nav_utils.py:199` |  | ✓ |
+| module .py | `viz_utils.py` | BEV 궤적 비교·카메라 그리드 그림 | `viz_utils.py:97` |  | ✓ |
 
 ### L1 Libraries · Runtime
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `torch==2.8.0` | external | `external` |  |  |  | pyproject.toml:14 · uv.lock (torch 2.8.0) | HF model card: PyTorch min 2.8 |
-| `transformers==4.57.1` | external | `external` | Qwen3VL·generate·AutoModel |  |  | pyproject.toml:16 · src/alpamayo1_5/models/base_model.py:26 | HF model card: Transformers min 4.57.1 |
-| `flash-attn 2.8.3` | external | `external` | VLM 기본 어텐션(선택, SDPA 대체) |  |  | pyproject.toml:17 · uv.lock (flash-attn 2.8.3) · README.md:165 |  |
-| `hydra-core 1.3.2` | external | `external` | hyu.instantiate로 하위모듈 생성 |  |  | pyproject.toml:10 · src/alpamayo1_5/models/alpamayo1_5.py:23 · src/alpamayo1_5/models/alpamayo1_5.py:114 |  |
-| `physical-ai-av==0.2.0` | external | `external` | 데이터셋 HF 스트리밍 인터페이스 |  |  | pyproject.toml:12 · src/alpamayo1_5/load_physical_aiavdataset.py:21 | README.md:77 |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| pip package | `torch 2.8.0` |  | `pyproject.toml:14` |  |  |
+| pip package | `transformers 4.57.1` | Qwen3-VL 모델·generate·AutoModel | `pyproject.toml:16` |  |  |
+| pip package | `flash-attn 2.8.3` | VLM attention 커널 | `pyproject.toml:17 (>=) · uv.lock` |  |  |
+| pip package | `hydra-core 1.3.2` | config의 _target_으로 부품 객체 생성 | `pyproject.toml:10 (>=) · uv.lock` |  |  |
+| pip package | `einops 0.8.1` |  | `pyproject.toml:8 (>=) · uv.lock` |  |  |
+| pip package | `physical-ai-av 0.2.0` | PhysicalAI AV 데이터셋 인터페이스 | `pyproject.toml:12` |  |  |
+| 코드에 없음 | `TensorRT · ONNX · 양자화` | 배포용 변환·양자화 경로 없음 | `grep -rniE 'tensorrt\|onnx\|quantiz\|fp8' → 0건` |  |  |
 
 ### L0 Platform
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Python 3.12` | external | `external` |  |  |  | pyproject.toml:4 · README.md:31 |  |
-| `NVIDIA GPU · CUDA 12.x` | external | `external` | 24GB+ VRAM, .to("cuda") 고정 |  |  | README.md:29-41 · README.md:244 · src/alpamayo1_5/nav_utils.py:155 | HF model card: 1 GPU 24GB+, tested H100 |
-| `bfloat16 · flash_attention_2/sdpa` | config | `external` | expert는 FA2 대신 sdpa 강제 |  | ✓ | src/alpamayo1_5/models/base_model.py:218 · src/alpamayo1_5/models/base_model.py:226 · src/alpamayo1_5/models/alpamayo1_5.py:108 · src/alpamayo1_5/test_inference.py:59 | HF model card: BF16 |
-| `nvidia/Alpamayo-1.5-10B` | external | `external (HF Hub, gated)` | 가중치 약 22GB |  | ✓ | src/alpamayo1_5/test_inference.py:39 · README.md:83 | HF model card (8.2B+2.3B, OpenMDW-1.1, 2026-03-19) |
-| `nvidia/PhysicalAI-Autonomous-Vehicles` | external | `external (HF dataset, gated)` |  |  |  | README.md:66 · src/alpamayo1_5/load_physical_aiavdataset.py:71 | HF dataset card |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| 환경 | `Python 3.12` |  | `pyproject.toml:4` |  |  |
+| 환경 | `NVIDIA GPU ≥24 GB` | VRAM(H100): 샘플 1개 ~24 · 16개 ~40 · 16개+CFG ~60 GB | `README.md:37-41` |  | ✓ |
+| 환경 | `bfloat16 · flash_attention_2 / sdpa` | VLM FA2 기본, expert는 sdpa | `models/base_model.py:218,226` |  |  |
+| HF Hub | `nvidia/Alpamayo-1.5-10B` | 가중치 약 22 GB (gated) | `test_inference.py:39 · README.md:83` |  | ✓ |
+| HF Hub | `nvidia/PhysicalAI-Autonomous-Vehicles` | 입력 클립 데이터셋 (gated) | `README.md:66` |  |  |
 
-### 궤적 추론 호출 순서
+### 궤적 추론 호출 순서 (test_inference.py main() 기준)
 
-1. load_physical_aiavdataset: 4카메라×4프레임, ego 이력 16스텝 로드
-2. Alpamayo1_5.from_pretrained(dtype=bfloat16).to("cuda")
-3. helper.get_processor(model.tokenizer): Qwen3-VL-2B 프로세서
-4. helper.create_message: 카메라명·frame 텍스트+이미지+48 history 자리표시
-5. apply_chat_template → tokenized_data, to_device(cuda)
-6. sample_trajectories_from_data_with_vlm_rollout 호출
-7. fuse_traj_tokens: ego 이력을 <|traj_history|> 자리에 토큰 치환
-8. vlm.generate(StopAfterEOS 등) → CoC 텍스트 + KV캐시
-9. _find_eos_offset·_build_expert_pos_ids_and_attn_mask
-10. FlowMatching._euler: action_in_proj→expert→action_out_proj
-11. action_space.action_to_traj → pred_xyz, pred_rot
-12. extract_text_tokens → extra["cot"] (return_extra=True)
+| 단계 | 위치 | 내용 |
+|---|---|---|
+| 1 | `test_inference.py:33` | load_physical_aiavdataset(clip_id) → 영상·자차 궤적 로드 |
+| 2 | `test_inference.py:35` | helper.create_message(frames, camera_indices) → 채팅 메시지 |
+| 3 | `test_inference.py:39` | Alpamayo1_5.from_pretrained(bf16).to("cuda") → vlm·expert·부품 생성 |
+| 4 | `test_inference.py:40-56` | helper.get_processor → apply_chat_template → to_device |
+| 5 | `test_inference.py:60` | Alpamayo1_5.sample_trajectories_from_data_with_vlm_rollout 호출 |
+| 6 | `models/alpamayo1_5.py:285` | self.fuse_traj_tokens: 과거 궤적 토큰 삽입 |
+| 7 | `models/alpamayo1_5.py:306-315` | self.vlm.generate (+ExpertLogitsProcessor) → CoC 텍스트 + KV 캐시 |
+| 8 | `models/alpamayo1_5.py:343` | _build_expert_pos_ids_and_attn_mask → expert 위치·마스크 |
+| 9 | `models/alpamayo1_5.py:400` | self.diffusion.sample (FlowMatching) → Euler 10스텝 시작 |
+| 10 | `models/alpamayo1_5.py:367-384` | 매 스텝: action_in_proj → expert(KV 캐시 조건) → action_out_proj |
+| 11 | `models/alpamayo1_5.py:416` | self.action_space.action_to_traj → pred_xyz, pred_rot |
+| 12 | `models/alpamayo1_5.py:430 · test_inference.py:69-75` | extract_text_tokens → extra["cot"], minADE 출력 |
 
 ### 핵심 수치
 
@@ -286,103 +300,114 @@
 
 ### 각주
 
-- 하위모듈(diffusion, action_space, action_in_proj, action_out_proj, traj_tokenizer, hist_traj_tokenizer)은 HF config.json의 hydra _target_으로 주입됨(alpamayo1_5.py:114-129, base_model.py:392-410). 저장소 코드만으로 실제 클래스를 확정할 수 없음. FlowMatching·UnicycleAccelCurvatureActionSpace·PerWaypointActionInProjV2는 저장소 안에 하나뿐인 구현체라 채택으로 추정함. action_out_proj 클래스, DeltaTrajectoryTokenizer/DiscreteTrajectoryTokenizer 중 무엇이 쓰이는지는 출처 미확인.
-- 박스 수 제한 때문에 생략한 식별자: StopAfterEOS(token_utils.py:172, <\|traj_future_start\|> 다음 1토큰에서 생성 중단, call_order 8단계), ExpertLogitsProcessor(궤적 토큰 logits -inf),fuse_traj_tokens/TrajectoryFusionMixin, DiffusionExpertCudaGraph·enable_diffusion_expert_cuda_graph(1과 동일), DeltaTrajectoryTokenizer, geometry/rotation.py, to_device, einops 0.8.1, scipy 1.16.3(uv.lock 전이 의존), matplotlib 3.10.7·seaborn 0.13.2, mediapy(dev).
-- alpamayo1_5.py:212, 216의 주석은 'Qwen2.5-VL RoPE'라고 되어 있지만 실제 백본 클래스는 Qwen3VLForConditionalGeneration임(base_model.py:390). 주석이 갱신되지 않은 것으로 보임.
-- HF 모델 카드의 ego history '0.4 second'와 로더 기본 num_history_steps=16(1.6s)이 서로 다름. 체크포인트 config의 tokens_per_history_traj 등은 확인 불가.
-- compare_nav_conditions는 inference_fn 인자를 받지만 곧바로 model.sample_trajectories_from_data_with_vlm_rollout으로 덮어씀(nav_utils.py:119). no-nav 조건에는 항상 기본 메서드를 씀.
-- create_message의 use_nav_prompt 인자는 docstring에만 설명되고 본문에서는 쓰이지 않음. 프롬프트 문자열이 항상 같음(helper.py:115-120).
-- 공식 자료: HF 모델 카드 https://huggingface.co/nvidia/Alpamayo-1.5-10B (2026-09-16 조회), arXiv 2511.00088 초록. NVIDIA HF 블로그는 조회하지 않음.
+- 정의 위치 경로는 src/<패키지>/ 기준이다. pyproject.toml·README.md·notebooks/·examples/는 저장소 루트 기준이다.
+- from_pretrained는 transformers PreTrainedModel에서 상속한 메서드라 저장소에 정의가 없어, 호출 위치를 적었다.
+- L3 부품(diffusion·action_space·action_in/out_proj·궤적 토크나이저)은 체크포인트 config.json의 hydra _target_으로 주입된다. 저장소에 구현이 하나뿐인 클래스를 적었으며 실제 체크포인트 값은 확인하지 않았다(출처 미확인).
+- 코드 읽기 기반이며 실행 검증이 아니다. 근거: reference/code-alpamayo-src-components.md
+- HF 모델카드는 자차 이력을 0.4 s로 적지만 로더 기본값은 16스텝(1.6 s)이다(load_physical_aiavdataset.py:32-34).
+- compare_nav_conditions는 inference_fn 인자를 받지만 실제로는 sample_trajectories_from_data_with_vlm_rollout으로 덮어쓴다(nav_utils.py:119).
 
 ## Alpamayo 2 Super
 
-- 저장소: https://github.com/NVlabs/alpamayo2 @ `6d05b9f2dcaa6ee45ac6e053cf18653eac23c047` (2026-09-09) [K8]
+- 저장소: https://github.com/NVlabs/alpamayo2 @ `6d05b9f2dcaa6ee45ac6e053cf18653eac23c047` (2026-09-09) [K8] · 패키지 경로 `src/alpamayo2_super/`
 - 그림: [06-alpamayo2-src-components.svg](../images/06-alpamayo2-src-components.svg)
 
 ### L6 Applications · 실행 진입점
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `inference_smoke` | script | `python -m alpamayo2_super.inference_smoke · test_inference.py(호환)` | 1클립 궤적 추론 CLI, PNG/JSON 저장 | 1 | ✓ | src/alpamayo2_super/inference_smoke.py:92 · src/alpamayo2_super/inference_smoke.py:184 · src/alpamayo2_super/test_inference.py:17 · README.md:120-144 | README CLI Inference |
-| `two_gpu_nav_cfg_demo.py` | script | `examples/ · sample_with_nav_cfg · load_model_on_two_gpus` | VLM cuda:0·expert cuda:1 내비 CFG |  | ✓ | examples/two_gpu_nav_cfg_demo.py:232 · examples/two_gpu_nav_cfg_demo.py:257 · examples/two_gpu_nav_cfg_demo.py:503-510 · examples/two_gpu_nav_cfg_demo.py:641 | README Two-GPU Navigation CFG Demo |
-| `notebooks` | notebook | `inference.ipynb · meta_actions.ipynb · autolabeling.ipynb · vqa.ipynb` | 궤적/메타액션/오토라벨/VQA·그라운딩 |  | ✓ | notebooks/inference.ipynb:112 · notebooks/meta_actions.ipynb:110 · notebooks/autolabeling.ipynb:122 · notebooks/vqa.ipynb:122 | README Notebook/Text Task Notebooks |
-| `training scripts (없음)` | absent | `forward() 손실 정의만 존재, 학습 루프·DeepSpeed 없음` | 학습/RL 후학습 코드 미공개 |  |  | find alpamayo2 -iname 'train*.py' → 0건 · src/alpamayo2_super/models/alpamayo2_super.py:225-271 · grep -i deepspeed pyproject.toml uv.lock → 0건 | HF blog nvidia-alpamayo-2: RL post-trained |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| script | `inference_smoke.py` | CLI: python -m alpamayo2_super.inference_smoke. 궤적·CoC 추론, PNG/JSON 저장 | `inference_smoke.py:92 (run_smoke)` | 1–13 | ✓ |
+| script | `examples/two_gpu_nav_cfg_demo.py` | VLM cuda:0 / expert cuda:1 분할 + 내비 CFG 데모 | `examples/two_gpu_nav_cfg_demo.py` |  | ✓ |
+| notebook | `notebooks/ inference · meta_actions · autolabeling · vqa .ipynb` | 궤적, meta-action, auto-label, VQA 데모 | `notebooks/` |  | ✓ |
+| 코드에 없음 | `학습 스크립트 · TensorRT/ONNX/양자화 · Dockerfile` | forward()의 손실 계산만 있고 학습 루프·배포 변환 없음 | `find 'train*.py' · grep 'tensorrt\|onnx\|quantiz' → 0건` |  |  |
 
 ### L5 Inference API
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `select_task_input` | function | `input_profiles.TASK_INPUT_PROFILES` | 태스크별 6캠×4프레임 선택 | 3 | ✓ | src/alpamayo2_super/input_profiles.py:198-206 · src/alpamayo2_super/input_profiles.py:45-51 | HF model card nvidia/Alpamayo2-Super: six cameras, four frames |
-| `prepare_model_inputs` | function | `helper · create_messages · get_processor · to_device` | chat template+processor 토큰화(배치 1) | 4 |  | src/alpamayo2_super/helper.py:68-102 · src/alpamayo2_super/helper.py:28 · src/alpamayo2_super/helper.py:49 · src/alpamayo2_super/helper.py:105 |  |
-| `sample_trajectories_from_data` | function | `Alpamayo2Super · top_p=0.98, temperature=0.6` | CoC 생성→expert 디퓨전→궤적 64점 | 5 | ✓ | src/alpamayo2_super/models/alpamayo2_super.py:273-452 | NVIDIA Tech Blog 2026-08-06: trajectories + CoC |
-| `generate_text` | function | `text_tasks · prepare_text_generation_inputs · prepare_vqa_inputs` | VLM generate만 쓰는 텍스트 태스크 |  | ✓ | src/alpamayo2_super/text_tasks.py:353-437 · src/alpamayo2_super/text_tasks.py:238 · src/alpamayo2_super/text_tasks.py:308 · src/alpamayo2_super/text_tasks.py:418 | NVIDIA Tech Blog 2026-08-06: meta-actions, VQA, auto-labels |
-| `enable_diffusion_expert_cuda_graph` | function | `Alpamayo2Super · max_batch_size, max_graphs=4` | expert forward CUDA graph 선택 가속 |  |  | src/alpamayo2_super/models/alpamayo2_super.py:147-167 · README.md:146-163 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| function | `input_profiles.select_task_input` | 과제별 입력 선택: 궤적은 카메라 (0,1,2,3,5,6) × 4프레임 | `input_profiles.py:198` | 2 | ✓ |
+| method | `Alpamayo2Super.from_pretrained` | HF 체크포인트에서 모델 객체 생성·가중치 적재 (device_map="cuda:0") | `상속(transformers) · 호출 inference_smoke.py:133` | 3 |  |
+| function | `helper.prepare_model_inputs` | 메시지 구성 → processor 토큰화 → 모델 입력 dict | `helper.py:68` | 4 | ✓ |
+| method | `Alpamayo2Super.sample_trajectories_from_data` | 궤적 추론 메인 API: CoC 생성 → 궤적 샘플링 | `models/alpamayo2_super.py:274` | 5–12 | ✓ |
+| function | `text_tasks.generate_text` | 텍스트 과제(meta-action·auto-label·VQA·grounding). model을 인자로 받음 | `text_tasks.py:353` |  | ✓ |
+| method | `Alpamayo2Super.enable_diffusion_expert_cuda_graph` | 선택: expert 반복 계산을 CUDA graph로 가속 | `models/alpamayo2_super.py:147` |  |  |
 
 ### L4 Model
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Alpamayo2Super` | class | `PreTrainedModel · model_type alpamayo2_super` | vlm+tokenizer+traj 토크나이저+expert |  | ✓ | src/alpamayo2_super/models/alpamayo2_super.py:106-145 · src/alpamayo2_super/models/alpamayo2_super.py:455 · src/alpamayo2_super/config.py:55 | HF model card nvidia/Alpamayo2-Super: 34B VLA |
-| `vlm` | module | `getattr(transformers, config.vlm_class)._from_config` | VLM 백본(클래스명은 체크포인트 config) | 6 | ✓ | src/alpamayo2_super/models/alpamayo2_super.py:123-124 · src/alpamayo2_super/config.py:147 · src/alpamayo2_super/config.py:162 | NVIDIA Tech Blog 2026-08-06: 32B Cosmos 3 Super Reasoner |
-| `_generate_with_shared_prefill` | function | `vlm.model prefill → batch_repeat_interleave → vlm.generate` | 공유 prefill 후 샘플 수만큼 CoC 디코드 | 6 | ✓ | src/alpamayo2_super/models/alpamayo2_super.py:182-223 |  |
-| `ExpertModel` | class | `expert=AutoModel.from_config(llm_config) · action_in_proj · diffusion · action_space · action_out_proj · expert_utils.build_expert_pos_ids_and_attn_mask` | VLM KV캐시 조건 non-causal 액션 디노이저 | 7 | ✓ | src/alpamayo2_super/models/expert.py:66-96 · src/alpamayo2_super/models/expert.py:31-56 · src/alpamayo2_super/models/alpamayo2_super.py:143 · src/alpamayo2_super/models/expert_utils.py:92-123 · src/alpamayo2_super/models/alpamayo2_super.py:359-397 | NVIDIA Tech Blog 2026-08-06: 2B diffusion-based Action Expert · HF model card nvidia/Alpamayo2-Super: 2.3B action expert |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| class | `Alpamayo2Super` | 최상위 모델. vlm·tokenizer·궤적 토크나이저·expert를 직접 조립 (ReasoningVLA 없음) | `models/alpamayo2_super.py:106` | 3–12 | ✓ |
+| attribute | `Alpamayo2Super.vlm` | VLM 객체. 클래스는 config.vlm_class 문자열로 transformers에서 찾음 | `models/alpamayo2_super.py:124` | 7 | ✓ |
+| method | `Alpamayo2Super._generate_with_shared_prefill` | prefill 1회 후 샘플 수만큼 KV 캐시 복제해 CoC 디코드 | `models/alpamayo2_super.py:182` | 7 | ✓ |
+| class | `ExpertModel` | Alpamayo2Super.expert 로 생성. action 디코더 묶음(expert·proj·diffusion·action_space) | `models/expert.py:66 · 생성 alpamayo2_super.py:143` | 9–11 | ✓ |
+| attribute | `ExpertModel.expert` | action expert 트랜스포머 (AutoModel.from_config) | `models/expert.py:76` | 10 |  |
+| attribute | `ExpertModel.action_in_proj / action_out_proj` | action ↔ expert 임베딩 변환 | `models/expert.py:87,92` | 10 |  |
 
 ### L3 Model Building Blocks
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Alpamayo2SuperConfig` | config | `ExpertModelConfig · build_alpamayo2_super_tokenizer · SPECIAL_TOKENS` | vocab 1000+3000, 48/128 토큰, bf16 |  | ✓ | src/alpamayo2_super/config.py:52-73 · src/alpamayo2_super/config.py:31-41 · src/alpamayo2_super/models/expert.py:31 · src/alpamayo2_super/models/utils.py:26-57 |  |
-| `DeltaTrajectoryTokenizer` | class | `history_traj_tokenizer / future_traj_tokenizer (hydra instantiate)` | ego 16점 delta xyz → 이산 토큰 48개 | 5 |  | src/alpamayo2_super/models/delta_tokenizer.py:21-57 · src/alpamayo2_super/models/alpamayo2_super.py:133-140 · src/alpamayo2_super/config.py:113-130 |  |
-| `MaskDiscreteTrajectoryLogitsProcessor` | class | `MaskTokenIdsLogitsProcessor · StopAfterEOS` | CoC 중 궤적토큰 차단·future_start 정지 | 6 | ✓ | src/alpamayo2_super/models/alpamayo2_super.py:61-103 · src/alpamayo2_super/models/alpamayo2_super.py:322-339 · src/alpamayo2_super/models/expert_utils.py:27 |  |
-| `PerWaypointActionInProjV2` | class | `FourierEncoderV2 · MLPEncoder · LayerNorm` | 액션·timestep Fourier→MLP→expert 토큰 | 8 |  | src/alpamayo2_super/models/action_in_proj.py:94-143 |  |
-| `FlowMatching` | class | `BaseDiffusion · _euler · num_inference_steps=10` | Euler 적분 10스텝 액션 샘플링 | 8 |  | src/alpamayo2_super/diffusion/flow_matching.py:25-60 · src/alpamayo2_super/diffusion/flow_matching.py:106-149 · src/alpamayo2_super/diffusion/base.py:33 | HF model card nvidia/Alpamayo2-Super: diffusion-based action decoder |
-| `UnicycleAccelCurvatureActionSpace` | class | `ActionSpace · action_to_traj · dt=0.1, n_waypoints=64` | (accel,curvature) 적분→xyz·회전 | 9 |  | src/alpamayo2_super/action_space/unicycle_accel_curvature.py:38-60 · src/alpamayo2_super/action_space/unicycle_accel_curvature.py:307 | HF model card nvidia/Alpamayo2-Super: 64 waypoints 0.1–6.4 s |
-| `DiffusionExpertCudaGraph` | class | `diffusion_expert_cuda_graph · _ReadOnlyPromptCacheLayer` | exact-shape CUDA graph 캡처/리플레이 |  |  | src/alpamayo2_super/models/diffusion_expert_cuda_graph.py:104 · src/alpamayo2_super/models/diffusion_expert_cuda_graph.py:358 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| class | `Alpamayo2SuperConfig` | 모델 설정: vlm_class, 궤적 vocab 1000+3000, 토큰 48/128 | `config.py:52` |  | ✓ |
+| class | `ExpertModelConfig` | expert·부품 hydra cfg 보관 | `models/expert.py:31` |  | ✓ |
+| class | `DeltaTrajectoryTokenizer` | history_traj_tokenizer 구현: 과거 궤적 → 이산 토큰 48개 | `models/delta_tokenizer.py:21` | 6 |  |
+| class | `MaskDiscreteTrajectoryLogitsProcessor` | CoC 생성 중 궤적 토큰 logit 마스킹 | `models/alpamayo2_super.py:61` | 7 | ✓ |
+| class | `FlowMatching` | ExpertModel.diffusion. 노이즈에서 Euler 10스텝 action 샘플링 | `diffusion/flow_matching.py:25` | 9 |  |
+| class | `PerWaypointActionInProjV2` | action_in_proj 구현: waypoint별 Fourier 인코딩 + MLP | `models/action_in_proj.py:94` | 10 |  |
+| class | `UnicycleAccelCurvatureActionSpace` | ExpertModel.action_space. (가속도, 곡률) → xyz·회전 적분 | `action_space/unicycle_accel_curvature.py:38` | 11 |  |
+| class | `DiffusionExpertCudaGraph` | expert forward CUDA graph 캡처·재생 | `models/diffusion_expert_cuda_graph.py:104` |  |  |
 
 ### L2 Data · Pre/Post-processing
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `load_physical_aiavdataset` | function | `physical_ai_av.PhysicalAIAVDatasetInterface` | 7캠×4프레임, ego 과거16/미래64 | 2 |  | src/alpamayo2_super/load_physical_aiavdataset.py:32-43 · src/alpamayo2_super/load_physical_aiavdataset.py:85-92 · src/alpamayo2_super/load_physical_aiavdataset.py:176-180 | NVIDIA Tech Blog 2026-08-06: up to seven cameras |
-| `input_profiles` | module | `InputProfile · DRIVING_SIX_CAMERA_FOUR_FRAME · VQA_SIX_CAMERA_FOUR_FRAME · common.constants` | 카메라 ID 링·태스크별 프로필 | 3 | ✓ | src/alpamayo2_super/input_profiles.py:24-51 · src/alpamayo2_super/common/constants.py:20-37 | HF model card nvidia/Alpamayo2-Super: validated camera IDs |
-| `build_conversation` | function | `chat_template.conversation · construct_system_prompt · construct_image · construct_traj_history` | system/user 메시지·이미지·traj 패드 구성 | 4 | ✓ | src/alpamayo2_super/chat_template/conversation.py:332 · src/alpamayo2_super/chat_template/conversation.py:51-95 · src/alpamayo2_super/chat_template/conversation.py:98-155 |  |
-| `fuse_traj_tokens` | function | `models.utils · tokenize_history_trajectory · replace_pad_token` | traj_history 패드를 <i*> 토큰으로 치환 | 5 |  | src/alpamayo2_super/models/utils.py:154-177 · src/alpamayo2_super/models/utils.py:103 · src/alpamayo2_super/models/alpamayo2_super.py:300-306 |  |
-| `extract_text_tokens` | function | `token_utils.split_cot_and_meta_action · text_tasks.parse_auto_labeling_json` | cot/meta_action/answer/box/JSON 파싱 | 10 |  | src/alpamayo2_super/models/token_utils.py:134-179 · src/alpamayo2_super/models/token_utils.py:124 · src/alpamayo2_super/text_tasks.py:338-351 · src/alpamayo2_super/text_tasks.py:41-46 | NVIDIA Tech Blog 2026-08-06: structured auto-labels |
-| `viz_utils` | module | `visualization.plot_inference_result · plot_compact_inference_result · plot_*_result · geometry.rotation/coordinates` | PNG+JSON 사이드카, MP4, 좌표 변환 | 11 |  | src/alpamayo2_super/viz_utils.py:1215 · src/alpamayo2_super/viz_utils.py:1329 · src/alpamayo2_super/visualization.py:17-26 · src/alpamayo2_super/geometry/rotation.py · src/alpamayo2_super/geometry/coordinates.py | README Visualization API |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| function | `load_physical_aiavdataset` | 클립 → 7캠×4프레임 영상, 자차 과거 16·미래 64점 | `load_physical_aiavdataset.py:32` | 1 | ✓ |
+| class | `input_profiles.InputProfile` | 과제별 카메라·프레임 조합 정의 (DRIVING_SIX_CAMERA_FOUR_FRAME 등) | `input_profiles.py:24` | 2 | ✓ |
+| function | `chat_template.conversation.build_conversation` | 시스템 프롬프트·이미지·궤적 자리표시로 대화 구성 | `chat_template/conversation.py:332` | 4 | ✓ |
+| function | `models.utils.fuse_traj_tokens` | 궤적 자리표시를 과거 궤적 토큰으로 치환 (1.5의 메서드 → 모듈 함수) | `models/utils.py:154` | 6 |  |
+| function | `expert_utils.build_expert_pos_ids_and_attn_mask` | expert 위치 id·attention 마스크 구성 | `models/expert_utils.py:92` | 8 | ✓ |
+| function | `extract_text_tokens` | 생성 토큰에서 cot·meta_action 등 텍스트 추출 | `models/token_utils.py:134` | 12 |  |
+| function | `viz_utils.plot_inference_result` | 카메라·궤적·CoC 그림 PNG + JSON | `viz_utils.py:1329` | 13 | ✓ |
 
 ### L1 Libraries · Runtime
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `torch 2.8.0` | external | `torchvision 0.23.0 · triton 3.4.0 (lock)` | autocast bf16·CUDA graph |  |  | pyproject.toml:18-19 · uv.lock:1940 · uv.lock:1975 · uv.lock:2050 | HF model card nvidia/Alpamayo2-Super: PyTorch ≥2.8 |
-| `transformers 4.57.1` | external | `PreTrainedModel · AutoModel/AutoConfig/AutoProcessor · generate · huggingface-hub 0.36.2` | 모델 래퍼·생성·프로세서 |  |  | pyproject.toml:20 · uv.lock:2029 · uv.lock:552 · src/alpamayo2_super/models/alpamayo2_super.py:27-31 | HF model card nvidia/Alpamayo2-Super: Transformers ≥4.57.1 |
-| `flash-attn 2.8.3` | external | `no-build-isolation 소스 빌드 · _supports_flash_attn/_supports_sdpa` | attention 커널(구현 미강제) |  |  | pyproject.toml:21 · pyproject.toml:40 · uv.lock:454 · src/alpamayo2_super/models/alpamayo2_super.py:111-112 |  |
-| `hydra-core 1.3.2 · physical-ai-av 0.2.2` | external | `hydra.utils.instantiate · einops 0.8.2 · accelerate 1.13.0 · av 17.0.1 · matplotlib · mediapy` | 서브모듈 생성·데이터셋 리더·시각화 |  |  | pyproject.toml:6-17 · uv.lock:584 · uv.lock:418 · uv.lock:12 · uv.lock:1407 · uv.lock:196 · src/alpamayo2_super/models/expert.py:79-96 |  |
-| `TensorRT / ONNX / quantization / Dockerfile (없음)` | absent | `grep -iE 'tensorrt\|onnx\|quantiz\|fp8\|nvfp4' → 0건; find Dockerfile* → 0건` | 배포 최적화·컨테이너 경로 없음 |  |  | grep -rniE 'tensorrt\|onnx\|quantiz\|fp8\|nvfp4' --include=*.py/*.toml/*.md/*.ipynb → 0건 · find -iname 'Dockerfile*' -o -iname '*.yaml' → 0건 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| pip package | `torch 2.8.0` |  | `pyproject.toml:18` |  |  |
+| pip package | `transformers 4.57.1` | VLM 클래스·generate·AutoModel | `pyproject.toml:20` |  |  |
+| pip package | `flash-attn 2.8.3` | attention 커널 | `pyproject.toml:21 (>=) · uv.lock` |  |  |
+| pip package | `hydra-core 1.3.2` | config의 _target_으로 부품 객체 생성 | `pyproject.toml:10 (>=) · uv.lock` |  |  |
+| pip package | `einops 0.8.2` |  | `pyproject.toml:8 (>=) · uv.lock` |  |  |
+| pip package | `physical-ai-av 0.2.2` | PhysicalAI AV 데이터셋 인터페이스 | `pyproject.toml:15 (>=) · uv.lock` |  |  |
+| pip package | `scipy 1.17.1` |  | `pyproject.toml:17 (>=) · uv.lock` |  |  |
+| 코드에 없음 | `TensorRT · ONNX · 양자화` | 배포용 변환·양자화 경로 없음 | `grep -rniE 'tensorrt\|onnx\|quantiz\|fp8\|nvfp4' → 0건` |  |  |
 
 ### L0 Platform
 
-| 이름 (코드 식별자) | 종류 | 위치 | 설명 | 순서 | 신규 | 근거 | 공식 자료 |
-|---|---|---|---|---|---|---|---|
-| `Python 3.12` | external | `uv sync --locked · Linux` | requires-python ==3.12.* |  |  | pyproject.toml:4 · README.md:39-42 |  |
-| `NVIDIA CUDA GPU` | external | `CUDA 12.8 wheel (nvidia-cuda-runtime-cu12 12.8.90, cuDNN 9.10.2.21) · nvcc 12.x` | CUDA 필수, 2×H100 80GB 검증(데모) |  |  | src/alpamayo2_super/inference_smoke.py:119-123 · uv.lock:1232 · uv.lock:1240 · README.md:39-40 · README.md:196-198 | HF model card nvidia/Alpamayo2-Super: tested H100 80GB |
-| `torch.bfloat16 · device_map="cuda:0"` | config | `2-GPU: vlm.to(cuda:0), expert.to(cuda:1)` | 단일 GPU 기본, bf16 적재·autocast |  |  | src/alpamayo2_super/inference_smoke.py:133 · src/alpamayo2_super/inference_smoke.py:138 · src/alpamayo2_super/config.py:65 · examples/two_gpu_nav_cfg_demo.py:239-245 |  |
-| `nvidia/Alpamayo2-Super` | external | `PUBLIC_MODEL_ID · config.json/tokenizer/preprocessor/*.safetensors · 34B` | HF 게이트 체크포인트(크기 코드 미기재) |  | ✓ | src/alpamayo2_super/common/constants.py:18 · src/alpamayo2_super/inference_smoke.py:32-37 · README.md:12-13 · README.md:112-113 | HF model card nvidia/Alpamayo2-Super: 36B BF16 safetensors · HF model card nvidia/Alpamayo2-Super: peak 72,115 MiB |
-| `nvidia/PhysicalAI-Autonomous-Vehicles` | external | `HF dataset · examples/validation_samples.json (clip_id, t0_us)` | 입력 클립 소스(스트리밍) |  |  | README.md:43-45 · README.md:115-118 · src/alpamayo2_super/load_physical_aiavdataset.py:34-35 |  |
+| 종류 | 이름 (코드 식별자) | 설명 | 정의 위치 | 단계 | 신규 |
+|---|---|---|---|---|---|
+| 환경 | `Python 3.12` |  | `pyproject.toml:4` |  |  |
+| 환경 | `NVIDIA CUDA GPU` | CUDA 필수. CUDA 12.8 wheel. 2-GPU 예제는 H100 80 GB × 2 | `inference_smoke.py:119-123` |  |  |
+| 환경 | `torch.bfloat16 · device_map="cuda:0"` | 단일 GPU 기본 적재 | `inference_smoke.py:133` |  | ✓ |
+| HF Hub | `nvidia/Alpamayo2-Super` | 가중치 (gated). 모델카드 기재 34B | `common/constants.py:18` |  | ✓ |
+| HF Hub | `nvidia/PhysicalAI-Autonomous-Vehicles` | 입력 클립 데이터셋 (gated) | `README.md:43-45` |  |  |
 
-### 궤적 추론 호출 순서
+### 궤적 추론 호출 순서 (inference_smoke.run_smoke() 기준)
 
-1. inference_smoke.run_smoke: CUDA 확인, 체크포인트 레이아웃 검사
-2. load_physical_aiavdataset: 7캠×4프레임·ego 과거16/미래64 로드
-3. select_task_input("trajectory"): 캠 (0,1,2,3,5,6)×4프레임 선택
-4. from_pretrained(bf16, cuda:0) → prepare_model_inputs
-5. sample_trajectories_from_data: history 48토큰 주입
-6. _generate_with_shared_prefill: prefill 1회→CoC 샘플링(궤적토큰 마스크)
-7. traj_future_start 정지 → expert 위치·마스크 구성
-8. FlowMatching 10스텝: in_proj→expert(KV캐시)→out_proj
-9. action_to_traj: (accel,curvature)×64 적분 → pred_xyz/pred_rot
-10. extract_text_tokens → extra["cot"] 등, minADE 출력
-11. plot_inference_result → PNG + JSON 사이드카
+| 단계 | 위치 | 내용 |
+|---|---|---|
+| 1 | `inference_smoke.py:126` | load_physical_aiavdataset → 7캠 영상·자차 궤적 로드 |
+| 2 | `inference_smoke.py:130` | select_task_input(data, "trajectory") → 6캠 × 4프레임 선택 |
+| 3 | `inference_smoke.py:133` | Alpamayo2Super.from_pretrained(bf16, device_map="cuda:0") → __init__에서 vlm·tokenizer·ExpertModel 생성 |
+| 4 | `inference_smoke.py:134` | helper.prepare_model_inputs → create_messages → build_conversation → apply_chat_template |
+| 5 | `inference_smoke.py:139` | Alpamayo2Super.sample_trajectories_from_data 호출 |
+| 6 | `models/alpamayo2_super.py:300` | fuse_traj_tokens: 과거 궤적 → 토큰 48개 삽입 |
+| 7 | `models/alpamayo2_super.py:324-340` | MaskDiscreteTrajectoryLogitsProcessor + self._generate_with_shared_prefill → vlm.generate: CoC + KV 캐시 |
+| 8 | `models/alpamayo2_super.py:367` | build_expert_pos_ids_and_attn_mask → expert 위치·마스크 |
+| 9 | `models/alpamayo2_super.py:406` | self.expert.diffusion.sample (FlowMatching) → Euler 10스텝 시작 |
+| 10 | `models/alpamayo2_super.py:383-396` | 매 스텝: expert.action_in_proj → expert.expert(KV 캐시 조건) → expert.action_out_proj |
+| 11 | `models/alpamayo2_super.py:424` | self.expert.action_space.action_to_traj → pred_xyz, pred_rot |
+| 12 | `models/alpamayo2_super.py:447` | extract_text_tokens → extra["cot"] |
+| 13 | `inference_smoke.py:149-158` | CoC·minADE 출력, plot_inference_result로 PNG/JSON 저장 |
 
 ### 핵심 수치
 
@@ -440,8 +465,9 @@
 
 ### 각주
 
-- evidence 경로는 alpamayo2 저장소 루트 기준(src/alpamayo2_super/...), 'a15 '는 alpamayo1.5 src/alpamayo1_5 기준(README/pyproject/test_inference는 해당 위치).
-- ROS 2 / Autoware(alpamayo-autoware) 통합은 범위에서 제외.
-- VLM 층·hidden·head 수, 체크포인트 파일 크기는 코드 미기재(체크포인트 config.json 의존). 모델 카드는 36B BF16, 피크 72,115 MiB 기재.
-- 공식 자료: https://huggingface.co/nvidia/Alpamayo2-Super · https://huggingface.co/blog/nvidia/nvidia-alpamayo-2 · https://developer.nvidia.com/blog/generate-trajectories-reasoning-traces-and-auto-labels-with-nvidia-alpamayo-2-super/ (WebFetch 요약으로 확인, 수치는 원문 재확인 권장).
-- order는 inference_smoke 기본 궤적 경로 call_order 단계 번호. new_in_2는 alpamayo1.5 대비 파일/클래스/함수 신규 또는 역할이 크게 바뀐 경우 true.
+- 정의 위치 경로는 src/<패키지>/ 기준이다. pyproject.toml·README.md·notebooks/·examples/는 저장소 루트 기준이다.
+- from_pretrained는 transformers PreTrainedModel에서 상속한 메서드라 저장소에 정의가 없어, 호출 위치를 적었다.
+- L3 부품(diffusion·action_space·action_in/out_proj·궤적 토크나이저)은 체크포인트 config.json의 hydra _target_으로 주입된다. 저장소에 구현이 하나뿐인 클래스를 적었으며 실제 체크포인트 값은 확인하지 않았다(출처 미확인).
+- 코드 읽기 기반이며 실행 검증이 아니다. 근거: reference/code-alpamayo-src-components.md
+- VLM 클래스·층·hidden·head 수는 코드에 없고 체크포인트 config.json에서 읽는다(models/alpamayo2_super.py:123-124).
+- 파라미터 규모: 저장소 README는 32B VLM + 2B diffusion expert(README.md:13), 모델카드는 expert 2.3B로 적는다(WebFetch 요약 경유).
