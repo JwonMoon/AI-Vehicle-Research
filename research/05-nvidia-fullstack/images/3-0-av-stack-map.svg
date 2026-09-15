@@ -88,5 +88,5 @@
   <text x="35" y="516" fill="#333">• DriveWorks/DriveOS(Orin 세대): ⑤ 다수 양산 (Volvo EX90, JLR, Toyota 등) / DriveOS 7 on Thor: 개발자 출하, 자체 스택 양산 1건(Zeekr 9X)</text>
   <text x="35" y="538" fill="#333">• Hyperion 10 (2×Thor): ③ Nuro/Lucid 시험 운행, Waabi/Volvo 트럭, Wayve/Nissan 프로토타입 — DRIVE AV 구동 상업 서비스 아직 없음</text>
   <text x="35" y="560" fill="#333">• AlpaSim/AlpaGym: ② 오픈소스 (2025-10 / 2026-06)</text>
-  <text x="35" y="595" fill="#777" font-size="12">출처: 3장 본문 각 절 인라인 인용 참조. 자체 작성 (research/nvidia-fullstack).</text>
+  <text x="35" y="595" fill="#777" font-size="12">출처: 3장 본문 각 절 인라인 인용 참조. 자체 작성 (research/05-nvidia-fullstack).</text>
 </svg>

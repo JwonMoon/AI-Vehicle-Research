@@ -78,5 +78,5 @@
   <text x="35" y="410" fill="#333">• "Simulation 2 Real Augmentation: 3D 시뮬레이션에서 고충실도를 달성할 필요를 최소화" — Transfer2.5 README 🔍</text>
   <text x="35" y="430" fill="#333">• "Blueprint for AV simulation은 Cosmos Transfer로 물리 기반 센서 데이터의 변주를 증폭" — GTC 2025 보도자료 📄</text>
   <text x="35" y="450" fill="#333">• 폐루프 평가 기본 렌더는 재구성(NuRec), 비디오 세계 모델(OmniDreams)은 옵션·단일 뷰 — AlpaSim README/VIDEO_MODEL.md 🔍</text>
-  <text x="20" y="500" fill="#777" font-size="12">자체 작성 (research/nvidia-fullstack). 미확인 문구("simulation vs amplification" 등)는 사용하지 않음.</text>
+  <text x="20" y="500" fill="#777" font-size="12">자체 작성 (research/05-nvidia-fullstack). 미확인 문구("simulation vs amplification" 등)는 사용하지 않음.</text>
 </svg>

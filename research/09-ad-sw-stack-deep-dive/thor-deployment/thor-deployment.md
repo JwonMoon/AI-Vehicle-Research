@@ -1,7 +1,7 @@
 # Thor 위에서 Alpamayo·Autoware 돌리기 — 보드 선택과 실행 사양
 
 > **작성일**: 2026-09-15 · **목적**: NVIDIA Thor(Jetson AGX Thor / DRIVE AGX Thor)에서 Alpamayo(1.5, 2 Super 증류본)와 Autoware를 실제로 실행하기 위한 보드 선택 근거, 사양, 제약, 단계별 계획
-> **관련 문서**: 스택 전반의 배경은 [자율주행 SW 스택 파헤치기 심층편](../ad-sw-stack-deep-dive/ad-sw-stack-deep-dive.md) · 출처는 [reference/references.md](reference/references.md)
+> **관련 문서**: 스택 전반의 배경은 [자율주행 SW 스택 파헤치기 심층편](../ad-sw-stack-deep-dive.md) · 출처는 [reference/references.md](reference/references.md)
 >
 > **출처 표기 원칙**: 모든 사실 문장에 출처 ID와 등급을 붙인다. 확인하지 못한 내용은 ⚠️와 함께 "미확인"으로 적는다. 이 보고서의 판단은 `분석` 블록에만 쓴다. 수치 계산은 "계산"으로 표시한다.
 

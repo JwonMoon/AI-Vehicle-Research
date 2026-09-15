@@ -81,5 +81,5 @@
 
   <text x="20" y="480" fill="#333">근거: Cosmos Curator docs 🔍 · Cosmos Cookbook 🔍 · Drive-Dreams README·티저 🔍 · AlpaSim README 🔍 · Data Factory Blueprint 보도자료 📄 · NVIDIA "three computers" 블로그 📄</text>
   <text x="20" y="500" fill="#333">NVIDIA가 제공하지 않는 것(흰 상자): 플릿 수집 체계·법적 근거·갭 기반 재수집 운영. 상세는 부록 A.2.6.</text>
-  <text x="20" y="540" fill="#777" font-size="12">자체 작성 (research/nvidia-fullstack).</text>
+  <text x="20" y="540" fill="#777" font-size="12">자체 작성 (research/05-nvidia-fullstack).</text>
 </svg>

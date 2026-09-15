@@ -11,7 +11,7 @@
 | [images/](images/) | 플랫폼·버전 호환 지도, 단계별 로드맵 |
 | [reference/references.md](reference/references.md) | 출처 목록 (T 보드·플랫폼, L Alpamayo, W Autoware) |
 
-배경 설명은 [자율주행 SW 스택 파헤치기 심층편](../ad-sw-stack-deep-dive/README.md)을 참고한다.
+배경 설명은 [자율주행 SW 스택 파헤치기 심층편](../README.md)을 참고한다.
 
 ## 작성 규약
 

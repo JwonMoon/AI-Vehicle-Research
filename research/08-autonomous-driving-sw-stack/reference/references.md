@@ -18,7 +18,7 @@
 |---|---|
 | `arxiv.org` (2410.23262, 2510.26125, 2604.17862, 2303.09419, 2506.16882, 2505.06546, 2511.17540 등 전부) | WebSearch 스니펫·alphaxiv·학회 openaccess 페이지·인용 README로 대체 → 논문 수치 전부 📰 |
 | `huggingface.co` (OpenScene, navhard_two_stage, hustvl/DiffusionDrive, timm/resnet34, commaai/*, nvidia/Alpamayo*) | 데이터·체크포인트 다운로드 불가 → 코드 정적 분석만; 모델 카드는 선행 조사 인용 |
-| `nvidia.com` / `nvidianews.nvidia.com` / `blogs.nvidia.com` / `developer.nvidia.com` | 스니펫 + 선행 조사(`research/nvidia-fullstack`, `tier4-alpamayo-autoware`) |
+| `nvidia.com` / `nvidianews.nvidia.com` / `blogs.nvidia.com` / `developer.nvidia.com` | 스니펫 + 선행 조사(`research/05-nvidia-fullstack`, `tier4-alpamayo-autoware`) |
 | `docs.ros.org` (Kilted·Lyrical 릴리스 노트, About-Executors, Releases.html) | `ros2/ros2_documentation` 클론의 `.rst` 원문(💻) |
 | `design.ros2.org` | `ros2/design` 클론 `.md` 원문(💻) |
 | `autosar.org` R24-11 PDF(ARAComAPI, PlatformDesign, SWArchitecture) | RTI·ETAS·Vector 2차 자료 스니펫(📰); DDS 바인딩 최초 도입 릴리스 미확인 ⚠️ |
@@ -335,9 +335,9 @@
 
 | # | 출처 | URL | 유형 | 확인 사실(한 줄) | 등급 |
 |---|---|---|---|---|---|
-| R1 | NVIDIA 풀스택 3장 — 자율주행 스택 | `research/nvidia-fullstack/03-autonomous-driving-stack.md` | 선행 보고서 | Alpamayo 1/1.5/2 Super 사양·CoC·학습 레시피(8×H100, 97 TB, GRPO 640 GPU)·양자화(FP8 ~11 GB, FP8+NVFP4 ~9 GB)·DRIVE AV 듀얼 스택·Halos·Hyperion·Mercedes CLA·Uber 28개 도시·AlpaSim/AlpaGym·"not a fully fledged driving stack" 원문·Hydra-MDP 공개 지연 | 🔍💻 |
-| R2 | TIER IV × Alpamayo × Autoware 보고서 | `research/tier4-alpamayo-autoware/tier4_alpamayo_autoware_보고서.md` | 선행 보고서 | §6.1 Alpamayo 1.5 노드 RTX PRO 6000: 0.820→0.720→0.660→**0.600 s(1.67 FPS)**, 편차 0.4%/1.8%; §6.4 Alpamayo 2 Super 노드 **3.35 s/0.30 FPS**(304회); CoC 64/256 토큰 자기회귀; `FlowMatching`+Euler 코드(`flow_matching.py:22-50`); 가중치 라이선스 불일치(HF OpenMDW vs README 비상용); 브랜치 `alpamayo1.5`(`65eda63`)·`alpamayo2.0-super`(`b8747df`) | 🔍💻 |
-| R3 | FlashDrive 논문 분석 | `research/flashdrive/flashdrive_analysis.md` | 선행 보고서 | 4단계 88/177/264/187 ms(합 716)→**159 ms(4.5×)** RTX PRO 6000; ADE@6.4s 1.72→1.56; 5개 플랫폼 4.0–5.7×; **Jetson Thor 944 ms**; W4A8·추측 디코딩·KV 재사용·CUDA Graphs; MIT; arXiv 미공개 | 🔍 |
+| R1 | NVIDIA 풀스택 3장 — 자율주행 스택 | `research/05-nvidia-fullstack/03-autonomous-driving-stack.md` | 선행 보고서 | Alpamayo 1/1.5/2 Super 사양·CoC·학습 레시피(8×H100, 97 TB, GRPO 640 GPU)·양자화(FP8 ~11 GB, FP8+NVFP4 ~9 GB)·DRIVE AV 듀얼 스택·Halos·Hyperion·Mercedes CLA·Uber 28개 도시·AlpaSim/AlpaGym·"not a fully fledged driving stack" 원문·Hydra-MDP 공개 지연 | 🔍💻 |
+| R2 | TIER IV × Alpamayo × Autoware 보고서 | `research/07-tier4-alpamayo-autoware/tier4_alpamayo_autoware_보고서.md` | 선행 보고서 | §6.1 Alpamayo 1.5 노드 RTX PRO 6000: 0.820→0.720→0.660→**0.600 s(1.67 FPS)**, 편차 0.4%/1.8%; §6.4 Alpamayo 2 Super 노드 **3.35 s/0.30 FPS**(304회); CoC 64/256 토큰 자기회귀; `FlowMatching`+Euler 코드(`flow_matching.py:22-50`); 가중치 라이선스 불일치(HF OpenMDW vs README 비상용); 브랜치 `alpamayo1.5`(`65eda63`)·`alpamayo2.0-super`(`b8747df`) | 🔍💻 |
+| R3 | FlashDrive 논문 분석 | `research/04-flashdrive/flashdrive_analysis.md` | 선행 보고서 | 4단계 88/177/264/187 ms(합 716)→**159 ms(4.5×)** RTX PRO 6000; ADE@6.4s 1.72→1.56; 5개 플랫폼 4.0–5.7×; **Jetson Thor 944 ms**; W4A8·추측 디코딩·KV 재사용·CUDA Graphs; MIT; arXiv 미공개 | 🔍 |
 | R4 | NVlabs/alpamayo · alpamayo1.5 | https://github.com/NVlabs/alpamayo · https://github.com/NVlabs/alpamayo1.5 | 상류 저장소(R1·R2 확인) | 초기 커밋 2025-11-19; 1.5 릴리스 커밋 2026-03-20; "lacks access to critical real-world sensor inputs … has not undergone automotive-grade validation"; DRIVE·Thor 미언급; Apache-2.0 | 🔍 |
 | R5 | NVlabs/alpamayo2 | https://github.com/NVlabs/alpamayo2 | 상류 저장소(R1·R2 확인) | 32B Qwen3-VL + 2.3B expert(`ExpertModel`, CFG), 카메라 6대 고정, 이력 48·미래 128 토큰, `text_tasks.py` CoC 4단계 자동 라벨링, `alpamayo2super_arch.png` | 🔍 |
 | R6 | NVlabs/alpamayo-recipes | https://github.com/NVlabs/alpamayo-recipes | 상류 저장소(R1 확인) | 2026-04~05 공개; SFT 2단계·오픈루프 RL(GRPO, Cosmos-RL)·ModelOpt 양자화·`--fake_quant` | 🔍 |

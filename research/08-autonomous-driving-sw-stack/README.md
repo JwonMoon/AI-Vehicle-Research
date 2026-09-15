@@ -18,9 +18,9 @@
 
 | 주제 | 주인 문서 | 이 보고서에서는 |
 |---|---|---|
-| NVIDIA Alpamayo 모델·DRIVE AV·AlpaSim | [nvidia-fullstack 3장](../nvidia-fullstack/03-autonomous-driving-stack.md) · [nvidia-alpamayo](../nvidia-alpamayo/) | 스택 지도상의 위치와 지연 수치만 인용 |
-| Alpamayo × Autoware 노드 코드 해부 | [tier4-alpamayo-autoware](../tier4-alpamayo-autoware/) | 0.600 s → 3.35 s 지연 수치만 인용 |
-| VLA 온보드 추론 최적화 | [flashdrive](../flashdrive/) | 링크만 |
+| NVIDIA Alpamayo 모델·DRIVE AV·AlpaSim | [nvidia-fullstack 3장](../05-nvidia-fullstack/03-autonomous-driving-stack.md) · [nvidia-alpamayo](../03-nvidia-alpamayo/) | 스택 지도상의 위치와 지연 수치만 인용 |
+| Alpamayo × Autoware 노드 코드 해부 | [tier4-alpamayo-autoware](../07-tier4-alpamayo-autoware/) | 0.600 s → 3.35 s 지연 수치만 인용 |
+| VLA 온보드 추론 최적화 | [flashdrive](../04-flashdrive/) | 링크만 |
 | 고전 파이프라인·모델 트렌드(BEV·Occupancy·E2E·VLA 개론) | [세미나 1회차](../../seminars/01-ad-workloads/material.md) | 개론은 링크, 이 문서는 스택 단위 비교 |
 | SoC 비교·E/E 아키텍처·미들웨어 개요 | [세미나 2회차](../../seminars/02-hpc-platform/material.md) | 개요는 링크, 이 문서는 rmw·ara::com·Zenoh 심층 + 실측 |
 | DriveOS·Halos | (nvidia-fullstack 2장, 미작성) | 3줄 언급 |

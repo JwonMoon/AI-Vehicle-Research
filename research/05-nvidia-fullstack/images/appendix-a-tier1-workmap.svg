@@ -109,5 +109,5 @@
   <rect x="35" y="552" width="18" height="12" fill="#fde2e2" stroke="#c62828"/><text x="60" y="563" fill="#333">NVIDIA 제공 밖 또는 Tier-1 책임 명시 — 차별화 높음 (기능 계층·데이터 사이클·시뮬 검증 체계·안전 케이스·인증)</text>
   <text x="35" y="595" fill="#333">실례: 컴퓨트 ECU 제조사(Desay SV·Lenovo·Quanta·Foxconn)는 노란 영역을, AD 시스템 Tier-1(Bosch·Magna·Continental)은 빨간 영역을 사업화 — 한 회사가 전 층을 다 하는 공개 사례 없음.</text>
   <text x="35" y="617" fill="#333">근거: DriveOS PDK 문서 ✅ · DriveWorks 플러그인 문서 ✅ · Orin SEooC 문구 ✅ · Magna 2026-01-05 📄 · Bosch 2025-10-01 ✅ · Continental/Aurora ✅ · ANAB 2026-06-22 ✅ · NVlabs/alpamayo README 🔍</text>
-  <text x="35" y="650" fill="#777" font-size="12">자체 작성 (research/nvidia-fullstack). ⚠️ 표시는 공개 출처 없이 업계 관행에서 유추한 항목.</text>
+  <text x="35" y="650" fill="#777" font-size="12">자체 작성 (research/05-nvidia-fullstack). ⚠️ 표시는 공개 출처 없이 업계 관행에서 유추한 항목.</text>
 </svg>

@@ -768,7 +768,7 @@ Autoware README는 "production-ready"라고 쓰지만 안전 인증은 스택 �
 
 ```bash
 WORK=$HOME/adstack-work; mkdir -p $WORK && cd $WORK
-REPO=/path/to/AI-Vehicle-Research/research/autonomous-driving-sw-stack
+REPO=/path/to/AI-Vehicle-Research/research/08-autonomous-driving-sw-stack
 
 # D1 — Autoware
 for r in autoware autoware_core autoware_universe autoware_launch autoware_msgs autoware_adapi_msgs autoware_internal_msgs; do
@@ -872,5 +872,5 @@ git clone https://github.com/autonomousvision/navsim && git clone https://github
 
 - 코드·스크립트 출력(💻): `reference/demo-logs/d1-autoware-anatomy.md`, `d2-apollo-anatomy.md`, `d3-openpilot-onnx.md`, `d4-ipc-bench.md`; 클론 대상 저장소 — autowarefoundation/{autoware, autoware_core, autoware_universe, autoware_launch, autoware_msgs, autoware_adapi_msgs, autoware_internal_msgs, agnocast}, ApolloAuto/apollo, commaai/{openpilot, panda, opendbc, msgq}, autonomousvision/navsim, hustvl/DiffusionDrive, ros2/{rmw, rmw_zenoh, rmw_fastrtps, rclcpp, design, ros2_documentation}, eclipse-zenoh/zenoh, eclipse-iceoryx/iceoryx2, eclipse-score/{score, communication, reference_integration}, COVESA/vsomeip, eclipse-ankaios/ankaios, eclipse-bluechi/bluechi, gitlab.com/soafee/{architecture, blueprints/open-ad-kit, ewaol/meta-ewaol}.
 - 1차 문서(🔍): 각 저장소 README·LICENSE·RELEASES·docs raw; ROS 2 Kilted·Lyrical 릴리스 노트; autoware-documentation architecture-v2; auto_drive·privately-owned-vehicles README; NVlabs/alpamayo·alpamayo1.5·alpamayo2·alpamayo-recipes·alpasim·alpagym README; autowarefoundation/alpamayo-autoware README(브랜치 alpamayo1.5·alpamayo2.0-super); z-lab/flashdrive; intel/ad-rss-lib; waymo-research/waymo-open-dataset.
-- 이 저장소의 선행 조사(출처로만 인용): `research/nvidia-fullstack/03-autonomous-driving-stack.md`, `research/tier4-alpamayo-autoware/tier4_alpamayo_autoware_보고서.md`, `research/flashdrive/flashdrive_analysis.md`.
+- 이 저장소의 선행 조사(출처로만 인용): `research/05-nvidia-fullstack/03-autonomous-driving-stack.md`, `research/07-tier4-alpamayo-autoware/tier4_alpamayo_autoware_보고서.md`, `research/04-flashdrive/flashdrive_analysis.md`.
 - 보도·검색 요약(📰): references.md의 "서드파티" 절.

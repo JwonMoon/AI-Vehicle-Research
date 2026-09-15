@@ -11,6 +11,7 @@
 | [article.md](article.md) | 사내 공유용 롱폼 기사 (약 10분) |
 | [images/](images/) | 자체 제작 도해 6장 |
 | [reference/references.md](reference/references.md) | 출처 목록 (ID·제목·URL·등급) |
+| [thor-deployment/](thor-deployment/) | 후속편: Thor 위에서 Alpamayo·Autoware 돌리기 (보드 비교·실행 조건·단계별 계획) |
 
 ## 작성 규약
 
