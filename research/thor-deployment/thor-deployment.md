@@ -1,0 +1,450 @@
+# Thor 위에서 Alpamayo·Autoware 돌리기 — 보드 선택과 실행 사양
+
+> **작성일**: 2026-09-15 · **목적**: NVIDIA Thor(Jetson AGX Thor / DRIVE AGX Thor)에서 Alpamayo(1.5, 2 Super 증류본)와 Autoware를 실제로 실행하기 위한 보드 선택 근거, 사양, 제약, 단계별 계획
+> **관련 문서**: 스택 전반의 배경은 [자율주행 SW 스택 파헤치기 심층편](../ad-sw-stack-deep-dive/ad-sw-stack-deep-dive.md) · 출처는 [reference/references.md](reference/references.md)
+>
+> **출처 표기 원칙**: 모든 사실 문장에 출처 ID와 등급을 붙인다. 확인하지 못한 내용은 ⚠️와 함께 "미확인"으로 적는다. 이 보고서의 판단은 `분석` 블록에만 쓴다. 수치 계산은 "계산"으로 표시한다.
+
+| 등급 | 뜻 |
+|---|---|
+| 🔍 | 1차 출처(NVIDIA 문서·datasheet·포럼 공식 답변, GitHub 저장소·PR, 모델카드, 논문) 직접 열람 |
+| 📄 | 서드파티 문서(해설·리셀러·벤더 파트너 페이지) 직접 열람 |
+| ✅ | 2개 이상 출처 교차 확인 |
+| 📰 | 검색 요약·제목만 확인 |
+| ⚠️ | 미확인·추정·상충 |
+
+출처 ID 접두어: **T** 보드·플랫폼 · **L** Alpamayo · **W** Autoware
+
+---
+
+## 결론 먼저
+
+1. **2026-09 현재 NVIDIA는 Thor에서 Alpamayo를 공식 지원하지 않는다.** NVIDIA 포럼에서 NVIDIA 직원은 "Alpamayo is not available for AGX Thor currently"라고 답했다 [L8] 🔍.
+2. **공식 온보드 경로는 TensorRT Edge-LLM 하나이며, 지원 모델은 Alpamayo-R1-10B, 정밀도는 FP16뿐이다** [L10][L21] ✅. Alpamayo 1.5 지원은 GitHub 이슈로 요청만 된 상태다 [L22] 🔍.
+3. **첫 보드는 Jetson AGX Thor가 현실적이다.**
+   - 메모리가 128 GB로 DRIVE 개발킷의 64 GB보다 크다 [T25][T11] 🔍.
+   - 공개 판매 중이다(US$3,499) [T14] ✅.
+   - Autoware 1.9.0의 Thor 지원도 실측 검증은 Jetson Thor에서만 했다 [W2] 🔍.
+   - DRIVE 개발킷에서는 Alpamayo-R1 FP16 엔진 빌드가 GPU 메모리 부족으로 실패한 사례가 있다 [L19][L31] 🔍.
+4. **차량 I/O와 안전 경로 검증은 DRIVE AGX Thor 몫이다.** GMSL2/3 카메라, 10G-T1 이더넷, CAN·FlexRay·LIN, 안전 MCU는 DRIVE 개발킷에만 있다 [T11] 🔍.
+5. **가장 큰 기술 리스크는 버전 불일치다.** Autoware가 고정한 조합(CUDA 13.0, TensorRT 10.13)이 최신 JetPack 7.2.1(CUDA 13.2.1, TensorRT 10.16.2)이나 DriveOS 7.2.5(CUDA 13.3, TensorRT 11)와 맞지 않는다 [W18][W19][W38][T6] 🔍.
+6. **지연은 아직 실시간과 거리가 멀다.** Thor에서 공개된 최선 수치는 Alpamayo 1.5 1회 추론 943.6 ms(FlashDrive 최적화 후)다 [L11] 🔍. Autoware용 Alpamayo 노드의 추론 주기 기본값은 0.1 s다 [W9] 🔍.
+
+![그림 1. Thor 플랫폼·버전 호환 지도](images/01-platform-compat-map.svg)
+
+---
+
+## 1부. 보드 비교 — Jetson AGX Thor vs DRIVE AGX Thor
+
+### 1.1 사양 비교표
+
+| 항목 | Jetson AGX Thor 개발킷 | DRIVE AGX Thor 개발킷 | 출처 |
+|---|---|---|---|
+| SoC·모듈 | Jetson T5000 모듈 | Thor-X SoC | [T25][T11] 🔍 |
+| CPU | 14코어 Neoverse-V3AE | 14코어 Neoverse V3AE | [T25][T11] 🔍 |
+| GPU | Blackwell, CUDA 코어 2,560, MIG 지원 | Blackwell iGPU, CUDA 코어 2,560 (포럼 답변) | [T25][T7] 🔍 |
+| AI 성능 표기 | MAXN sparse 2,070 FP4 TFLOPS / 1,035 FP8 TFLOPS | 최대 1,000 INT8 TOPS / 2,000 FP4 TFLOPS (벤더 주장) | [T25][T11] 🔍 |
+| DLA | **없음** (PVA 3.0, OFA) | **없음** (PVA, OFA) | [T25][T11] ✅ |
+| 메모리 | **128 GB** LPDDR5X, 273 GB/s | **64 GB** LPDDR5X, 273 GB/s | [T25][T11] 🔍 |
+| 저장장치 | 1 TB NVMe | 256 GB UFS | [T1][T11] 🔍 |
+| 전력 | 모듈 70/90/120 W/MAXN, 개발킷 140 W 전원 | 시스템 350 W | [T25][T14][T11] 🔍 |
+| 동작 온도 | 모듈 Tj −25~115 °C | 0–35 °C(SKU10) / 0–45 °C(SKU12) | [T25][T11] 🔍 |
+| 카메라 | QSFP28 경유 Holoscan Sensor Bridge(HSB), USB | GMSL2 디시리얼라이저 4개 + GMSL3 1개(4포트 중 2포트 사용 가능) | [T1][T11] 🔍 |
+| 이더넷 | 5GbE RJ45 1개, QSFP28(4×25GbE) 1개 | 100/1000/10G-T1 H-MTD 커넥터 5개 | [T1][T11] 🔍 |
+| 차량 버스 | 모듈에 CAN 4개. 개발킷 노출 여부 미확인 ⚠️ | 하네스로 CAN 4개, FlexRay, LIN, A2B, 초음파 | [T25][T11] 🔍 |
+| 안전 MCU | 확인된 출처 없음 | Renesas U2A16 | [T11] 🔍 |
+| 차량 전원 | 없음 | SKU12: DC 9–16 V | [T11] 🔍 |
+| 안전 등급 표기 | datasheet에 ASIL 주장 없음 | "ISO 26262 ASIL-D", "ISO 21434 CAL 4" (벤더 주장) | [T25][T5] 🔍 |
+| 가격·조달 | US$3,499, 2025-08-25 판매 개시 | 가격 비공개, 공인 대리점 주문, 리드타임 6–10주, DRIVE AGX SDK Developer Program 가입 필요 | [T14][T11][T5] ✅/🔍 |
+
+- 모듈 datasheet와 NVIDIA 블로그의 수치가 다를 때는 datasheet를 따랐다. 블로그는 T5000 GPU를 "2,650-core"로 적었지만 datasheet는 2,560이다 [T2][T25] 🔍.
+- DRIVE 개발킷 PDF의 표현은 "ISO 26262 safety certifiable DriveOS"와 "production boards available through Tier1s"다 [T11] 🔍.
+
+> **분석.** DRIVE 개발킷의 ASIL-D 표기는 플랫폼 설계 목표에 대한 벤더 주장이다. 개발킷 자체가 양산 인증품이라는 뜻으로 읽으면 안 된다.
+
+- 두 보드가 "같은 실리콘이며 바이너리 호환"이라고 명시한 NVIDIA 공식 문장은 찾지 못했다 ⚠️.
+- Arm 뉴스룸은 두 제품이 같은 Neoverse V3AE 기반이라고 밝혔다 [T28] 📄.
+- Autoware PR은 두 보드를 "Thor (Jetson + DRIVE)"라는 하나의 SBSA·CUDA 13 경로로 묶었다 [W2] 🔍.
+
+### 1.2 소프트웨어 스택과 버전
+
+| 플랫폼 버전 | 발표일 | OS·커널 | CUDA | TensorRT | cuDNN | 출처 |
+|---|---|---|---|---|---|---|
+| JetPack 7.0 (Jetson Linux 38.2) | 2025-08-25 | Ubuntu 24.04, 6.8 | 13.0 | 10.13 | 9.12 | [T13] 🔍 |
+| JetPack 7.1 (Jetson Linux 38.4) | 2026-01 | — | 미확인 ⚠️ | 미확인 ⚠️ | — | [T3] 📰 |
+| JetPack 7.2 (Jetson Linux 39.2) | 2026-06-02 | Ubuntu 24.04, 6.8 | 13.2.1 | 10.16.2 | 9.20.0 | [T12] 🔍 |
+| JetPack 7.2.1 | 2026-08-11 | — | 13.2.1 | 10.16.2 | 9.20.0 | [W38] 🔍 |
+| DriveOS 7.0.3 | 2025 | 게스트 Ubuntu 24.04 | 12.8 | 10.10.10 | — | [W28][T30] 🔍 |
+| DriveOS 7.2.5 | 2026-08-06 | Ubuntu 24.04, 6.8 | 13.3 | 11 | 9.23.0 | [T6] 🔍 |
+
+**Jetson 쪽**
+- JetPack 7은 SBSA 정렬로 컨테이너의 "-igpu" 태그가 필요 없어졌다 [T13] 🔍.
+- JetPack 7.2부터 Orin과 Thor가 JetPack 7로 통합됐고, MIG는 T5000에서 "technology preview"다 [T12] 🔍.
+- Isaac ROS는 ROS 2 Jazzy 기준으로 JetPack 7.2를 지원한다 [W30] 🔍.
+
+**DRIVE 쪽**
+- DriveOS는 Type-1 하이퍼바이저 위에 Linux 또는 QNX 게스트를 올린다 [T29] 📰.
+- DriveOS 7.2.5에는 Edge-LLM, TensorRT Model Connect, PVA Algorithms, single-VM GPU 스케줄링이 포함됐다 [T6] 🔍.
+- NVIDIA는 DRIVE에서 CUDA만 따로 올릴 수 없고 DriveOS 버전에 묶여 있다고 답했다 [T16] 🔍.
+
+### 1.3 LLM·VLM 추론 런타임
+
+**TensorRT Edge-LLM 지원 조건** [T26] 🔍
+
+| 플랫폼 | 조건 | 엔진 빌드 위치 |
+|---|---|---|
+| Jetson Thor | JetPack 7.0/7.1 + CUDA 13.0, 또는 JetPack 7.2 + CUDA 13.2 | 기기에서 |
+| DRIVE Thor | DriveOS 7.2 + CUDA 13.3 | SDK 컨테이너에서 |
+
+- DriveOS 7.0.3(CUDA 12.8)에서는 Edge-LLM이 빌드되지 않는다 [T16] 🔍.
+- FP8·NVFP4는 Blackwell 계열에서만 지원된다 [L21] 🔍.
+- Edge-LLM 최신 릴리스는 0.10.1(2026-09)이다 [T24] 🔍.
+
+**다른 런타임**
+- NVIDIA 운영자는 2025-10-23 "TensorRT LLM doesn't support Thor"라고 답하고 vLLM·SGLang·Edge-LLM을 권했다 [T22] 🔍. 이후 변경 여부는 미확인이다 ⚠️.
+- vLLM의 Triton이 'sm_110a'를 인식하지 못한 이슈가 있었고, 현재 닫혔다 [L26] 🔍.
+
+**Jetson Thor 공식 vLLM 벤치마크** (JetPack 7.0, 입력 2,048 / 출력 128 토큰, 벤더 수치) [T39] 🔍
+
+| 모델 | 동시 요청 1 (tok/s) | 동시 요청 8 (tok/s) |
+|---|---|---|
+| Llama 3.1 8B | 41.3 | 150.8 |
+| Qwen2.5-VL 7B | 45 | 252 |
+| Qwen2.5-VL 3B | 71.7 | 356.86 |
+| Llama 3.3 70B | 4.7 | 12.6 |
+
+- DRIVE Thor용 공개 LLM 벤치마크 수치는 찾지 못했다 ⚠️.
+
+### 1.4 알려진 이슈
+
+| 플랫폼 | 이슈 | 상태 | 출처 |
+|---|---|---|---|
+| Jetson | JetPack 7.2 MIG: 큰 slice 실행 중 작은 slice 컨텍스트 생성 hang, 재활성화 시 재부팅 필요 | NVIDIA 재현 못함 | [T18] 🔍 |
+| Jetson | JetPack 7.2.1 업그레이드 후 MIG 1g/2g 프로파일 누락, Docker 안에서 MIG 불가 | 스레드 제목 확인 | [T10] 📰 |
+| Jetson | JetPack 7.2 클린 설치 후 DisplayPort 출력 불가 | 스레드 제목 확인 | [T10] 📰 |
+| Jetson | JetPack 7.2/CUDA 13.2에서 `--gpus=all` 미지원, sbsa/cu132 PyPI 인덱스 패키지 누락 | open | [W55] 📄 |
+| DRIVE | 64 GB 장비에서 CUDA 가용 메모리가 6.0 GiB(DriveOS 7.2.5 EA) 또는 15,018 MB(7.0.3 deviceQuery)로 보고됨 | 미해결 | [L31][T7] 🔍 |
+| DRIVE | SDK 설치 후 root 파티션 26 GB가 100% 참. NVIDIA는 Docker 크로스컴파일 후 /data 배치 권고 | 답변 완료 | [T32] 🔍 |
+| DRIVE | TensorRT가 CUDA stream capture를 암묵적으로 켜고 끄는 API가 없음 | 답변 완료 | [W28] 🔍 |
+
+---
+
+## 2부. Alpamayo on Thor
+
+### 2.1 모델 사양
+
+| 항목 | Alpamayo 1 (R1-10B) | Alpamayo 1.5 (10B) | Alpamayo 2 Super |
+|---|---|---|---|
+| 공개 | 2025-12-03 (HF) | 2026-03-19 (HF) | 2026-08-04 (가중치) |
+| 구성 | Cosmos-Reason 8.2B + action expert 2.3B | Cosmos-Reason2 8.2B + action expert 2.3B | Cosmos 3 Super Reasoner 32B + action expert 2.3B |
+| 카메라 입력 | 4대, 1080×1920을 320×576으로, 카메라당 4프레임(0.4 s @10 Hz) | 1과 같음, 카메라 수 가변, 내비게이션 명령 | 6대 검증, 카메라당 과거 4프레임 |
+| 출력 | 64 waypoints / 6.4 s + 인과 추론 텍스트 | 같음 + QA | 궤적 + 추론 + 메타액션 + VQA + 2D grounding + 자동 라벨 |
+| 가중치 | BF16 **22.2 GB** | BF16 **22.2 GB** | BF16 **약 71.6 GB** |
+| 권장 HW | 24 GB+ VRAM, H100에서 테스트 | 24 GB+ VRAM | H100 80 GB, 피크 72,115 MiB |
+| 출처 | [L1][L27][L28] 🔍 | [L3][L28] 🔍 | [L4][L5] 🔍 |
+
+- R1 저장소의 소프트웨어 요구는 PyTorch 2.8 이상, transformers 4.57.1 이상이다 [L1] 🔍.
+- 2 Super 저장소는 Python 3.12와 flash-attn 빌드를 전제한다 [L5] 🔍.
+
+**라이선스 표현 상충** ⚠️
+
+| 문서 | 표현 | 출처 |
+|---|---|---|
+| NVIDIA Alpamayo LLM-info 페이지 | OpenMDW-1.1, "permitting commercial use" | [L24] 🔍 |
+| Alpamayo 1.5 HF 모델카드 | "Commercial licensing available upon request" | [L3] 🔍 |
+| FlashDrive README | "non-commercial license" | [L12] 🔍 |
+| PhysicalAI-AV 데이터셋 | gated, "internal development" 용도 한정 | [L16] 🔍 |
+
+> **분석.** 사내 실험은 가능해 보이지만, 증류 모델을 제품에 넣거나 외부에 배포하려면 법무 확인이 먼저다. 데이터셋으로 학습한 증류 모델의 배포 조건은 출처 미확인이다.
+
+### 2.2 공식 배포 경로와 그 한계
+
+**NVIDIA가 말하는 경로**
+- NVIDIA는 공개 체크포인트를 "cloud-side teacher"로, 차량 내 추론을 "distilled and quantized student model on DRIVE AGX Thor via TensorRT Edge-LLM"으로 설명한다 [L24] 🔍.
+- **공개된 student 가중치나 distillation 레시피는 찾지 못했다** [L6][L24] ⚠️.
+
+**NVlabs/alpamayo-recipes**
+- 제공 레시피는 Alpamayo 1·1.5 SFT, RL(GRPO), 1.5 양자화(ModelOpt)다. distillation, ONNX export, TensorRT 변환, Thor 전용 지침은 없다 [L6] 🔍.
+- 양자화 레시피 환경은 RTX 5090 + CUDA 12 또는 B300 + CUDA 13, PyTorch 2.8.0, ModelOpt 0.43.0이다 [L7] 🔍.
+- 결과 크기는 FP8 약 11 GB, AutoQuant 6.5 bit 약 9 GB다. 출력은 downstream SDK용 "fake quantization"(Q/DQ) 체크포인트다 [L7] 🔍.
+
+**TensorRT Edge-LLM**
+- 워크플로는 HF 체크포인트 → ONNX export → TensorRT 엔진 빌드 → C++ 런타임이다 [L9] 🔍.
+- Jetson AI Lab 튜토리얼은 "Alpamayo R1 (VLA/robotics, FP16 only)"로 표기한다 [L10] 🔍.
+- 같은 튜토리얼은 "TensorRT engines are hardware-specific and must be built on the device"라고 적는다 [L10] 🔍.
+- action expert는 별도 엔진으로 빌드하며, 그 `max_kv_cache_capacity`가 LLM 엔진 빌드 값과 같아야 한다 [L35] 🔍.
+- Alpamayo 1.5 checkpoint를 넣으면 `KeyError: 'hidden_size'`가 난다는 사용자 보고가 있다 [L8] 🔍.
+- NVIDIA 블로그는 Alpamayo 1이 DRIVE Thor에서 "production-viable latencies"를 낸다고 썼지만 수치는 없다 [L25] 🔍.
+
+**student 후보 (Edge-LLM이 지원하는 VLM)** [L21] 🔍
+- Qwen3-VL 2B / 4B / 8B, Cosmos-Reason2 2B / 8B, Qwen2.5-VL 3B / 7B, InternVL3/3.5 1–14B
+- Cosmos-Reason2 8B NVFP4 데모는 약 4 GB다 [L10] 🔍.
+
+### 2.3 측정된 지연·메모리
+
+| 모델 | 하드웨어 | 조건 | 1회 추론 지연 | 메모리 | 출처 |
+|---|---|---|---|---|---|
+| Alpamayo-R1 | RTX 6000 Pro Blackwell | 추론 텍스트 40토큰, flow-matching 5스텝 | **99 ms** = 비전 3.43 + prefill 16.54 + 디코딩 70 + 궤적 8.75 | — | [L27] 🔍 |
+| Alpamayo-R1 | 같음 | 추론 텍스트 없이 궤적만 | 29 ms | — | [L27] 🔍 |
+| Alpamayo 1.5 | RTX PRO 6000 | 기준 → FlashDrive | 716.9 → 151.4 ms | FP16 약 31.6 GB → W4A8 약 18.3 GB | [L11] 🔍 |
+| Alpamayo 1.5 | **Jetson Thor** | 기준 → FlashDrive, 1 sample | **3,770.3 → 943.6 ms** | — | [L11] 🔍 |
+| Alpamayo 1.5 | **Jetson Thor** | 기준 → FlashDrive, 6 samples | 14,596.5 → 1,522.6 ms | — | [L11] 🔍 |
+| Alpamayo 1.5 ROS 2 노드 | RTX PRO 6000 (96 GB) | GPU 전처리 + TRT INT8 expert + 5스텝, 카메라 4대 | **0.600 s** (1.67 FPS) | — | [L15] 🔍 |
+| Alpamayo 2 Super ROS 2 노드 | RTX PRO 6000 | 평균 / p90 | 3.35 s / 3.97 s, "not usable closed-loop" | 피크 69.1 GiB | [W10] 🔍 |
+| Alpamayo 1.5 | Jetson Thor, JetPack 7.2.1 | PyTorch 네이티브 + SDPA, AutoQuant 6.5 bit | 1회 지연 미보고. 평가 약 455 s/clip (FP16 약 424 s/clip) | jtop 14.5 GB | [L8][L19] 🔍 |
+| Alpamayo-R1 | DRIVE AGX Thor, DriveOS 7.2.5 EA | Edge-LLM 0.9.0 FP16 엔진 빌드 | **빌드 실패** | 15.17 GB 요청, CUDA 가용 6.0 GB | [L19][L31] 🔍 |
+
+- FlashDrive 논문은 Jetson Thor 측정에 쓴 소프트웨어 스택과 정밀도를 적지 않았다 [L11][L32] ⚠️.
+- 커뮤니티 사례의 양자화 모델은 "No real-quant GEMM found" 경고가 나 저정밀 커널 가속을 받지 못한 것으로 보인다 [L8] 🔍.
+
+> **분석.** 공개된 Thor 수치에서 가장 빠른 값도 1회 약 0.94 s다. Alpamayo를 폐루프 제어 경로에 넣는 것은 아직 이르다. 첫 목표는 "기능 동작 + 병목 계측"으로 잡는 것이 현실적이다.
+
+### 2.4 메모리 계산 (계산)
+
+전제
+- 파라미터 수는 모델카드 값을 쓴다 [L1][L4].
+- 1 GB = 10⁹ bytes로 계산한다.
+- NVFP4는 블록당 스케일을 포함해 파라미터당 약 4.5 bit로 가정한다 ⚠️.
+- 활성값, 비전 인코더 버퍼, TensorRT 작업 버퍼는 뺐다.
+
+| 모델 | BF16 | FP8 | NVFP4 백본 + BF16 expert | 공표·실측 대조 |
+|---|---|---|---|---|
+| R1 / 1.5 (10.5B) | 21.0 GB | 10.5 GB | 9.2 GB | HF 22.2 GB [L28], FP8 약 11 GB [L7], Thor jtop 14.5 GB [L19] |
+| 2 Super (34.3B) | 68.6 GB | 34.3 GB | 22.6 GB | HF 71.6 GB, H100 피크 72,115 MiB [L4] |
+
+- 1.5의 KV 캐시는 입력 약 3,000 토큰 기준 약 0.44 GB(BF16)로 계산했다. 백본 설정(36 layers, KV head 8, head_dim 128)은 원문으로 확인하지 못한 가정이다 ⚠️.
+
+**플랫폼별 적재 가능성 (계산·판단)**
+
+| 플랫폼 | 메모리 | R1/1.5 BF16 | 2 Super BF16 | 2 Super NVFP4 |
+|---|---|---|---|---|
+| Jetson AGX Thor (T5000) | 128 GB 통합 [T25] | 가능 (실사례 [L19]) | 계산상 가능하나 여유 적음 | 계산상 가능, 지원 툴체인 없음 |
+| Jetson T4000 | 64 GB [T25] | 가능 | 불가 | 가능 |
+| DRIVE AGX Thor 개발킷 | 64 GB, CUDA 가용 6–15 GB 보고 [L31][T7] | carveout 확대 전에는 불가 | 불가 | carveout 확대 전제로 경계선 |
+
+### 2.5 블로커 목록
+
+| 블로커 | 내용 | 출처 |
+|---|---|---|
+| 공식 미지원 | NVIDIA 직원: AGX Thor에서 Alpamayo 사용 불가, NIM·TensorRT-LLM도 Jetson 미지원 | [L8] 🔍 |
+| Edge-LLM 범위 | R1만, FP16만. 1.5는 로드맵 요청 단계 | [L10][L22] 🔍 |
+| flash-attn | 2.8.3의 빌드 대상에 SM 110(Thor)이 없어 SDPA로 대체해야 함 | [L20] 🔍 |
+| PyTorch 휠 | Thor용 휠 ABI 문제로 소스 빌드한 사례 | [L20] 🔍 |
+| DRIVE GPU carveout | CUDA 가용 메모리가 작아 FP16 엔진 빌드 OOM, 해결 절차 미확정 | [L19][L31] 🔍 |
+| 폐루프 평가 | AlpaSim의 Alpamayo 1.5 preset은 약 96 GB VRAM 필요 | [L18] 🔍 |
+| 데이터 | PhysicalAI-AV는 gated, 133 TB | [L16] 🔍 |
+
+### 2.6 커뮤니티가 Jetson Thor에서 쓴 절차 (참고)
+
+아래는 NVIDIA 포럼 사용자 한 명이 보고한 절차다. NVIDIA 공식 가이드가 아니다 [L20] 🔍.
+
+1. uv로 Python 3.12.3 환경 구성
+2. PyTorch 소스 빌드 (`TORCH_CUDA_ARCH_LIST=11.0`, distributed 비활성)
+3. TorchVision 0.23.0 소스 빌드 (PyPI 휠 ABI 불일치)
+4. flash-attn 설치 생략, 모델 로딩에 `attn_implementation='sdpa'` 지정
+5. recipes의 `quantize.py`로 AutoQuant 6.5 bit, 보정 클립 100개
+
+- 같은 사용자가 스레드마다 PyTorch 버전을 2.9.0과 2.13.0으로 다르게 적었다 [L20][L8] ⚠️.
+
+---
+
+## 3부. Autoware on Thor
+
+### 3.1 "Thor 지원"의 실체
+
+- Autoware 1.9.0(2026-07-16) 릴리스 노트에 "[docker,ansible] Support NVIDIA Thor (Jetson + DRIVE) on JetPack 7 / SBSA CUDA 13"이 들어갔다 [W1] 🔍.
+- 실체는 PR #7108(2026-05-15 merge)이다 [W2] 🔍.
+- 내용은 `universe-cuda-jazzy` linux/arm64(SBSA) 이미지와 Ubuntu 24.04 ansible 경로다. 이 경로는 CUDA 13.0, TensorRT 10.13.3.9, `CMAKE_CUDA_ARCHITECTURES=86;87;89;90;110`을 고른다 [W2][W18][W19][W3] ✅.
+- **실측 검증은 Jetson Thor(L4T R38.4.0, CUDA 13.0) 한 대에서 했다.** 480개 패키지 이미지 빌드에 44분이 걸렸다 [W2] 🔍.
+- DRIVE Thor는 PR 본문에 "not separately verified"로 적혀 있다 [W2] 🔍.
+- PR 리뷰에는 "DRIVE Thor is currently on CUDA 12.8 (DRIVE OS 7.0.3) and requires CUDA 13.2 for full Blackwell feature support"라는 코멘트가 있다 [W2] 🔍.
+
+### 3.2 버전 불일치 — 계획 전 최우선 확인 항목
+
+| 구성 | Autoware 고정값 (Ubuntu 24.04 경로) | JetPack 7.2.1 | DriveOS 7.2.5 | DriveOS 7.0.3 |
+|---|---|---|---|---|
+| CUDA | 13.0 | 13.2.1 | 13.3 | 12.8 |
+| TensorRT | 10.13.3.9 | 10.16.2 | 11 | 10.10.10 |
+| compute capability 표기 | sm_110 (CUDA 13) | sm_110 | 미확인 | sm_101 (CUDA 12.8) |
+| 출처 | [W18][W19] 🔍 | [W38] 🔍 | [T6] 🔍 | [W28][W3] 🔍 |
+
+- JetPack 7.2.1이나 DriveOS 7.2.5 호스트에서 Autoware 이미지(CUDA 13.0 사용자 공간)가 동작하는지는 확인하지 못했다 ⚠️.
+- DriveOS에 ROS 2 Jazzy를 apt로 설치할 수 있다고 명시한 NVIDIA 문서는 찾지 못했다 ⚠️.
+
+> **분석.** 가장 안전한 출발점은 Autoware가 실제 검증한 조합, 즉 Jetson Thor + Jetson Linux R38.4(JetPack 7.1 계열) + CUDA 13.0이다. 다만 커뮤니티의 Alpamayo 1.5 실행 사례는 JetPack 7.2.1이었다 [L19]. Autoware와 Alpamayo를 한 보드에 올리려면 JetPack 버전을 먼저 하나로 정하고, 다른 쪽을 그 버전에 맞춰 검증해야 한다.
+
+### 3.3 실행 방법 (문서에 적힌 것)
+
+**Thor 컨테이너 실행** — Autoware docker/README [W4] 🔍
+
+```
+docker run --rm -it --net host --runtime nvidia \
+  -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all \
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
+  -v $HOME/autoware_data/maps:/home/aw/autoware_data/maps \
+  -v $HOME/autoware_data/ml_models:/home/aw/autoware_data/ml_models \
+  autoware:universe-cuda-jazzy bash -c "source /opt/autoware/setup.bash && exec bash"
+```
+
+- 호스트 준비는 `nvidia-container-toolkit` 설치 후 `nvidia-ctk runtime configure --runtime=docker`다 [W4] 🔍.
+- GPU는 `--gpus all`이 아니라 `--runtime nvidia`와 환경변수로 붙인다 [W4] 🔍.
+- 공개 이미지 태그는 `ghcr.io/autowarefoundation/autoware:universe-cuda-jazzy`, 버전 태그 예시는 `universe-jazzy-1.9.0`이다 [W17] 🔍.
+
+**이미지에서 빠진 기능** [W4] 🔍
+- DLA, VPI, NVDEC/NVENC, Argus 카메라
+
+**ML 모델 받기** [W21] 🔍
+
+```
+ansible-playbook autoware.dev_env.install_dev_env --tags artifacts -e "data_dir=$HOME/autoware_data/ml_models" --ask-become-pass
+```
+
+- Hugging Face AutowareFoundation 조직에서 태그 고정으로 받으며, checksum 검증은 없다 [W21] 🔍.
+
+**DDS 커널 설정** [W42] 🔍
+
+```
+sudo sysctl -w net.core.rmem_max=2147483647
+sudo sysctl -w net.ipv4.ipfrag_time=3
+sudo sysctl -w net.ipv4.ipfrag_high_thresh=134217728
+```
+
+- Jazzy·Ubuntu 24.04에서는 CycloneDDS의 ParticipantIndex를 "none"으로 권장한다 [W42] 🔍.
+- 소스 설치 문서는 아직 Ubuntu 22.04·Humble 기준이다 [W14] 🔍.
+
+### 3.4 GPU 컴포넌트 점검 목록
+
+| 컴포넌트 | Thor 관련 사실 | 점검할 것 | 출처 |
+|---|---|---|---|
+| spconv / tensorrt_plugins (BEVFusion, PTv3) | Ubuntu 24.04용 `cu130-rev1` 설치가 upstream 릴리스 대기로 막혀 있음. DRIVE Thor에서 CUDA graph capture 위반을 고치는 PR이 이어짐 | 1.9.0 이미지에 spconv가 실제로 들어갔는지. DRIVE는 #13158 반영 여부 | [W2][W7] 🔍 |
+| autoware_ptv3 | DRIVE Thor에서 PR #13158 적용 후 엔진 빌드 39 s 성공 | TensorRT 11 대응 PR #13160 | [W7][W5] 🔍 |
+| autoware_bevfusion | Blackwell dGPU(cc 12.0)에서 nvrtc arch 오류 이슈 open | Thor(sm_110)에서도 재현되는지 | [W31] 🔍 |
+| autoware_lidar_centerpoint | `build_only`로 엔진 사전 생성 가능 | 첫 기동 전 엔진 빌드 | [W43] 🔍 |
+| autoware_tensorrt_vad | 첫 실행 때 ONNX → TensorRT 엔진 자동 빌드·캐시, 카메라 6대 | 첫 기동 시간 확보 | [W46] 🔍 |
+| autoware_system_monitor | CUDA 13에서 NVML deprecated API 이슈 open | GPU 모니터 경고 | [W32] 🔍 |
+| tensorrt_yolox, 신호등 분류기, streampetr, transfusion | 이번 조사에서 확인하지 못함 | — | ⚠️ |
+| 공통 | TensorRT 엔진은 하드웨어·TensorRT 버전에 묶여 Thor에서 다시 빌드해야 함. Autoware 문서 명시는 VAD만 확인 | JetPack·DriveOS 업그레이드 뒤 엔진 캐시 삭제 | [W46] 🔍 |
+
+### 3.5 성능 데이터
+
+- **Thor 위 Autoware 전체 스택의 지연·CPU 수치는 찾지 못했다** ⚠️.
+- 공개된 Thor 수치는 이미지 빌드(480 패키지, 44분)와 DRIVE Thor PTv3 엔진 빌드(39 s)뿐이다 [W2][W7] 🔍.
+- 참고치: Jetson AGX Orin에서 centerpoint voxel 커널이 3.31 ms에서 1.21 ms로 줄었다 [W44] 🔍.
+- 참고치: 한 논문은 차량의 perception-to-decision 지연을 공유메모리 IPC 적용으로 521.91 ms에서 290.26 ms로 줄였다. 차량 ECU는 x86이었다 [W49] 📄.
+- Autoware 문서는 시간 성능 측정 도구로 CARET과 ros2_tracing을 권한다 [W51] 📰.
+
+### 3.6 차량 없이 검증하는 경로
+
+![그림 2. 단계별 실행 로드맵](images/02-phased-plan.svg)
+
+| 경로 | 필요한 것 | Thor 단독 가능 여부 | 출처 |
+|---|---|---|---|
+| Planning simulator | `sample-map-planning` 맵 | GPU 인지가 필요 없어 가능성 높음. 실측 보고 없음 ⚠️ | [W15] 🔍 |
+| Logging simulator | `sample-map-rosbag` + `sample-rosbag`. **bag에 이미지 없음** | LiDAR 인지 GPU 경로 검증에 적합 | [W16] 🔍 |
+| AWSIM Labs | Ubuntu 22.04, RTX 2080 이상, x86_64 바이너리 | **불가, x86 호스트 필요** | [W39] 🔍 |
+| CARLA | autoware_carla_interface는 CARLA 0.9.15, Humble 기준 | x86 GPU 호스트 권장 | [W40] 🔍 |
+| scenario_simulator_v2 | Jazzy Docker·arm64 이미지 지원 | 가능성 있음, 실측 미확인 ⚠️ | [W54] 🔍 |
+| alpamayo 노드 | 카메라 4대(1.5) 또는 6대(2 Super)가 든 bag | sample-rosbag으로는 불가, 별도 bag 필요 | [W9][W16] 🔍 |
+
+**문서에 적힌 실행 명령** [W15][W16] 🔍
+
+```
+ros2 launch autoware_launch planning_simulator.launch.xml map_path:=$HOME/autoware_data/maps/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit
+ros2 bag play ~/autoware_data/recordings/bags/sample-rosbag/ -r 0.2 -s sqlite3
+```
+
+- 샘플 데이터는 S3에 공개돼 있고 sha256 값이 ansible role에 적혀 있다 [W53] 🔍. 파일 크기는 확인하지 못했다 ⚠️.
+- Jetson Autoware와 원격 PC의 AWSIM을 연결했을 때 AWSIM이 0–1 Hz로 떨어진 사례가 있다 [W50] 🔍.
+- Jetson AGX Orin과 CARLA 연동에서 TF extrapolation과 검출 누락이 보고됐다 [W57] 🔍.
+
+> **분석.** x86 시뮬레이터와 Thor를 네트워크로 잇는 구성은 DDS 설정과 시간 동기가 먼저 문제가 된다. 첫 단계는 Thor 단독 logging simulator로 GPU 인지 경로만 확인하는 것이 안전하다.
+
+### 3.7 센서·I/O
+
+| 항목 | 사실 | 출처 |
+|---|---|---|
+| LiDAR 드라이버 nebula | Hesai Pandar·AT128·OT128, Velodyne VLP-16/32·VLS-128, Robosense Bpearl·Helios, Continental ARS548·SRR520. Humble·Jazzy 지원 | [W24] 🔍 |
+| TIER IV C1/C2 GMSL2 카메라 드라이버 | 릴리스가 Jetson Linux R36(JetPack 6)까지만 있고 Thor 지원 흔적 없음 | [W22][W23] 🔍 |
+| oToBrite GMSL 카메라 | Jetson Thor JetPack 7.0 호환 발표 (벤더) | [W34] 📄 |
+| Jetson Thor GMSL | D3 Embedded 등 서드파티 HSB 번들 필요 | [T31] 📰 |
+| Autoware Thor 이미지 | Argus 제외 → ISP가 필요한 카메라는 컨테이너 밖 처리 필요로 보임 | [W4] 🔍 (해석) |
+| 시간 동기(PTP)·차량 인터페이스 예시 | 이번 조사에서 확인하지 못함 | ⚠️ |
+
+### 3.8 alpamayo-autoware ROS 2 노드
+
+- 저장소는 autowarefoundation/alpamayo-autoware, 발표는 2026-01-23이다 [W13] 🔍.
+- 브랜치는 `alpamayo1.0`, `alpamayo1.5`, `alpamayo2.0-super`, `main`이다 [W8] 🔍.
+
+| 브랜치 | 요구 조건 | 성능 (RTX PRO 6000) | 출처 |
+|---|---|---|---|
+| alpamayo1.5 | 24 GB+ VRAM, ROS 2 Humble, Python 3.10. TensorRT expert 엔진은 Python 3.12 venv에서 빌드 | 0.600 s (5스텝) | [W9] 🔍 |
+| alpamayo2.0-super | 80 GB+ VRAM, TensorRT 미사용 | 평균 3.35 s, "not usable closed-loop" | [W10] 🔍 |
+
+- 입력 토픽은 CompressedImage 4개, `/localization/kinematic_state`, `/planning/mission_planning/route`다 [W9] 🔍.
+- 출력 토픽은 `/alpamayo/predicted_trajectory`(Autoware Trajectory), `/alpamayo/reasoning` 등이다 [W9] 🔍.
+- **세 README 어디에도 Thor, Jetson, aarch64, Jazzy 언급이 없다** [W9][W10][W11] 🔍.
+
+> **분석.** Thor의 Autoware 이미지는 Jazzy(Python 3.12)이고 노드는 Humble(Python 3.10)이다. Thor에서 노드를 돌리려면 Jazzy 포팅이 필요할 가능성이 높다. 128 GB Jetson은 VRAM 요구치를 넘지만, 성능은 미확인이다.
+
+---
+
+## 4부. 실행 계획
+
+아래 계획은 이 보고서의 **분석**이다. 각 단계의 근거는 앞 절의 출처를 따른다.
+
+### 4.1 단계별 계획
+
+| 단계 | 장비 | 목표 | 완료 기준 | 근거 |
+|---|---|---|---|---|
+| 0. 준비 | — | 계정·라이선스·데이터 확보, DRIVE 견적 착수 | HF gated 승인(PhysicalAI-AV, Cosmos-Reason2), 라이선스 법무 의견, DRIVE Developer Program 가입 | [L16][L3][L24][T5][T11] |
+| 1. x86 기준선 | 24 GB+ GPU 워크스테이션 | Alpamayo 1.5 추론과 ROS 2 노드 재현 | 공개 수치(RTX PRO 6000 약 0.6~0.7 s)와 같은 자릿수 | [L2][L11][L15] |
+| 2a. Jetson Thor에서 Autoware | Jetson AGX Thor | `universe-cuda-jazzy` 이미지로 logging simulator 실행 | sample-rosbag 재생 시 LiDAR 인지·계획 토픽 출력, TensorRT 엔진 빌드 성공 | [W2][W4][W16] |
+| 2b. Jetson Thor에서 Alpamayo | Jetson AGX Thor | 1.5 PyTorch + SDPA 기능 검증, Edge-LLM R1 FP16 엔진 | 궤적 출력, 단계별 지연 계측 | [L19][L20][L10] |
+| 3. 통합 | Jetson AGX Thor | alpamayo 노드 Jazzy 포팅, 카메라 4대 bag 재생 | Autoware Trajectory로 출력, 지연 계측 | [W9] |
+| 4. DRIVE 이관 | DRIVE AGX Thor | DriveOS 7.2.5 + Edge-LLM, GPU carveout 조정, 차량 I/O | 엔진 빌드 성공, GMSL·CAN 입력 확인 | [T6][L31][T11] |
+| 병행. 폐루프 평가 | 96 GB급 x86 GPU | AlpaSim 폐루프 | preset 실행 | [L18] |
+
+### 4.2 먼저 결정할 것
+
+1. **Jetson Thor의 JetPack 버전.** Autoware 검증 조합(R38.4, CUDA 13.0)과 Alpamayo 커뮤니티 사례(JetPack 7.2.1, CUDA 13.2.1)가 갈린다 [W2][L19].
+2. **카메라 입력 방식.** Jetson은 HSB 브리지를, DRIVE는 GMSL 직결을 쓴다. TIER IV 카메라 드라이버는 JetPack 7 지원 흔적이 없다 [T1][T11][W22].
+3. **Alpamayo 목표 모델.** 공식 경로는 R1 FP16뿐이다. 1.5를 쓰려면 PyTorch 경로나 자체 변환을 감수해야 한다 [L10][L22].
+
+### 4.3 장비 준비물
+
+| 장비 | 용도 | 요구 사양 | 근거 |
+|---|---|---|---|
+| Jetson AGX Thor 개발킷 | 2~3단계 | 128 GB, 1 TB NVMe 기본 | [T25][T1] |
+| x86 GPU 워크스테이션 (추론) | 1단계 | 24 GB+ VRAM | [L1][L3] |
+| x86 GPU 워크스테이션 (폐루프·2 Super) | 병행 | Alpamayo 1.5 AlpaSim preset 약 96 GB, 2 Super 노드 80 GB+ | [L18][W10] |
+| x86 시뮬레이터 호스트 (선택) | AWSIM | RTX 2080 이상 | [W39] |
+| DRIVE AGX Thor 개발킷 | 4단계 | SKU12(차량 전원·하네스 포함), 리드타임 6–10주 | [T11] |
+| 카메라 4대 이상이 든 rosbag | 3단계 | sample-rosbag에는 이미지 없음 | [W16] |
+
+---
+
+## 부록 A. 미확인 항목
+
+- DRIVE AGX Thor 개발킷 가격, Jetson DevKit 캐리어의 CAN 노출 여부
+- Jetson Thor와 DRIVE Thor가 같은 실리콘이며 바이너리 호환이라는 NVIDIA 공식 문장
+- DRIVE Thor GPU carveout 기본값과 변경 절차 공식 문서
+- JetPack 7.1의 CUDA·TensorRT 정확한 버전
+- FlashDrive의 Jetson Thor 측정 조건(소프트웨어 스택·정밀도)
+- Alpamayo 1.5·2 Super의 Thor 공식 지원 일정, 공개 student 모델, distillation 스크립트
+- Alpamayo 1.5 백본의 정확한 layer·KV head 설정 (KV 캐시 계산 전제)
+- DRIVE Thor에서 Autoware가 end-to-end로 동작한 보고
+- JetPack 7.2.1·DriveOS 7.2.5 호스트에서 Autoware 1.9.0 이미지 호환성
+- DriveOS에 ROS 2 Jazzy apt 설치 가능 여부
+- Thor 위 Autoware 전체 스택의 지연·CPU 수치
+- spconv `cu130-rev1`의 1.9.0 이미지 포함 여부
+- tensorrt_yolox·신호등 분류기·streampetr·transfusion의 Thor 이슈
+- alpamayo-autoware 노드의 Thor·Jazzy 실행 사례
+- 샘플 데이터 파일 크기, Autoware 권장 디스크·RAM
+- Marlin·ParoQuant 커널의 sm_110 빌드 가능 여부
+
+## 부록 B. 조사 방법
+
+- 2026-09-15 웹 조사(WebSearch·WebFetch)로 수집했다. 코드 클론·실행·실측은 하지 않았다.
+- GitHub 정보는 PR·이슈 페이지, raw 파일, GitHub API 응답을 열람한 범위다.
+- WebFetch는 요약 모델을 거치므로, 명령어와 버전 문자열은 실행 전에 원문 파일에서 다시 확인해야 한다.
+- NVIDIA 포럼의 커뮤니티 보고는 NVIDIA 공식 검증이 아니며, 본문에서 그렇게 구분했다.
