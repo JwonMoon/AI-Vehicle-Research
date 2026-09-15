@@ -11,6 +11,7 @@
 | [article.md](article.md) | 사내 공유용 롱폼 기사 (약 10분) |
 | [images/](images/) | 자체 제작 도해 6장 |
 | [reference/references.md](reference/references.md) | 출처 목록 (ID·제목·URL·등급) |
+| [reference/code-pins.md](reference/code-pins.md) · [code-autoware.md](reference/code-autoware.md) · [code-alpamayo.md](reference/code-alpamayo.md) | 코드 대조 기준 커밋과 판정표 (파일·줄 근거) |
 | [thor-deployment/](thor-deployment/) | 후속편: Thor 위에서 Alpamayo·Autoware 돌리기 (보드 비교·실행 조건·단계별 계획) |
 
 ## 작성 규약
@@ -26,11 +27,13 @@
 | P | 4부 양산 스택 |
 | F | 5부 미래 방향 |
 | V | 약한 근거 재검증 (2026-09-15) |
+| K | 고정 커밋 소스 코드 (2026-09-15 클론) |
 
 **출처 등급.**
 
 | 표시 | 뜻 |
 |---|---|
+| 💻 | 고정 커밋의 소스 코드·설정 파일에서 직접 확인 |
 | 🔍 | 1차 출처(공식 문서·논문·뉴스룸·저장소) 원문을 직접 열람 |
 | 📄 | 서드파티 문서(해설·보도·미러)를 직접 열람 |
 | ✅ | 2개 이상 출처로 교차 확인 |
@@ -44,6 +47,6 @@
 ## 조사 방법과 제약
 
 - 2026-09-15 웹 조사(WebSearch·WebFetch)로 새로 수집했다. 저장소 안의 기존 리서치·세미나 자료는 참조하지 않았다.
-- 코드 클론·실행·실측은 하지 않았다. 저장소 정보는 GitHub 웹 페이지·raw 파일·API 응답을 열람한 범위다.
+- 초판은 코드 클론 없이 GitHub 웹 페이지·raw 파일·API 응답을 열람했다. 같은 날 Autoware·Alpamayo 저장소 13개를 고정 커밋으로 클론해 보고서 주장을 코드와 대조했다. 기준은 `reference/code-pins.md`, 판정표는 `reference/code-autoware.md`와 `reference/code-alpamayo.md`다. 실행·실측은 하지 않았다.
 - 접근이 막혀 원문을 확인하지 못한 곳이 있다. rand.org, iso.org, tesla.com 안전 보고서, Mercedes-Benz 그룹 페이지, Medium, 일부 NVIDIA 문서(Thor 세대 TensorRT safety runtime)가 403이었다. 해당 사실은 📰 또는 ⚠️로 표시했다.
 - Tesla AI Day 수치는 1차 영상이 아니라 서드파티 해설 기준이다(📄).

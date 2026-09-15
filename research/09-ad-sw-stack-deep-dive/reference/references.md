@@ -2,7 +2,7 @@
 
 > **열람일**: 모든 출처 2026-09-15 · ID는 [보고서](../ad-sw-stack-deep-dive.md)와 [기사](../article.md)의 인용 표기와 같다.
 >
-> **등급**: 🔍 1차 원문 직접 열람 · 📄 서드파티(해설·보도·미러·Wikipedia) 직접 열람 · ✅ 2개 이상 교차 확인 · 📰 검색 요약만(원문 미열람) · ⚠️ 미확인
+> **등급**: 💻 고정 커밋 코드 직접 확인 · 🔍 1차 원문 직접 열람 · 📄 서드파티(해설·보도·미러·Wikipedia) 직접 열람 · ✅ 2개 이상 교차 확인 · 📰 검색 요약만(원문 미열람) · ⚠️ 미확인
 >
 > "벤더 주장"은 기업 자료에 적힌 내용이며 독립 검증을 거치지 않았다. 조사 영역별로 독립 수집해 같은 문서가 여러 접두어에 중복 등재된 경우가 있다(예: NAVSIM은 [E40]과 [D15]). 일부 행은 원 조사 노트의 번호 체계를 유지해 결번이 있다.
 
@@ -15,6 +15,7 @@
 | P | 4부 양산 스택 |
 | F | 5부 미래 방향 |
 | V | 약한 근거 재검증 (2026-09-15) |
+| K | 고정 커밋 소스 코드 (2026-09-15 클론) |
 
 ## [E] 1부 진화 과정 (66건)
 
@@ -528,3 +529,23 @@
 | V36 | 2026.2.9.6 release notes (Not a Tesla App) (2026-04) | https://www.notateslaapp.com/software-updates/version/2026.2.9.6/release-notes | 📄 |
 | V37 | Tesla rolls out FSD v14.3 (Tesla Oracle) (2026-04-08) | https://www.teslaoracle.com/2026/04/08/tesla-rolls-out-fsd-v14-3-2026-2-9-6-better-reaction-time-rewritten-ai-compiler-mlir-release-notes-status/ | 📄 |
 | V38 | Tesla FSD v14.3 rolls out with MLIR rewrite (Electrek) (2026-04-07) | https://electrek.co/2026/04/07/tesla-fsd-14-3-rolling-out-mlir-lattner/ | 📰 |
+
+## [K] 고정 커밋 소스 코드 (13건)
+
+판정표와 파일·줄 근거: [code-autoware.md](code-autoware.md) · [code-alpamayo.md](code-alpamayo.md) · 기준 커밋 [code-pins.md](code-pins.md)
+
+| ID | 저장소 · 기준 | URL | 등급 |
+|---|---|---|---|
+| K1 | autowarefoundation/autoware @ 1.9.0 (커밋 1071878, 2026-09-15 클론) | https://github.com/autowarefoundation/autoware/tree/10718787ba6e28f038a0cb29ff99cc627b5abfd2 | 💻 |
+| K2 | autowarefoundation/autoware_core @ 1.9.0 (커밋 f25f83c, 2026-09-15 클론) | https://github.com/autowarefoundation/autoware_core/tree/f25f83c632c1984ec276c894c41857d4abc0dad8 | 💻 |
+| K3 | autowarefoundation/autoware_universe @ 0.52.1 (커밋 02a5892, 2026-09-15 클론) | https://github.com/autowarefoundation/autoware_universe/tree/02a589200c1af644ca4b4cb3ed98695b4b62118b | 💻 |
+| K4 | autowarefoundation/autoware_launch @ 0.52.0 (커밋 f942598, 2026-09-15 클론) | https://github.com/autowarefoundation/autoware_launch/tree/f942598d44b5769353167c76b784323d5c14c8c7 | 💻 |
+| K5 | autowarefoundation/autoware_msgs @ 1.13.0 (커밋 bb8e7bf, 2026-09-15 클론) | https://github.com/autowarefoundation/autoware_msgs/tree/bb8e7bf5d97168663e0e7b357929e4fcdbd3a967 | 💻 |
+| K6 | NVlabs/alpamayo (Alpamayo 1) @ main (커밋 11a0e01, 2026-09-15 클론) | https://github.com/NVlabs/alpamayo/tree/11a0e01c13a5622377c45ee37d653351453ec43b | 💻 |
+| K7 | NVlabs/alpamayo1.5 @ main (커밋 36aeb4c, 2026-09-15 클론) | https://github.com/NVlabs/alpamayo1.5/tree/36aeb4c5938cbc2eb2aed33b22434773da4ab639 | 💻 |
+| K8 | NVlabs/alpamayo2 @ main (커밋 6d05b9f, 2026-09-15 클론) | https://github.com/NVlabs/alpamayo2/tree/6d05b9f2dcaa6ee45ac6e053cf18653eac23c047 | 💻 |
+| K9 | NVlabs/alpamayo-recipes @ main (커밋 670b551, 2026-09-15 클론) | https://github.com/NVlabs/alpamayo-recipes/tree/670b551987280979c157c1cb70b042458dbacc99 | 💻 |
+| K10 | autowarefoundation/alpamayo-autoware @ alpamayo1.5 (커밋 65eda63, 2026-09-15 클론) | https://github.com/autowarefoundation/alpamayo-autoware/tree/65eda63b70460fc806a3dd1c619475e1d3bdbe28 | 💻 |
+| K11 | autowarefoundation/alpamayo-autoware @ alpamayo2.0-super (커밋 b8747df, 2026-09-15 클론) | https://github.com/autowarefoundation/alpamayo-autoware/tree/b8747df228afd0e0d40d10fcfebd7b827325d50b | 💻 |
+| K12 | autowarefoundation/alpamayo-autoware @ main (커밋 4e1c387, 2026-09-15 클론) | https://github.com/autowarefoundation/alpamayo-autoware/tree/4e1c3874a0d58c48369592d5ee6dad9e2ea14a01 | 💻 |
+| K13 | NVIDIA/TensorRT-Edge-LLM @ v0.10.1 (커밋 e8b2952, 2026-09-15 클론) | https://github.com/NVIDIA/TensorRT-Edge-LLM/tree/e8b29522938901f6df19ebeedd4b69bc8edbcd97 | 💻 |

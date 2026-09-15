@@ -7,20 +7,21 @@
 
 | 등급 | 뜻 |
 |---|---|
+| 💻 | 고정 커밋의 소스 코드·설정 파일에서 직접 확인 (../reference/code-pins.md) |
 | 🔍 | 1차 출처(NVIDIA 문서·datasheet·포럼 공식 답변, GitHub 저장소·PR, 모델카드, 논문) 직접 열람 |
 | 📄 | 서드파티 문서(해설·리셀러·벤더 파트너 페이지) 직접 열람 |
 | ✅ | 2개 이상 출처 교차 확인 |
 | 📰 | 검색 요약·제목만 확인 |
 | ⚠️ | 미확인·추정·상충 |
 
-출처 ID 접두어: **T** 보드·플랫폼 · **L** Alpamayo · **W** Autoware
+출처 ID 접두어: **T** 보드·플랫폼 · **L** Alpamayo · **W** Autoware · **K** 소스 코드(고정 커밋)
 
 ---
 
 ## 결론 먼저
 
 1. **2026-09 현재 Thor에서 Alpamayo를 돌리는 공식 경로는 매우 좁다.** NVIDIA 포럼에서 NVIDIA 직원은 "Alpamayo is not available for AGX Thor currently"라고 답하면서, NIM·TensorRT-LLM은 Jetson에서 지원하지 않고 Edge-LLM은 Alpamayo 1 FP16만 지원한다고 설명했다 [L8] 🔍.
-2. **공식 온보드 경로는 TensorRT Edge-LLM 하나이며, 지원 모델은 Alpamayo-R1-10B, 정밀도는 FP16뿐이다** [L10][L21] ✅. Alpamayo 1.5 지원은 GitHub 이슈로 요청만 된 상태다 [L22] 🔍. 시리즈별 가능 여부는 2.2절, 서버 실행 사례는 2.5절에 정리했다.
+2. **공식 온보드 경로는 TensorRT Edge-LLM 하나이며, 지원 모델은 Alpamayo-R1-10B, 정밀도는 FP16뿐이다** [L10][L21] ✅. Edge-LLM v0.10.1 코드도 `alpamayo_r1` 모델 유형만 처리한다 [K13] 💻. Alpamayo 1.5 지원은 GitHub 이슈로 요청만 된 상태다 [L22] 🔍. 시리즈별 가능 여부는 2.2절, 서버 실행 사례는 2.5절에 정리했다.
 3. **첫 보드는 Jetson AGX Thor가 현실적이다.**
    - 메모리가 128 GB로 DRIVE 개발킷의 64 GB보다 크다 [T25][T11] 🔍.
    - 공개 판매 중이다(US$3,499) [T14] ✅.
@@ -28,7 +29,7 @@
    - DRIVE 개발킷에서는 Alpamayo-R1 FP16 엔진 빌드가 GPU 메모리 부족으로 실패한 사례가 있다 [L19][L31] 🔍.
 4. **차량 I/O와 안전 경로 검증은 DRIVE AGX Thor 몫이다.** GMSL2/3 카메라, 10G-T1 이더넷, CAN·FlexRay·LIN, 안전 MCU는 DRIVE 개발킷에만 있다 [T11] 🔍.
 5. **가장 큰 기술 리스크는 버전 불일치다.** Autoware가 고정한 조합(CUDA 13.0, TensorRT 10.13)이 최신 JetPack 7.2.1(CUDA 13.2.1, TensorRT 10.16.2)이나 DriveOS 7.2.5(CUDA 13.3, TensorRT 11)와 맞지 않는다 [W18][W19][W38][T6] 🔍.
-6. **지연은 아직 실시간과 거리가 멀다.** Thor에서 공개된 최선 수치는 Alpamayo 1.5 1회 추론 943.6 ms(FlashDrive 최적화 후)다 [L11] 🔍. Autoware용 Alpamayo 노드의 추론 주기 기본값은 0.1 s다 [W9] 🔍.
+6. **지연은 아직 실시간과 거리가 멀다.** Thor에서 공개된 최선 수치는 Alpamayo 1.5 1회 추론 943.6 ms(FlashDrive 최적화 후)다 [L11] 🔍. Autoware용 Alpamayo 노드의 추론 주기 기본값은 1.5 노드 0.1 s, 2 Super 노드 2.0 s다 [W9] 🔍 [K10][K11] 💻.
 
 ![그림 1. Thor 플랫폼·버전 호환 지도](images/01-platform-compat-map.svg)
 
@@ -97,7 +98,7 @@
 | DRIVE Thor | DriveOS 7.2 + CUDA 13.3 | SDK 컨테이너에서 |
 
 - DriveOS 7.0.3(CUDA 12.8)에서는 Edge-LLM이 빌드되지 않는다 [T16] 🔍.
-- FP8·NVFP4는 Blackwell 계열에서만 지원된다 [L21] 🔍.
+- Edge-LLM 문서 기준으로 MXFP8·NVFP4는 Blackwell급이 필요하고, FP8은 Orin에서 지원되지 않는다 [L21] 🔍 [K13] 💻.
 - Edge-LLM 최신 릴리스는 0.10.1(2026-09)이다 [T24] 🔍.
 
 **다른 런타임**
@@ -155,8 +156,9 @@
 **정밀도와 양자화**
 - 공개 원본 가중치는 BF16이다 [L1][L3][L4] 🔍. BF16과 FP16은 둘 다 16비트라 크기가 같다.
 - **"R1 FP16"은 양자화하지 않은 원본 16비트 정밀도로 엔진을 만든다는 뜻이다.** TensorRT Edge-LLM에서 Alpamayo는 이 방식만 지원한다 [L10] 🔍.
-- 양자화는 가중치를 FP8·NVFP4·INT8 같은 8비트·4비트로 줄이는 것이다. NVIDIA 레시피로 1.5를 양자화하면 FP8 약 11 GB, AutoQuant 약 9 GB가 된다 [L7] 🔍.
-- 레시피 출력은 양자화 위치만 표시한 "fake quantization" 체크포인트다 [L7] 🔍. 실행 런타임이 저정밀 커널을 갖춰야 실제로 빨라지며, Jetson Thor PyTorch 경로에서는 오히려 느렸다는 보고가 있다 [L8] 🔍.
+- 양자화는 가중치를 FP8·NVFP4·INT8 같은 8비트·4비트로 줄이는 것이다. NVIDIA 레시피로 1.5를 양자화하면 FP8 약 11 GB, AutoQuant 약 9 GB가 된다 [L7] 🔍. AutoQuant의 코드 기본 목표 비트는 4.8이고, 6.5는 README 예시값이다 [K9] 💻.
+- 레시피의 **기본 출력은 `mtq.compress()`로 압축한 실제 FP8·NVFP4 가중치**다. `--fake_quant`를 주면 원본 가중치에 양자화 위치만 표시한(Q/DQ) 체크포인트가 된다 [K9] 💻. 초판은 README 설명을 따라 fake quantization을 기본으로 적었으나 코드와 반대였다.
+- 어느 쪽이든 실행 런타임이 저정밀 커널을 갖춰야 실제로 빨라지며, Jetson Thor PyTorch 경로에서는 오히려 느렸다는 보고가 있다 [L8] 🔍.
 
 **DLA**
 - DLA(Deep Learning Accelerator)는 Xavier·Orin SoC에 GPU와 별도로 들어간 신경망 전용 가속 블록이다(용어 설명, 출처 미확인).
@@ -167,15 +169,18 @@
 | 항목 | Alpamayo 1 (R1-10B) | Alpamayo 1.5 (10B) | Alpamayo 2 Super |
 |---|---|---|---|
 | 공개 | 2025-12-03 (HF) | 2026-03-19 (HF) | 2026-08-04 (가중치) |
-| 구성 | Cosmos-Reason 8.2B + action expert 2.3B | Cosmos-Reason2 8.2B + action expert 2.3B | Cosmos 3 Super Reasoner 32B + action expert 2.3B |
-| 카메라 입력 | 4대, 1080×1920을 320×576으로, 카메라당 4프레임(0.4 s @10 Hz) | 1과 같음, 카메라 수 가변, 내비게이션 명령 | 6대 검증, 카메라당 과거 4프레임 |
+| 구성 | Cosmos-Reason 8.2B (코드상 Qwen3-VL-8B 구조) + flow-matching action expert 2.3B | Cosmos-Reason2 8.2B (Qwen3-VL-8B 구조) + action expert 2.3B | 32B VLM (NVIDIA 표기 Cosmos 3, 코드 주석상 Qwen3-VL 계열 64층) + action expert 약 2B (모델카드 2.3B) |
+| 입력 | 카메라 4대 × 4프레임(t0−0.3 s~t0), 프레임당 163,840~196,608 px로 리사이즈(1080×1920 → 약 320×576), 자차 이력 16점(1.6 s @10 Hz) | 1과 같음, 카메라 수 가변, 내비게이션 명령 | 궤적 과제 카메라 6대(ID 0,1,2,3,5,6), VQA는 ID 0~5, 각 4프레임, 자차 이력 16점 |
 | 출력 | 64 waypoints / 6.4 s + 인과 추론 텍스트 | 같음 + QA | 궤적 + 추론 + 메타액션 + VQA + 2D grounding + 자동 라벨 |
 | 가중치 | BF16 **22.2 GB** | BF16 **22.2 GB** | BF16 **약 71.6 GB** |
 | 권장 HW | 24 GB+ VRAM, H100에서 테스트 | 24 GB+ VRAM | H100 80 GB, 피크 72,115 MiB |
-| 출처 | [L1][L27][L28] 🔍 | [L3][L28] 🔍 | [L4][L5] 🔍 |
+| 출처 | [L1][L27][L28] 🔍 [K6] 💻 | [L3][L28] 🔍 [K7] 💻 | [L4][L5] 🔍 [K8] 💻 |
 
-- R1 저장소의 소프트웨어 요구는 PyTorch 2.8 이상, transformers 4.57.1 이상이다 [L1] 🔍.
-- 2 Super 저장소는 Python 3.12와 flash-attn 빌드를 전제한다 [L5] 🔍.
+- R1 저장소는 Python 3.12, `torch==2.8.0`, `transformers==4.57.1`로 버전을 고정하고, flash-attn은 2.8.3 이상을 요구한다 [K6] 💻.
+- 2 Super 저장소는 Python 3.12와 flash-attn 빌드를 전제한다 [L5] 🔍 [K8] 💻.
+- 세 버전 모두 action expert는 flow matching(Euler)이고 코드 기본 스텝은 10이다. alpamayo-autoware 1.5 노드만 기본 5스텝을 쓴다 [K6][K7][K8][K10] 💻.
+- 1.5는 VLM이 flash_attention_2여도 action expert를 SDPA로 강제한다 [K7] 💻.
+- 1.5 README는 단일 샘플 약 24 GB, 16샘플 약 40 GB, 16샘플 + CFG 약 60 GB를 적는다 [K7] 💻.
 
 **라이선스 표현 상충** ⚠️
 
@@ -184,6 +189,7 @@
 | NVIDIA Alpamayo LLM-info 페이지 | OpenMDW-1.1, "permitting commercial use" | [L24] 🔍 |
 | Alpamayo 1.5 HF 모델카드 | "Commercial licensing available upon request" | [L3] 🔍 |
 | FlashDrive README | "non-commercial license" | [L12] 🔍 |
+| alpamayo2 README / alpamayo-autoware 2.0-super README | OpenMDW-1.1 / "Model weights: Non-commercial license" | [K8][K11] 💻 |
 | PhysicalAI-AV 데이터셋 | gated, "internal development" 용도 한정 | [L16] 🔍 |
 
 > **분석.** 사내 실험은 가능해 보이지만, 증류 모델을 제품에 넣거나 외부에 배포하려면 법무 확인이 먼저다. 데이터셋으로 학습한 증류 모델의 배포 조건은 출처 미확인이다.
@@ -205,7 +211,7 @@
 
 **NVIDIA가 말하는 경로**
 - NVIDIA는 공개 체크포인트를 "cloud-side teacher"로, 차량 내 추론을 "distilled and quantized student model on DRIVE AGX Thor via TensorRT Edge-LLM"으로 설명한다 [L24] 🔍.
-- **공개된 student 가중치나 distillation 레시피는 찾지 못했다** [L6][L24] ⚠️.
+- **공개된 student 가중치나 distillation 레시피는 찾지 못했다** [L6][L24] ⚠️. 레시피 저장소 코드에도 SFT·RL·1.5 양자화만 있다 [K9] 💻.
 
 **NVlabs/alpamayo-recipes**
 - 제공 레시피는 Alpamayo 1·1.5 SFT, RL(GRPO), 1.5 양자화(ModelOpt)다. distillation, ONNX export, TensorRT 변환, Thor 전용 지침은 없다 [L6] 🔍.
@@ -216,8 +222,10 @@
 - 워크플로는 HF 체크포인트 → ONNX export → TensorRT 엔진 빌드 → C++ 런타임이다 [L9] 🔍.
 - Jetson AI Lab 튜토리얼은 "Alpamayo R1 (VLA/robotics, FP16 only)"로 표기한다 [L10] 🔍.
 - 같은 튜토리얼은 "TensorRT engines are hardware-specific and must be built on the device"라고 적는다 [L10] 🔍.
-- action expert는 별도 엔진으로 빌드하며, 그 `max_kv_cache_capacity`가 LLM 엔진 빌드 값과 같아야 한다 [L35] 🔍.
-- Alpamayo 1.5 checkpoint를 넣으면 `KeyError: 'hidden_size'`가 난다는 사용자 보고가 있다 [L8] 🔍.
+- action expert는 별도 엔진으로 빌드하며, 그 `max_kv_cache_capacity`가 LLM 엔진 빌드 값과 같아야 한다 [L35] 🔍 [K13] 💻.
+- Edge-LLM의 Alpamayo action 엔진 출력은 웨이포인트 좌표가 아니라 (accel, curvature) 쌍이고, Alpamayo에는 speculative decoding을 허용하지 않는다 [K13] 💻.
+- Edge-LLM v0.10.1 코드에는 Alpamayo 1.5·2 관련 분기나 문자열이 없다 [K13] 💻.
+- Alpamayo 1.5 checkpoint를 넣으면 `KeyError: 'hidden_size'`가 난다는 사용자 보고가 있다 [L8] 🔍. 코드상 원인도 맞는다. v0.10.1은 `model_type == "alpamayo_r1"`일 때만 VLM 설정을 끌어오고, 1.5의 모델 유형은 `alpamayo1_5`다 [K13][K7] 💻.
 - NVIDIA 블로그는 Alpamayo 1이 DRIVE Thor에서 "production-viable latencies"를 낸다고 썼지만 수치는 없다 [L25] 🔍.
 
 **student 후보 (Edge-LLM이 지원하는 VLM)** [L21] 🔍
@@ -233,12 +241,13 @@
 | Alpamayo 1.5 | RTX PRO 6000 | 기준 → FlashDrive | 716.9 → 151.4 ms | FP16 약 31.6 GB → W4A8 약 18.3 GB | [L11] 🔍 |
 | Alpamayo 1.5 | **Jetson Thor** | 기준 → FlashDrive, 1 sample | **3,770.3 → 943.6 ms** | — | [L11] 🔍 |
 | Alpamayo 1.5 | **Jetson Thor** | 기준 → FlashDrive, 6 samples | 14,596.5 → 1,522.6 ms | — | [L11] 🔍 |
-| Alpamayo 1.5 ROS 2 노드 | RTX PRO 6000 (96 GB) | GPU 전처리 + TRT INT8 expert + 5스텝, 카메라 4대 | **0.600 s** (1.67 FPS) | — | [L15] 🔍 |
+| Alpamayo 1.5 ROS 2 노드 | RTX PRO 6000 (96 GB) | GPU 상주 전처리 + TensorRT expert(SmoothQuant INT8 QDQ + FP16, ONNX Runtime TensorRT EP) + 5스텝, 카메라 4대 | **0.600 s** (1.67 FPS) | — | [L15] 🔍 [K10] 💻 |
 | Alpamayo 2 Super ROS 2 노드 | RTX PRO 6000 | 평균 / p90 | 3.35 s / 3.97 s, "not usable closed-loop" | 피크 69.1 GiB | [W10] 🔍 |
 | Alpamayo 1.5 | Jetson Thor, JetPack 7.2.1 | PyTorch 네이티브 + SDPA, AutoQuant 6.5 bit | 1회 지연 미보고. 평가 약 455 s/clip (FP16 약 424 s/clip) | jtop 14.5 GB | [L8][L19] 🔍 |
 | Alpamayo-R1 | DRIVE AGX Thor, DriveOS 7.2.5 EA | Edge-LLM 0.9.0 FP16 엔진 빌드 | **빌드 실패** | 15.17 GB 요청, CUDA 가용 6.0 GB | [L19][L31] 🔍 |
 
 - FlashDrive 논문은 Jetson Thor 측정에 쓴 소프트웨어 스택과 정밀도를 적지 않았다 [L11][L32] ⚠️.
+- Alpamayo-R1 논문 측정은 flow matching 5스텝이지만, 공개 코드의 기본값은 10스텝이다 [K6] 💻.
 - 커뮤니티 사례의 양자화 모델은 "No real-quant GEMM found" 경고가 나 저정밀 커널 가속을 받지 못한 것으로 보인다 [L8] 🔍.
 
 > **분석.** 공개된 Thor 수치에서 가장 빠른 값도 1회 약 0.94 s다. Alpamayo를 폐루프 제어 경로에 넣는 것은 아직 이르다. 첫 목표는 "기능 동작 + 병목 계측"으로 잡는 것이 현실적이다.
@@ -253,7 +262,7 @@
 |---|---|---|
 | RTX 6000 Pro Blackwell | 1회 **99 ms** (추론 텍스트 40토큰, 논문 표 14) | [L27] 🔍 |
 | RTX PRO 6000 | 704 → 155 ms (FlashDrive 최적화 전후) | [L12] 🔍 |
-| H100 | 모델카드 테스트 환경. 24 GB+ GPU(3090·3090 Ti·4090·A5000) 호환 표기 | [L1] 🔍 |
+| H100 | 테스트 환경. 24 GB+ GPU 호환 표기 (저장소 README: RTX 3090·4090·A5000·H100, 모델카드는 3090 Ti 포함) | [L1] 🔍 [K6] 💻 |
 | RTX 5070 Ti 16 GB | 메모리가 모자라 CPU-GPU 스와핑으로 실행, 기존 오프로드 대비 최대 3.55배 | [L13] 🔍 |
 | 테스트 차량 | 도심 공로 주행 성공 보고. 차량 컴퓨터 사양은 논문에 없음 | [L27] 🔍 |
 | 클라우드 H100 | TreeHacks 2026 프로젝트가 차량의 Jetson Thor 대신 클라우드에서 약 5초 주기로 실행 | [L38] 📄 (AI 생성 위키 경유) |
@@ -269,14 +278,15 @@
 | RTX 5090 + CUDA 12 / B300 + CUDA 13 | NVIDIA 양자화 레시피의 실행 환경 (지연 수치 없음) | [L7] 🔍 |
 | AlpaSim 폐루프 평가 | 1.5 preset 약 96 GB VRAM 필요 | [L18] 🔍 |
 
-**Alpamayo 1.5 Autoware ROS 2 노드** — RTX PRO 6000 (96 GB), 카메라 4대 × 4프레임, 1080×1920 [L15] 🔍 (README 원문 2026-09-15 재확인)
+**Alpamayo 1.5 Autoware ROS 2 노드** — RTX PRO 6000 (96 GB), 카메라 4대 × 4프레임, 1080×1920 [L15] 🔍 [K10] 💻. 여기서 TensorRT expert는 SmoothQuant INT8 QDQ 모델을 ONNX Runtime TensorRT EP(int8 + fp16)로 돌리는 방식이다
 
 | 설정 | 지연 | FPS | 궤적 편차 |
 |---|---|---|---|
 | CPU 전처리 + 샘플링 + 기본 expert + 10스텝 (원본) | 0.820 s | 1.22 | 기준 |
 | GPU 전처리 + greedy + 기본 expert + 10스텝 | 0.820 s | 1.22 | 약 0.4% |
-| GPU 전처리 + greedy + TensorRT expert + 10스텝 | 0.700 s | 1.43 | 약 1.3% |
 | GPU 전처리 + greedy + 기본 expert + 5스텝 | 0.720 s | 1.39 | 약 0.4% |
+| GPU 전처리 + greedy + TensorRT expert + 10스텝 | 0.700 s | 1.43 | 약 1.3% |
+| GPU 전처리 + greedy + TensorRT expert + 5스텝 | 0.660 s | 1.52 | 약 1.8% |
 | GPU 상주 전처리 + greedy + TensorRT expert + 5스텝 | **0.600 s** | 1.67 | 약 1.8% |
 
 **Alpamayo 2 Super (34B)**
@@ -284,8 +294,8 @@
 | 환경 | 결과 | 출처 |
 |---|---|---|
 | H100 80 GB | 모델카드 테스트 환경, 최대 메모리 72,115 MiB | [L4] 🔍 |
-| H100 80 GB × 2 | 공식 데모. VLM 본체는 GPU 0, action expert는 GPU 1에 분산 | [L4] 🔍 |
-| RTX PRO 6000 (96 GB), Autoware ROS 2 노드 | 로딩 28.6 s, 1회 추론 평균 **3.35 s** / p90 3.97 s, 최대 69.1 GiB, "not usable closed-loop" | [W10] 🔍 |
+| H100 80 GB × 2 | 내비게이션 CFG용 고급 2-GPU 데모 (기본 경로는 GPU 한 장). VLM GPU 0 약 67 GiB, action expert GPU 1 약 71 GiB | [L4] 🔍 [K8] 💻 |
+| RTX PRO 6000 (96 GB), Autoware ROS 2 노드 | 로딩 28.6 s, 1회 추론 평균 **3.35 s** / p90 3.97 s, 최대 69.1 GiB, "not usable closed-loop" (304회 측정, 중앙값 3.29 s) | [W10] 🔍 [K11] 💻 |
 
 > **분석.** Alpamayo 1·1.5는 24 GB 이상 소비자용 GPU에서 돌아가고, 최적화하면 RTX 4090급에서 약 0.2 s다. 2 Super는 80 GB 이상 GPU가 필요하고 1회 약 3.4 s라 실시간 제어에는 느리다. 가장 빠른 99 ms는 워크스테이션 GPU 수치라 차량용 칩에 그대로 기대할 수 없다.
 
@@ -302,7 +312,9 @@
 | R1 / 1.5 (10.5B) | 21.0 GB | 10.5 GB | 9.2 GB | HF 22.2 GB [L28], FP8 약 11 GB [L7], Thor jtop 14.5 GB [L19] |
 | 2 Super (34.3B) | 68.6 GB | 34.3 GB | 22.6 GB | HF 71.6 GB, H100 피크 72,115 MiB [L4] |
 
-- 1.5의 KV 캐시는 입력 약 3,000 토큰 기준 약 0.44 GB(BF16)로 계산했다. 백본 설정(36 layers, KV head 8, head_dim 128)은 원문으로 확인하지 못한 가정이다 ⚠️.
+- 1.5의 KV 캐시는 입력 약 3,000 토큰 기준 약 0.44 GB(BF16)로 계산했다. 코드의 기본 VLM은 Qwen3-VL-8B이고 [K7] 💻, 그 공개 설정의 층·헤드 값(36층, KV head 8, head_dim 128)이 가정과 일치한다(HF config를 요약 경유로 확인) 📰.
+- 입력 토큰 가정도 Edge-LLM 예시 빌드값(이미지당 192토큰, maxInputLen 3,424)과 맞는다 [K13] 💻.
+- 2 Super VLM은 64층, KV head 8로 설정돼 있고(요약 경유 📰), alpamayo-autoware README는 5k 토큰 캐시를 약 1.2 GiB로 적는다 [K11] 💻.
 
 **플랫폼별 적재 가능성 (계산·판단)**
 
@@ -319,6 +331,7 @@
 | 공식 미지원 | NVIDIA 직원: AGX Thor에서 Alpamayo 사용 불가, NIM·TensorRT-LLM도 Jetson 미지원 | [L8] 🔍 |
 | Edge-LLM 범위 | R1만, FP16만. 1.5는 로드맵 요청 단계 | [L10][L22] 🔍 |
 | flash-attn | 2.8.3의 빌드 대상에 SM 110(Thor)이 없어 SDPA로 대체해야 함 | [L20] 🔍 |
+| 2 Super 공개 코드 | TensorRT·ONNX·양자화·Jetson·aarch64 처리 코드가 없음 (2.9절) | [K8][K11] 💻 |
 | PyTorch 휠 | Thor용 휠 ABI 문제로 소스 빌드한 사례 | [L20] 🔍 |
 | DRIVE GPU carveout | CUDA 가용 메모리가 작아 FP16 엔진 빌드 OOM, 해결 절차 미확정 | [L19][L31] 🔍 |
 | 폐루프 평가 | AlpaSim의 Alpamayo 1.5 preset은 약 96 GB VRAM 필요 | [L18] 🔍 |
@@ -338,6 +351,36 @@
 
 ---
 
+### 2.9 Alpamayo 2 Super SW 컴포넌트 (코드 기반)
+
+아래 그림은 `NVlabs/alpamayo2`(커밋 6d05b9f)와 `alpamayo-autoware`의 `alpamayo2.0-super` 브랜치(커밋 b8747df)의 코드를 읽어 층별로 정리한 것이다 [K8][K11] 💻. 실행으로 검증한 구조가 아니다. 파일·줄 단위 근거는 [reference/code-alpamayo2-components.md](reference/code-alpamayo2-components.md)에 있다.
+
+![그림 3. Alpamayo 2 Super SW 컴포넌트 스택](images/03-alpamayo2-sw-components.svg)
+
+| 층 | 업스트림 `alpamayo2` | ROS 2 통합 `alpamayo-autoware` |
+|---|---|---|
+| L8 API·HMI·도구 | CLI `inference_smoke`, 노트북 4종(추론·meta-action·auto-label·VQA), 시각화 API(PNG·JSON·MP4). 웹 UI·AlpaSim 연동 코드 없음 | RViz용 MarkerArray, `/alpamayo/reasoning` 텍스트 토픽. RViz 설정 파일은 미동봉 |
+| L7 통합 | 없음 | `Alpamayo2RosNode`: 타이머 2.0 s, 워커 1개, 진행 중이면 tick 드롭. `conversions`·`nav_text`가 ego history 변환과 Trajectory 변환 담당 |
+| L6 추론 파이프라인 | `sample_trajectories_from_data`: 과거 궤적 토큰 주입 → 공유 prefill → CoC 샘플링 디코드(top_p 0.98, T 0.6) → Flow Matching 10스텝 → unicycle 적분. 텍스트 과제는 `generate_text` | 업스트림 함수를 그대로 호출. 내비 CFG는 실험 기능, 기본 꺼짐 |
+| L5 전·후처리 | 7대 카메라 링 중 궤적 과제 6대(ID 0,1,2,3,5,6) × 4프레임, 자차 이력 16점, 채팅 템플릿, 출력 텍스트 파싱 | GPU에서 JPEG 디코드 → 긴 변 1280 리사이즈 → 업스트림 processor로 GPU 토큰화 |
+| L4 모델 컴포넌트 | VLM(클래스는 체크포인트 config에서 동적 로드), 궤적 토크나이저(`<i0..3999>`, 과거 궤적 48토큰), `ExpertModel`(VLM KV 캐시를 조건으로 non-causal 추론), `FlowMatching`(Euler), `UnicycleAccelCurvatureActionSpace`(64 × 0.1 s) | 업스트림 사본을 벤더링. CUDA graph 파일 없음, curvature bound ±0.2(업스트림 ±0.33) |
+| L3 모델 로딩 | `Alpamayo2Super.from_pretrained(dtype=bf16, device_map="cuda:0")`, AutoConfig/AutoModel 등록, 선택적 CUDA graph | 같은 체크포인트를 `cuda:0`에 직접 적재, `attn_implementation="sdpa"` 강제 |
+| L2 런타임 | torch 2.8.0, transformers 4.57.1, flash-attn 2.8.3 이상, hydra·einops·av·physical-ai-av | rclpy, torchvision, lanelet2, Autoware 메시지 |
+| L1 OS·드라이버 | Linux, CUDA 12.8 wheel, nvcc 12.x, Python 3.12, uv. Dockerfile·yaml 설정 없음 | ROS 2 Humble, Python 3.10, Autoware 워크스페이스 필수 |
+| L0 HW | NVIDIA GPU 필수(CPU 경로 없음), 기본 GPU 한 장. 선택: 2-GPU 데모(VLM cuda:0 / expert cuda:1) | GPU 한 장 80 GB 이상(문서 기재) |
+
+출처: [K8][K11] 💻 (문서 기재 수치는 [W10] 🔍)
+
+**코드에 없는 것** (grep·find로 확인) [K8][K11][K9][K13] 💻
+- TensorRT·ONNX·양자화 경로. 노드 코드 주석은 "The TensorRT expert engine is unavailable for this generation"이라고 적는다.
+- Jetson·aarch64·Thor 처리 코드
+- TensorRT Edge-LLM v0.10.1의 Alpamayo 2 지원, alpamayo-recipes의 2 Super 레시피
+- VLM 층·hidden·head 수의 코드 내 정의. 체크포인트 `config.json`에서 읽는다
+
+> **분석.** Alpamayo 2 Super의 공개 코드는 데이터센터 GPU 한 장 위의 순수 PyTorch 추론 패키지이고, ROS 2 노드는 그 API를 감싼 얇은 통합층이다. Thor로 옮기려면 L0~L3의 가속·양자화·aarch64 경로를 새로 만들어야 하며, 공개 코드에는 그 출발점이 없다.
+
+---
+
 ## 3부. Autoware on Thor
 
 ### 3.1 "Thor 지원"의 실체
@@ -345,8 +388,9 @@
 - Autoware 1.9.0(2026-07-16) 릴리스 노트에 "[docker,ansible] Support NVIDIA Thor (Jetson + DRIVE) on JetPack 7 / SBSA CUDA 13"이 들어갔다 [W1] 🔍.
 - 실체는 PR #7108(2026-05-15 merge)이다 [W2] 🔍.
 - 내용은 `universe-cuda-jazzy` linux/arm64(SBSA) 이미지와 Ubuntu 24.04 ansible 경로다. 이 경로는 CUDA 13.0, TensorRT 10.13.3.9, `CMAKE_CUDA_ARCHITECTURES=86;87;89;90;110`을 고른다 [W2][W18][W19][W3] ✅.
-- **실측 검증은 Jetson Thor(L4T R38.4.0, CUDA 13.0) 한 대에서 했다.** 480개 패키지 이미지 빌드에 44분이 걸렸다 [W2] 🔍.
+- **실측 검증은 Jetson Thor(L4T R38.4.0, CUDA 13.0) 한 대에서 했다.** 480개 패키지 이미지 빌드에 44분이 걸렸다 [W2] 🔍. `docker/README.md`도 "verified end-to-end on a local Jetson Thor (L4T R38.4.0 / CUDA 13.0)"라고 적는다 [K1] 💻.
 - DRIVE Thor는 PR 본문에 "not separately verified"로 적혀 있다 [W2] 🔍.
+- ansible의 CUDA·TensorRT 기본값 주석은 Jetson Thor와 DRIVE Thor가 같은 sm_110 SBSA 패키지 셋을 공유한다고 적는다 [K1] 💻.
 - PR 리뷰에는 "DRIVE Thor is currently on CUDA 12.8 (DRIVE OS 7.0.3) and requires CUDA 13.2 for full Blackwell feature support"라는 코멘트가 있다 [W2] 🔍.
 
 ### 3.2 버전 불일치 — 계획 전 최우선 확인 항목
@@ -378,7 +422,7 @@ docker run --rm -it --net host --runtime nvidia \
 
 - 호스트 준비는 `nvidia-container-toolkit` 설치 후 `nvidia-ctk runtime configure --runtime=docker`다 [W4] 🔍.
 - GPU는 `--gpus all`이 아니라 `--runtime nvidia`와 환경변수로 붙인다 [W4] 🔍.
-- 공개 이미지 태그는 `ghcr.io/autowarefoundation/autoware:universe-cuda-jazzy`, 버전 태그 예시는 `universe-jazzy-1.9.0`이다 [W17] 🔍.
+- 공개 이미지 태그는 `ghcr.io/autowarefoundation/autoware:universe-cuda-jazzy`, 버전 태그 예시는 `universe-jazzy-1.9.0`이다 [W17] 🔍. 이 버전 태그 형식은 저장소 코드에서는 확인하지 못했다 ⚠️.
 
 **이미지에서 빠진 기능** [W4] 🔍
 - DLA, VPI, NVDEC/NVENC, Argus 카메라
@@ -389,7 +433,7 @@ docker run --rm -it --net host --runtime nvidia \
 ansible-playbook autoware.dev_env.install_dev_env --tags artifacts -e "data_dir=$HOME/autoware_data/ml_models" --ask-become-pass
 ```
 
-- Hugging Face AutowareFoundation 조직에서 태그 고정으로 받으며, checksum 검증은 없다 [W21] 🔍.
+- ML 모델 대부분은 S3 등에서 sha256 checksum으로 검증해 받는다. Hugging Face에서 태그 고정(`hf download`)으로 받는 것은 `lidar_centerpoint` v3.0 한 건이고, 이 한 건만 checksum이 없다 [K1] 💻. 초판의 "checksum 검증은 없다"는 코드와 달랐다.
 
 **DDS 커널 설정** [W42] 🔍
 
@@ -406,10 +450,11 @@ sudo sysctl -w net.ipv4.ipfrag_high_thresh=134217728
 
 | 컴포넌트 | Thor 관련 사실 | 점검할 것 | 출처 |
 |---|---|---|---|
-| spconv / tensorrt_plugins (BEVFusion, PTv3) | Ubuntu 24.04용 `cu130-rev1` 설치가 upstream 릴리스 대기로 막혀 있음. DRIVE Thor에서 CUDA graph capture 위반을 고치는 PR이 이어짐 | 1.9.0 이미지에 spconv가 실제로 들어갔는지. DRIVE는 #13158 반영 여부 | [W2][W7] 🔍 |
+| spconv / tensorrt_plugins (BEVFusion, PTv3) | Ubuntu 24.04용 `cu130-rev1` 설치가 upstream 릴리스 대기로 막혀 있음. DRIVE Thor에서 CUDA graph capture 위반을 고치는 PR이 이어짐 | 1.9.0 ansible은 Ubuntu 24.04에서 spconv 설치를 건너뛴다(코드 확인). DRIVE는 #13158 반영 여부 | [W2][W7] 🔍 [K1] 💻 |
 | autoware_ptv3 | DRIVE Thor에서 PR #13158 적용 후 엔진 빌드 39 s 성공 | TensorRT 11 대응 PR #13160 | [W7][W5] 🔍 |
 | autoware_bevfusion | Blackwell dGPU(cc 12.0)에서 nvrtc arch 오류 이슈 open | Thor(sm_110)에서도 재현되는지 | [W31] 🔍 |
-| autoware_lidar_centerpoint | `build_only`로 엔진 사전 생성 가능 | 첫 기동 전 엔진 빌드 | [W43] 🔍 |
+| autoware_lidar_centerpoint | 기본 launch의 LiDAR 검출기. `build_only`로 엔진 사전 생성 가능. 모델은 HF v3.0 | 첫 기동 전 엔진 빌드 | [W43] 🔍 [K3][K4] 💻 |
+| cuda_pointcloud_preprocessor | 기본 launch에서 꺼져 있음 | perception launch 인자로 켬 | [K4] 💻 |
 | autoware_tensorrt_vad | 첫 실행 때 ONNX → TensorRT 엔진 자동 빌드·캐시, 카메라 6대 | 첫 기동 시간 확보 | [W46] 🔍 |
 | autoware_system_monitor | CUDA 13에서 NVML deprecated API 이슈 open | GPU 모니터 경고 | [W32] 🔍 |
 | tensorrt_yolox, 신호등 분류기, streampetr, transfusion | 이번 조사에서 확인하지 못함 | — | ⚠️ |
@@ -467,12 +512,13 @@ ros2 bag play ~/autoware_data/recordings/bags/sample-rosbag/ -r 0.2 -s sqlite3
 
 | 브랜치 | 요구 조건 | 성능 (RTX PRO 6000) | 출처 |
 |---|---|---|---|
-| alpamayo1.5 | 24 GB+ VRAM, ROS 2 Humble, Python 3.10. TensorRT expert 엔진은 Python 3.12 venv에서 빌드 | 0.600 s (5스텝) | [W9] 🔍 |
-| alpamayo2.0-super | 80 GB+ VRAM, TensorRT 미사용 | 평균 3.35 s, "not usable closed-loop" | [W10] 🔍 |
+| alpamayo1.5 | 24 GB+ VRAM, ROS 2 Humble, Python 3.10. TensorRT expert는 Python 3.12 venv에서 SmoothQuant INT8 QDQ로 만들고 ONNX Runtime TensorRT EP로 실행 | 0.600 s (5스텝) | [W9] 🔍 [K10] 💻 |
+| alpamayo2.0-super | 80 GB+ VRAM, TensorRT 미사용(노드 주석: "TensorRT expert engine is unavailable for this generation"), SDPA 강제, 카메라 6대 고정, 추론 주기 2.0 s | 평균 3.35 s, "not usable closed-loop" | [W10] 🔍 [K11] 💻 |
 
-- 입력 토픽은 CompressedImage 4개, `/localization/kinematic_state`, `/planning/mission_planning/route`다 [W9] 🔍.
+- 1.5 노드의 입력 토픽은 CompressedImage(README 예시 4개, 파라미터로 가변), `/localization/kinematic_state`, `/planning/mission_planning/route`다 [W9] 🔍 [K10] 💻. 2 Super 노드는 카메라 ID [0,1,2,3,5,6] 6대를 강제한다 [K11] 💻.
 - 출력 토픽은 `/alpamayo/predicted_trajectory`(Autoware Trajectory), `/alpamayo/reasoning` 등이다 [W9] 🔍.
-- **세 README 어디에도 Thor, Jetson, aarch64, Jazzy 언급이 없다** [W9][W10][W11] 🔍.
+- **세 README 어디에도 Thor, Jetson, aarch64, Jazzy 언급이 없다** [W9][W10][W11] 🔍. 다만 세 브랜치 노드 코드에는 ROS 2 Jazzy 파라미터 호환 주석이 있다 [K10][K11][K12] 💻.
+- 2 Super 노드의 층별 구조는 2.9절 그림 3에 정리했다.
 
 > **분석.** Thor의 Autoware 이미지는 Jazzy(Python 3.12)이고 노드는 Humble(Python 3.10)이다. Thor에서 노드를 돌리려면 Jazzy 포팅이 필요할 가능성이 높다. 128 GB Jetson은 VRAM 요구치를 넘지만, 성능은 미확인이다.
 
@@ -521,7 +567,7 @@ ros2 bag play ~/autoware_data/recordings/bags/sample-rosbag/ -r 0.2 -s sqlite3
 - JetPack 7.1의 CUDA·TensorRT 정확한 버전
 - FlashDrive의 Jetson Thor 측정 조건(소프트웨어 스택·정밀도)
 - Alpamayo 1.5·2 Super의 Thor 공식 지원 일정, 공개 student 모델, distillation 스크립트
-- Alpamayo 1.5 백본의 정확한 layer·KV head 설정 (KV 캐시 계산 전제)
+- Alpamayo 2 Super action expert의 정확한 층 수·파라미터 수, VLM 설정값의 원문(요약 경유로만 확인)
 - DRIVE Thor에서 Autoware가 end-to-end로 동작한 보고
 - JetPack 7.2.1·DriveOS 7.2.5 호스트에서 Autoware 1.9.0 이미지 호환성
 - DriveOS에 ROS 2 Jazzy apt 설치 가능 여부
@@ -534,7 +580,7 @@ ros2 bag play ~/autoware_data/recordings/bags/sample-rosbag/ -r 0.2 -s sqlite3
 
 ## 부록 B. 조사 방법
 
-- 2026-09-15 웹 조사(WebSearch·WebFetch)로 수집했다. 코드 클론·실행·실측은 하지 않았다.
+- 2026-09-15 웹 조사(WebSearch·WebFetch)로 수집했다. 같은 날 Autoware·Alpamayo 저장소를 고정 커밋으로 클론해 주장을 코드와 대조했다. 기준 커밋은 `../reference/code-pins.md`, 판정표는 `../reference/code-autoware.md`·`../reference/code-alpamayo.md`다. 실행·실측은 하지 않았다.
 - GitHub 정보는 PR·이슈 페이지, raw 파일, GitHub API 응답을 열람한 범위다.
 - WebFetch는 요약 모델을 거치므로, 명령어와 버전 문자열은 실행 전에 원문 파일에서 다시 확인해야 한다.
 - NVIDIA 포럼의 커뮤니티 보고는 NVIDIA 공식 검증이 아니며, 본문에서 그렇게 구분했다.

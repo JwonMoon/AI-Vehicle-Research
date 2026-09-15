@@ -8,13 +8,14 @@
 
 | 등급 | 뜻 |
 |---|---|
+| 💻 | 고정 커밋의 소스 코드·설정 파일에서 직접 확인 (reference/code-pins.md) |
 | 🔍 | 1차 출처(공식 문서·논문·뉴스룸·저장소) 원문을 직접 열람 |
 | 📄 | 서드파티 문서(해설·보도·미러·Wikipedia)를 직접 열람 |
 | ✅ | 2개 이상 출처로 교차 확인 |
 | 📰 | 검색 결과 요약만 확인, 원문 미열람 |
 | ⚠️ | 미확인·추정·출처 간 상충 |
 
-출처 ID 접두어: E 진화 · A Autoware · N NVIDIA · D 플라이휠·검증 · P 양산 · F 미래 · V 재검증
+출처 ID 접두어: E 진화 · A Autoware · N NVIDIA · D 플라이휠·검증 · P 양산 · F 미래 · V 재검증 · K 소스 코드(고정 커밋)
 
 ---
 
@@ -187,9 +188,9 @@
 **NVIDIA Alpamayo**
 
 - CES 2026(2026-01-05)에서 NVIDIA는 10B 파라미터 추론형 VLA Alpamayo 1을 "large-scale teacher models that developers can fine-tune and distill into the backbones of their complete AV stacks"로 발표했다 [E45] 🔍.
-- 원형인 Alpamayo-R1 논문(arXiv 2511.00088)의 구조는 Cosmos-Reason VLM 백본 + diffusion(flow-matching) 궤적 디코더다 [N6] 🔍.
+- 원형인 Alpamayo-R1 논문(arXiv 2511.00088)의 구조는 Cosmos-Reason VLM 백본 + diffusion(flow-matching) 궤적 디코더다 [N6] 🔍. 공개 코드에서 VLM 클래스는 `Qwen3VLForConditionalGeneration`(기본 `Qwen/Qwen3-VL-8B-Instruct`)이다 [K6] 💻.
 - 논문의 99 ms 지연은 **RTX 6000 Pro Blackwell**에서 잰 값이다. 비전 인코더 3.43 ms, prefill 16.54 ms, 추론 텍스트 40토큰 디코딩 70 ms, 궤적 디코딩 8.75 ms로 나뉜다 [N6b] 🔍. 차량용 SoC 측정치가 아니다.
-- Alpamayo 2 Super(2026-05-31 발표)는 34B로 발표됐다 [N19] 🔍. HF 블로그는 백본만 세어 32B로 적는다 [N7] 🔍. 모델카드 기준 구성은 32B 백본 + 2.3B action expert다 [N16] 🔍.
+- Alpamayo 2 Super(2026-05-31 발표)는 34B로 발표됐다 [N19] 🔍. HF 블로그는 백본만 세어 32B로 적는다 [N7] 🔍. 모델카드 기준 구성은 32B 백본 + 2.3B action expert다 [N16] 🔍. 공개 코드는 VLM 클래스를 체크포인트 설정에서 동적으로 읽으며, "Cosmos 3 Super Reasoner"라는 이름은 코드에 없다 [K8] 💻.
 - NVIDIA는 2 Super의 용도를 "reasoning, auto-labeling, scene understanding, model critiquing and distilling knowledge into smaller models"로 적었다 [E49] 🔍.
 
 **언어를 버린 갈래**
@@ -286,7 +287,7 @@
 |---|---|---|---|
 | autoware (메타) | 1.9.0 | 2026-07-16 | [A49] 🔍 |
 | autoware_core | 1.9.0 | 2026-06-26 | [A50] 🔍 |
-| autoware_universe | 0.52.0 (repos 고정은 0.52.1) | 2026-07-14 | [A51][A53] 🔍 |
+| autoware_universe | 0.52.0 (메타 저장소 1.9.0의 `autoware.repos` 고정값). 0.52.1은 뒤이은 패치 태그 | 2026-07-14 | [A51] 🔍 [K1] 💻 |
 
 - 1.9.0 릴리스 노트는 "Support NVIDIA Thor (Jetson + DRIVE) on JetPack 7 / SBSA CUDA 13"과 diffusion_planner v5.0 모델 추가를 적었다 [A52] 🔍.
 - core 1.8.0(2026-05-02)은 zero-copy 래퍼 `autoware_agnocast_wrapper`를 Universe에서 Core로 옮겼다 [A50] 🔍.
@@ -305,20 +306,23 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | Map | `/map/vector_map` (LaneletMapBin) | Lanelet2, 분할 PCD 로딩 | Core |
 | Localization | `/localization/kinematic_state` (Odometry) | NDT + EKF | Core |
 | Perception | `/perception/object_recognition/objects` (PredictedObjects) | CenterPoint·TransFusion, 추적, 예측 | Universe |
-| Planning | `/planning/scenario_planning/trajectory` (Trajectory) | mission → behavior → motion, OSQP | Core + Universe |
+| Planning | `/planning/trajectory` (Trajectory) | mission → behavior → motion, OSQP | Core + Universe |
 | Control | `/control/command/control_cmd` (Control) | MPC + PID, vehicle_cmd_gate | Universe 중심 |
 | Vehicle IF | `/vehicle/status/*` | raw_vehicle_cmd_converter | Universe |
 | System | `/system/operation_mode/availability` | diagnostic graph, MRM | Universe |
 | AD API | `/api/*` | default_adapi | Core + Universe |
 
-출처: [A16][A18][A19][A20][A21][A22][A67][A68][A99][A100] 🔍
+출처: [A16][A18][A19][A20][A21][A22][A67][A68][A99][A100] 🔍 · 토픽 이름은 코드로 확인 [K2][K4] 💻
+
+- Planning 최종 출력 토픽은 core 1.5.0에서 `/planning/scenario_planning/trajectory`에서 `/planning/trajectory`로 바뀌었다. 초판은 옛 이름을 적었고 코드 대조로 바로잡았다 [K2][K4] 💻.
 
 **Sensing**
 
 - 역할은 벤더별 원시 데이터를 추상화하고 "primitive pre-processing"을 하는 것이다 [A10] 🔍.
 - `autoware_pointcloud_preprocessor`는 crop box, distortion corrector, downsample, outlier 제거, concatenate 등의 필터를 "composable node containers, leveraging intra-process communication"로 실행한다 [A103] 🔍.
 - CUDA판 전처리기는 cuda_blackboard를 써서 포인트클라우드를 GPU 메모리에 둔 채 다음 노드로 넘긴다 [A104] 🔍.
-- CUDA판 버퍼 상한은 691,200 포인트·128 ring이다 [A104] 🔍.
+- 문서 사이트는 CUDA판 버퍼 상한을 691,200 포인트·128 ring으로 적었지만, 0.52.1 코드·설정에서는 이 값을 찾지 못했다 [A104] 🔍 [K3] 💻 ⚠️.
+- CUDA 전처리는 기본 launch에서 꺼져 있다 [K4] 💻.
 - 문서는 CUDA판이 CPU판과 "will not offer the same numerical results"라고 경고한다 [A104] 🔍.
 
 **Map**
@@ -332,35 +336,38 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 - `ndt_scan_matcher`는 NDT 정합을 기본 4스레드로 수행하며, 문서에 GPU 경로는 언급되지 않는다 [A69] 🔍.
 - `ekf_localizer`는 2D 차량 모델 EKF로 50 Hz 예측과 지연 보상을 한다 [A70] 🔍.
 - `gyro_odometer`는 IMU와 차속으로 twist를 만든다 [A71] 🔍.
-- 위 네 패키지는 Core에 있다. 카메라 기반 yabloc과 GNSS/IMU 기반 eagleye는 Universe에 있다 [A67][A68] 🔍.
+- 위 네 패키지는 Core에 있다. 카메라 기반 yabloc은 Universe에 있고, GNSS/IMU 기반 eagleye는 `autoware.repos`로 포함되는 외부 저장소(MapIV)다 [A67] 🔍 [K1] 💻.
 - 설계 문서는 "adequate computational resources available"을 전제로 둔다 [A5] 🔍.
 
 **Perception**
 
 - LiDAR 검출 `lidar_centerpoint`는 PointPillars 계열 CenterPoint를 TensorRT fp16 엔진 두 개(voxel encoder, backbone-neck-head)로 돌린다 [A86] 🔍.
+- Autoware 1.9.0 ansible이 받는 CenterPoint 모델은 Hugging Face `AutowareFoundation/lidar_centerpoint` v3.0이다. 인식 범위는 ±76.8 m, voxel은 0.32 m다 [K1][K3] 💻.
+- 기본 launch의 인지 설정은 `perception_mode=lidar`, `lidar_detection_model=centerpoint`다 [K4] 💻.
 - `lidar_transfusion`은 TransFusion-L을 TensorRT로 돌린다 [A87] 🔍.
 - 카메라 검출은 `tensorrt_yolox`(fp32/fp16/int8), 카메라-LiDAR 융합은 `image_projection_based_fusion`이 맡는다. 융합 노드는 타임스탬프 collector와 timeout으로 입력을 맞춘다 [A91][A92] 🔍.
 - `multi_object_tracker`는 muSSP min-cost-max-flow로 연관하고 클래스별 EKF를 쓰며, 10 Hz로 발행한다 [A88] 🔍.
-- `map_based_prediction`은 차선 연관과 Frenet 5차 궤적으로 예측한다 [A89] 🔍.
-- GPU 없이 가능한 검출은 `euclidean_cluster`뿐이며, 문서는 "CUDA installation is recommended"라고 적는다 [A41] 🔍.
+- `map_based_prediction`은 차선에 연관한 뒤 Frenet 좌표에서 횡방향 4차·종방향 5차 스플라인으로 궤적을 만든다 [A89] 🔍 [K3] 💻.
+- GPU 없이 가능한 LiDAR 검출은 euclidean clustering 계열이며, 문서는 "CUDA installation is recommended"라고 적는다 [A41] 🔍. Core에도 CPU 검출기 `autoware_euclidean_cluster_object_detector`가 있다 [K2] 💻.
 - CenterPoint base 모델은 nuScenes와 내부 데이터로 학습했다. 문서는 nuScenes가 CC BY-NC-SA 4.0 비상업 라이선스임을 명시한다 [A86] 🔍.
 
 **Planning**
 
-- 흐름은 `mission_planner`(Lanelet2 경로 그래프 최단경로) → `behavior_path_planner` → `behavior_velocity_planner` → `motion_velocity_planner` → `velocity_smoother`다 [A73][A94][A76][A75][A74] 🔍.
+- 흐름은 `mission_planner`(Lanelet2 경로 그래프 최단경로) → `behavior_path_planner` → `behavior_velocity_planner` → `motion_velocity_planner` → `velocity_smoother`다 [A73][A94][A76][A75][A74] 🔍. 이 중 `mission_planner`, `velocity_smoother`, `behavior_velocity_planner`·`motion_velocity_planner` 본체는 Core에, 대부분의 모듈 플러그인은 Universe에 있다 [K2][K3] 💻.
 - `behavior_path_planner`는 차선 유지, 정적·동적 장애물 회피, 차선 변경, 출발·도착 플래너를 scene module로 관리한다 [A94] 🔍.
-- `behavior_velocity_planner`는 횡단보도·교차로·정지선·신호등·가림 지점 등 12종 플러그인이 경로에 정지점을 넣는 구조다 [A76] 🔍.
+- `behavior_velocity_planner`는 횡단보도·교차로·정지선·신호등·가림 지점 등 모듈 플러그인이 경로에 정지점을 넣는 구조다 [A76] 🔍. autoware_launch 0.52.0 기본 preset에는 이 모듈이 14종 있고, 기본으로 켜진 것은 9종이다 [K4] 💻.
 - `velocity_smoother`는 jerk 제약 속도 최적화를 OSQP로 푼다 [A74] 🔍.
-- `planning_validator`는 지연·궤적·충돌 검사 플러그인을 돌리고, 무효 궤적을 "그대로 발행 / 발행 안 함 / 마지막 유효 궤적"의 세 옵션으로 처리한다 [A96] 🔍. 옵션 0이 "그대로 발행"이라는 점은 양산 설정에서 확인할 항목이다.
-- 학습형 `diffusion_planner`는 ONNX/TensorRT로 돌고, 문서는 Apache 2.0을 명시한다 [A97] 🔍.
-- `trajectory_ranker`는 여러 후보 궤적을 점수화해 고르는 Architecture 2.0의 초기 구현이다 [A98] 🔍.
+- `planning_validator`는 지연·궤적·충돌 검사 플러그인을 돌린다 [A96] 🔍.
+- 무효 궤적 처리는 0 = 그대로 발행, 1 = 마지막 유효 궤적, 2 = 마지막 유효 궤적 + soft stop이며, 패키지와 launch 기본값은 모두 0이다 [K3][K4] 💻. README 본문의 "stop publishing" 표현은 코드와 어긋나는 옛 문구다. 기본값이 "그대로 발행"이라는 점은 양산 설정에서 확인할 항목이다.
+- 학습형 `diffusion_planner`는 ONNX 모델을 TensorRT 백엔드(기본)로 돌리며, ONNX Runtime 백엔드는 선택 빌드다. 라이선스는 Apache 2.0, launch 기본 모델은 v5.0이다 [A97] 🔍 [K3][K4] 💻.
+- `trajectory_ranker`는 여러 후보 궤적을 점수화해 고르는 Architecture 2.0의 초기 구현이다 [A98] 🔍. 다만 autoware_launch 0.52.0 기본 launch에는 연결돼 있지 않고, 기본 planning 설정은 `rule_based`다 [K4] 💻.
 
 **Control**
 
 - `trajectory_follower_node`는 횡방향 선형 MPC와 종방향 PID를 조합한다 [A82] 🔍.
-- MPC는 기본 horizon 50 스텝 × 0.1 s, 입력 지연 보상 0.24 s이며, QP는 Eigen 기반 해법이나 OSQP로 푼다 [A83] 🔍.
-- PID 종방향 제어기는 약 100 ms 지연 보상과 경사 보상을 하고, DRIVE·STOPPING·STOPPED·EMERGENCY 상태기계를 둔다 [A84] 🔍.
-- `vehicle_cmd_gate`는 자동·외부·비상 명령 중 하나를 고르고, 속도 의존 한계로 가속·jerk·횡가속·조향각을 거른다. heartbeat가 끊기면 비상으로 전환한다 [A81] 🔍.
+- MPC는 기본 horizon 50 스텝 × 0.1 s, 입력 지연 보상 0.24 s이며, QP는 Eigen 기반 해법이나 OSQP로 푼다 [A83] 🔍. 패키지와 launch 기본값이 같고, 기본 QP 해법은 OSQP다 [K3][K4] 💻.
+- PID 종방향 제어기는 지연 보상과 경사 보상을 하고, DRIVE·STOPPING·STOPPED·EMERGENCY 상태기계를 둔다 [A84] 🔍. 지연 보상 시간은 패키지 기본 0.17 s이고, autoware_launch가 0.1 s로 덮어쓴다 [K3][K4] 💻.
+- `vehicle_cmd_gate`는 자동·외부·비상 명령 중 하나를 고르고, 속도 의존 한계로 가속·jerk·횡가속·조향각을 거른다 [A81] 🔍. 시스템 비상 heartbeat는 기본 0.5 s timeout으로 감시하고, 외부 비상정지 heartbeat 감시는 켜야 동작하는 선택 기능이다 [K3] 💻.
 - `control_validator`는 역주행 속도·과속·궤적 편차를 검사해 `/diagnostics`로 올린다 [A85] 🔍.
 
 **Vehicle Interface**
@@ -371,7 +378,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 **System (안전 감시·폴백)**
 
 - `diagnostic_graph_aggregator`는 YAML로 정의한 진단 그래프를 모아 `/system/operation_mode/availability`를 만든다 [A100] 🔍.
-- `mrm_handler`는 이 가용성 정보로 emergency stop · comfortable stop · pull over 중 최소위험조치를 고른다 [A99] 🔍.
+- `mrm_handler`는 이 가용성 정보로 emergency stop · comfortable stop · pull over 중 최소위험조치를 고른다 [A99] 🔍. 기본 launch는 comfortable stop을 켜고 pull over는 끈다 [K4] 💻.
 - `pipeline_latency_monitor`는 perception → prediction → planning → control 지연을 합산해 기본 임계 **1000 ms**를 넘으면 ERROR를 낸다 [A105] 🔍.
 
 **AD API**
@@ -396,7 +403,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 [AD API set_route] → mission_planner → LaneletRoute
   → behavior_path_planner → Path → behavior_velocity_planner (정지점)
   → motion_velocity_planner → velocity_smoother (OSQP) → planning_validator
-  → /planning/scenario_planning/trajectory (Trajectory)
+  → /planning/trajectory (Trajectory)
 
   → trajectory_follower (MPC + PID) → vehicle_cmd_gate
   → /control/command/control_cmd (Control) → raw_vehicle_cmd_converter → DBW
@@ -413,7 +420,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 **DDS 기본값과 튜닝**
 
-- ansible 기본 rmw는 `rmw_cyclonedds_cpp`다 [A56] 🔍.
+- ansible 기본 rmw는 `rmw_cyclonedds_cpp`다 [A56] 🔍. Docker 이미지 기본값도 같다 [K1] 💻.
 - DDS 설정 문서는 "CycloneDDS is the recommended and most tested DDS implementation for Autoware"라고 적는다 [A40] 🔍.
 - 같은 문서는 커널 파라미터 `net.core.rmem_max=2147483647`, `net.ipv4.ipfrag_high_thresh=134217728`과 소켓 수신 버퍼 최소 10 MB를 권한다 [A40] 🔍.
 
@@ -429,7 +436,8 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 - rmw 아래가 아니라 옆에서 동작해 DDS와 공존하고, 토픽 단위로 골라 적용할 수 있다 [A63] 🔍.
 - TIER IV의 AWF 게시글은 1 MB 메시지에서 "IceOryx had a communication latency close to 1.0 ms, whereas Agnocast remained below 0.1 ms"라고 보고했다 [A64] 🔍.
 - 같은 게시글은 LiDAR 동기화 전 포인트클라우드 토픽에만 적용해 localhost 트래픽이 약 3분의 2 줄었다고 보고했다 [A64] 🔍. 논문 원문(arXiv 2506.16882)은 미열람이다 ⚠️.
-- Autoware 통합은 기본 **비활성**이며, `ENABLE_AGNOCAST=1`로 빌드해야 켜진다 [A65] 🔍.
+- Autoware 통합은 기본 **비활성**이며, `ENABLE_AGNOCAST=1`로 빌드해야 켜진다 [A65] 🔍 [K2] 💻.
+- Agnocast는 기본 꺼져 있지만 `autoware.repos`의 소스 빌드 대상(agnocast 2.3.5)에는 포함된다 [K1] 💻.
 
 **둘째 겹: cuda_blackboard (GPU 상주)**
 
@@ -442,7 +450,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 - 설치 문서의 최소 사양은 CPU 8코어·RAM 16 GB다. GPU는 선택이지만 LiDAR·카메라 DNN과 신호등 인식에는 "mandatory to enable"이다 [A37] 🔍.
 - ansible 기본값은 Ubuntu 22.04(Humble)에 CUDA 12.8, Ubuntu 24.04(Jazzy·Thor)에 CUDA 13.0이다 [A54] 🔍.
-- TensorRT 기본값은 22.04 x86에 10.8, 24.04에 10.13이다 [A55] 🔍.
+- TensorRT 기본값은 22.04 x86에 10.8, 22.04 aarch64(Jetson Orin)에 10.3, 24.04에 10.13.3.9다 [A55] 🔍 [K1] 💻.
 
 **공식 레퍼런스 HW 목록**
 
@@ -578,9 +586,9 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 | 버전 | 발표 | 구성 | 입력 | 출력 | 공개 | 출처 |
 |---|---|---|---|---|---|---|
-| Alpamayo 1 (R1) | 논문 2025-10-30, CES 2026-01-05 | Cosmos-Reason 8.2B + action expert 2.3B | 카메라 4대, 0.4 s 이력 @10 Hz, 자차 운동, 텍스트 | 6.4 s 궤적(64점) + 인과 추론 텍스트 | 가중치 OpenMDW-1.1 | [N5][N6][N12] 🔍 |
+| Alpamayo 1 (R1) | 논문 2025-10-30, CES 2026-01-05 | Cosmos-Reason 8.2B (코드상 Qwen3-VL-8B 구조) + flow-matching action expert 2.3B | 카메라 4대 × 4프레임(t0−0.3 s~t0), 자차 이력 16점(1.6 s @10 Hz, 위치+회전), 텍스트 | 6.4 s 궤적(64점) + 인과 추론 텍스트 | 가중치 OpenMDW-1.1 | [N5][N6][N12] 🔍 [K6] 💻 |
 | Alpamayo 1.5 | 2026-03 (GTC) | Cosmos-Reason2 + diffusion 디코더, RL 후학습 | 카메라 수 가변, 내비게이션 명령 | 궤적 + 추론 또는 VQA | OpenMDW-1.1 | [N37][N38] 🔍 |
-| Alpamayo 2 Super | 2026-05-31 발표, 가중치 2026-08-04 | Cosmos 3 Super Reasoner 32B + action expert 2.3B = 34B | 카메라 6대, 4프레임 이력 | 궤적 + 추론 + 메타액션 + 2D grounding + 자동 라벨 | 상업 이용 가능 | [N16][N19][N8] 🔍 |
+| Alpamayo 2 Super | 2026-05-31 발표, 가중치 2026-08-04 | 32B VLM (NVIDIA 표기 Cosmos 3, 코드상 Qwen3-VL 계열) + flow-matching action expert 약 2B (모델카드 2.3B) = 34B | 궤적 과제 카메라 6대(ID 0,1,2,3,5,6) × 4프레임, VQA는 ID 0~5 | 궤적 + 추론 + 메타액션 + VQA + 2D grounding + 자동 라벨 | NVIDIA 블로그는 상업 이용 가능, alpamayo-autoware README는 "Non-commercial"로 표기 ⚠️ | [N16][N19][N8] 🔍 [K8][K11] 💻 |
 
 **학습 데이터와 성능**
 
@@ -596,7 +604,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 - NVIDIA는 Alpamayo를 "cloud teacher models"로 부른다. 배포 경로는 미세조정·증류 → 양자화 → DRIVE AGX Thor다 [N18] 🔍.
 - NVIDIA 블로그(2026-08-04)는 "frontier-scale reasoning in the cloud and efficient, specialized models in the vehicle"이라고 적었다 [N8] 🔍.
-- Alpamayo Recipes는 1.5용 "FP8 and NVFP4 + FP8 Mixed Precision" 양자화 레시피를 제공한다 [N30] 🔍.
+- Alpamayo Recipes는 1.5용 "FP8 and NVFP4 + FP8 Mixed Precision" 양자화 레시피를 제공한다 [N30] 🔍. 코드의 포맷 선택지는 fp8, nvfp4, w4a8_nvfp4_fp8, auto다 [K9] 💻.
 - NVIDIA 개발자 포럼에서 NVIDIA 직원은 "Alpamayo is not available for AGX Thor currently"라고 답했다 [N36] 🔍.
 - Thor 온보드 지연·FPS의 공식 수치는 어느 버전에도 없다 [N6b][N18] ⚠️.
 - 공개된 99 ms는 RTX 6000 Pro Blackwell 측정치다. 그중 70 ms가 추론 텍스트 40토큰 디코딩이다 [N6b] 🔍.
@@ -685,7 +693,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | L3 미들웨어 | ROS 2 + CycloneDDS, Agnocast(기본 꺼짐), cuda_blackboard [A56][A65][A66] | NvStreams zero-copy, STM 스케줄러, TensorRT safety runtime [N2][N3][N42] |
 | L4 센싱·국지화 | NDT + EKF, Lanelet2 HD맵 [A69][A70][A12] | DriveWorks SAL·Egomotion·Calibration [N34] |
 | L5 인지 | CenterPoint·TransFusion·YOLOX + 추적·예측 모듈 [A86][A88] | 클래식: 비공개. E2E: Alpamayo가 인지·추론·계획을 합침 [N1][N16] |
-| L6 계획 | 규칙·최적화 플래너 + diffusion_planner + trajectory_ranker [A94][A97][A98] | 클래식 플래너(비공개) ‖ Alpamayo 궤적 [N1] |
+| L6 계획 | 규칙·최적화 플래너(기본 launch) + 선택: diffusion_planner, trajectory_ranker(기본 미연결) [A94][A97][A98][K4] | 클래식 플래너(비공개) ‖ Alpamayo 궤적 [N1] |
 | L7 제어 | MPC + PID, vehicle_cmd_gate [A82][A81] | 비공개 ⚠️ |
 | L8 안전 | diagnostic graph → MRM, planning_validator, 지연 모니터 [A99][A96][A105] | Halos OS 3층, 규칙 가드레일, 22,000+ 모니터 [N4] |
 | L9 API | AD API `/api/*` 공개 [A14] | 비공개 ⚠️ |
@@ -1298,5 +1306,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 | 2026-09-15 (재검증) | Thor 세대 TensorRT safety runtime | QNX Safety 위 ASIL D SEooC, Linux는 proxy, DLA 미지원 | 4.4 수정 |
 | 2026-09-15 (재검증) | Hyperion 10 LiDAR 개수 | 공식 자료 간 상충 유지 | 변경 없음 |
 | 2026-09-15 (재검증) | Alpamayo 2 Super 파라미터 | 34B = 32B + 2.3B 확인 | 변경 없음 |
+| 2026-09-15 (코드 대조) | Autoware 91개 주장 (2부 2.1절 외) | 일치 65 · 일부 일치 3 · 수정 필요 14 · 코드와 반대 2 · 확인 불가 7 | Planning 출력 토픽, universe 고정 버전, PID 지연 보상, planning_validator 옵션, 모듈 위치 등 수정. 판정표 reference/code-autoware.md |
+| 2026-09-15 (코드 대조) | Alpamayo 72개 주장 (1.6, 2.2.5 외) | 일치 52 · 수정 필요 10 · 코드와 반대 1 · 확인 불가 9 | 입력 이력 표현, 백본 표기, 2 Super 출력·라이선스 표기 수정. 판정표 reference/code-alpamayo.md |
 
-**조사 환경.** 2026-09-15 한 세션에서 조사했다. 세션의 WebSearch 한도(200회)가 4·5부 조사 도중 소진돼, 4·5부는 알려진 URL을 WebFetch로 직접 여는 방식으로만 수집했다. 그래서 4·5부에는 교차 확인(✅) 표시가 적다. 같은 날 검색 한도를 늘린 새 세션에서 약한 근거 13개 항목을 재검증했고, 그 출처는 V 접두어로 추가했다. 저장소 안의 기존 리서치 자료는 참조하지 않았다. 코드 클론과 실측은 하지 않았다.
+**조사 환경.** 2026-09-15 한 세션에서 조사했다. 세션의 WebSearch 한도(200회)가 4·5부 조사 도중 소진돼, 4·5부는 알려진 URL을 WebFetch로 직접 여는 방식으로만 수집했다. 그래서 4·5부에는 교차 확인(✅) 표시가 적다. 같은 날 검색 한도를 늘린 새 세션에서 약한 근거 13개 항목을 재검증했고, 그 출처는 V 접두어로 추가했다. 저장소 안의 기존 리서치 자료는 참조하지 않았다. 초판은 코드 클론 없이 썼고, 같은 날 Autoware·Alpamayo 저장소를 고정 커밋으로 클론해 관련 주장을 코드와 대조했다(K 출처). 실측은 하지 않았다.
