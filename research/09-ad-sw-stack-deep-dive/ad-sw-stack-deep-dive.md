@@ -60,7 +60,7 @@
 - (c) 컴퓨트 요구의 변화
 - (d) 데이터 요구의 변화
 
-![그림 1. 자율주행 SW 진화와 신경망 경계](images/01-evolution-neural-boundary.svg)
+![자율주행 SW 진화와 신경망 경계](images/01-evolution-neural-boundary.svg)
 
 ### 1.1 DARPA 챌린지 2004–2007 — 모듈형 파이프라인의 원형
 
@@ -233,20 +233,24 @@
 
 두 스택을 같은 자로 재기 위해 이 보고서는 아래 층 구분을 쓴다. 이 구분은 **이 보고서의 정의**이며, 두 벤더의 공식 층 구분이 아니다.
 
+표와 그림 모두 **아래가 L1(하드웨어)**이고 위로 갈수록 상위 층이다. 스택은 하드웨어 위에 쌓이므로, 읽을 때는 표 맨 아래 줄부터 위로 올라가면 된다.
+
 | 층 | 이름 | 담는 것 |
 |---|---|---|
-| L1 | HW·SoC | CPU·GPU·가속기, 안전 MCU, 센서 I/O |
-| L2 | OS·하이퍼바이저 | 게스트 OS, 파티션, 인증 범위 |
-| L3 | 미들웨어·런타임 | IPC, 스케줄러, 추론 런타임 |
-| L4 | 센싱·지도·국지화 | 센서 추상화, 전처리, 지도, 자차 위치 |
-| L5 | 인지·예측 | 검출, 추적, 예측, 신호등 |
-| L6 | 계획 | 경로·속도·궤적 생성 |
-| L7 | 제어·차량 인터페이스 | 궤적 추종, 명령 게이트, DBW 변환 |
-| L8 | 안전 감시·폴백 | 진단, 검증기, 최소위험조치(MRM) |
-| L9 | 외부 API | 운행 관리·HMI 연동 |
 | 차 밖 | 데이터·시뮬 | 3부에서 다룬다 |
+| L9 | 외부 API | 운행 관리·HMI 연동 |
+| L8 | 안전 감시·폴백 | 진단, 검증기, 최소위험조치(MRM) |
+| L7 | 제어·차량 인터페이스 | 궤적 추종, 명령 게이트, DBW 변환 |
+| L6 | 계획 | 경로·속도·궤적 생성 |
+| L5 | 인지·예측 | 검출, 추적, 예측, 신호등 |
+| L4 | 센싱·지도·국지화 | 센서 추상화, 전처리, 지도, 자차 위치 |
+| L3 | 미들웨어·런타임 | IPC, 스케줄러, 추론 런타임 |
+| L2 | OS·하이퍼바이저 | 게스트 OS, 파티션, 인증 범위 |
+| **L1** | **HW·SoC** | **CPU·GPU·가속기, 안전 MCU, 센서 I/O — 스택의 바닥** |
 
-![그림 2. 두 스택의 층별 컴포넌트 지도](images/02-two-stacks-layer-map.svg)
+![두 스택의 층별 컴포넌트 지도](images/02-two-stacks-layer-map.svg)
+
+그림에서 Autoware 칸 왼쪽의 짙은 초록 태그 **1~7**은 Autoware 1.0 아키텍처의 7개 컴포넌트가 어느 층에 놓이는지를 표시한 것이고, 점선 태그 **+ System**과 **+ AD API**는 그 7개에 붙는 2개다 [A3][A13] 🔍. L1~L3은 컴포넌트 구분 밖의 플랫폼 층이라 태그가 없다.
 
 ---
 
@@ -296,23 +300,25 @@
 
 #### 2.1.3 컴포넌트 해부
 
-Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Planning · Control · Vehicle Interface의 7개 컴포넌트에 System과 AD API를 붙인다 [A3][A13] 🔍. 아래 토픽명·메시지 타입은 공식 인터페이스 문서와 패키지 문서에 적힌 것만 옮겼다.
+Autoware 1.0 아키텍처는 **7개 핵심 컴포넌트**(Sensing · Map · Localization · Perception · Planning · Control · Vehicle Interface)에 **System**과 **AD API** 2개를 붙인 구성이다 [A3][A13] 🔍. 이 보고서의 그림에서도 앞의 7개는 번호 1~7을 단 태그로, 뒤의 2개는 `+` 태그로 구분해 표시했다. 아래 토픽명·메시지 타입은 공식 인터페이스 문서와 패키지 문서에 적힌 것만 옮겼다.
 
-**요약표**
+**요약표** — 위 7행이 7개 핵심 컴포넌트, 아래 2행이 여기에 붙는 2개다.
 
-| 컴포넌트 | 대표 출력 토픽 (메시지) | 핵심 구현 | 주 저장소 |
-|---|---|---|---|
-| Sensing | `/sensing/lidar/<group>/pointcloud` (PointCloud2) | pointcloud_preprocessor, CUDA 전처리 | Universe 중심 |
-| Map | `/map/vector_map` (LaneletMapBin) | Lanelet2, 분할 PCD 로딩 | Core |
-| Localization | `/localization/kinematic_state` (Odometry) | NDT + EKF | Core |
-| Perception | `/perception/object_recognition/objects` (PredictedObjects) | CenterPoint·TransFusion, 추적, 예측 | Universe |
-| Planning | `/planning/trajectory` (Trajectory) | mission → behavior → motion, OSQP | Core + Universe |
-| Control | `/control/command/control_cmd` (Control) | MPC + PID, vehicle_cmd_gate | Universe 중심 |
-| Vehicle IF | `/vehicle/status/*` | raw_vehicle_cmd_converter | Universe |
-| System | `/system/operation_mode/availability` | diagnostic graph, MRM | Universe |
-| AD API | `/api/*` | default_adapi | Core + Universe |
+| # | 컴포넌트 | 대표 출력 토픽 (메시지) | 핵심 구현 | 주 저장소 |
+|---|---|---|---|---|
+| 1 | Sensing | `/sensing/lidar/<group>/pointcloud` (PointCloud2) | pointcloud_preprocessor, CUDA 전처리 | Universe 중심 |
+| 2 | Map | `/map/vector_map` (LaneletMapBin) | Lanelet2, 분할 PCD 로딩 | Core |
+| 3 | Localization | `/localization/kinematic_state` (Odometry) | NDT + EKF | Core |
+| 4 | Perception | `/perception/object_recognition/objects` (PredictedObjects) | CenterPoint·TransFusion, 추적, 예측 | Universe |
+| 5 | Planning | `/planning/trajectory` (Trajectory) | mission → behavior → motion, OSQP | Core + Universe |
+| 6 | Control | `/control/command/control_cmd` (Control) | MPC + PID, vehicle_cmd_gate | Universe 중심 |
+| 7 | Vehicle IF | `/vehicle/status/*` | raw_vehicle_cmd_converter | Universe |
+| + | System | `/system/operation_mode/availability` | diagnostic graph, MRM | Universe |
+| + | AD API | `/api/*` | default_adapi | Core + Universe |
 
 출처: [A16][A18][A19][A20][A21][A22][A67][A68][A99][A100] 🔍 · 토픽 이름은 코드로 확인 [K2][K4] 💻
+
+> **분석.** 7개와 2개를 가르는 기준은 데이터 흐름 위에 있느냐다. 1~7은 센서에서 차량 명령까지 이어지는 한 줄의 파이프라인이고, System과 AD API는 그 파이프라인을 **가로질러** 감시하거나(진단→MRM) 밖에서 지시한다(경로 설정·모드 전환). 그래서 아래 흐름도에서도 두 개를 같은 줄에 두지 않고 따로 뗀 띠에 그렸다.
 
 - Planning 최종 출력 토픽은 core 1.5.0에서 `/planning/scenario_planning/trajectory`에서 `/planning/trajectory`로 바뀌었다. 초판은 옛 이름을 적었고 코드 대조로 바로잡았다 [K2][K4] 💻.
 
@@ -388,7 +394,9 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 #### 2.1.4 센서에서 제어까지 — 데이터 흐름
 
-![그림 3. Autoware 센서→제어 데이터 흐름](images/03-autoware-dataflow.svg)
+아래 그림은 9개 띠로 되어 있다. 위 7개(번호 1~7)가 7개 핵심 컴포넌트이고, 점선으로 뗀 아래 2개(`+ System`, `+ AD API`)가 여기에 붙는 2개다.
+
+![Autoware 센서→제어 데이터 흐름](images/03-autoware-dataflow.svg)
 
 ```
 [LiDAR 드라이버] → /sensing/lidar/<group>/pointcloud (PointCloud2)
@@ -625,6 +633,45 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 - 클래식 스택은 "safety-certified perception and planning stack"이라는 정의 외에 모듈 구성이 공개되지 않았다 [N1] ⚠️.
 - 공개된 기능은 "NCAP 2026 5-star compliant" 충돌 회피, 운전자 모니터링, 원격·자동 발레 주차 등이다 [N1] 🔍.
 
+**카메라에서 궤적까지 — Alpamayo 추론 흐름**
+
+2.1.4의 Autoware 흐름도와 같은 방식으로 Alpamayo 쪽도 한 장에 폈다. Autoware가 7개 컴포넌트를 거치며 층을 넘는 자리에 토픽을 두는 구조라면, Alpamayo는 그 구간 대부분이 **한 모델의 forward 안**으로 들어가 있다. 그래서 띠 이름도 컴포넌트가 아니라 추론 단계다.
+
+![NVIDIA Alpamayo 카메라→궤적 흐름과 스택](images/07-alpamayo-dataflow.svg)
+
+```
+[카메라 링 7대] → 궤적 과제 카메라 6대(ID 0,1,2,3,5,6) × 4프레임
+  → GPU JPEG 디코드 → 긴 변 1280 리사이즈 → processor GPU 토큰화
+[자차 이력 16점(1.6 s @10 Hz)] → DeltaTrajectoryTokenizer → 과거 궤적 48토큰
+  → 채팅 템플릿으로 묶어 VLM 입력 시퀀스
+
+[VLM 백본 32B] → 공유 prefill 1회(_generate_with_shared_prefill)
+  → CoC 디코드(top_p 0.98, T 0.6) → 인과 추론 텍스트
+  → (텍스트 과제) 메타액션 · auto-label JSON · VQA · 2D grounding
+
+  VLM KV 캐시 → [ExpertModel 약 2B, non-causal]
+  → FlowMatching Euler 10스텝 → (가속도, 곡률) 64 × 2
+  → UnicycleAccelCurvatureActionSpace.action_to_traj → 6.4 s 궤적 64점
+
+[ROS 2 통합 alpamayo-autoware] Alpamayo2RosNode(타이머 2.0 s, 워커 1개, 진행 중 tick 드롭)
+  → conversions → autoware_planning_msgs/Trajectory · /alpamayo/reasoning
+
+[차 안] E2E 궤적 ‖ 클래식 안전 스택 → 중재 로직(비공개) → Halos 가드레일 → 제어(비공개)
+[차 밖→차 안] 주행 데이터·CoC → cloud teacher 34B → 미세조정·증류 → 양자화(FP8/NVFP4) → Thor
+```
+
+출처: 코드 [K6][K7][K8][K9][K11] 💻 · 공식 자료 [N1][N5][N8][N13][N16][N18][N19][N30][N36][N37] 🔍
+
+- 입력 로더는 카메라 7대를 읽고, `input_profiles`가 과제별로 6대를 고른다. 궤적 과제는 ID 0,1,2,3,5,6, VQA 과제는 0~5다 [K8] 💻.
+- VLM 클래스와 층 수는 코드에 없다. `getattr(transformers, config.vlm_class)`로 체크포인트 `config.json`에서 불러온다 [K8] 💻. 그림에서 이 구간을 점선으로 묶은 이유다.
+- `_generate_with_shared_prefill`은 prefill을 한 번만 하고 여러 궤적 샘플이 그 결과를 공유한다 [K8] 💻. Alpamayo 1의 기본 샘플 수는 6개였다 [K6] 💻.
+- action expert는 VLM의 KV 캐시를 조건으로 받아 non-causal로 돈다. 즉 **추론 텍스트와 궤적은 같은 백본 활성값에서 갈라져 나온다** [K8] 💻.
+- 공개된 99 ms는 RTX 6000 Pro Blackwell 측정치이고 그중 70 ms가 추론 텍스트 40토큰 디코딩이다 [N6b] 🔍. 지연의 대부분은 궤적 계산이 아니라 **말(CoC)을 뱉는 데** 쓰인다.
+- ROS 2 통합(`alpamayo-autoware`)의 타이머는 2.0 s이고, 이전 tick이 끝나지 않았으면 새 tick을 버린다 [K11] 💻. Autoware의 계획 주기와 비교하면 아직 실차 주기가 아니다.
+- 노드 주석은 "The TensorRT expert engine is unavailable for this generation"이라고 적는다. 공개 코드에 TensorRT·양자화·aarch64 경로가 없다는 뜻이다 [K11] 💻.
+
+> **분석.** 이 흐름도를 Autoware 흐름도 옆에 놓으면 검사 지점의 수가 다르다는 것이 드러난다. Autoware는 컴포넌트마다 토픽이 있어 `planning_validator`·`control_validator`·진단 그래프가 중간값을 직접 본다. Alpamayo는 카메라 토큰과 궤적 사이에 외부에서 볼 수 있는 값이 추론 텍스트(CoC)뿐이다. 텍스트는 사람이 읽기엔 좋지만 기계 검사기의 입력으로 쓰기는 어렵다. 그래서 검사 책임이 전부 모델 밖 — 듀얼 스택의 클래식 경로와 Halos 가드레일 — 로 밀린다. 4부에서 다루는 격리 요구가 여기서 나온다.
+
 #### 2.2.6 L8 — Halos 안전 프레임워크
 
 **정의와 범위**
@@ -686,19 +733,21 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 ### 2.3 두 스택 나란히 — 층별 대조
 
+2.0의 층 프레임과 같은 순서다. **아래가 L1**이고 위로 갈수록 상위 층이다.
+
 | 층 | Autoware | NVIDIA DRIVE AV |
 |---|---|---|
-| L1 HW·SoC | 벤더 중립. 레퍼런스는 x86+dGPU·Jetson Orin, 1.9.0부터 Thor 지원 [A43][A52] | Thor 전용, Hyperion 10은 Thor 2개 [N14] |
-| L2 OS | Ubuntu 22.04/24.04. 안전 인증 주장 없음 [A38][A28] | DriveOS: Type-1 하이퍼바이저 + QNX 또는 Linux, ASIL D 인증 [N2][N29] |
-| L3 미들웨어 | ROS 2 + CycloneDDS, Agnocast(기본 꺼짐), cuda_blackboard [A56][A65][A66] | NvStreams zero-copy, STM 스케줄러, TensorRT safety runtime [N2][N3][N42] |
-| L4 센싱·국지화 | NDT + EKF, Lanelet2 HD맵 [A69][A70][A12] | DriveWorks SAL·Egomotion·Calibration [N34] |
-| L5 인지 | CenterPoint·TransFusion·YOLOX + 추적·예측 모듈 [A86][A88] | 클래식: 비공개. E2E: Alpamayo가 인지·추론·계획을 합침 [N1][N16] |
-| L6 계획 | 규칙·최적화 플래너(기본 launch) + 선택: diffusion_planner, trajectory_ranker(기본 미연결) [A94][A97][A98][K4] | 클래식 플래너(비공개) ‖ Alpamayo 궤적 [N1] |
-| L7 제어 | MPC + PID, vehicle_cmd_gate [A82][A81] | 비공개 ⚠️ |
-| L8 안전 | diagnostic graph → MRM, planning_validator, 지연 모니터 [A99][A96][A105] | Halos OS 3층, 규칙 가드레일, 22,000+ 모니터 [N4] |
-| L9 API | AD API `/api/*` 공개 [A14] | 비공개 ⚠️ |
-| 학습형 모듈 통합 | Generator–Selector 문서 공개, 일부 TBD [A26][A27] | 듀얼 스택, 중재 로직 비공개 [N13] |
 | 라이선스 | 코드 Apache 2.0 [A58] | Alpamayo 가중치 OpenMDW-1.1, 스택은 상용 [N8] |
+| 학습형 모듈 통합 | Generator–Selector 문서 공개, 일부 TBD [A26][A27] | 듀얼 스택, 중재 로직 비공개 [N13] |
+| L9 API | AD API `/api/*` 공개 [A14] | 비공개 ⚠️ |
+| L8 안전 | diagnostic graph → MRM, planning_validator, 지연 모니터 [A99][A96][A105] | Halos OS 3층, 규칙 가드레일, 22,000+ 모니터 [N4] |
+| L7 제어 | MPC + PID, vehicle_cmd_gate [A82][A81] | 비공개 ⚠️ |
+| L6 계획 | 규칙·최적화 플래너(기본 launch) + 선택: diffusion_planner, trajectory_ranker(기본 미연결) [A94][A97][A98][K4] | 클래식 플래너(비공개) ‖ Alpamayo 궤적 [N1] |
+| L5 인지 | CenterPoint·TransFusion·YOLOX + 추적·예측 모듈 [A86][A88] | 클래식: 비공개. E2E: Alpamayo가 인지·추론·계획을 합침 [N1][N16] |
+| L4 센싱·국지화 | NDT + EKF, Lanelet2 HD맵 [A69][A70][A12] | DriveWorks SAL·Egomotion·Calibration [N34] |
+| L3 미들웨어 | ROS 2 + CycloneDDS, Agnocast(기본 꺼짐), cuda_blackboard [A56][A65][A66] | NvStreams zero-copy, STM 스케줄러, TensorRT safety runtime [N2][N3][N42] |
+| L2 OS | Ubuntu 22.04/24.04. 안전 인증 주장 없음 [A38][A28] | DriveOS: Type-1 하이퍼바이저 + QNX 또는 Linux, ASIL D 인증 [N2][N29] |
+| **L1 HW·SoC** | 벤더 중립. 레퍼런스는 x86+dGPU·Jetson Orin, 1.9.0부터 Thor 지원 [A43][A52] | Thor 전용, Hyperion 10은 Thor 2개 [N14] |
 
 ### 2.4 종합 — 스택이 달라도 HPC에 요구하는 것은 겹친다
 
@@ -719,7 +768,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 2부가 차 안의 스택이라면, 3부는 그 스택을 **키우고 안전하다고 말하는** 차 밖의 스택이다.
 
-![그림 4. 데이터 플라이휠과 검증 스펙트럼](images/04-flywheel-validation.svg)
+![데이터 플라이휠과 검증 스펙트럼](images/04-flywheel-validation.svg)
 
 ### 3.1 플라이휠의 정의 — 공식 문서들이 쓰는 표현
 
@@ -891,7 +940,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 데모 스택은 "잘 달리는가"를 보여주면 된다. 양산 스택은 "왜 안전한지"를 증명하고, 고장 났을 때 무엇이 남는지 설계해야 한다. 이 장은 그 차이를 층별 기술 항목으로 정리한다.
 
-![그림 5. 양산 스택의 혼합 중요도 구성과 표준·규제의 적용 층](images/05-production-partitions.svg)
+![양산 스택의 혼합 중요도 구성과 표준·규제의 적용 층](images/05-production-partitions.svg)
 
 ### 4.1 표준·규제가 요구를 거는 층
 
@@ -1096,7 +1145,7 @@ Autoware 1.0 아키텍처는 Sensing · Map · Localization · Perception · Pla
 
 이 장은 2025~2026년에 기업과 연구자가 실제로 발표한 내용만으로 방향을 읽는다. 기업 로드맵 주장, 제3자 논문, 전망치를 구분해 표시한다.
 
-![그림 6. 미래 스택 시나리오](images/06-future-scenarios.svg)
+![미래 스택 시나리오](images/06-future-scenarios.svg)
 
 ### 5.1 온보드 모델 — 증류 student와 독립 검증층으로 수렴
 

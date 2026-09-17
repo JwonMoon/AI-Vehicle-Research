@@ -11,7 +11,7 @@
 
 그 뒤 20년은 신경망이 맡는 층이 한 칸씩 늘어난 역사다.
 
-![그림 1. 자율주행 SW 진화와 신경망 경계](images/01-evolution-neural-boundary.svg)
+![자율주행 SW 진화와 신경망 경계](images/01-evolution-neural-boundary.svg)
 
 - **2016년, E2E의 첫 실증.** NVIDIA PilotNet은 파라미터 약 25만 개로 카메라 픽셀을 조향 명령으로 바로 바꿨다 [E4][E5]. E2E는 2023년의 발명이 아니다.
 - **2016–2020년, HD맵과 규칙의 전성기.** Baidu Apollo는 Perception부터 Guardian까지 11개 모듈로 표준형을 보여줬다 [E13]. 같은 시기 Waymo ChauffeurNet 저자들은 "30 million examples are still not enough"라고 썼다 [E18].
@@ -25,7 +25,7 @@
 
 코드와 문서로 모든 층이 보이는 스택은 사실상 Autoware 하나다. 그래서 먼저 이것을 센서부터 바퀴까지 따라가 본다.
 
-![그림 3. Autoware 센서→제어 데이터 흐름](images/03-autoware-dataflow.svg)
+![Autoware 센서→제어 데이터 흐름](images/03-autoware-dataflow.svg)
 
 LiDAR 포인트클라우드는 전처리 필터를 지나 CenterPoint나 TransFusion 검출기로 들어가고, 추적기가 10 Hz로 객체를 내보낸다 [A86][A88]. 자차 위치는 NDT 정합과 EKF가 50 Hz 이상으로 만든다 [A5][A70]. 플래너는 미션 → 행동 → 모션 순서로 궤적을 만들고, 최종 속도는 OSQP로 푼다 [A73][A74]. 제어기는 0.1 s 간격 50스텝 MPC로 궤적을 따라가고, 명령 게이트가 가속·조향 한계를 거른 뒤 차량으로 보낸다 [A83][A81]. 시스템 모니터는 인지부터 제어까지의 합산 지연이 1000 ms를 넘으면 ERROR를 낸다 [A105].
 
@@ -44,7 +44,7 @@ HPC 팀이 멈춰서 봐야 할 곳은 모델이 아니라 **배관**이다.
 
 NVIDIA DRIVE AV는 공식적으로 "dual-stack architecture"다. 인증된 클래식 인지·계획 스택과 Alpamayo가 올라가는 E2E 스택이 나란히 돈다 [N1]. 둘을 누가 어떻게 중재하는지는 "Halos ensures the vehicle operates within defined safety parameters" 수준까지만 공개됐다 [N13].
 
-![그림 2. 두 스택의 층별 컴포넌트 지도](images/02-two-stacks-layer-map.svg)
+![두 스택의 층별 컴포넌트 지도](images/02-two-stacks-layer-map.svg)
 
 층을 내려가면 숫자가 구체적이다.
 
@@ -56,6 +56,12 @@ NVIDIA DRIVE AV는 공식적으로 "dual-stack architecture"다. 인증된 클�
 | 안전 | Halos OS = 하이퍼바이저 격리 · 안전 미들웨어 · 규칙 가드레일 | [N4] |
 | 센서 | Hyperion 10: 카메라 14 · 레이더 9 · LiDAR 1 · 초음파 12, Thor 2개 | [N14] |
 
+Alpamayo 쪽도 Autoware와 같은 방식으로 한 장에 펴 보면, 카메라에서 궤적까지가 대부분 한 모델의 forward 안에 들어가 있다는 것이 보인다.
+
+![NVIDIA Alpamayo 카메라→궤적 흐름과 스택](images/07-alpamayo-dataflow.svg)
+
+카메라 6대 × 4프레임과 자차 이력 16점이 토큰이 되어 32B VLM에 들어가고, 백본은 인과 추론 텍스트(CoC)를 뱉는다. 약 2B짜리 action expert가 그 KV 캐시를 조건으로 flow matching 10스텝을 돌려 (가속도, 곡률) 64쌍을 만들고, unicycle 적분이 이를 6.4 s 궤적으로 편다 [K8]. Autoware라면 컴포넌트 사이마다 토픽이 있어 검사기가 중간값을 볼 수 있는데, 여기서 밖으로 나오는 중간값은 추론 텍스트뿐이다. 검사 책임이 통째로 모델 밖으로 밀리는 구조다.
+
 Alpamayo의 지연 수치는 읽는 법이 중요하다. 논문의 99 ms는 차량용 SoC가 아니라 RTX 6000 Pro Blackwell에서 쟀다. 그중 70 ms가 추론 텍스트 40토큰을 생성하는 시간이다 [N6b]. NVIDIA 개발자 포럼에서 NVIDIA 직원은 "Alpamayo is not available for AGX Thor currently"라고 답했다 [N36]. 차량에서 도는 Alpamayo의 공식 지연 수치는 아직 없다.
 
 두 스택을 나란히 놓으면 같은 문제에 대한 두 답이 보인다. Autoware의 Selector와 NVIDIA의 듀얼 스택은 모두 **블랙박스 학습 모델의 출력을 규칙 장치로 검사**한다. 다른 점은 공개 수준이다. Autoware는 구조를 문서로 열었고, NVIDIA는 중재 로직을 닫았다. 어느 쪽이든 HPC에 요구하는 것은 겹친다. 대용량 센서 데이터의 복사 제거, 안전 경로와 AI 경로의 분리, 검증기를 돌릴 독립 컴퓨트, 그리고 스택이 범위 밖으로 둔 실시간·이중화 책임이다.
@@ -64,7 +70,7 @@ Alpamayo의 지연 수치는 읽는 법이 중요하다. 논문의 99 ms는 차�
 
 현대차그룹은 2026-09-13 데이터 플라이휠 본격 가동을 발표하며 경쟁력의 기준을 이렇게 정리했다. "how much data you secure"가 아니라 "how rapidly you can connect data to learning"이다 [D1]. 속도를 늦추는 병목은 단계마다 다르다.
 
-![그림 4. 데이터 플라이휠과 검증 스펙트럼](images/04-flywheel-validation.svg)
+![데이터 플라이휠과 검증 스펙트럼](images/04-flywheel-validation.svg)
 
 - **수집은 트리거 설계가 병목이다.** Tesla는 2021년 수작업 트리거 221개와 shadow mode로 클립을 모았다고 해설된다 [D8].
 - **기록은 저장 장치가 병목이다.** NVIDIA는 Hyperion 8.1 NAS의 2 GB/s가 NVMe sustained 속도의 한계라고 답했다 [D30].
@@ -81,7 +87,7 @@ Alpamayo의 지연 수치는 읽는 법이 중요하다. 논문의 99 ms는 차�
 
 데모 스택은 잘 달리는 것을 보여주면 된다. 양산 스택은 왜 안전한지 증명하고, 고장 났을 때 무엇이 남는지 설계해야 한다. 이 요구는 표준과 규제를 통해 층마다 따로 걸린다. ISO 26262는 하드웨어·OS·툴체인에 [P12], SOTIF와 ISO/PAS 8800은 인지 기능과 데이터에 [D65][D66], 미국 49 CFR 563은 충돌 기록 장치에 요구를 건다 [P26]. EDR은 종방향 속도 변화가 150 ms 안에 8 km/h 이상일 때 기록을 시작해야 한다 [P26].
 
-![그림 5. 양산 스택의 혼합 중요도 구성](images/05-production-partitions.svg)
+![양산 스택의 혼합 중요도 구성](images/05-production-partitions.svg)
 
 격리는 보통 세 구획으로 짠다. 고성능 SoC 위에 Type-1 하이퍼바이저를 올리고, 안전 파티션과 성능 파티션을 나누고, 별도의 안전 MCU를 둔다 [P9][P20][P22]. 여기서 조심할 점이 있다. 같은 "ASIL" 표기라도 근거가 다르다. QNX Hypervisor for Safety 8.0은 "pre-certified to ISO 26262 ASIL D"라고 표기한다 [P9]. EB corbos Linux for Safety Applications의 ASIL B 근거는 TÜV Nord의 "feasibility report"로 적혀 있다 [P6]. 오픈소스 안전 코어 Eclipse S-CORE는 스스로 "not a ready-to-integrate series product"라고 밝힌다 [F41]. 공급사를 고를 때는 등급 문구가 아니라 인증서의 범위를 받아야 한다.
 
@@ -93,7 +99,7 @@ Alpamayo의 지연 수치는 읽는 법이 중요하다. 논문의 99 ms는 차�
 
 2025~2026년 발표를 모으면 방향은 꽤 선명하다. Waymo는 큰 Teacher 모델을 "smaller Student models"로 증류하고, 차량에는 별도 검증층을 둔다고 밝혔다 [F1]. NVIDIA는 Alpamayo 2 Super를 "a cloud-to-car workflow"로 설명한다 [F3]. 학계에서는 미래 영상 예측으로 학습하되 "video branch can be discarded at deployment"라고 쓰는 World-Action Model이 나왔다 [F7].
 
-![그림 6. 미래 스택 시나리오](images/06-future-scenarios.svg)
+![미래 스택 시나리오](images/06-future-scenarios.svg)
 
 작게 배포해도 지연은 여전히 병목이다. FlashDrive는 Alpamayo 1.5-10B를 W4A8 양자화와 KV 캐시 재사용 등으로 단일 GPU에서 717 ms에서 151 ms로 줄였다 [F5]. 한 논문은 "language is expensive onboard"라고 요약했다 [F6]. 이 병목은 연산보다 메모리에 가깝다. Alpamayo-R1의 99 ms 중 70 ms가 텍스트 디코딩이었고 [N6b], 칩 사양표에는 메모리 대역폭이 올라왔다. 툴체인도 변수다. Tesla는 FSD v14.3 릴리스 노트에 AI 컴파일러와 런타임을 MLIR로 다시 짜 반응 시간을 20% 줄였다고 적었다 [V36].
 

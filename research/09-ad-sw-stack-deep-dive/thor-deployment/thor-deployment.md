@@ -31,7 +31,7 @@
 5. **가장 큰 기술 리스크는 버전 불일치다.** Autoware가 고정한 조합(CUDA 13.0, TensorRT 10.13)이 최신 JetPack 7.2.1(CUDA 13.2.1, TensorRT 10.16.2)이나 DriveOS 7.2.5(CUDA 13.3, TensorRT 11)와 맞지 않는다 [W18][W19][W38][T6] 🔍.
 6. **지연은 아직 실시간과 거리가 멀다.** Thor에서 공개된 최선 수치는 Alpamayo 1.5 1회 추론 943.6 ms(FlashDrive 최적화 후)다 [L11] 🔍. Autoware용 Alpamayo 노드의 추론 주기 기본값은 1.5 노드 0.1 s, 2 Super 노드 2.0 s다 [W9] 🔍 [K10][K11] 💻.
 
-![그림 1. Thor 플랫폼·버전 호환 지도](images/01-platform-compat-map.svg)
+![Thor 플랫폼·버전 호환 지도](images/01-platform-compat-map.svg)
 
 ---
 
@@ -355,7 +355,7 @@
 
 아래 그림은 `NVlabs/alpamayo2`(커밋 6d05b9f)와 `alpamayo-autoware`의 `alpamayo2.0-super` 브랜치(커밋 b8747df)의 코드를 읽어 층별로 정리한 것이다 [K8][K11] 💻. 실행으로 검증한 구조가 아니다. 파일·줄 단위 근거는 [reference/code-alpamayo2-components.md](reference/code-alpamayo2-components.md)에 있다.
 
-![그림 3. Alpamayo 2 Super SW 컴포넌트 스택](images/03-alpamayo2-sw-components.svg)
+![Alpamayo 2 Super SW 컴포넌트 스택](images/03-alpamayo2-sw-components.svg)
 
 | 층 | 업스트림 `alpamayo2` | ROS 2 통합 `alpamayo-autoware` |
 |---|---|---|
@@ -383,7 +383,7 @@
 
 ### 2.10 Alpamayo 1 · 1.5 · 2 Super 소스 코드 기반 컴포넌트 구조
 
-2.9절 그림이 ROS 2 통합까지 한 장에 담았다면, 이 절의 그림 4~6은 **각 업스트림 저장소의 소스 코드만** 층별로 정리한 것이다. ROS 2·Autoware 통합(alpamayo-autoware)은 넣지 않았다.
+2.9절 그림이 ROS 2 통합까지 한 장에 담았다면, 이 절의 세 그림은 **각 업스트림 저장소의 소스 코드만** 층별로 정리한 것이다. ROS 2·Autoware 통합(alpamayo-autoware)은 넣지 않았다.
 
 각 그림 상단의 "박스 읽는 법"에 같은 내용을 넣었다. 박스 한 개는 위에서부터 다음 순서로 읽는다.
 
@@ -419,9 +419,9 @@
 | L1 Libraries · Runtime | 실제 import하는 외부 패키지와 고정 버전 |
 | L0 Platform | Python, GPU·dtype, HF 체크포인트, 데이터셋 |
 
-#### 그림 4. Alpamayo 1
+#### Alpamayo 1
 
-![그림 4. Alpamayo 1 소스 코드 기반 SW 컴포넌트 구조](images/04-alpamayo1-src-components.svg)
+![Alpamayo 1 소스 코드 기반 SW 컴포넌트 구조](images/04-alpamayo1-src-components.svg)
 
 - **구조:** `AlpamayoR1`이 `ReasoningVLA`를 상속한다. 하위 모듈은 `vlm`(`Qwen3VLForConditionalGeneration`), `expert`(VLM `text_config`를 복제해 만든 action expert), `action_in_proj`, `action_out_proj`다 [K6] 💻.
 - **추론 API:** `sample_trajectories_from_data_with_vlm_rollout`. 기본값은 `num_traj_samples=6`, top_p 0.98, temperature 0.6이다 [K6] 💻.
@@ -434,9 +434,9 @@
 - **processor 불일치:** `get_processor`는 `Qwen/Qwen3-VL-2B-Instruct`의 processor를 불러오고 토크나이저만 모델 것으로 바꾼다. config 기본 백본 경로는 `Qwen/Qwen3-VL-8B-Instruct`다 [K6] 💻.
 - **코드에 없음:** 학습(SFT·RL) 스크립트, TensorRT·ONNX·양자화. 논문의 RL post-training(GRPO)과 경로 조건 입력은 특수 토큰 이름만 남아 있다 [K6] 💻 [L27] 🔍.
 
-#### 그림 5. Alpamayo 1.5
+#### Alpamayo 1.5
 
-![그림 5. Alpamayo 1.5 소스 코드 기반 SW 컴포넌트 구조](images/05-alpamayo1_5-src-components.svg)
+![Alpamayo 1.5 소스 코드 기반 SW 컴포넌트 구조](images/05-alpamayo1_5-src-components.svg)
 
 - **구조:** 모델 뼈대는 1과 같다(`Alpamayo1_5` → `ReasoningVLA` → Qwen3-VL + expert) [K7] 💻.
 - **추가된 컴포넌트:**
@@ -448,9 +448,9 @@
 - **README 기재 VRAM(H100):** 샘플 1개 약 24 GB, 16개 약 40 GB, 16개 + CFG 약 60 GB [K7] 💻.
 - **공식 자료와 불일치:** 자차 이력 길이를 모델카드는 0.4 s로 쓰는데 [L3] 🔍, 코드 로더 기본값은 16스텝(1.6 s)이다 [K7] 💻. 체크포인트 config로 덮어쓰는지는 확인하지 못했다(출처 미확인).
 
-#### 그림 6. Alpamayo 2 Super
+#### Alpamayo 2 Super
 
-![그림 6. Alpamayo 2 Super 소스 코드 기반 SW 컴포넌트 구조](images/06-alpamayo2-src-components.svg)
+![Alpamayo 2 Super 소스 코드 기반 SW 컴포넌트 구조](images/06-alpamayo2-src-components.svg)
 
 - **구조 재편:** `ReasoningVLA`·`base_model.py`가 없어졌다. `Alpamayo2Super`가 VLM 클래스를 `getattr(transformers, config.vlm_class)`로 동적으로 불러오고(`alpamayo2_super.py:123`), 독립 `ExpertModel`을 붙인다 [K8] 💻.
 - **추론 API:** 입력 준비가 `select_task_input` → `prepare_model_inputs` → `sample_trajectories_from_data`로 나뉘었다. `_generate_with_shared_prefill`이 prefill을 한 번만 하고 샘플끼리 공유한다 [K8] 💻.
@@ -580,7 +580,7 @@ sudo sysctl -w net.ipv4.ipfrag_high_thresh=134217728
 
 ### 3.6 차량 없이 검증하는 경로
 
-![그림 2. 단계별 실행 로드맵](images/02-phased-plan.svg)
+![단계별 실행 로드맵](images/02-phased-plan.svg)
 
 | 경로 | 필요한 것 | Thor 단독 가능 여부 | 출처 |
 |---|---|---|---|
@@ -628,7 +628,7 @@ ros2 bag play ~/autoware_data/recordings/bags/sample-rosbag/ -r 0.2 -s sqlite3
 - 1.5 노드의 입력 토픽은 CompressedImage(README 예시 4개, 파라미터로 가변), `/localization/kinematic_state`, `/planning/mission_planning/route`다 [W9] 🔍 [K10] 💻. 2 Super 노드는 카메라 ID [0,1,2,3,5,6] 6대를 강제한다 [K11] 💻.
 - 출력 토픽은 `/alpamayo/predicted_trajectory`(Autoware Trajectory), `/alpamayo/reasoning` 등이다 [W9] 🔍.
 - **세 README 어디에도 Thor, Jetson, aarch64, Jazzy 언급이 없다** [W9][W10][W11] 🔍. 다만 세 브랜치 노드 코드에는 ROS 2 Jazzy 파라미터 호환 주석이 있다 [K10][K11][K12] 💻.
-- 2 Super 노드의 층별 구조는 2.9절 그림 3에 정리했다.
+- 2 Super 노드의 층별 구조는 2.9절 그림에 정리했다.
 
 > **분석.** Thor의 Autoware 이미지는 Jazzy(Python 3.12)이고 노드는 Humble(Python 3.10)이다. Thor에서 노드를 돌리려면 Jazzy 포팅이 필요할 가능성이 높다. 128 GB Jetson은 VRAM 요구치를 넘지만, 성능은 미확인이다.
 
