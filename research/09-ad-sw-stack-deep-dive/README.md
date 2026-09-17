@@ -9,7 +9,7 @@
 |---|---|
 | [ad-sw-stack-deep-dive.md](ad-sw-stack-deep-dive.md) | 보고서 원본. 5부 + 부록. 모든 사실 문장에 출처 ID와 등급 |
 | [article.md](article.md) | 사내 공유용 롱폼 기사 (약 10분) |
-| [images/](images/) | 자체 제작 도해 6장 |
+| [images/](images/) | 자체 제작 도해 7장 |
 | [reference/references.md](reference/references.md) | 출처 목록 (ID·제목·URL·등급) |
 | [reference/code-pins.md](reference/code-pins.md) · [code-autoware.md](reference/code-autoware.md) · [code-alpamayo.md](reference/code-alpamayo.md) | 코드 대조 기준 커밋과 판정표 (파일·줄 근거) |
 | [thor-deployment/](thor-deployment/) | 후속편: Thor 위에서 Alpamayo·Autoware 돌리기 (보드 비교·실행 조건·단계별 계획) |
@@ -42,7 +42,7 @@
 
 **분석 표시.** 사실이 아닌 이 보고서의 해석은 `> **분석.**` 인용 블록으로 구분한다.
 
-**그림.** 모든 도해는 자체 제작 SVG다. 외부 이미지는 쓰지 않았다. 그림 안의 분류(예: "일부 신경망")는 출처 서술을 이 보고서가 요약한 것이며, 그림마다 하단에 근거 ID를 적었다.
+**그림.** 모든 도해는 자체 제작 SVG다. 외부 이미지는 쓰지 않았다. 그림 안의 분류(예: "일부 신경망")는 출처 서술을 이 보고서가 요약한 것이며, 그림마다 하단에 근거 ID를 적었다. 그림에는 번호를 붙이지 않고 본문에서 바로 이어 읽도록 배치했다. 층 구조를 그린 도해는 **아래가 L1(하드웨어)**이다.
 
 ## 조사 방법과 제약
 
