@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 640" width="1240" height="640" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif" role="img" aria-label="직렬화란 무엇인가 — 메모리 속 구조체를 바이트 열로 바꿔 보내고 반대쪽에서 다시 구조체로 되돌리는 과정">
+<rect width="1240" height="640" fill="#ffffff"/>
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4d545e"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker>
+</defs>
+
+<text x="40" y="44" font-size="23" font-weight="700" fill="#15181d">직렬화(serialization)란 무엇인가</text>
+<text x="40" y="70" font-size="14.5" fill="#4d545e">메모리 속 &#39;구조체&#39;를 전선으로 보낼 수 있는 &#39;바이트 한 줄&#39;로 바꾸는 일. 반대쪽에서 되돌리는 일이 역직렬화(deserialization).</text>
+
+<!-- ===== 왼쪽: 보내는 쪽 메모리 ===== -->
+<rect x="40" y="100" width="330" height="300" rx="10" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="56" y="126" font-size="14.5" font-weight="700" fill="#15181d">① ECU A 의 메모리</text>
+<text x="56" y="147" font-size="12.5" fill="#848a94">값들이 여기저기 흩어져 있고 서로 &#39;주소&#39;로 연결돼 있다</text>
+
+<rect x="60" y="164" width="150" height="86" rx="7" fill="#ffffff" stroke="#2a78d6" stroke-width="1.6"/>
+<text x="72" y="184" font-size="12.5" font-weight="700" fill="#2a78d6">VehicleState</text>
+<text x="72" y="204" font-size="12" fill="#15181d">speed = 22.4</text>
+<text x="72" y="222" font-size="12" fill="#15181d">gear = 4</text>
+<text x="72" y="240" font-size="12" fill="#eb6834">wheels → 0x7ffd…</text>
+
+<rect x="238" y="278" width="116" height="66" rx="7" fill="#ffffff" stroke="#eb6834" stroke-width="1.6"/>
+<text x="250" y="298" font-size="12" font-weight="700" fill="#eb6834">float[4]</text>
+<text x="250" y="317" font-size="11.5" fill="#15181d">22.1  22.3</text>
+<text x="250" y="334" font-size="11.5" fill="#15181d">22.5  22.4</text>
+<path d="M186 246 C 200 272, 218 292, 236 306" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ar)" stroke-dasharray="4 3"/>
+<text x="120" y="292" font-size="11.5" fill="#848a94">주소 참조</text>
+
+<rect x="60" y="356" width="294" height="30" rx="6" fill="#fdf6e7" stroke="#d9a63f"/>
+<text x="72" y="376" font-size="12" fill="#4d545e">이대로는 밖으로 못 보낸다 — 아래 세 가지 때문에</text>
+
+<!-- ===== 가운데: 바이트 열 ===== -->
+<text x="430" y="126" font-size="14.5" font-weight="700" fill="#15181d">② 바이트 한 줄 (wire format)</text>
+<text x="430" y="147" font-size="12.5" fill="#848a94">주소가 사라지고, 순서와 규칙만 남는다</text>
+
+<path d="M376 224 L 424 224" fill="none" stroke="#2a78d6" stroke-width="2" marker-end="url(#arb)"/>
+<text x="366" y="212" font-size="12" font-weight="700" fill="#2a78d6">직렬화</text>
+
+<g>
+  <rect x="430" y="176" width="384" height="52" rx="6" fill="#eff1f4" stroke="#cdd3db"/>
+  <text x="442" y="196" font-family="'IBM Plex Mono',monospace" font-size="12.5" fill="#15181d">0D 33 33 B3 41 20 04 2D 00 00 B0 41 66 66 B3 41</text>
+  <text x="442" y="216" font-family="'IBM Plex Mono',monospace" font-size="12.5" fill="#15181d">00 00 B4 41 33 33 B3 41 …</text>
+</g>
+<text x="430" y="248" font-size="11.5" fill="#848a94">UDP·TCP·CAN·공유메모리·파일 — 무엇으로든 이 줄만 옮기면 된다</text>
+
+<rect x="430" y="268" width="384" height="118" rx="8" fill="#ffffff" stroke="#cdd3db"/>
+<text x="444" y="290" font-size="13" font-weight="700" fill="#15181d">규칙이 반드시 양쪽에 있어야 한다</text>
+<text x="444" y="312" font-size="12.5" fill="#4d545e">「3번째 바이트부터 4바이트는 speed(float)」 같은 약속을</text>
+<text x="444" y="331" font-size="12.5" fill="#4d545e">양쪽이 똑같이 알고 있어야 복원이 된다. 이 약속을 글이 아니라</text>
+<text x="444" y="350" font-size="12.5" fill="#4d545e">파일로 적어 둔 것이 <tspan font-weight="700" fill="#15181d">스키마(schema)</tspan>이고, 그 파일로부터 읽고 쓰는</text>
+<text x="444" y="369" font-size="12.5" fill="#4d545e">코드를 자동 생성해 주는 도구가 Protobuf·Cap&#39;n Proto다.</text>
+
+<!-- ===== 오른쪽: 받는 쪽 ===== -->
+<path d="M822 224 L 870 224" fill="none" stroke="#2a78d6" stroke-width="2" marker-end="url(#arb)"/>
+<text x="816" y="212" font-size="12" font-weight="700" fill="#2a78d6">역직렬화</text>
+
+<rect x="876" y="100" width="324" height="300" rx="10" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="892" y="126" font-size="14.5" font-weight="700" fill="#15181d">③ ECU B 의 메모리</text>
+<text x="892" y="147" font-size="12" fill="#848a94">언어도 CPU도 달라도 같은 구조체가 다시 생긴다</text>
+
+<rect x="896" y="164" width="150" height="86" rx="7" fill="#ffffff" stroke="#2a78d6" stroke-width="1.6"/>
+<text x="908" y="184" font-size="12.5" font-weight="700" fill="#2a78d6">VehicleState</text>
+<text x="908" y="204" font-size="12" fill="#15181d">speed = 22.4</text>
+<text x="908" y="222" font-size="12" fill="#15181d">gear = 4</text>
+<text x="908" y="240" font-size="12" fill="#eb6834">wheels → 0x55c1…</text>
+<text x="1060" y="228" font-size="11.5" fill="#848a94">주소는</text>
+<text x="1060" y="244" font-size="11.5" fill="#848a94">완전히 다르다</text>
+
+<rect x="1064" y="278" width="116" height="66" rx="7" fill="#ffffff" stroke="#eb6834" stroke-width="1.6"/>
+<text x="1076" y="298" font-size="12" font-weight="700" fill="#eb6834">float[4]</text>
+<text x="1076" y="317" font-size="11.5" fill="#15181d">22.1  22.3</text>
+<text x="1076" y="334" font-size="11.5" fill="#15181d">22.5  22.4</text>
+<path d="M1022 246 C 1036 272, 1046 292, 1062 306" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ar)" stroke-dasharray="4 3"/>
+
+<rect x="896" y="356" width="284" height="30" rx="6" fill="#e9f6f0" stroke="#1baf7a"/>
+<text x="908" y="376" font-size="12" fill="#4d545e">값은 같고, 메모리 배치는 이쪽 사정에 맞게</text>
+
+<!-- ===== 하단: 왜 그냥 메모리를 복사하면 안 되나 ===== -->
+<text x="40" y="452" font-size="15" font-weight="700" fill="#15181d">왜 메모리를 통째로 복사해서 보내면 안 되나</text>
+<g>
+  <rect x="40" y="466" width="374" height="112" rx="9" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="58" y="492" font-size="13.5" font-weight="700" fill="#eb6834">1. 주소는 그 프로세스 안에서만 뜻이 있다</text>
+  <text x="58" y="516" font-size="12.5" fill="#4d545e">위 그림의 <tspan font-family="'IBM Plex Mono',monospace">0x7ffd…</tspan> 를 그대로 보내 봐야 받는 쪽</text>
+  <text x="58" y="535" font-size="12.5" fill="#4d545e">메모리에는 엉뚱한 데이터가 있거나 아예 없다.</text>
+  <text x="58" y="559" font-size="12.5" fill="#848a94">→ 주소를 &#39;상대 위치&#39;나 &#39;순서&#39;로 바꿔 적어야 한다</text>
+</g>
+<g>
+  <rect x="434" y="466" width="374" height="112" rx="9" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="452" y="492" font-size="13.5" font-weight="700" fill="#eb6834">2. CPU마다 바이트 순서·정렬이 다르다</text>
+  <text x="452" y="516" font-size="12.5" fill="#4d545e">같은 정수 1을 어떤 칩은 <tspan font-family="'IBM Plex Mono',monospace">01 00 00 00</tspan>, 어떤 칩은</text>
+  <text x="452" y="535" font-size="12.5" fill="#4d545e"><tspan font-family="'IBM Plex Mono',monospace">00 00 00 01</tspan> 로 적는다. 패딩 위치도 컴파일러마다 다르다.</text>
+  <text x="452" y="559" font-size="12.5" fill="#848a94">→ 포맷이 바이트 순서를 못박아야 한다</text>
+</g>
+<g>
+  <rect x="828" y="466" width="372" height="112" rx="9" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="846" y="492" font-size="13.5" font-weight="700" fill="#eb6834">3. 버전이 어긋난다</text>
+  <text x="846" y="516" font-size="12.5" fill="#4d545e">ECU A 는 OTA로 필드가 하나 늘었는데 ECU B 는 구버전인</text>
+  <text x="846" y="535" font-size="12.5" fill="#4d545e">상황이 차량에서는 늘 생긴다. 구조체 통짜 복사는 여기서 깨진다.</text>
+  <text x="846" y="559" font-size="12.5" fill="#848a94">→ 포맷이 &#39;모르는 필드&#39;를 견디게 설계돼야 한다</text>
+</g>
+
+<text x="40" y="612" font-size="12" fill="#848a94">Protobuf 와 Cap&#39;n Proto 는 위 세 문제를 서로 다른 방식으로 푼다. 그 차이가 이 보고서의 주제다. · 자체 작성</text>
+</svg>

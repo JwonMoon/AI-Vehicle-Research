@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 748" width="1240" height="748" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif" role="img" aria-label="Protobuf 와이어 포맷 해부 — 필드마다 태그 바이트가 붙고 값이 가변 길이로 이어지는 구조">
+<rect width="1240" height="748" fill="#ffffff"/>
+<defs>
+  <marker id="p-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#848a94"/></marker>
+</defs>
+
+<text x="40" y="44" font-size="23" font-weight="700" fill="#15181d">Protobuf 와이어 포맷 — 바이트를 직접 펼쳐 본다</text>
+<text x="40" y="70" font-size="14" fill="#4d545e">아래 25바이트는 <tspan font-family="'IBM Plex Mono',monospace">protoc --encode</tspan> 가 실제로 뱉은 값이다. 「태그 1개 + 값」이 필드 수만큼 이어붙은 구조다.</text>
+
+<!-- 스키마 -->
+<rect x="40" y="90" width="368" height="242" rx="9" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="56" y="114" font-size="13" font-weight="700" fill="#15181d">보낸 값 (스키마의 11개 필드 중 5개만 채움)</text>
+<text x="56" y="140" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4d545e">header { timestamp_ns: 1  seq: 2 }</text>
+<text x="56" y="159" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4d545e">speed_mps: 22.5</text>
+<text x="56" y="178" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4d545e">gear: 4</text>
+<text x="56" y="197" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4d545e">indicator_right: true</text>
+<text x="56" y="216" font-family="'IBM Plex Mono',monospace" font-size="12" fill="#4d545e">wheel_speed: [22.5, 22.25]</text>
+<line x1="56" y1="234" x2="392" y2="234" stroke="#cdd3db"/>
+<text x="56" y="256" font-size="12.5" fill="#848a94">나머지 6개(steering, yaw, accel_x, accel_y,</text>
+<text x="56" y="274" font-size="12.5" fill="#848a94">brake_active, indicator_left)는 <tspan font-weight="700" fill="#1baf7a">0 바이트</tspan>를 차지한다</text>
+<text x="56" y="302" font-size="12.5" fill="#4d545e">Cap&#39;n Proto 로 같은 값을 담으면 88 B.</text>
+<text x="56" y="320" font-size="12.5" fill="#4d545e">이 25 B 라는 숫자가 Protobuf 의 강점이다.</text>
+
+<!-- 바이트 열 -->
+<rect x="428" y="90" width="772" height="242" rx="9" fill="#ffffff" stroke="#cdd3db"/>
+<text x="446" y="114" font-size="13" font-weight="700" fill="#15181d">바이트 열 (총 25 B)</text>
+
+<g font-family="'IBM Plex Mono',monospace" font-size="12.5">
+  <rect x="446" y="126" width="148" height="30" rx="4" fill="#fdece4" stroke="#eb6834"/>
+  <text x="456" y="146" fill="#15181d">0a 04 08 01 10 02</text>
+  <rect x="602" y="126" width="125" height="30" rx="4" fill="#e6eff9" stroke="#2a78d6"/>
+  <text x="612" y="146" fill="#15181d">15 00 00 b4 41</text>
+  <rect x="735" y="126" width="58" height="30" rx="4" fill="#e6eff9" stroke="#2a78d6"/>
+  <text x="745" y="146" fill="#15181d">38 04</text>
+  <rect x="801" y="126" width="58" height="30" rx="4" fill="#e6eff9" stroke="#2a78d6"/>
+  <text x="811" y="146" fill="#15181d">50 01</text>
+  <rect x="867" y="126" width="238" height="30" rx="4" fill="#e9f6f0" stroke="#1baf7a"/>
+  <text x="877" y="146" fill="#15181d">5a 08 00 00 b4 41 00 00 b2 41</text>
+</g>
+
+<!-- 범례: 세로로 나열해 겹침을 없앤다 -->
+<g>
+  <rect x="446" y="172" width="10" height="10" rx="2" fill="#eb6834"/>
+  <text x="464" y="182" font-size="12" fill="#15181d"><tspan font-weight="700">header</tspan> — 중첩 메시지. <tspan font-family="'IBM Plex Mono',monospace">0a</tspan>=필드1·LEN, <tspan font-family="'IBM Plex Mono',monospace">04</tspan>=길이 4, 그 안에 또 「태그+값」</text>
+
+  <rect x="446" y="196" width="10" height="10" rx="2" fill="#2a78d6"/>
+  <text x="464" y="206" font-size="12" fill="#15181d"><tspan font-weight="700">speed_mps</tspan> = 22.5. <tspan font-family="'IBM Plex Mono',monospace">15</tspan>=필드2·32비트 고정 → 뒤 4바이트가 float</text>
+
+  <rect x="446" y="220" width="10" height="10" rx="2" fill="#2a78d6"/>
+  <text x="464" y="230" font-size="12" fill="#15181d"><tspan font-weight="700">gear</tspan> = 4 (<tspan font-family="'IBM Plex Mono',monospace">38</tspan>=필드7) · <tspan font-weight="700">indicator_right</tspan> = true (<tspan font-family="'IBM Plex Mono',monospace">50</tspan>=필드10) — 각각 2바이트</text>
+
+  <rect x="446" y="244" width="10" height="10" rx="2" fill="#1baf7a"/>
+  <text x="464" y="254" font-size="12" fill="#15181d"><tspan font-weight="700">wheel_speed</tspan> — 반복 필드는 한 덩어리로. <tspan font-family="'IBM Plex Mono',monospace">5a</tspan>=필드11·LEN, <tspan font-family="'IBM Plex Mono',monospace">08</tspan>=길이 8, float 2개</text>
+</g>
+
+<path d="M446 274 L 1100 274" fill="none" stroke="#848a94" stroke-width="1.4" marker-end="url(#p-arg)"/>
+<text x="446" y="296" font-size="12.5" fill="#4d545e">읽을 때는 <tspan font-weight="700" fill="#15181d">반드시 앞에서부터 순서대로</tspan> 태그를 해독하며 지나가야 한다. 각 값의 길이가 가변이라,</text>
+<text x="446" y="315" font-size="12.5" fill="#4d545e">10번 필드가 어디 있는지는 <tspan font-weight="700" fill="#15181d">앞을 다 읽기 전에는 알 수 없다.</tspan> 뒤의 「단일 필드만 읽기」 측정이 이 때문이다.</text>
+
+<!-- 태그 해독 -->
+<text x="40" y="378" font-size="16" font-weight="700" fill="#15181d">태그 바이트 한 개 읽는 법</text>
+<rect x="40" y="392" width="560" height="168" rx="9" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="58" y="418" font-size="13" fill="#4d545e">태그 = (필드번호 &lt;&lt; 3) | 와이어타입.  예: <tspan font-family="'IBM Plex Mono',monospace" font-weight="700" fill="#15181d">0x5a</tspan></text>
+<g font-family="'IBM Plex Mono',monospace">
+  <rect x="58" y="432" width="196" height="34" rx="4" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="70" y="455" font-size="15" letter-spacing="3" fill="#15181d">0 1011 010</text>
+  <text x="272" y="446" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e">1011₂ = 11 → <tspan font-weight="700">필드 11번</tspan> (wheel_speed)</text>
+  <text x="272" y="464" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e">010₂ = 2 → <tspan font-weight="700">LEN</tspan> (길이가 뒤따르는 타입)</text>
+</g>
+<text x="58" y="492" font-size="12.5" fill="#4d545e">와이어타입은 5종: <tspan font-family="'IBM Plex Mono',monospace">0</tspan>=varint · <tspan font-family="'IBM Plex Mono',monospace">1</tspan>=64bit · <tspan font-family="'IBM Plex Mono',monospace">2</tspan>=길이지정 · <tspan font-family="'IBM Plex Mono',monospace">5</tspan>=32bit (3·4는 폐기)</text>
+<text x="58" y="514" font-size="12.5" fill="#4d545e">태그 자체도 varint 라, 필드번호 16 이상이면 태그가 2바이트가 된다.</text>
+<text x="58" y="536" font-size="12.5" fill="#848a94">→ 자주 보내는 필드에 1~15번을 배정하라는 관례가 여기서 나온다.</text>
+
+<!-- varint -->
+<rect x="620" y="392" width="580" height="168" rx="9" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="638" y="418" font-size="13" font-weight="700" fill="#15181d">varint — 작은 수는 적게 쓰는 가변 길이 정수</text>
+<text x="638" y="440" font-size="12.5" fill="#4d545e">바이트마다 <tspan font-weight="700">최상위 1비트는 &#39;뒤에 더 있음&#39;</tspan> 표시, 나머지 7비트만 값.</text>
+<g font-family="'IBM Plex Mono',monospace" font-size="12.5">
+  <text x="638" y="466" fill="#4d545e">1     → <tspan fill="#15181d">01</tspan>                (1 B)</text>
+  <text x="638" y="486" fill="#4d545e">300   → <tspan fill="#15181d">ac 02</tspan>             (2 B)</text>
+  <text x="638" y="506" fill="#4d545e">2^63  → <tspan fill="#15181d">80 80 80 80 80 80 80 80 80 01</tspan> (10 B)</text>
+</g>
+<text x="638" y="532" font-size="12.5" fill="#4d545e">덕분에 작은 값은 <tspan font-weight="700" fill="#1baf7a">아주 촘촘</tspan>해진다. 대신 값 하나를 꺼내려면</text>
+<text x="638" y="550" font-size="12.5" fill="#4d545e">비트 시프트를 반복해야 해서 <tspan font-weight="700" fill="#eb6834">CPU 작업이 늘어난다.</tspan></text>
+
+<!-- 요약 -->
+<text x="40" y="604" font-size="16" font-weight="700" fill="#15181d">이 설계가 만드는 성질</text>
+<g>
+  <rect x="40" y="618" width="374" height="90" rx="9" fill="#e9f6f0" stroke="#1baf7a"/>
+  <text x="58" y="642" font-size="13" font-weight="700" fill="#15181d">공간에 유리하다</text>
+  <text x="58" y="664" font-size="12.5" fill="#4d545e">안 채운 필드는 아예 안 실린다. 작은 정수는</text>
+  <text x="58" y="682" font-size="12.5" fill="#4d545e">1바이트. 스파스한 메시지일수록 이득이 크다.</text>
+</g>
+<g>
+  <rect x="434" y="618" width="374" height="90" rx="9" fill="#fdece4" stroke="#eb6834"/>
+  <text x="452" y="642" font-size="13" font-weight="700" fill="#15181d">읽을 때 &#39;한 번 훑기&#39;가 필요하다</text>
+  <text x="452" y="664" font-size="12.5" fill="#4d545e">태그 해독 → 길이 계산 → 값 복사 → 객체에 대입.</text>
+  <text x="452" y="682" font-size="12.5" fill="#4d545e">이 복사가 곧 &#39;파싱 비용&#39;이다.</text>
+</g>
+<g>
+  <rect x="828" y="618" width="372" height="90" rx="9" fill="#eff1f4" stroke="#cdd3db"/>
+  <text x="846" y="642" font-size="13" font-weight="700" fill="#15181d">필드번호가 곧 호환성의 축</text>
+  <text x="846" y="664" font-size="12.5" fill="#4d545e">이름을 바꿔도, 순서를 바꿔도 번호만 같으면</text>
+  <text x="846" y="682" font-size="12.5" fill="#4d545e">호환된다. 번호 재사용은 절대 금지.</text>
+</g>
+
+<text x="40" y="734" font-size="12" fill="#848a94">바이트 값 출처: 본 보고서 <tspan font-family="'IBM Plex Mono',monospace">scripts/vehicle.proto</tspan> 를 <tspan font-family="'IBM Plex Mono',monospace">protoc 3.21.12</tspan> 로 인코딩한 실제 결과. 태그·varint 규칙은 Protobuf Encoding 문서 기준. · 자체 작성</text>
+</svg>
