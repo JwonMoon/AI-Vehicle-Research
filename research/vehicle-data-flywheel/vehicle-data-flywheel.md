@@ -50,9 +50,19 @@ Tesla만이 아니다. Waymo는 2024년 10월 "Waymo Foundation Model이 인지�
 
 *그림 1. 규칙 기반 개발(왼쪽)은 사람이 문제를 분석해 코드를 고친다. 학습 기반 개발(오른쪽)은 문제 상황의 데이터를 모아 모델을 다시 학습시킨다. 오른쪽 루프를 계속 돌리는 장치가 데이터 플라이휠이다. 자체 작성.*
 
+![고전 파이프라인과 종단간 패러다임](images/src-chen2024-e2e-overview.jpg)
+
+*그림 2. 학계 서베이가 정리한 고전 파이프라인(a: 인지 → 예측 → 계획을 사람이 정한 인터페이스로 잇는다)과 종단간 패러다임(b: 모듈 사이를 학습으로 잇고 역전파로 함께 고친다). 맨 아래 "미래 과제"에 데이터 엔진(Data Engine)이 들어 있다. 출처: Chen et al., *End-to-end Autonomous Driving: Challenges and Frontiers* (TPAMI 2024) 공식 저장소 [OpenDriveLab/End-to-end-Autonomous-Driving](https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving) `assets/overview.jpg`, MIT. 크기만 줄임.*
+
+
 ### 1.3 드문 상황이 안전을 좌우한다 — 롱테일
 
 주행의 대부분은 평범하다. 직진, 차선 유지, 앞차 따라가기. 모델은 이런 상황을 금방 배운다. 문제는 드물게 일어나는 상황이다. 공사 구간에서 콘 옆에 서 있는 작업자, 갑자기 뛰어드는 동물, 비 오는 밤의 역광, 예측하기 어려운 사람의 행동. 이런 것을 **롱테일(long tail)** 이라고 부른다. 빈도 그래프를 그리면 오른쪽으로 길게 늘어진 꼬리처럼 각각은 드물지만 종류가 무한히 많다는 뜻이다.
+
+![롱테일 분포](images/src-li2024-long-tail.png)
+
+*그림 3. 주행 시나리오의 빈도 분포. 도심 직진 같은 상황이 90%를 차지하고, 안개·폭우 야간 같은 상황은 1% 아래의 긴 꼬리에 있다. 출처: Li et al., *Data-Centric Evolution in Autonomous Driving* (arXiv 2401.12888) 공식 저장소 [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/1-1_Long_Tail_Distribution.png`, Apache-2.0. 크기만 줄임.*
+
 
 Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으로 겨눈다. 일상 주행에서 **발생 빈도 0.03% 미만**인 상황만 골라 4,021개 구간(약 12시간)을 모았고, 평가 지표도 "기록된 궤적과 얼마나 가까운가"가 아니라 "사람 평가자가 선호한 궤적에 얼마나 가까운가"(RFS, Rater Feedback Score)로 바꿨다 📰 ([arXiv 2510.26125](https://arxiv.org/abs/2510.26125)). 흔한 상황에서는 이미 잘하기 때문에 드문 상황에서만 모델 간 차이가 드러난다는 판단이다.
 
@@ -95,6 +105,11 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 이 네 가지를 한 번에 해결하는 방법은 하나다. 차에서 데이터를 모으고, 고쳐서, 시뮬레이션으로 확인하고, 다시 차에 보내는 루프를 **계속** 돌리는 것이다. 이 루프를 "데이터 플라이휠"이라고 부르든 "데이터 엔진"이라고 부르든 구조는 같다. 다음 장에서 그 구조를 펼친다.
 
+![고정 데이터셋의 성능 상한](images/src-li2024-upper-bound.png)
+
+*그림 4. 같은 서베이의 개념도. 데이터셋을 고정하고 모델만 바꾸면(파랑) 성능이 상한에 막히고, 데이터셋을 계속 키우면(보라) 그 상한을 넘는다는 저자들의 주장이다. 실측 곡선이 아니라 개념도다. 출처: [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/1-2_Illustration-of-AD-Model-Performance-Upper-Bound.png`, Apache-2.0. 크기만 줄임.*
+
+
 ---
 
 ## 2. 차량·클라우드·검증 환경을 연결하는 데이터 플라이휠 생태계
@@ -121,7 +136,12 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![일반 AI 데이터 플라이휠](images/fig2-general-ai-flywheel.svg)
 
-*그림 2. 일반 AI(LLM 에이전트) 데이터 플라이휠. NVIDIA 블루프린트 README의 7단계를 원으로 그렸다. 데이터는 서버 로그에서 나오고, 정답은 사용자 피드백과 큰 모델의 채점이며, 배포는 소프트웨어 교체다. 자체 작성.*
+*그림 5. 일반 AI(LLM 에이전트) 데이터 플라이휠. NVIDIA 블루프린트 README의 7단계를 원으로 그렸다. 데이터는 서버 로그에서 나오고, 정답은 사용자 피드백과 큰 모델의 채점이며, 배포는 소프트웨어 교체다. 자체 작성.*
+
+![NVIDIA 데이터 플라이휠 블루프린트 구조](images/src-nvidia-data-flywheel-blueprint.png)
+
+*그림 6. NVIDIA가 공개한 데이터 플라이휠 블루프린트의 공식 구조도. 배포된 에이전트 앱이 로그를 Elasticsearch에 쌓고, 플라이휠 서버가 이를 데이터셋으로 만들어 NeMo Customizer로 후보 소형 모델(1B~8B)을 미세조정하고 NeMo Evaluator로 채점한다. 통과한 LoRA 어댑터가 앱으로 되돌아간다(Merge). 출처: [NVIDIA-AI-Blueprints/data-flywheel](https://github.com/NVIDIA-AI-Blueprints/data-flywheel) `docs/images/data-flywheel-blueprint.png`, Apache-2.0. 크기만 줄임.*
+
 
 일반 플라이휠의 특징을 세 줄로 적어 두면 뒤의 비교가 쉽다. **데이터는 서버 로그에서 공짜로 나온다. 정답(라벨)은 사용자 피드백이나 큰 모델의 채점이다. 배포는 서버의 모델을 바꾸면 끝난다.**
 
@@ -131,7 +151,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![차량 데이터 플라이휠 전체 구조](images/fig3-vehicle-flywheel.svg)
 
-*그림 3. 차량 데이터 플라이휠. 차 안(온보드)에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다. 일반 플라이휠에 없는 마디를 색으로 표시했다. 자체 작성.*
+*그림 7. 차량 데이터 플라이휠. 차 안(온보드)에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다. 일반 플라이휠에 없는 마디를 색으로 표시했다. 자체 작성.*
 
 | 마디 | 어디서 | 무엇을 하나 | 대표 사례 |
 |---|---|---|---|
@@ -147,6 +167,11 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 일반 플라이휠의 7단계 중 "로그 수집·데이터셋·학습·평가·배포"는 그대로 있다. 차량에서 새로 생긴 것은 ①(차 안 선별), ⑥(시뮬레이션이 필수), ⑦(실차), ⑧(안전 관문·규제)이다.
 
+![Waymo ML Factory 슬라이드](images/src-waymo-ml-factory-slide.jpg)
+
+*그림 8. Waymo가 발표한 "ML Factory for Self Driving Models" 슬라이드. 센서 로그 → 데이터 마이닝·능동학습으로 선별 → 라벨러 또는 자동 라벨 → 모델(자동 튜닝) → 테스트·검증 → 릴리스 → 다시 수집. 위 표의 ③④⑤⑥⑧ 마디가 그대로 보인다. 출처: Waymo 발표 슬라이드 화면, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-2_Waymo_close_loop.png`, 저장소 Apache-2.0). 원 저작권은 Waymo에 있다. 크기만 줄임.*
+
+
 ### 2.3 일반 AI 플라이휠과 다른 여섯 가지
 
 | # | 차이 | 일반 AI | 차량 | 근거 |
@@ -160,13 +185,18 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![일반 AI 플라이휠과 차량 플라이휠의 차이](images/fig4-general-vs-vehicle.svg)
 
-*그림 4. 같은 원, 다른 마디. 일반 AI 플라이휠(안쪽)에 차량에서만 생기는 네 마디(바깥쪽)가 더해진다. 자체 작성.*
+*그림 9. 같은 원, 다른 마디. 일반 AI 플라이휠(안쪽)에 차량에서만 생기는 네 마디(바깥쪽)가 더해진다. 자체 작성.*
 
 한 줄로 줄이면 이렇다. **일반 플라이휠은 "얼마나 빨리 도는가"의 문제이고, 차량 플라이휠은 "관문을 통과하면서도 계속 돌게 하는가"의 문제다.**
 
 ### 2.4 기존 방식과 최근 방식 — 같은 원, 다른 부품
 
 2021년 Tesla AI Day의 데이터 엔진은 지금도 차량 플라이휠의 교과서다. 사람이 쓴 트리거가 차에서 돌고, 걸리면 약 10초 클립을 올리고, 오프라인에서 자동 라벨링하고, 다시 학습해 섀도 모드로 내보낸다. 당시 수치는 누적 100만 클립, 60억 개 객체 라벨, 1.5PB, 주당 1만 클립 자동 라벨링이었다 📰 ([CleanTechnica](https://cleantechnica.com/2021/08/27/how-teslas-autopilot-team-refines-an-unfathomable-amount-of-data-is-pretty-cool/), [Electrek](https://electrek.co/2021/12/01/tesla-releases-new-footage-auto-labeling-tool-self-driving/)).
+
+![Tesla 데이터 엔진 슬라이드](images/src-tesla-data-engine-slide.jpg)
+
+*그림 10. Tesla가 발표한 데이터 엔진 슬라이드. 배포된 플릿(data source)에서 틀린 사례를 찾고(identify an inaccuracy) → 단위 테스트 세트에 넣고 → 비슷한 사례를 플릿에서 모아(boost) → 라벨·정제 → 학습 → 배포를 반복한다("you spin this data engine"). 2장·3장에서 말하는 회귀 세트와 유사 장면 회수가 이미 이 초기 발표에 들어 있다(발표 연도는 수록 저장소에 기재 없음 ⚠️). 출처: Tesla 발표 화면(서베이 저장소는 "Tesla AutoPilot Data Platform" 강연으로 표기), [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-1_Tesla_close_loop.png`, 저장소 Apache-2.0). 원 저작권은 Tesla에 있다. 크기만 줄임.*
+
 
 2026년의 플라이휠은 원의 모양은 같지만 각 마디의 부품이 바뀌었다.
 
@@ -182,7 +212,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![기존 데이터 엔진과 최근 플라이휠](images/fig5-old-vs-new-loop.svg)
 
-*그림 5. 2021년 데이터 엔진(왼쪽)과 2026년 플라이휠(오른쪽). 마디는 같고 부품이 바뀌었다. 자체 작성.*
+*그림 11. 2021년 데이터 엔진(왼쪽)과 2026년 플라이휠(오른쪽). 마디는 같고 부품이 바뀌었다. 자체 작성.*
 
 바뀐 부품들의 공통점은 하나다. **사람이 하던 일(트리거 작성, 라벨링, 시나리오 작성)을 큰 모델이 대신하고, 실차로만 하던 일(재현, 검증)을 클라우드가 대신한다.** 그래서 플라이휠 한 바퀴의 병목이 "사람 손"에서 "GPU와 데이터 파이프라인"으로 옮겨갔다. 이것이 3장에서 단계별 기술을, 5장에서 비용 병목을 봐야 하는 이유다.
 
@@ -202,7 +232,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![가상 사례의 흐름](images/fig6-case-flow.svg)
 
-*그림 6. 콘 옆 작업자 사례가 플라이휠 한 바퀴를 도는 경로. 각 마디에 실제 도구 이름을 적었다. 자체 작성.*
+*그림 12. 콘 옆 작업자 사례가 플라이휠 한 바퀴를 도는 경로. 각 마디에 실제 도구 이름을 적었다. 자체 작성.*
 
 ### 3.1 1단계 — 수집·선별 (차 안)
 
@@ -238,12 +268,26 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 - NVIDIA Cosmos Curator는 분할 → 필터 → 캡션 → 임베딩 → 중복 제거 → 데이터셋 생성 파이프라인이다 🔍 ([README](https://raw.githubusercontent.com/nvidia-cosmos/cosmos-curate/main/README.md)). NVIDIA는 2,000만 시간 영상을 Blackwell GPU로 14일(Hopper 40일, CPU로는 3년 이상)에 처리한다고 발표했지만 README에는 처리량 수치가 없다 📰 ([NVIDIA 뉴스룸](https://nvidianews.nvidia.com/news/nvidia-launches-cosmos-world-foundation-model-platform-to-accelerate-physical-ai-development)).
 - 시각언어모델(VLM)로 영상에 글 설명을 붙여 검색 가능하게 만드는 방법도 있다. Cosmos Reason 2(2B/8B/32B)는 "영상 캡션, 시간 구간 찾기, 물리 추론"을 하는 모델이고 🔍 ([README](https://raw.githubusercontent.com/nvidia-cosmos/cosmos-reason2/main/README.md)), Uber가 자율주행 학습 데이터 캡션에 검토 중이라고 AWS 블로그가 전한다 📰.
 
+![Cosmos Curator 파이프라인](images/src-nvidia-cosmos-curator-pipelines.png)
+
+*그림 13. Cosmos Curator의 공식 파이프라인 그림. 분할·주석 파이프라인(다운로드 → 디코드 → 샷 경계 분할 → 트랜스코드 → 움직임·품질 필터 → VLM 캡션 → 영상 임베딩 → 저장), 의미 기반 중복 제거, 데이터셋 샤딩의 세 단계가 Ray 위에서 돈다. 출처: [nvidia-cosmos/cosmos-curate](https://github.com/nvidia-cosmos/cosmos-curate) `docs/assets/cosmos-curator-pipelines.png`, Apache-2.0. 원본 크기.*
+
+
 **정답은 소급해서 붙인다.** 온보드 모델은 현재 프레임까지만 보고 작은 모델로 빨리 답해야 한다. 클라우드의 자동 라벨러는 그 제약이 없다. **미래 프레임을 볼 수 있고, 여러 차의 주행을 합칠 수 있고, 훨씬 큰 모델을 쓸 수 있다.** 그래서 온보드 모델이 늦게 본 작업자를 "3초 뒤 프레임에서 확실히 보인 그 사람"으로 거슬러 올라가 첫 프레임부터 라벨링할 수 있다. 콘 작업자 사례가 딱 이 경우다.
 
 - Tesla는 2022년 AI Day에서 여러 주행을 합쳐 4D(3D + 시간)로 재구성한 뒤 차선·객체 라벨을 자동으로 만드는 파이프라인을 설명했고, 1만 주행 기준 "수작업 500만 시간 → 클러스터 12시간"을 주장했다(자동 라벨링용 GPU 4,000장) 📰⚠️ ([요약](https://www.nocode.ai/recap-tesla-ai-day-2022/)).
 - Waymo의 3D 자동 라벨링 논문(CVPR 2021)은 포인트클라우드 시퀀스 전체를 써서 만든 3D 박스가 사람 라벨과 대등하다고 보고했다 📰 ([arXiv 2103.05073](https://arxiv.org/abs/2103.05073)).
 - 오픈 도구로도 가능하다. Grounding DINO는 글 프롬프트("construction worker . traffic cone")로 박스를 만들고(COCO 제로샷 52.5 AP) 🔍 ([README](https://raw.githubusercontent.com/IDEA-Research/GroundingDINO/main/README.md)), SAM 2는 점·박스 프롬프트로 영상 전체의 마스크와 추적을 만든다(tiny 38.9M ~ large 224.4M 파라미터, A100에서 91.2~39.5 FPS) 🔍 ([README](https://raw.githubusercontent.com/facebookresearch/sam2/main/README.md)).
 - 라벨 형식은 ASAM OpenLABEL(2021-11, JSON으로 2D/3D 박스·폴리곤과 "객체·행동·사건·맥락" 태그를 통일)이 표준이다 📰 ([ASAM](https://www.asam.net/news-media/news/detail/news/asam-releases-asam-openlabel-v100/)).
+
+![라벨링 파이프라인 세 유형](images/src-li2024-labeling-pipelines.png)
+
+*그림 14. 라벨링 파이프라인의 세 유형. (a) 사람이 라벨링하고 사람이 검사, (b) 알고리즘이 라벨링하고 전문가가 개입, (c) 종단간 대형 모델·생성형 AI가 라벨링하고 자동 품질 검사. 완전 자동에서도 "통과/재작업" 루프는 남는다. 출처: [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/3-5-Mainstream-AD-Labeling-Pipelines.png`, Apache-2.0. 크기만 줄임.*
+
+![Waymo Open Dataset 보행자 3D 라벨 예](images/src-waymo-3d-label-example.jpg)
+
+*그림 15. 라이다 포인트클라우드 위에 붙은 보행자 3D 박스(주황)와 같은 순간의 카메라 영상(왼쪽 아래). 온보드 모델이 늦게 본 작업자도 클라우드의 자동 라벨러는 이런 3D 박스를 미래 프레임과 여러 주행을 합쳐 첫 프레임부터 만든다. 출처: [waymo-research/waymo-open-dataset](https://github.com/waymo-research/waymo-open-dataset) `docs/images/pedestrian-3D-labeling-example.png`(저장소 Apache-2.0, 데이터 자체는 Waymo Open Dataset 이용약관). JPEG로 변환.*
+
 
 **사람은 사라지지 않고 검수로 옮겨간다.** 자동 라벨 뒤에 사람이 배치당 10% 정도를 무작위 검수해 정확도 98% 이상을 확인하는 것이 업계 관행이다 📰⚠️. 흔한 클래스가 99.8%여도 희귀 클래스는 85%인 "착시"가 있어서, 사례처럼 희귀한 클래스는 전수 검수로 격상한다. 외주 라벨 단가는 2D 박스 개당 $0.03~1.00, 세그멘테이션 마스크 $0.05~3.00 범위이고 Scale AI 같은 회사는 공개 단가표가 없다 📰⚠️ ([업계 가이드](https://www.basic.ai/blog-post/how-much-do-data-annotation-services-cost-complete-guide-2025)).
 
@@ -255,7 +299,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![합성 데이터의 세 갈래](images/fig7-synthetic-three-routes.svg)
 
-*그림 7. 재생·재구성·생성. 오른쪽으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차를 검증해야 한다. 자체 작성.*
+*그림 16. 재생·재구성·생성. 오른쪽으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차를 검증해야 한다. 자체 작성.*
 
 | 갈래 | 무엇을 하나 | 장점·한계 | 대표 도구 |
 |---|---|---|---|
@@ -265,14 +309,24 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 **재구성과 생성의 중간 다리**가 Cosmos Transfer 같은 "조건부 변환"이다. 지도와 라이다는 그대로 두고 외관만 밤·비로 바꾸므로, 장면의 기하는 실제이고 조명·날씨만 합성이다.
 
+![Cosmos Transfer1 구조](images/src-nvidia-cosmos-transfer1.png)
+
+*그림 17. Cosmos Transfer1의 공식 구조도. 깊이·엣지·세그멘테이션 영상이 각각의 제어 가지(DepthControl·EdgeControl·SegControl)로 들어가고, 시공간 가중치 영상으로 섞여 디퓨전 백본에 조건을 준다. 기하는 입력 조건이 정하고 외관은 생성된다. 출처: [nvidia-cosmos/cosmos-transfer1](https://github.com/nvidia-cosmos/cosmos-transfer1) `assets/transfer1_diagram.png`, Apache-2.0. 원본 크기.*
+
+
 **폐루프 학습.** 모은 데이터로 기록을 흉내 내는 학습(모방학습)만 하면 모델은 자기 실수의 결과를 겪어 보지 못한다. 시뮬레이터 안에서 정책이 직접 운전하고 그 결과로 배우는 것이 폐루프 강화학습이다.
 
 - NVIDIA AlpaGym은 "시뮬레이터 안에서 정책을 폐루프로 돌리고, 주행을 채점하고, 그것으로 학습한다"는 오픈 프레임워크다. AlpaSim(시뮬레이터) + Cosmos-RL(학습기) 조합이고 현재 Alpamayo 1.5(10B) 정책을 GPU 2장 추론으로 지원하며 "초기 개발 단계"라고 밝힌다 🔍 ([README](https://raw.githubusercontent.com/NVlabs/alpagym/main/README.md)).
 - comma.ai는 2022년 11월 0.9.0에서 "재투영 시뮬레이터로 학습", 2025년 8월 0.10.0에서 "월드모델 기반 종단간 계획이 종방향 MPC 대체", 2026년 3월 0.11.0에서 "**학습된 시뮬레이터로 전량 학습한** 새 주행 모델"을 배포했다 🔍 ([RELEASES.md](https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md)). 블로그는 이 월드모델이 2B 파라미터, 주행 영상 250만 분으로 학습됐다고 설명한다 📰. 합성 환경에서 학습한 정책을 실제 사용자에게 배포한 드문 공개 사례다.
 
+![Alpamayo 강화학습 프레임워크](images/src-nvidia-alpamayo-rl-framework.png)
+
+*그림 18. NVIDIA가 공개한 Alpamayo 강화학습 레시피의 구조도. 롤아웃 복제본(vLLM)이 주행을 생성해 보상과 함께 롤아웃 풀에 넣고, 정책 복제본이 이를 소비해 가중치를 갱신하며, 갱신된 가중치가 롤아웃 쪽으로 되돌아간다. 출처: [NVlabs/alpamayo-recipes](https://github.com/NVlabs/alpamayo-recipes) `recipes/alpamayo1_x_rl/assets/alpamayo_rl_framework.png`, Apache-2.0. 원본 크기.*
+
+
 ![AlpaSim 구조](images/alpasim-architecture.png)
 
-*그림 8. NVIDIA AlpaSim의 마이크로서비스 구조. 센서 시뮬레이션(렌더러) → 정책 → 궤적 → 물리 → 런타임 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png`, Apache-2.0.*
+*그림 19. NVIDIA AlpaSim의 마이크로서비스 구조. 센서 시뮬레이션(렌더러) → 정책 → 궤적 → 물리 → 런타임 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png`, Apache-2.0.*
 
 **학습 컴퓨트.** Tesla는 자체 학습 클러스터 Cortex를 2024년 말 약 5만 H100에서 2026년 1분기 "10만 H100 상당 이상"으로 늘렸다고 공개했고 📰⚠️, 2022년 AI Day 기준 GPU 1만 4,000장(자동 라벨링 4,000 + 학습 1만) 📰⚠️. 회사 발표 수치라 독립 검증은 없다.
 
@@ -322,7 +376,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![기업별 플라이휠 유형 지도](images/fig8-company-map.svg)
 
-*그림 9. 데이터 원천(가로)과 공개도(세로)로 본 기업 유형. 자체 작성. 수치는 각 사 공개 주장.*
+*그림 20. 데이터 원천(가로)과 공개도(세로)로 본 기업 유형. 자체 작성. 수치는 각 사 공개 주장.*
 
 ### 4.1 플릿형 — 양산차가 데이터를 만든다
 
@@ -336,6 +390,11 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 **Baidu Apollo Go.** 2026년 2분기 완전 무인 탑승 약 100만 회, 6월 누적 2,300만 회 📰 ([Baidu 6-K](https://www.sec.gov/Archives/edgar/data/1329099/000119312526110843/d34060dex991.pdf)). 무인 차량의 에어백 전개는 평균 1,440만 km당 1회라고 밝혔다(공개 주장) 📰. 6세대 RT6는 자체 파운데이션 모델 ADFM을 싣고, 2026년부터 Lyft와 독일·영국에 투입한다 📰. **Zoox**는 2026년 7월 30일 NHTSA에서 핸들 없는 로보택시의 첫 상업 면제(연 2,500대)를 받았다 📰 ([TechCrunch](https://techcrunch.com/2026/07/30/zoox-clears-final-federal-hurdle-to-launch-paid-robotaxi-service/)).
 
+![Baidu 폐쇄루프 데이터 시스템](images/src-baidu-closed-loop.png)
+
+*그림 21. Baidu가 공개한 "Closed-Loop Data System" 그림. 합규 데이터 수집(차량 개조·탈민감화) → 데이터 처리·관리 → 라벨링 → 알고리즘 개발·학습·평가 → 시나리오 라이브러리(OpenX 표준)·시뮬레이션 테스트 → 차량 배포·OTA. 출처: Baidu Apollo 공개 자료, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-4_Baidu_Close_Loop_Data_System.jpg`, 저장소 Apache-2.0). 원 저작권은 Baidu에 있다. 원본 크기.*
+
+
 ### 4.3 공급자형 — 남의 차에서 데이터를 받는다
 
 **Mobileye.** 데이터 원천은 REM(Road Experience Management)이라는 크라우드소싱 지도다. 18개 브랜드·50개 차종·800만 대 이상의 양산 ADAS 차량이 km당 약 10KB의 익명 데이터를 보내고, 이를 모아 10cm 정확도의 "Roadbook" 지도를 만들어 다시 내려보낸다 📰 ([Mobileye REM](https://www.mobileye.com/technology/rem/)). 검증은 "True Redundancy"(카메라 계열과 레이더·라이다 계열을 독립 운영)로 필요한 검증 데이터 양을 줄인다고 주장한다 📰. 규모는 2026년 EyeQ 칩 출하 약 3,800만 개 가이던스, Surround ADAS 누적 수주 1,900만 대 이상이다 📰.
@@ -343,6 +402,11 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 **Wayve.** 월드모델 GAIA 시리즈가 핵심 자산이다. GAIA-3(2025-12)는 150억 파라미터에 이전 세대의 10배 데이터로 학습했고 검증용으로 외부 제공하며, GAIA-4(2026-08)는 AI Driver를 루프 안에 넣어 기록된 장면에서 출발하는 반사실 시나리오를 만든다 📰 ([Wayve](https://wayve.ai/thinking/gaia-4/)). 단일 모델로 유럽·북미·일본 506개 도시를 달렸고 그중 219개(43%)는 현지 데이터 없이 달렸다고 주장한다 📰⚠️. Nissan LEAF 기반 로보택시로 2026년 말 도쿄 Uber 파일럿을 계획한다 📰.
 
 **Momenta.** 양산 탑재 차량 100만 대 돌파(2025년 30만 → 80만 → 상장 직전 100만) 📰 ([Momenta](https://momenta.cn/en/article/568.html)). R6 "플라이휠 대형 모델"은 고가치 클립 7,000만 개와 실주행 30억 km로 학습한 강화학습 기반 종단간 모델이고, R7(2026-04)은 사전학습·시뮬레이션·강화학습 3층 구조에 누적 120억 km와 "골든 데이터" 1억 건을 쓴다고 밝혔다(공개 주장) 📰. 2026년 2월 기준 글로벌 OEM 24곳(BMW 중국·아우디·도요타·BYD·포드 등)에 공급하고 📰, 2026년 7월 홍콩에 상장해 7억 5,000만 달러를 조달했다 📰.
+
+![Momenta 데이터 기반 알고리즘 로드맵 슬라이드](images/src-momenta-roadmap-slide.jpg)
+
+*그림 22. Momenta가 발표한 "완전 데이터 기반 알고리즘 로드맵" 슬라이드. 규칙 기반(주황) 계획을 단계적으로 데이터 기반(파랑) 모듈로 바꾸고, 2025년 중반에 인지와 계획을 한 모델로 합치는 목표를 적었다. 4.7절의 "강화학습이 양산으로" 흐름의 출발점이다. 출처: Momenta 발표 슬라이드 화면, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-1_momenta_data_driven_planning.png`, 저장소 Apache-2.0). 원 저작권은 Momenta에 있다. 크기만 줄임.*
+
 
 ### 4.4 OEM 자체형 — 내 차, 내 데이터, 내 모델
 
@@ -421,7 +485,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ![병목에서 경쟁력으로](images/fig9-bottleneck-to-competitiveness.svg)
 
-*그림 10. 네 가지 병목(왼쪽)을 풀면 다섯 가지 경쟁력(오른쪽)으로 이어진다. 자체 작성.*
+*그림 23. 네 가지 병목(왼쪽)을 풀면 다섯 가지 경쟁력(오른쪽)으로 이어진다. 자체 작성.*
 
 ### 5.1 병목 ① 데이터 발견 — 무엇이 필요한지 모른다
 
