@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 720" width="1240" height="720" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif" role="img" aria-label="직렬화 포맷 선택 의사결정 흐름도 — 다섯 개 질문으로 Protobuf·Cap'n Proto·기타 선택지를 가린다">
+<rect width="1240" height="720" fill="#ffffff"/>
+<defs>
+  <marker id="d-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4d545e"/></marker>
+</defs>
+
+<text x="40" y="44" font-size="23" font-weight="700" fill="#15181d">그래서 우리 경우엔 무엇을 쓰면 되나 — 다섯 개 질문</text>
+<text x="40" y="70" font-size="14" fill="#4d545e">위에서부터 순서대로 답한다. 대부분의 차량 프로젝트는 <tspan font-weight="700">1번이나 2번에서 끝난다.</tspan></text>
+
+<!-- Q1 -->
+<rect x="40" y="96" width="470" height="62" rx="9" fill="#ffffff" stroke="#15181d" stroke-width="1.6"/>
+<text x="60" y="122" font-size="13.5" font-weight="700" fill="#15181d">Q1. 이미 정해진 통신 표준 위에서 주고받아야 하나?</text>
+<text x="60" y="144" font-size="12" fill="#848a94">SOME/IP · DDS · CAN(DBC) · AUTOSAR 인터페이스 기술서가 있는 경로</text>
+<path d="M510 127 L 600 127" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="528" y="118" font-size="12" font-weight="700" fill="#eb6834">예</text>
+<rect x="606" y="96" width="594" height="62" rx="9" fill="#fdece4" stroke="#eb6834"/>
+<text x="626" y="122" font-size="13" font-weight="700" fill="#15181d">→ 그 표준의 직렬화를 쓴다. 논의 끝.</text>
+<text x="626" y="144" font-size="12" fill="#4d545e">포맷을 바꾸면 진단·게이트웨이·검증 도구 전체가 내용을 못 읽는다. 이중 직렬화는 비용만 늘린다.</text>
+
+<path d="M275 158 L 275 190" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="286" y="180" font-size="12" font-weight="700" fill="#1baf7a">아니오</text>
+
+<!-- Q2 -->
+<rect x="40" y="196" width="470" height="62" rx="9" fill="#ffffff" stroke="#15181d" stroke-width="1.6"/>
+<text x="60" y="222" font-size="13.5" font-weight="700" fill="#15181d">Q2. ASIL 등급이 붙는 경로인가?</text>
+<text x="60" y="244" font-size="12" fill="#848a94">고장 시 안전목표 위반으로 이어지는 데이터 경로</text>
+<path d="M510 227 L 600 227" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="528" y="218" font-size="12" font-weight="700" fill="#eb6834">예</text>
+<rect x="606" y="190" width="594" height="76" rx="9" fill="#fdf6e7" stroke="#d9a63f"/>
+<text x="626" y="214" font-size="13" font-weight="700" fill="#15181d">→ 둘 다 그대로는 못 쓴다. 인증 근거(qualification evidence)가 없다.</text>
+<text x="626" y="234" font-size="12" fill="#4d545e">둘 다 동적 할당과 예외를 쓰고, ISO 26262 용 툴/라이브러리 인증 패키지를 제공하지 않는다.</text>
+<text x="626" y="254" font-size="12" fill="#4d545e">현실적 답: QM 영역으로 격리하고 경계에서 검증하거나, 인증된 상용 미들웨어 스택을 산다.</text>
+
+<path d="M275 258 L 275 290" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="286" y="280" font-size="12" font-weight="700" fill="#1baf7a">아니오</text>
+
+<!-- Q3 -->
+<rect x="40" y="296" width="470" height="62" rx="9" fill="#ffffff" stroke="#15181d" stroke-width="1.6"/>
+<text x="60" y="322" font-size="13.5" font-weight="700" fill="#15181d">Q3. 차량 밖(클라우드·백엔드)으로 나가는 데이터인가?</text>
+<text x="60" y="344" font-size="12" fill="#848a94">텔레메트리 · 진단 업로드 · OTA 메타데이터</text>
+<path d="M510 327 L 600 327" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="528" y="318" font-size="12" font-weight="700" fill="#eb6834">예</text>
+<rect x="606" y="296" width="594" height="62" rx="9" fill="#e6eff9" stroke="#2a78d6"/>
+<text x="626" y="322" font-size="13" font-weight="700" fill="#15181d">→ Protobuf. 다른 선택을 정당화하기 어렵다.</text>
+<text x="626" y="344" font-size="12" fill="#4d545e">크기가 작고(통신비), gRPC·서버 라이브러리·스키마 관리 도구가 이미 다 있다.</text>
+
+<path d="M275 358 L 275 390" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="286" y="380" font-size="12" font-weight="700" fill="#1baf7a">아니오 — 같은 SoC 안 IPC 다</text>
+
+<!-- Q4 -->
+<rect x="40" y="396" width="470" height="76" rx="9" fill="#ffffff" stroke="#15181d" stroke-width="1.6"/>
+<text x="60" y="422" font-size="13.5" font-weight="700" fill="#15181d">Q4. 메시지가 크고(≳10 KB) 빈도가 높은가?</text>
+<text x="60" y="442" font-size="12" fill="#848a94">점군 · 영상 프레임 · 객체 리스트 · 특징 맵</text>
+<text x="60" y="461" font-size="12" fill="#848a94">또는 &#39;헤더만 보고 버릴지 결정&#39;하는 패턴이 있는가</text>
+<path d="M275 472 L 275 504" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="286" y="494" font-size="12" font-weight="700" fill="#eb6834">예</text>
+<path d="M510 434 L 600 434" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="524" y="425" font-size="12" font-weight="700" fill="#1baf7a">아니오</text>
+<rect x="606" y="396" width="594" height="76" rx="9" fill="#eff1f4" stroke="#cdd3db"/>
+<text x="626" y="420" font-size="13" font-weight="700" fill="#15181d">→ 성능으로는 갈리지 않는다. 생태계로 고르라.</text>
+<text x="626" y="440" font-size="12" fill="#4d545e">100 B 급 메시지는 실측에서 인코딩 62 ns(Protobuf) vs 77 ns(Cap&#39;n Proto). 차이가 없다.</text>
+<text x="626" y="460" font-size="12" fill="#4d545e">그렇다면 사람 구하기·디버깅 도구·다른 팀과의 연동이 이기는 기준이다 → 보통 <tspan font-weight="700">Protobuf</tspan>.</text>
+
+<!-- Q5 -->
+<rect x="40" y="510" width="470" height="76" rx="9" fill="#f7fafd" stroke="#2a78d6" stroke-width="1.6"/>
+<text x="60" y="536" font-size="13.5" font-weight="700" fill="#2a78d6">Q5. 그 프로세스들이 같은 메모리를 공유할 수 있나?</text>
+<text x="60" y="556" font-size="12" fill="#848a94">같은 SoC · 같은 OS 인스턴스 · 공유메모리 사용 가능</text>
+<text x="60" y="575" font-size="12" fill="#848a94">(컨테이너·하이퍼바이저 경계를 넘지 않는가)</text>
+<path d="M510 548 L 600 548" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="524" y="539" font-size="12" font-weight="700" fill="#eb6834">아니오</text>
+<rect x="606" y="510" width="594" height="76" rx="9" fill="#e6eff9" stroke="#2a78d6"/>
+<text x="626" y="534" font-size="13" font-weight="700" fill="#15181d">→ <tspan font-weight="700">Cap&#39;n Proto 가 가장 잘 맞는 자리.</tspan></text>
+<text x="626" y="554" font-size="12" fill="#4d545e">소켓·파이프로 큰 메시지를 옮겨야 한다면, 받는 쪽 파싱 비용이 그대로 절약된다.</text>
+<text x="626" y="574" font-size="12" fill="#4d545e">실측: 1 MiB 디코딩 5.5 µs vs 50.0 µs · 헤더만 읽기 68 ns vs 44.3 µs.</text>
+
+<path d="M275 586 L 275 618" stroke="#4d545e" stroke-width="1.6" marker-end="url(#d-ar)"/>
+<text x="286" y="608" font-size="12" font-weight="700" fill="#1baf7a">예</text>
+
+<rect x="40" y="624" width="1160" height="58" rx="9" fill="#e9f6f0" stroke="#1baf7a"/>
+<text x="60" y="648" font-size="13" font-weight="700" fill="#15181d">→ 직렬화 포맷을 바꾸기 전에 <tspan fill="#1baf7a">공유메모리 전송</tspan>을 먼저 검토하라. 이쪽 이득이 훨씬 크다.</text>
+<text x="60" y="670" font-size="12" fill="#4d545e">iceoryx · CyberRT · ROS 2 intra-process · Zenoh shared-memory. 복사가 아예 0이 된다. 그 위에 얹을 데이터 배치 규약으로 Cap&#39;n Proto(또는 FlatBuffers)를 쓰는 조합이 실질적인 답이다.</text>
+
+<text x="40" y="708" font-size="11.5" fill="#848a94">수치는 본 보고서 §4.2 자체 측정. 분기 기준(≳10 KB 등)은 측정 결과에 근거한 <tspan font-weight="700">본 보고서 해석</tspan>이며 절대 기준이 아니다. · 자체 작성</text>
+</svg>

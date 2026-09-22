@@ -1,0 +1,66 @@
+// Cap'n Proto vs Protobuf 벤치마크용 스키마 (Protobuf 판)
+//
+// vehicle.capnp 와 의미가 1:1 대응되도록 작성했다.
+// 필드 개수·타입·중첩 깊이를 양쪽이 동일하게 유지하는 것이 비교의 전제다.
+//
+// A: VehicleState — 고빈도 차량 상태 (~100 B 급)
+// B: ObjectList   — 인지 객체 리스트 (~10 KB 급)
+// C: SensorFrame  — 대용량 센서 페이로드 (~1 MB 급)
+
+syntax = "proto3";
+
+package vbpb;
+
+message Header {
+  uint64 timestamp_ns = 1;
+  uint32 seq          = 2;
+  uint32 source_id    = 3;
+}
+
+// ---------- A. 고빈도 차량 상태 ----------
+message VehicleState {
+  Header header              = 1;
+  float  speed_mps           = 2;
+  float  steering_angle_rad  = 3;
+  float  yaw_rate_rps        = 4;
+  float  accel_x             = 5;
+  float  accel_y             = 6;
+  uint32 gear                = 7;
+  bool   brake_active        = 8;
+  bool   indicator_left      = 9;
+  bool   indicator_right     = 10;
+  repeated float wheel_speed = 11;  // 4륜
+}
+
+// ---------- B. 인지 객체 리스트 ----------
+message Object3d {
+  uint32 id                 = 1;
+  uint32 cls                = 2;
+  float  confidence         = 3;
+  float  x                  = 4;
+  float  y                  = 5;
+  float  z                  = 6;
+  float  length             = 7;
+  float  width              = 8;
+  float  height             = 9;
+  float  heading            = 10;
+  float  vx                 = 11;
+  float  vy                 = 12;
+  repeated float covariance = 13;  // 3x3
+  uint32 age_frames         = 14;
+  bool   is_tracked         = 15;
+}
+
+message ObjectList {
+  Header   header           = 1;
+  repeated Object3d objects = 2;
+}
+
+// ---------- C. 대용량 센서 페이로드 ----------
+message SensorFrame {
+  Header header   = 1;
+  uint32 width    = 2;
+  uint32 height   = 3;
+  uint32 encoding = 4;
+  bytes  payload  = 5;
+}
