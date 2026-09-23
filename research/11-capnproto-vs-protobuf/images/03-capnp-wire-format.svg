@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 820" width="1240" height="820" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif" role="img" aria-label="Cap'n Proto 와이어 포맷 해부 — 8바이트 워드 격자와 포인터로 이루어진 구조">
+<rect width="1240" height="820" fill="#ffffff"/>
+<defs>
+  <marker id="c-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker>
+</defs>
+
+<text x="40" y="44" font-size="23" font-weight="700" fill="#15181d">Cap&#39;n Proto 와이어 포맷 — 같은 값을 같은 방식으로 펼쳐 본다</text>
+<text x="40" y="70" font-size="14" fill="#4d545e">앞 그림과 <tspan font-weight="700">완전히 같은 값</tspan>을 <tspan font-family="'IBM Plex Mono',monospace">capnp encode</tspan> 로 찍은 88바이트. 「태그+값」이 아니라 <tspan font-weight="700">8바이트 워드 격자 + 포인터</tspan>다.</text>
+
+<!-- 워드 격자 -->
+<text x="40" y="106" font-size="13.5" font-weight="700" fill="#15181d">바이트 88 B = 프레이밍 1워드 + 본문 10워드</text>
+
+<g font-family="'IBM Plex Mono',monospace" font-size="12.5">
+  <!-- W0 framing -->
+  <rect x="40" y="118" width="300" height="30" rx="4" fill="#eff1f4" stroke="#cdd3db"/>
+  <text x="50" y="138" fill="#4d545e">00 00 00 00 0a 00 00 00</text>
+  <text x="352" y="132" font-family="'Pretendard',sans-serif" font-size="12" fill="#848a94">스트림 프레이밍 — 세그먼트 1개,</text>
+  <text x="352" y="147" font-family="'Pretendard',sans-serif" font-size="12" fill="#848a94">크기 0x0a = 10 워드 (메시지 본문 밖)</text>
+
+  <!-- W1 root ptr -->
+  <rect x="40" y="156" width="300" height="30" rx="4" fill="#e6eff9" stroke="#2a78d6" stroke-width="1.6"/>
+  <text x="50" y="176" fill="#15181d">00 00 00 00 04 00 02 00</text>
+  <text x="352" y="170" font-family="'Pretendard',sans-serif" font-size="12.5" font-weight="700" fill="#2a78d6">루트 구조체 포인터</text>
+  <text x="352" y="186" font-family="'Pretendard',sans-serif" font-size="11.5" fill="#848a94">offset 0 · 데이터 4워드 · 포인터 2워드</text>
+
+  <!-- data section -->
+  <rect x="40" y="194" width="300" height="30" rx="4" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="50" y="214" fill="#15181d">00 00 b4 41 00 00 00 00</text>
+  <text x="352" y="214" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e"><tspan font-weight="700">speedMps</tspan> = 22.5 · steeringAngle = 0</text>
+
+  <rect x="40" y="228" width="300" height="30" rx="4" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="50" y="248" fill="#848a94">00 00 00 00 00 00 00 00</text>
+  <text x="352" y="248" font-family="'Pretendard',sans-serif" font-size="12" fill="#848a94">yawRate = 0 · accelX = 0 — <tspan fill="#eb6834" font-weight="700">안 써도 자리를 차지한다</tspan></text>
+
+  <rect x="40" y="262" width="300" height="30" rx="4" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="50" y="282" fill="#15181d">00 00 00 00 04 00 00 00</text>
+  <text x="352" y="282" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e">accelY = 0 · <tspan font-weight="700">gear</tspan> = 4</text>
+
+  <rect x="40" y="296" width="300" height="30" rx="4" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="50" y="316" fill="#15181d">04 00 00 00 00 00 00 00</text>
+  <text x="352" y="310" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e">0x04 = <tspan font-family="'IBM Plex Mono',monospace">0b100</tspan> → bit192 brakeActive=0,</text>
+  <text x="352" y="326" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e">bit193 indicatorLeft=0, <tspan font-weight="700">bit194 indicatorRight=1</tspan></text>
+
+  <!-- ptr section -->
+  <rect x="40" y="330" width="300" height="30" rx="4" fill="#e6eff9" stroke="#2a78d6" stroke-width="1.6"/>
+  <text x="50" y="350" fill="#15181d">04 00 00 00 02 00 00 00</text>
+  <text x="352" y="344" font-family="'Pretendard',sans-serif" font-size="12.5" font-weight="700" fill="#2a78d6">ptr[0] → header 구조체</text>
+  <text x="352" y="360" font-family="'Pretendard',sans-serif" font-size="11.5" fill="#848a94">offset 1워드 · 데이터 2워드 · 포인터 0</text>
+
+  <rect x="40" y="364" width="300" height="30" rx="4" fill="#e6eff9" stroke="#2a78d6" stroke-width="1.6"/>
+  <text x="50" y="384" fill="#15181d">09 00 00 00 14 00 00 00</text>
+  <text x="352" y="378" font-family="'Pretendard',sans-serif" font-size="12.5" font-weight="700" fill="#2a78d6">ptr[1] → wheelSpeed 리스트</text>
+  <text x="352" y="394" font-family="'Pretendard',sans-serif" font-size="11.5" fill="#848a94">offset 2워드 · 원소 4바이트 · 2개</text>
+
+  <!-- header struct -->
+  <rect x="40" y="398" width="300" height="30" rx="4" fill="#fdece4" stroke="#eb6834"/>
+  <text x="50" y="418" fill="#15181d">01 00 00 00 00 00 00 00</text>
+  <text x="352" y="418" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e"><tspan font-weight="700" fill="#eb6834">header.timestampNs</tspan> = 1</text>
+
+  <rect x="40" y="432" width="300" height="30" rx="4" fill="#fdece4" stroke="#eb6834"/>
+  <text x="50" y="452" fill="#15181d">02 00 00 00 00 00 00 00</text>
+  <text x="352" y="452" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e"><tspan font-weight="700" fill="#eb6834">header.seq</tspan> = 2 · sourceId = 0</text>
+
+  <!-- list data -->
+  <rect x="40" y="466" width="300" height="30" rx="4" fill="#e9f6f0" stroke="#1baf7a"/>
+  <text x="50" y="486" fill="#15181d">00 00 b4 41 00 00 b2 41</text>
+  <text x="352" y="486" font-family="'Pretendard',sans-serif" font-size="12" fill="#4d545e"><tspan font-weight="700" fill="#1baf7a">wheelSpeed</tspan> = [22.5, 22.25]</text>
+</g>
+
+<!-- 포인터 화살표 -->
+<path d="M36 345 C 8 360, 8 400, 34 413" fill="none" stroke="#2a78d6" stroke-width="1.8" marker-end="url(#c-ar)"/>
+<path d="M36 379 C 0 400, 0 465, 34 481" fill="none" stroke="#2a78d6" stroke-width="1.8" marker-end="url(#c-ar)"/>
+
+<!-- 포인터 비트 레이아웃 -->
+<text x="700" y="106" font-size="15" font-weight="700" fill="#15181d">포인터 한 개의 비트 배치</text>
+<rect x="700" y="118" width="500" height="120" rx="9" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="716" y="142" font-size="12.5" font-weight="700" fill="#2a78d6">구조체 포인터 (64비트)</text>
+<g>
+  <rect x="716" y="150" width="30" height="26" fill="#e6eff9" stroke="#2a78d6"/><text x="722" y="168" font-size="11" fill="#15181d">A</text>
+  <rect x="746" y="150" width="190" height="26" fill="#ffffff" stroke="#cdd3db"/><text x="820" y="168" font-size="11" fill="#15181d">B — offset</text>
+  <rect x="936" y="150" width="120" height="26" fill="#ffffff" stroke="#cdd3db"/><text x="962" y="168" font-size="11" fill="#15181d">C — 데이터 워드</text>
+  <rect x="1056" y="150" width="128" height="26" fill="#ffffff" stroke="#cdd3db"/><text x="1082" y="168" font-size="11" fill="#15181d">D — 포인터 워드</text>
+  <text x="716" y="190" font-size="10.5" fill="#848a94">2비트</text>
+  <text x="800" y="190" font-size="10.5" fill="#848a94">30비트 (부호 있음)</text>
+  <text x="962" y="190" font-size="10.5" fill="#848a94">16비트</text>
+  <text x="1082" y="190" font-size="10.5" fill="#848a94">16비트</text>
+</g>
+<text x="716" y="212" font-size="12" fill="#4d545e">A = 0 구조체 · 1 리스트 · 2 원거리(far) · 3 케이퍼빌리티</text>
+<text x="716" y="230" font-size="12" fill="#4d545e">B = 이 포인터 <tspan font-weight="700">바로 뒤</tspan>에서 대상까지의 상대 워드 수 — 절대 주소가 아니다</text>
+
+<!-- 왜 이게 빠른가 -->
+<rect x="700" y="252" width="500" height="182" rx="9" fill="#ffffff" stroke="#cdd3db"/>
+<text x="718" y="278" font-size="14" font-weight="700" fill="#15181d">&#39;파싱이 없다&#39;는 말의 정체</text>
+<text x="718" y="302" font-size="12.5" fill="#4d545e">메모리에 올려 둔 모양과 전선 위 모양이 <tspan font-weight="700">비트 단위로 같다</tspan>.</text>
+<text x="718" y="321" font-size="12.5" fill="#4d545e">그래서 받은 버퍼를 그대로 두고, <tspan font-weight="700">필드를 읽는 순간에만</tspan></text>
+<text x="718" y="340" font-size="12.5" fill="#4d545e">「루트 포인터 → 데이터 섹션 몇 번째 비트」를 계산해 꺼낸다.</text>
+<text x="718" y="364" font-size="12.5" fill="#4d545e">예: <tspan font-family="'IBM Plex Mono',monospace" font-weight="700">gear</tspan> 는 항상 데이터 섹션 bits[160,192). 앞을 훑을 필요가 없다.</text>
+<text x="718" y="390" font-size="12.5" fill="#eb6834" font-weight="700">단, 공짜는 아니다 —</text>
+<text x="718" y="409" font-size="12.5" fill="#4d545e">포인터를 따라갈 때마다 <tspan font-weight="700">경계 검사</tspan>를 하고, 순환 참조를 막기 위해</text>
+<text x="718" y="428" font-size="12.5" fill="#4d545e">누적 <tspan font-weight="700">순회 한도(traversal limit, C++ 기본 64 MiB)</tspan>를 센다.</text>
+
+<!-- 요약 3칸 -->
+<text x="40" y="546" font-size="16" font-weight="700" fill="#15181d">이 설계가 만드는 성질</text>
+<g>
+  <rect x="40" y="560" width="374" height="106" rx="9" fill="#e9f6f0" stroke="#1baf7a"/>
+  <text x="58" y="584" font-size="13" font-weight="700" fill="#15181d">위치가 고정 → 임의 접근 O(1)</text>
+  <text x="58" y="606" font-size="12.5" fill="#4d545e">1 MB 메시지에서 헤더 한 필드만 읽어도</text>
+  <text x="58" y="624" font-size="12.5" fill="#4d545e">나머지를 건드리지 않는다. 8바이트 정렬이라</text>
+  <text x="58" y="642" font-size="12.5" fill="#4d545e">CPU가 비트 시프트 없이 바로 로드한다.</text>
+</g>
+<g>
+  <rect x="434" y="560" width="374" height="106" rx="9" fill="#fdece4" stroke="#eb6834"/>
+  <text x="452" y="584" font-size="13" font-weight="700" fill="#15181d">안 쓴 필드도 자리를 차지한다</text>
+  <text x="452" y="606" font-size="12.5" fill="#4d545e">같은 값이 Protobuf 25 B vs Cap&#39;n Proto 88 B.</text>
+  <text x="452" y="624" font-size="12.5" fill="#4d545e">스파스한 메시지일수록 손해가 커진다.</text>
+  <text x="452" y="642" font-size="12.5" fill="#848a94">(packed 를 씌우면 29 B — 아래 참고)</text>
+</g>
+<g>
+  <rect x="828" y="560" width="372" height="106" rx="9" fill="#eff1f4" stroke="#cdd3db"/>
+  <text x="846" y="584" font-size="13" font-weight="700" fill="#15181d">기본값은 전부 0</text>
+  <text x="846" y="606" font-size="12.5" fill="#4d545e">필드 기본값을 XOR 해서 저장하므로 &#39;안 채운&#39;</text>
+  <text x="846" y="624" font-size="12.5" fill="#4d545e">구조체는 항상 0으로만 채워진다. 그래서</text>
+  <text x="846" y="642" font-size="12.5" fill="#4d545e">0을 뭉개는 packed 압축이 잘 먹는다.</text>
+</g>
+
+<!-- packed -->
+<rect x="40" y="682" width="1160" height="76" rx="9" fill="#f7f9fb" stroke="#cdd3db"/>
+<text x="58" y="706" font-size="13.5" font-weight="700" fill="#15181d">packed 인코딩 — 0 바이트를 지우는 초경량 압축 (88 B → 29 B)</text>
+<text x="58" y="728" font-size="12.5" fill="#4d545e">워드마다 <tspan font-weight="700">태그 1바이트</tspan>를 두고, 8개 비트가 각각 「그 자리 바이트가 0이 아님」을 뜻한다. 0인 바이트는 아예 빼 버린다.</text>
+<text x="58" y="748" font-size="12.5" fill="#4d545e">0 아닌 데이터(대용량 영상 등)에는 이득이 없고 오히려 2 KiB 당 2 B 씩 커진다. <tspan font-weight="700" fill="#eb6834">읽을 때 풀어야 하므로 제로카피 장점은 사라진다.</tspan></text>
+
+<text x="40" y="792" font-size="12" fill="#848a94">바이트 값 출처: <tspan font-family="'IBM Plex Mono',monospace">scripts/vehicle.capnp</tspan> 를 <tspan font-family="'IBM Plex Mono',monospace">capnp 1.0.1</tspan> 로 인코딩한 실제 결과. 포인터·packed 규칙은 Cap&#39;n Proto Encoding Spec 기준. · 자체 작성</text>
+</svg>

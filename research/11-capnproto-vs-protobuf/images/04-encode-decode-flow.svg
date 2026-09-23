@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 620" width="1240" height="620" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif" role="img" aria-label="Protobuf 와 Cap'n Proto 의 인코딩·디코딩 처리 흐름 비교와 복사 횟수">
+<rect width="1240" height="620" fill="#ffffff"/>
+<defs>
+  <marker id="f-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker>
+  <marker id="f-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker>
+</defs>
+
+<text x="40" y="44" font-size="23" font-weight="700" fill="#15181d">같은 메시지를 보내고 받을 때, 실제로 무슨 일이 일어나는가</text>
+<text x="40" y="70" font-size="14" fill="#4d545e">차이는 &#39;빠른 알고리즘&#39;이 아니라 <tspan font-weight="700">복사와 할당을 몇 번 하느냐</tspan>에서 온다.</text>
+
+<!-- ===== Protobuf 레인 ===== -->
+<rect x="40" y="94" width="1160" height="202" rx="11" fill="#fdf9f7" stroke="#eb6834"/>
+<text x="60" y="122" font-size="16" font-weight="700" fill="#eb6834">Protobuf</text>
+<text x="146" y="122" font-size="13" fill="#4d545e">메모리에 두는 모양과 전선에 싣는 모양이 <tspan font-weight="700">다르다</tspan> → 그 사이를 변환해야 한다</text>
+
+<g>
+  <rect x="60" y="138" width="150" height="72" rx="8" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="76" y="162" font-size="12.5" font-weight="700" fill="#15181d">앱 데이터</text>
+  <text x="76" y="182" font-size="11.5" fill="#848a94">센서 값, 계산 결과</text>
+
+  <rect x="248" y="138" width="186" height="72" rx="8" fill="#ffffff" stroke="#eb6834" stroke-width="1.6"/>
+  <text x="264" y="162" font-size="12.5" font-weight="700" fill="#15181d">메시지 객체</text>
+  <text x="264" y="181" font-size="11.5" fill="#4d545e">필드마다 힙에 흩어져 있음</text>
+  <text x="264" y="198" font-size="11.5" fill="#848a94">string·repeated 마다 할당 발생</text>
+
+  <rect x="472" y="138" width="186" height="72" rx="8" fill="#eff1f4" stroke="#cdd3db"/>
+  <text x="488" y="162" font-size="12.5" font-weight="700" fill="#15181d">바이트 버퍼</text>
+  <text x="488" y="181" font-size="11.5" fill="#4d545e">태그·varint 로 다시 씀</text>
+
+  <rect x="762" y="138" width="186" height="72" rx="8" fill="#ffffff" stroke="#eb6834" stroke-width="1.6"/>
+  <text x="778" y="162" font-size="12.5" font-weight="700" fill="#15181d">메시지 객체 (복원)</text>
+  <text x="778" y="181" font-size="11.5" fill="#4d545e">받은 쪽에서 다시 힙에 만듦</text>
+
+  <rect x="986" y="138" width="150" height="72" rx="8" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="1002" y="162" font-size="12.5" font-weight="700" fill="#15181d">앱 코드</text>
+  <text x="1002" y="182" font-size="11.5" fill="#848a94">getter 로 읽기</text>
+
+  <path d="M212 174 L 246 174" stroke="#4d545e" stroke-width="1.6" marker-end="url(#f-o)"/>
+  <path d="M436 174 L 470 174" stroke="#eb6834" stroke-width="2" marker-end="url(#f-o)"/>
+  <path d="M660 174 L 760 174" stroke="#eb6834" stroke-width="2" marker-end="url(#f-o)" stroke-dasharray="5 4"/>
+  <path d="M950 174 L 984 174" stroke="#4d545e" stroke-width="1.6" marker-end="url(#f-o)"/>
+
+  <text x="492" y="228" font-size="12" font-weight="700" fill="#eb6834">복사 ①  직렬화</text>
+  <text x="672" y="228" font-size="12" font-weight="700" fill="#eb6834">전송 · 복사 ②  파싱 + 객체 할당</text>
+  <text x="988" y="228" font-size="12" fill="#848a94">읽기는 공짜</text>
+</g>
+
+<rect x="60" y="244" width="1076" height="38" rx="7" fill="#fdece4" stroke="#eb6834"/>
+<text x="76" y="268" font-size="12.5" fill="#4d545e">객체 64개짜리 인지 리스트 1건 기준 <tspan font-weight="700" fill="#15181d">실측</tspan>: 인코딩 <tspan font-family="'IBM Plex Mono',monospace" font-weight="700">malloc 264회</tspan> · 디코딩 <tspan font-family="'IBM Plex Mono',monospace" font-weight="700">136회</tspan>  →  인코딩 6.7 µs, 디코딩 6.0 µs</text>
+
+<!-- ===== Cap'n Proto 레인 ===== -->
+<rect x="40" y="310" width="1160" height="202" rx="11" fill="#f7fafd" stroke="#2a78d6"/>
+<text x="60" y="338" font-size="16" font-weight="700" fill="#2a78d6">Cap&#39;n Proto</text>
+<text x="176" y="338" font-size="13" fill="#4d545e">메모리에 두는 모양이 <tspan font-weight="700">곧 전선에 싣는 모양</tspan> → 변환 단계 자체가 없다</text>
+
+<g>
+  <rect x="60" y="354" width="150" height="72" rx="8" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="76" y="378" font-size="12.5" font-weight="700" fill="#15181d">앱 데이터</text>
+  <text x="76" y="398" font-size="11.5" fill="#848a94">센서 값, 계산 결과</text>
+
+  <rect x="248" y="354" width="410" height="72" rx="8" fill="#ffffff" stroke="#2a78d6" stroke-width="1.6"/>
+  <text x="264" y="378" font-size="12.5" font-weight="700" fill="#15181d">메시지 버퍼 — 이미 &#39;전선 형식&#39;</text>
+  <text x="264" y="397" font-size="11.5" fill="#4d545e">setter 가 워드 격자의 정해진 비트 위치에 직접 쓴다</text>
+  <text x="264" y="414" font-size="11.5" fill="#848a94">직렬화라고 할 별도 단계가 없다 (프레이밍 헤더만 붙임)</text>
+
+  <rect x="762" y="354" width="186" height="72" rx="8" fill="#ffffff" stroke="#2a78d6" stroke-width="1.6"/>
+  <text x="778" y="378" font-size="12.5" font-weight="700" fill="#15181d">받은 버퍼 (그대로)</text>
+  <text x="778" y="397" font-size="11.5" fill="#4d545e">객체를 만들지 않는다</text>
+
+  <rect x="986" y="354" width="150" height="72" rx="8" fill="#ffffff" stroke="#cdd3db"/>
+  <text x="1002" y="378" font-size="12.5" font-weight="700" fill="#15181d">앱 코드</text>
+  <text x="1002" y="398" font-size="11.5" fill="#848a94">getter 로 읽기</text>
+
+  <path d="M212 390 L 246 390" stroke="#4d545e" stroke-width="1.6" marker-end="url(#f-b)"/>
+  <path d="M660 390 L 760 390" stroke="#2a78d6" stroke-width="2" marker-end="url(#f-b)" stroke-dasharray="5 4"/>
+  <path d="M950 390 L 984 390" stroke="#2a78d6" stroke-width="1.6" marker-end="url(#f-b)"/>
+
+  <text x="670" y="444" font-size="12" font-weight="700" fill="#2a78d6">전송 — 버퍼를 그대로 흘려보냄 (복사 0)</text>
+  <text x="988" y="444" font-size="12" font-weight="700" fill="#2a78d6">읽을 때 포인터 계산 + 경계 검사</text>
+</g>
+
+<rect x="60" y="460" width="1076" height="38" rx="7" fill="#e6eff9" stroke="#2a78d6"/>
+<text x="76" y="484" font-size="12.5" fill="#4d545e">같은 조건 <tspan font-weight="700" fill="#15181d">실측</tspan>: 인코딩 <tspan font-family="'IBM Plex Mono',monospace" font-weight="700">malloc 2회</tspan> · 디코딩 <tspan font-family="'IBM Plex Mono',monospace" font-weight="700">0회</tspan>  →  인코딩 2.5 µs, 디코딩 1.1 µs · 헤더 한 필드만 읽으면 <tspan font-weight="700">44 ns</tspan></text>
+
+<!-- 주의 -->
+<rect x="40" y="524" width="1160" height="60" rx="9" fill="#fdf6e7" stroke="#d9a63f"/>
+<text x="58" y="548" font-size="13" font-weight="700" fill="#15181d">다만 이 그림은 &#39;큰 메시지&#39; 이야기다</text>
+<text x="58" y="570" font-size="12.5" fill="#4d545e">100 B 짜리 작은 메시지에서는 복사할 것 자체가 적어서 이 구조적 이점이 거의 드러나지 않는다. 실측에서도 작은 메시지 인코딩은 Protobuf 쪽이 더 빨랐다(§4.2.2).</text>
+
+<text x="40" y="606" font-size="12" fill="#848a94">수치 출처: 본 보고서 <tspan font-family="'IBM Plex Mono',monospace">scripts/bench.cpp</tspan> 실측 (메시지 B, 2026-09-21). 실선 = 측정·문서로 확인, 점선 = 전송 구간(매체에 따라 달라짐). · 자체 작성</text>
+</svg>

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 736" width="1240" height="736" font-family="'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif" role="img" aria-label="Cap'n Proto 와 Protobuf 의 인코딩·디코딩·단일 필드 읽기 실측 결과">
+<rect width="1240" height="736" fill="#ffffff"/>
+<text x="40" y="44" font-size="23" font-weight="700" fill="#15181d">직접 측정한 결과 — 짧을수록 빠르다</text>
+<text x="40" y="70" font-size="13.5" fill="#4d545e">막대 길이는 <tspan font-weight="700">패널 안에서만</tspan> 비교한다. 패널마다 값의 자릿수가 달라 축을 따로 썼다.</text>
+<text x="40" y="100" font-size="12" fill="#848a94">색 = 포맷</text>
+<rect x="106" y="91" width="11" height="11" rx="2.5" fill="#eb6834"/>
+<text x="123" y="100" font-size="12" fill="#4d545e">Protobuf</text>
+<rect x="211.6" y="91" width="11" height="11" rx="2.5" fill="#2a78d6"/>
+<text x="228.6" y="100" font-size="12" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="338.8" y="91" width="11" height="11" rx="2.5" fill="#1baf7a"/>
+<text x="355.8" y="100" font-size="12" fill="#4d545e">Cap&#x27;n Proto · packed</text>
+<text x="40" y="132" font-size="15" font-weight="700" fill="#15181d">A. VehicleState · 65–96 B (고빈도 상태)</text>
+<line x1="40" y1="141" x2="1200" y2="141" stroke="#cdd3db"/>
+<text x="40" y="158" font-size="12.5" font-weight="700" fill="#15181d">인코딩</text>
+<text x="184" y="192.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="192" y="179" width="139.4" height="17" rx="4" fill="#eb6834"/>
+<text x="338.4" y="192.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">103.9 ns</text>
+<text x="184" y="218.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf · arena</text>
+<rect x="192" y="205" width="145.0" height="17" rx="4" fill="#eb6834"/>
+<text x="344.0" y="218.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">108.1 ns</text>
+<text x="184" y="244.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf · 객체 재사용</text>
+<rect x="192" y="231" width="83.5" height="17" rx="4" fill="#eb6834"/>
+<text x="282.5" y="244.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">62.2 ns</text>
+<text x="184" y="270.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="192" y="257" width="156.0" height="17" rx="4" fill="#2a78d6"/>
+<text x="355.0" y="270.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">116.3 ns</text>
+<text x="184" y="296.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto · 스크래치</text>
+<rect x="192" y="283" width="103.5" height="17" rx="4" fill="#2a78d6"/>
+<text x="302.5" y="296.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">77.2 ns</text>
+<text x="450" y="158" font-size="12.5" font-weight="700" fill="#15181d">디코딩 + 전체 읽기</text>
+<text x="594" y="192.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="602" y="179" width="57.6" height="17" rx="4" fill="#eb6834"/>
+<text x="666.6" y="192.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">82.5 ns</text>
+<text x="594" y="218.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf · 객체 재사용</text>
+<rect x="602" y="205" width="44.3" height="17" rx="4" fill="#eb6834"/>
+<text x="653.3" y="218.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">63.5 ns</text>
+<text x="594" y="244.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="602" y="231" width="47.2" height="17" rx="4" fill="#2a78d6"/>
+<text x="656.2" y="244.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">67.7 ns</text>
+<text x="594" y="270.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto · packed</text>
+<rect x="602" y="257" width="146.0" height="17" rx="4" fill="#1baf7a"/>
+<text x="755.0" y="270.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">209.1 ns</text>
+<text x="40" y="340" font-size="15" font-weight="700" fill="#15181d">B. ObjectList · 6.4 KB (인지 객체 64개)</text>
+<line x1="40" y1="349" x2="1200" y2="349" stroke="#cdd3db"/>
+<text x="40" y="366" font-size="12.5" font-weight="700" fill="#15181d">인코딩</text>
+<text x="184" y="400.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="192" y="387" width="156.0" height="17" rx="4" fill="#eb6834"/>
+<text x="355.0" y="400.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">6.7 µs</text>
+<text x="184" y="426.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf · arena</text>
+<rect x="192" y="413" width="126.4" height="17" rx="4" fill="#eb6834"/>
+<text x="325.4" y="426.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">5.4 µs</text>
+<text x="184" y="452.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf · 객체 재사용</text>
+<rect x="192" y="439" width="83.6" height="17" rx="4" fill="#eb6834"/>
+<text x="282.6" y="452.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">3.6 µs</text>
+<text x="184" y="478.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="192" y="465" width="59.0" height="17" rx="4" fill="#2a78d6"/>
+<text x="258.0" y="478.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">2.5 µs</text>
+<text x="184" y="504.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto · 스크래치</text>
+<rect x="192" y="491" width="58.3" height="17" rx="4" fill="#2a78d6"/>
+<text x="257.3" y="504.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">2.5 µs</text>
+<text x="450" y="366" font-size="12.5" font-weight="700" fill="#15181d">디코딩 + 전체 읽기</text>
+<text x="594" y="400.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="602" y="387" width="146.0" height="17" rx="4" fill="#eb6834"/>
+<text x="755.0" y="400.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">6.0 µs</text>
+<text x="594" y="426.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf · 객체 재사용</text>
+<rect x="602" y="413" width="95.2" height="17" rx="4" fill="#eb6834"/>
+<text x="704.2" y="426.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">3.9 µs</text>
+<text x="594" y="452.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="602" y="439" width="26.2" height="17" rx="4" fill="#2a78d6"/>
+<text x="635.2" y="452.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">1.1 µs</text>
+<text x="594" y="478.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto · packed</text>
+<rect x="602" y="465" width="138.3" height="17" rx="4" fill="#1baf7a"/>
+<text x="747.3" y="478.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">5.7 µs</text>
+<text x="850" y="366" font-size="12.5" font-weight="700" fill="#15181d">헤더 필드 1개만 읽기</text>
+<text x="994" y="400.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="1002" y="387" width="136.0" height="17" rx="4" fill="#eb6834"/>
+<text x="1145.0" y="400.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">4.8 µs</text>
+<text x="994" y="426.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="1002" y="413" width="2.0" height="17" rx="4" fill="#2a78d6"/>
+<text x="1011.0" y="426.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">44.1 ns</text>
+<text x="40" y="548" font-size="15" font-weight="700" fill="#15181d">C. SensorFrame · 1 MiB (센서 페이로드)</text>
+<line x1="40" y1="557" x2="1200" y2="557" stroke="#cdd3db"/>
+<text x="40" y="574" font-size="12.5" font-weight="700" fill="#15181d">인코딩</text>
+<text x="184" y="608.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="192" y="595" width="156.0" height="17" rx="4" fill="#eb6834"/>
+<text x="355.0" y="608.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">210.7 µs</text>
+<text x="184" y="634.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="192" y="621" width="95.5" height="17" rx="4" fill="#2a78d6"/>
+<text x="294.5" y="634.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">129.0 µs</text>
+<text x="450" y="574" font-size="12.5" font-weight="700" fill="#15181d">디코딩 + 전체 읽기</text>
+<text x="594" y="608.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="602" y="595" width="146.0" height="17" rx="4" fill="#eb6834"/>
+<text x="755.0" y="608.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">50.0 µs</text>
+<text x="594" y="634.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="602" y="621" width="16.0" height="17" rx="4" fill="#2a78d6"/>
+<text x="625.0" y="634.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">5.5 µs</text>
+<text x="850" y="574" font-size="12.5" font-weight="700" fill="#15181d">헤더 필드 1개만 읽기</text>
+<text x="994" y="608.0" text-anchor="end" font-size="11.5" fill="#4d545e">Protobuf</text>
+<rect x="1002" y="595" width="136.0" height="17" rx="4" fill="#eb6834"/>
+<text x="1145.0" y="608.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">44.3 µs</text>
+<text x="994" y="634.0" text-anchor="end" font-size="11.5" fill="#4d545e">Cap&#x27;n Proto</text>
+<rect x="1002" y="621" width="2.0" height="17" rx="4" fill="#2a78d6"/>
+<text x="1011.0" y="634.0" font-size="11.5" font-family="'IBM Plex Mono',monospace" fill="#15181d">67.8 ns</text>
+<text x="40" y="710" font-size="11.5" fill="#848a94">Intel Xeon @ 2.10GHz(4 vCPU) · Ubuntu 24.04 · g++ 13.3 -O2 · capnp 1.0.1 · protobuf 3.21.12 · 단일 스레드 · 2026-09-21 측정. 공용 클라우드 vCPU 이므로 절대값보다 같은 패널 안의 비율을 보라. 재현: scripts/run.sh · 자체 작성</text>
+</svg>

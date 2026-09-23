@@ -1,0 +1,102 @@
+=========================================================================
+ Cap'n Proto vs Protobuf serialization benchmark
+ capnp 1.0.1 / protobuf 3.21.12 / mode=ALLOC-COUNT
+=========================================================================
+
+[clock overhead] 빈 연산: 깨끗한 평균 2.6 ns / per-op 중앙값 26.0 ns
+  -> median/p99 열에는 이 중앙값만큼의 계측 오버헤드가 포함되어 있다.
+     mean 열은 루프 밖에서만 시계를 읽었으므로 오버헤드가 없다.
+
+### A. VehicleState (고빈도 차량 상태, 4륜 + 헤더)
+
+  크기: protobuf 65 B | capnp 96 B | capnp-packed 69 B
+  gzip: protobuf 76 B | capnp 87 B | capnp-packed 80 B
+
+  [인코딩] 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf (매번 새 객체)            109.9      119.0      215.0     1.00x
+  protobuf (객체 재사용 + Clear)       72.6       84.0      122.0     0.66x
+  protobuf (arena)                        119.6      132.0      249.0     1.09x
+  capnp (매번 새 builder)              126.6      146.0      254.0     1.15x
+  capnp (스크래치 버퍼 재사용)       80.5       98.0      136.0     0.73x
+
+  [디코딩 + 전체 필드 읽기] 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf (매번 새 객체)             88.6      100.0      122.0     1.00x
+  protobuf (객체 재사용)              67.5       89.0      127.0     0.76x
+  capnp (FlatArrayMessageReader)           71.2       89.0      127.0     0.80x
+  capnp-packed (unpack 필요)            225.6      235.0      331.0     2.55x
+
+  [할당] op 당 malloc 호출 수 / 요청 바이트
+    protobuf 인코딩 (새 객체)         3 calls      88 B
+    capnp 인코딩 (새 builder)         2 calls    8288 B
+    protobuf 디코딩                   2 calls      64 B
+    capnp 디코딩                      0 calls       0 B
+
+### B. ObjectList (인지 객체 64개)
+
+  크기: protobuf 6362 B | capnp 6712 B | capnp-packed 5907 B
+  gzip: protobuf 5651 B | capnp 5247 B | capnp-packed 5395 B
+
+  [인코딩] 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf (매번 새 객체)           7368.9     6885.0    12860.0     1.00x
+  protobuf (arena)                       5611.0     5232.0    10167.0     0.76x
+  protobuf (객체 재사용 + Clear)     3830.7     3745.0     7873.0     0.52x
+  capnp (매번 새 builder)             2680.1     2622.0     3083.0     0.36x
+  capnp (스크래치 버퍼 재사용)     2548.0     2444.0     4977.0     0.35x
+
+  [디코딩 + 전체 필드 읽기] 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf (매번 새 객체)           6806.5     6420.0    12185.0     1.00x
+  protobuf (객체 재사용)            4129.4     4025.0     7790.0     0.61x
+  capnp (FlatArrayMessageReader)         1139.5     1073.0     1254.0     0.17x
+  capnp-packed (unpack 필요)           5862.8     5868.0    11543.0     0.86x
+
+  [단일 필드만 읽기] 받은 바이트에서 header.timestampNs 하나만. 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf (전체 파싱 필요)        6465.0     6251.0    12050.0     1.00x
+  capnp (포인터만 따라감)           55.9       80.0      106.0     0.01x
+
+  [할당] op 당 malloc 호출 수 / 요청 바이트
+    protobuf 인코딩 (새 객체)       264 calls   15384 B
+    capnp 인코딩 (새 builder)         2 calls   14904 B
+    protobuf 디코딩                 136 calls   11032 B
+    capnp 디코딩                      0 calls       0 B
+
+### C. SensorFrame (1024 KiB 페이로드)
+
+  크기: protobuf 1048604 B | capnp 1048656 B | capnp-packed 1049842 B
+  gzip: protobuf 784927 B | capnp 784958 B
+
+  [인코딩] 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf                             225180.7   212459.0   344068.0     1.00x
+  capnp                                147299.2   133153.0   229321.0     0.65x
+
+  [디코딩 + 페이로드 전체 체크섬] 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf                              47281.8    43601.0    88516.0     1.00x
+  capnp                                  6356.8     5684.0    14600.0     0.13x
+
+  [단일 필드만 읽기] header.timestampNs 하나만. 단위: ns/op
+                                           mean     median        p99     vs PB
+  ------------------------------------------------------------------------------
+  protobuf (1 MiB 전체 파싱)        44642.1    39736.0    91315.0     1.00x
+  capnp (포인터만 따라감)           69.0       93.0      116.0     0.00x
+
+  [할당] op 당 malloc 호출 수 / 요청 바이트
+    protobuf 인코딩                   4 calls   2097226 B
+    capnp 인코딩                      7 calls   1057056 B
+    protobuf 디코딩                   3 calls   1048649 B
+    capnp 디코딩                      4 calls       192 B
+
+peak RSS: 17048 KiB
+sink=3.27976e+24 (최적화 방지용)

@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>퀄컴 83xx(SA8397P · Cockpit Elite) vs 82xx</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f7f9; --surface:#fdfdfd; --surface-2:#eff1f4;
+  --ink:#15181d; --ink-2:#4d545e; --muted:#848a94; --hairline:#e2e5ea;
+  --accent:#1c5cab; --accent-soft:#e6eef8;
+  --warn-bg:#fdf6e7; --warn-edge:#d9a63f;
+  --ok-bg:#e9f6f0; --ok-edge:#1baf7a;
+  --code-bg:#eef0f3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16px;line-height:1.78;-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+a:hover{border-bottom-color:var(--accent)}
+.layout{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:2.5rem;
+  max-width:76rem;margin:0 auto;padding:0 1.5rem 6rem}
+nav.toc{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto;
+  padding:2.5rem 0 2rem;font-size:.86rem}
+nav.toc .toc-title{font-family:Archivo,sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+nav.toc a{display:block;color:var(--ink-2);padding:.28rem 0 .28rem .7rem;
+  border-left:2px solid var(--hairline);border-bottom:none;line-height:1.45}
+nav.toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+nav.toc a.sub{padding-left:1.5rem;font-size:.81rem;color:var(--muted)}
+main{min-width:0;max-width:50rem}
+header.hero{padding:3.5rem 0 2rem;border-bottom:1px solid var(--hairline)}
+.kicker{font-family:Archivo,sans-serif;font-size:.75rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .9rem}
+h1{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-size:clamp(1.8rem,4.4vw,2.5rem);
+  font-weight:800;line-height:1.16;letter-spacing:-.01em;margin:0 0 .5rem;text-wrap:balance}
+.subtitle{color:var(--ink-2);font-size:1.02rem;margin:0 0 1.4rem}
+.byline{color:var(--muted);font-size:.86rem;margin:0}
+.statstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1px;
+  background:var(--hairline);border:1px solid var(--hairline);border-radius:10px;
+  overflow:hidden;margin-top:1.9rem}
+.stat{background:var(--surface);padding:.9rem 1rem}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:1.2rem;font-weight:600;display:block;line-height:1.35}
+.stat .k{font-size:.73rem;color:var(--muted);letter-spacing:.04em}
+section{margin-top:3.4rem;scroll-margin-top:1.5rem}
+.eyebrow{font-family:Archivo,sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+.eyebrow .no{color:var(--accent);margin-right:.5em;font-family:"IBM Plex Mono",monospace}
+h2{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-size:1.5rem;font-weight:700;
+  margin:0 0 1rem;letter-spacing:-.005em;text-wrap:balance}
+h3{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-size:1.06rem;font-weight:700;
+  margin:2.2rem 0 .6rem;scroll-margin-top:1.5rem}
+p{margin:0 0 1rem}
+ul,ol{margin:0 0 1rem;padding-left:1.3rem}
+li{margin-bottom:.45rem}
+code{font-family:"IBM Plex Mono",monospace;font-size:.84em;background:var(--code-bg);
+  padding:.12em .4em;border-radius:4px}
+table{width:100%;border-collapse:collapse;margin:1.3rem 0;font-size:.86rem;
+  background:var(--surface);border:1px solid var(--hairline);border-radius:8px;overflow:hidden}
+th,td{text-align:left;padding:.55rem .7rem;border-bottom:1px solid var(--hairline);vertical-align:top}
+th{background:var(--surface-2);font-weight:700;font-size:.78rem;letter-spacing:.02em}
+tr:last-child td{border-bottom:none}
+.tablewrap{overflow-x:auto}
+.hl td{background:var(--accent-soft)}
+.callout{border-radius:0 8px 8px 0;padding:.85rem 1.15rem;margin:1.5rem 0;font-size:.9rem;color:var(--ink-2)}
+.callout.warn{background:var(--warn-bg);border-left:3px solid var(--warn-edge)}
+.callout.ok{background:var(--ok-bg);border-left:3px solid var(--ok-edge)}
+.callout.note{background:var(--accent-soft);border-left:3px solid var(--accent)}
+.callout strong{color:var(--ink)}
+.tldr{display:grid;gap:.9rem;margin:1.6rem 0}
+.tldr .item{background:var(--surface);border:1px solid var(--hairline);
+  border-left:4px solid var(--accent);border-radius:10px;padding:1rem 1.2rem;font-size:.95rem}
+.tldr .n{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent);margin-right:.5em}
+.src{font-size:.8rem;color:var(--muted)}
+.tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.7rem;padding:.05em .45em;
+  border-radius:4px;border:1px solid var(--hairline);background:var(--surface-2);color:var(--ink-2);margin-right:.25em;vertical-align:middle}
+.tag.of{background:#e6eef8;border-color:#b9cfee;color:#1c5cab}
+.tag.vd{background:#e9f6f0;border-color:#b4e2cc;color:#177a55}
+.tag.tp{background:#f3f0fa;border-color:#d2c7ea;color:#5a3e9c}
+.tag.es{background:#fdf6e7;border-color:#ead39a;color:#8a6410}
+.tag.uk{background:#fbe9e9;border-color:#efc0c0;color:#a12d2d}
+footer{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--hairline);
+  font-size:.82rem;color:var(--muted)}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:2rem 0 0;
+    border-bottom:1px solid var(--hairline);padding-bottom:1.2rem}
+  nav.toc .links{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+  nav.toc a{border-left:none;padding-left:0}
+  nav.toc a.sub{display:none}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">목차</div>
+  <div class="links">
+    <a href="#tldr">0. 세 줄 요약</a>
+    <a href="#lineage">1. 계보 — 83xx의 위치</a>
+    <a href="#naming" class="sub">1.1 명명 규칙</a>
+    <a href="#timeline" class="sub">1.2 시간축</a>
+    <a href="#gen4">2. 82xx (8295P·8255P)</a>
+    <a href="#elite">3. 83xx (SA8397P)</a>
+    <a href="#official" class="sub">3.1 퀄컴 공식 주장</a>
+    <a href="#thirdparty" class="sub">3.2 서드파티 수치</a>
+    <a href="#vs8797" class="sub">3.3 8397P vs 8797P</a>
+    <a href="#compare">4. 비교표</a>
+    <a href="#diff">5. 무엇이 다른가 — 6가지</a>
+    <a href="#adoption">6. 양산·생태계</a>
+    <a href="#takeaway">7. IPCU 관점 시사점</a>
+    <a href="#unknown">8. 미확인·상충</a>
+    <a href="#sources">9. 출처</a>
+  </div>
+</nav>
+
+<main>
+<header class="hero">
+  <p class="kicker">Research · Automotive SoC</p>
+  <h1>퀄컴 83xx 계열 — SA8397P · Snapdragon Cockpit Elite</h1>
+  <p class="subtitle">IVI에 써 온 82xx(SA8255P/SA8295P)와 무엇이 다른가 — IPCU 성능형 SoC 후보 검토</p>
+  <p class="byline">작성일 2026-09-16 · 모든 사실 주장에 출처 병기 · <span class="tag of">공식</span><span class="tag vd">벤더</span><span class="tag tp">서드파티</span><span class="tag es">추정</span><span class="tag uk">미확인</span> 구분</p>
+  <div class="statstrip">
+    <div class="stat"><span class="v">SA8397P</span><span class="k">83xx = 이 품번 하나</span></div>
+    <div class="stat"><span class="v">Oryon</span><span class="k">Kryo(Arm) → 자체 설계 CPU</span></div>
+    <div class="stat"><span class="v">3× / 3× / 12×</span><span class="k">CPU / GPU / NPU (공식 목표)</span></div>
+    <div class="stat"><span class="v">30 → 320 TOPS</span><span class="k">8295P → 8397P (서드파티)</span></div>
+    <div class="stat"><span class="v">~273 GB/s</span><span class="k">256-bit LPDDR5X (서드파티)</span></div>
+    <div class="stat"><span class="v">2026</span><span class="k">양산 개시 연도</span></div>
+  </div>
+</header>
+
+<div class="callout note" style="margin-top:1.6rem"><strong>출처 표기 원칙.</strong> 퀄컴 공식 문서는 배수(3×·12×)만 제시하고 절대 수치를 내지 않는다. 따라서 TOPS·코어 수·대역폭 같은 절대 수치는 거의 전부 서드파티 값이며, 본문에서 등급 태그로 구분한다. 확인 못 한 항목은 <span class="tag uk">미확인</span>, 출처 간 불일치는 <strong>상충</strong>으로 표시한다.</div>
+
+<section id="tldr">
+  <p class="eyebrow"><span class="no">00</span>세 줄 요약</p>
+  <h2>83xx는 무엇이고, 82xx와 무엇이 다른가</h2>
+  <div class="tldr">
+    <div class="item"><span class="n">1</span><strong>"83xx"는 사실상 SA8397P 한 품번, 브랜드명 Snapdragon Cockpit Elite(座舱平台至尊版)다.</strong> 2024-10-22 Snapdragon Summit에서 Ride Elite(SA8797P)와 함께 발표된 5세대 콕핏 플랫폼으로, 82xx(4세대 Cockpit Platform, 2021-01 발표·5nm)의 직계 후속이다. <span class="src">(<a href="https://www.nasdaq.com/articles/qualcomm-debuts-snapdragon-cockpit-elite-and-snapdragon-ride-elite-platforms">Nasdaq/The Fly 2024-10-22</a> · <a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft CES 2026</a> · <a href="https://www.newsfcar.com/14736/">车联天下×퀄컴</a>)</span></div>
+    <div class="item"><span class="n">2</span><strong>핵심 차이는 CPU 교체(Arm Cortex 기반 Kryo → 퀄컴 자체 설계 Oryon)와 NPU 세대 도약이다.</strong> 공식 목표 CPU 3×·GPU 3×·NPU 12×. 서드파티 수치로 8295P 30 TOPS → 8397P 320 TOPS(dense), 메모리 LPDDR4X → 256-bit LPDDR5X ~273 GB/s. 이 조합이 "차내 14B급 LLM"이라는 세일즈 포인트를 만든다. <span class="src">(<a href="https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-Cockpit-Elite-Snapdragon-Ride-Elite-Product-Brief.pdf">퀄컴 제품 브리프</a> · <a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a> · <a href="https://m.ithome.com/html/934657.htm">IT之家 2026-03-31</a>)</span></div>
+    <div class="item"><span class="n">3</span><strong>양산 시점은 "지금"이다.</strong> 2025 샘플링 → 2026 JLR×체리 Freelander·Exeed·Zeekr에 8397P, Leapmotor D19·Li Auto L9/L8에 형제 칩 8797P. 퀄컴은 2026년 Elite 탑재 신차 15종 이상 예고. LG전자는 CES 2026에서 Cockpit Elite 기반 AI 캐빈 플랫폼 공개. 단, <strong>AI Hub·ExecuTorch 등 공개 SW 툴체인에는 아직 SA8397P가 정식 등재되지 않았다</strong>(2026-09-16 확인). <span class="src">(<a href="https://www.marketscreener.com/news/qualcomm-drives-the-future-of-mobility-with-strong-snapdragon-digital-chassis-momentum-and-agentic-ce7e59deda80f026">퀄컴 CES 2026 PR</a> · <a href="https://chejiahao.autohome.com.cn/info/25366884">Nakul Duggal 인터뷰 2026-04-28</a> · <a href="https://aihub.qualcomm.com/automotive/models">AI Hub</a> · <a href="https://github.com/pytorch/executorch/issues/16535">ExecuTorch #16535</a>)</span></div>
+  </div>
+</section>
+
+<section id="lineage">
+  <p class="eyebrow"><span class="no">01</span>계보</p>
+  <h2>퀄컴 차량용 SoC 계보 — 83xx가 어디에 놓이는가</h2>
+
+  <h3 id="naming">1.1 명명 규칙 <span class="tag es">본 보고서 해석</span></h3>
+  <p>퀄컴은 품번 규칙을 공식 문서로 설명하지 않는다. 그러나 공개된 품번–브랜드 대응은 다음 패턴이 일관된다(대응 관계 자체는 각 행 출처로 확인).</p>
+  <div class="tablewrap"><table>
+    <tr><th>품번</th><th>브랜드</th><th>세대/계층</th><th>용도</th><th>근거</th></tr>
+    <tr><td>SA8155P / SA8195P</td><td>Cockpit Platform 3세대</td><td>7nm</td><td>콕핏</td><td><a href="https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/qul7413_sa8155_productbrief_r4.pdf">퀄컴 SA8155P 브리프</a></td></tr>
+    <tr><td><strong>SA8295P</strong></td><td>Cockpit Platform <strong>4세대</strong> 최상위</td><td>5nm</td><td>콕핏</td><td><a href="https://cdn.lantronix.com/wp-content/uploads/pdf/MPB-00130-RevB-SA8295P-US.pdf">Lantronix ADP</a> · <a href="https://telematicswire.net/qualcomm-introduces-gen4-snapdragon-automotive-cockpit-platform/">4세대 발표 2021-01</a></td></tr>
+    <tr><td><strong>SA8255P</strong></td><td>Cockpit Platform 4세대 중간</td><td>5nm(서드파티)</td><td>콕핏</td><td><a href="https://www.thundercomm.com/product/sa8255p-sa8775p-automotive-development-platform/">Thundercomm</a></td></tr>
+    <tr><td>SA8775P</td><td>Snapdragon Ride Flex</td><td>—</td><td>콕핏+ADAS(ASIL D)</td><td><a href="https://www.thundercomm.com/product/sa8255p-sa8775p-automotive-development-platform/">Thundercomm</a></td></tr>
+    <tr><td>SA8650P / SA8620P</td><td>Snapdragon Ride</td><td>—</td><td>ADAS</td><td><a href="https://docs.qualcomm.com/nav/home/auto_overview.html?product=1601111740009302">QAIRT Auto 개요</a></td></tr>
+    <tr class="hl"><td><strong>SA8397P</strong></td><td><strong>Snapdragon Cockpit Elite</strong>(座舱平台至尊版)</td><td><strong>5세대</strong>, Oryon</td><td>콕핏</td><td><a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a> · <a href="https://www.newsfcar.com/14736/">车联天下</a></td></tr>
+    <tr><td><strong>SA8797P</strong></td><td><strong>Snapdragon Ride Elite</strong>(Ride平台至尊版; 서드파티 "Ride Flex Elite")</td><td>5세대, Oryon</td><td>ADAS / 콕핏+ADAS 융합</td><td><a href="https://www.newsfcar.com/14736/">车联天下</a> · <a href="https://vision-mobility.de/en/news/ces-2026-leapmotor-becomes-the-first-oem-to-use-qualcomms-dual-chipset-sa8797p-389375.html">vision-mobility</a></td></tr>
+  </table></div>
+  <p>읽는 법(해석): <code>SA8</code> 다음 첫 자리 = <strong>도메인</strong>(1·2·3 = 콕핏 세대, 6 = Ride, 7 = Ride Flex/융합), 뒤 두 자리 = <strong>등급</strong>(97 = Elite, 95 = 4세대 최상위, 55 = 4세대 중간). "82xx" = 4세대 콕핏(8295P·8255P), "83xx" = 5세대 콕핏 Elite(8397P). <strong>8397P 외의 83xx 품번은 공개 출처에서 확인되지 않았다</strong> <span class="tag uk">미확인</span>.</p>
+
+  <h3 id="timeline">1.2 시간축</h3>
+  <div class="tablewrap"><table>
+    <tr><th>시점</th><th>사건</th><th>출처</th></tr>
+    <tr><td>2021-01-27</td><td>4세대 Cockpit Platform 발표(5nm), 2022 양산 예고</td><td><a href="https://telematicswire.net/qualcomm-introduces-gen4-snapdragon-automotive-cockpit-platform/">telematicswire</a> <span class="tag of">공식 전재</span></td></tr>
+    <tr><td>2024-10-22</td><td>Snapdragon Summit(Maui): Cockpit Elite·Ride Elite 발표. Oryon, CPU 3×·AI 12×, 2025 샘플링, Li Auto·Mercedes 협력</td><td><a href="https://www.nasdaq.com/articles/qualcomm-debuts-snapdragon-cockpit-elite-and-snapdragon-ride-elite-platforms">Nasdaq</a> · <a href="https://futurride.com/2024/10/22/qualcomm-ups-snapdragon-tech-with-cockpit-and-ride-elite-platforms/">Futurride</a></td></tr>
+    <tr><td>2025-01-07</td><td>Panasonic, Cockpit Elite 기반 CDC/HPC. "차세대 Cockpit 2026 초, Elite 직후"</td><td><a href="https://news.panasonic.com/global/press/en250107-5">Panasonic PR</a> <span class="tag of">공식</span></td></tr>
+    <tr><td>2025-07-22</td><td>Li Auto i8 콕핏은 8295P(8397 아님)</td><td><a href="https://news.qq.com/rain/a/20250722A089YJ00">腾讯新闻</a></td></tr>
+    <tr><td>2025-09</td><td>Mercedes CLA(MB.OS) — "Snapdragon Cockpit Platforms"(품번 미기재)</td><td><a href="https://www.qualcomm.com/news/releases/2025/09/qualcomm-s-snapdragon-cockpit-platforms-power-smart--intuitive-a">퀄컴 PR</a></td></tr>
+    <tr><td>2025-12-11</td><td>LG전자, CES 2026 Cockpit Elite 기반 AI 캐빈 플랫폼 예고</td><td><a href="https://news.nate.com/view/20251211n35389">한국경제 via Nate</a></td></tr>
+    <tr><td>2025-12-22</td><td>Exeed(星途): 2026 Carmind 2.0 + 8397 콕핏</td><td><a href="https://news.qq.com/rain/a/20251223A05T4R00">腾讯新闻</a></td></tr>
+    <tr><td>2026-01-05</td><td>CES 2026: Elite 디자인윈 10건, Leapmotor D19 듀얼 Elite, Visteon·Garmin·Thundersoft</td><td><a href="https://www.marketscreener.com/news/qualcomm-drives-the-future-of-mobility-with-strong-snapdragon-digital-chassis-momentum-and-agentic-ce7e59deda80f026">퀄컴 PR 전재</a></td></tr>
+    <tr><td>2026-01-12</td><td>ExecuTorch SA8397 지원 요청 이슈</td><td><a href="https://github.com/pytorch/executorch/issues/16535">#16535</a></td></tr>
+    <tr><td>2026-03-31</td><td>JLR×체리 Freelander — "세계 최초 8397 탑재군"</td><td><a href="https://m.ithome.com/html/934657.htm">IT之家</a> · <a href="https://news.mydrivers.com/1/1112/1112866.htm">快科技</a></td></tr>
+    <tr><td>2026-04-28</td><td>Nakul Duggal(베이징): 2026 Elite 신차 15종 이상</td><td><a href="https://chejiahao.autohome.com.cn/info/25366884">汽车之家</a></td></tr>
+    <tr><td>2026-06-05</td><td>퀄컴 중국 서밋(우시): SA8397P 4nm, Ride Elite 720 TOPS</td><td><a href="https://www.163.com/dy/article/KUP4MPM60511DTVV.html">网易</a></td></tr>
+    <tr><td>2026-06-15</td><td>Li Auto 차세대 콕핏 — 8797 Elite 세계 최초 양산</td><td><a href="https://autonews.gasgoo.com/articles/icv/li-auto-launches-new-gen-cockpit-platform-powered-by-proprietary-os-qualcomms-latest-chip-2066711041814409217">Gasgoo</a></td></tr>
+  </table></div>
+</section>
+
+<section id="gen4">
+  <p class="eyebrow"><span class="no">02</span>82xx</p>
+  <h2>지금까지 써 온 것 — SA8295P · SA8255P</h2>
+
+  <h3>2.1 SA8295P (4세대 최상위) <span class="tag vd">벤더</span></h3>
+  <ul>
+    <li><strong>CPU</strong> Kryo 695 (Arm v8 Cortex 기반) · <strong>GPU</strong> Adreno 695</li>
+    <li><strong>AI</strong> Dual Hexagon Tensor Processor — Hexagon DSP + quad HVX + dual HMX</li>
+    <li><strong>ISP</strong> Spectra 395 · <strong>VPU</strong> Adreno 665 · <strong>DPU</strong> Adreno 1199</li>
+    <li><strong>안전</strong> Safety Manager(dual ARC HS46 lock-step), SEooC로 ASIL B 상정</li>
+    <li><strong>메모리(ADP)</strong> 8채널 LPDDR4X-2133 (8×16-bit), 16 GB · <strong>디스플레이(ADP)</strong> DP 3 + eDP 4 + DSI 2 · <strong>카메라</strong> 4-lane MIPI CSI ×4</li>
+  </ul>
+  <p class="src"><a href="https://cdn.lantronix.com/wp-content/uploads/pdf/MPB-00130-RevB-SA8295P-US.pdf">Lantronix SA8295P ADP 사양서</a>. 서드파티: 5nm, 8코어(고성능 4+중급 4), ~30 TOPS (<a href="https://www.pcauto.com/my/news/30tops-a-deep-analysis-of-the-qualcomm-8295-chip-intelligent-driving-under-5nm-process-14039">pcauto</a> · <a href="https://news.qq.com/rain/a/20250722A089YJ00">腾讯新闻</a>). 절대 TOPS는 퀄컴 공식 문서에 없음.</p>
+
+  <h3>2.2 SA8255P (4세대 중간 — 현재 IVI 주력) <span class="tag vd">벤더</span></h3>
+  <ul>
+    <li><strong>CPU</strong> Kryo Gen-6 (Arm v8.2), "Quad Kryo Gold Prime" 표기. PassMark 8코어/8스레드(MT 6,337 · ST 1,625, 2025 Q3 등재)</li>
+    <li><strong>GPU</strong> Adreno 663 (safe GP-GPU compute) · <strong>AI</strong> Hexagon Tensor Processor + quad HVX + dual HMX</li>
+    <li><strong>ISP</strong> Spectra 690, MIPI-CSI ×4 · <strong>메모리(ADP)</strong> LPDDR5 3ch 3200 MHz, 3×12 GB · UFS 3.1 ×2</li>
+    <li><strong>비디오</strong> AV1/HEVC/H.264/VP9 디코드 최대 4×4K60, 인코드 2×4K60</li>
+    <li><strong>안전</strong> Safety Island(quad Cortex-R52), SEooC <strong>ASIL B</strong> (같은 보드의 SA8775P는 ASIL D) · <strong>패키지</strong> FCBGA1723</li>
+  </ul>
+  <p class="src"><a href="https://www.lantronix.com/products/ride-sx-4-0-automotive-development-platform/">Lantronix Ride SX 4.0</a> · <a href="https://www.thundercomm.com/product/sa8255p-sa8775p-automotive-development-platform/">Thundercomm</a> · <a href="https://www.cpubenchmark.net/cpu.php?cpu=Qualcomm+SA8255P&id=6866">PassMark</a> · <a href="https://www.arrow.com/en/products/sa-8255p-0-fcbga1723hs-tr-01-0-ab/qualcomm">Arrow</a></p>
+  <div class="callout warn"><strong>8255P AI 성능 — 상충.</strong> ResearchInChina "230K DMIPS, NPU 24 TOPS"(<a href="http://www.researchinchina.com/UpLoads/ArticleFreePartPath/20240723085131.pdf">2024-07</a>) vs EEWORLD "Hexagon V73, 최대 48 TOPS"(<a href="https://en.eeworld.com.cn/news/qcdz/eic657301.html">EEWORLD</a>). 정밀도 기준 미기재. 퀄컴 공식 절대치 없음.</div>
+  <p><strong>82xx의 위치:</strong> 8255P는 CPU가 8295P와 비슷하거나 고클럭에서 약간 앞서지만 GPU(Adreno 663 vs 695)가 낮은 "IVI 가성비" 칩(<a href="https://en.eeworld.com.cn/news/qcdz/eic657301.html">EEWORLD</a>, 서드파티). 8295P·8255P 합산 중국 연 100만 대 규모로 4세대가 주류(<a href="https://blog.csdn.net/GGAI_AI/article/details/139519069">高工智能汽车 2024-06</a>, 서드파티).</p>
+</section>
+
+<section id="elite">
+  <p class="eyebrow"><span class="no">03</span>83xx</p>
+  <h2>SA8397P · Snapdragon Cockpit Elite</h2>
+
+  <h3 id="official">3.1 퀄컴이 공식적으로 말하는 것 <span class="tag of">공식</span></h3>
+  <p>제품 브리프(Cockpit Elite·Ride Elite 공용) 각주: "모든 성능 목표는 전 세대 대비, 예비 내부 테스트 기준, 최종 검증 시 변경 가능".</p>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>공식 주장</th></tr>
+    <tr><td>CPU</td><td><strong>Qualcomm Oryon</strong> — 퀄컴 최고 성능 CPU를 차량용으로 맞춤. 전 세대 대비 <strong>3×</strong>(보도자료·X)</td></tr>
+    <tr><td>GPU</td><td>개선된 Adreno, <strong>3×</strong>. 고급 렌더링·게이밍·멀티미디어</td></tr>
+    <tr><td>NPU</td><td>멀티모달 AI 전용 Hexagon NPU, 전 세대 콕핏 대비 <strong>12×</strong>. 트랜스포머 가속기·벡터 엔진·혼합 정밀도</td></tr>
+    <tr><td>카메라·센서</td><td><strong>40개 이상 멀티모달 센서, 최대 20대 고해상도 카메라</strong>(360° + 캐빈 모니터링), 고급 ISP</td></tr>
+    <tr><td>가상화</td><td><strong>Type-1 하이퍼바이저</strong>, 멀티 OS. 클러스터·IVI·다중 승객 인스턴스를 앱 중심 멀티유저 VM으로. 장기 API 호환</td></tr>
+    <tr><td>AI 실행 환경</td><td>온디바이스 AI + <strong>edge orchestrator</strong>(AI Orchestrator), AI Hub 연동</td></tr>
+    <tr><td>안전</td><td><strong>ASIL-D 시스템 대응 설계, 전용 safety island</strong>, 격리·무간섭 HW 구조(Elite 계열 공통 서술)</td></tr>
+    <tr><td>전력</td><td>"업계 선도 전력 효율" — HW/SW 전력 관리 (절대치 없음)</td></tr>
+    <tr><td>아키텍처</td><td>콕핏과 자율주행을 <strong>같은 SoC에 결합 가능한 유연 구조</strong></td></tr>
+  </table></div>
+  <p class="src"><a href="https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-Cockpit-Elite-Snapdragon-Ride-Elite-Product-Brief.pdf">퀄컴 제품 브리프 PDF</a> · <a href="https://x.com/Qualcomm/status/1848811003225473177">퀄컴 X 2024-10-22</a> · <a href="https://www.nasdaq.com/articles/qualcomm-debuts-snapdragon-cockpit-elite-and-snapdragon-ride-elite-platforms">Nasdaq/The Fly</a></p>
+  <p>Counterpoint는 발표 브리핑을 근거로 "전·후석 <strong>4K 디스플레이 16개 이상</strong>, 실시간 레이 트레이싱, 전용 DPU, Dolby Atmos"를 추가한다(<a href="https://counterpointresearch.com/en/insights/qualcomm-snapdragon-cockpit-elite-powering-premium-visual-intelligent-cockpit-automotive-experiences">Counterpoint</a> <span class="tag tp">서드파티</span>). 퀄컴 중국 서밋(2026-06-05) 보도는 SA8397P를 <strong>4nm</strong>, "수백억 파라미터급 엔드사이드 생성형 AI"로 소개(<a href="https://www.163.com/dy/article/KUP4MPM60511DTVV.html">网易</a>). 퀄컴 중국 부사장 盛况: "Adreno 3배 — <strong>120만 폴리곤 고정밀 3D 실시간 렌더링</strong>"(<a href="https://news.mydrivers.com/1/1112/1112866.htm">快科技 2026-03-31</a>).</p>
+
+  <h3 id="thirdparty">3.2 서드파티가 말하는 절대 수치</h3>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>값</th><th>출처</th><th>신뢰도</th></tr>
+    <tr><td>NPU</td><td><strong>320 TOPS(dense)</strong></td><td><a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft RazorDCX Sylvania</a> · <a href="https://m.ithome.com/html/934657.htm">IT之家 "300+ TOPS"</a></td><td>Tier-1 제품 사양. 정밀도 미기재</td></tr>
+    <tr><td>CPU</td><td><strong>SPECint2017 rate 80</strong></td><td><a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a></td><td>Tier-1 제품 사양</td></tr>
+    <tr><td>메모리 대역폭</td><td><strong>272 GB/s(raw)</strong> / 256-bit LPDDR5X 273 GB/s</td><td><a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a> · <a href="https://news.qq.com/rain/a/20250707A07U3500">腾讯新闻 2025-07-07</a></td><td>두 출처 일치</td></tr>
+    <tr><td>메모리 용량(DCU)</td><td>LPDDR5X 24–36 GB, UFS 4.0</td><td><a href="https://blog.csdn.net/m0_72165397/article/details/155090743">CSDN</a></td><td>블로그</td></tr>
+    <tr><td>온디바이스 LLM</td><td><strong>~14B</strong></td><td><a href="https://m.ithome.com/html/934657.htm">IT之家</a> · <a href="https://news.qq.com/rain/a/20250722A089YJ00">腾讯新闻</a></td><td>언론</td></tr>
+    <tr><td>공정</td><td>4nm</td><td><a href="https://www.163.com/dy/article/KUP4MPM60511DTVV.html">网易(서밋 보도)</a> · <a href="https://news.qq.com/rain/a/20241025A09PRM00">腾讯新闻 2024-10-25</a></td><td>퀄컴 발표 인용 + 추정</td></tr>
+    <tr><td>NPU 아키텍처</td><td>Hexagon <strong>V83/V85</strong> 차량 전용, NPU 자체 ASIL-B</td><td><a href="https://news.qq.com/rain/a/20250707A07U3500">腾讯新闻 2025-07-07</a></td><td>기술 블로그, 업계 소식통</td></tr>
+    <tr><td>Oryon 코어 수</td><td>"12 또는 16"(8797P는 18 = 12+6)</td><td><a href="https://news.qq.com/rain/a/20241221A042RT00">腾讯新闻 2024-12-21</a></td><td><span class="tag es">추정</span> 글 자체 면책</td></tr>
+    <tr><td>소비 전력</td><td>15–20 W</td><td>검색 요약에만 등장</td><td><span class="tag uk">미확인</span></td></tr>
+  </table></div>
+
+  <h3 id="vs8797">3.3 8397P vs 8797P — 같은 세대, 다른 역할</h3>
+  <ul>
+    <li><strong>8397P = 콕핏 전용.</strong> 320 TOPS급, 다중 디스플레이·오디오·캐빈 AI 초점. (<a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a>)</li>
+    <li><strong>8797P = ADAS 또는 콕핏+ADAS 융합.</strong> Oryon 18코어(12+6) 추정, dense 320 / sparse 640 TOPS, 560K DMIPS, GPU 8.1 TFLOPS(서드파티). Leapmotor D19는 8797P <strong>2개</strong>(콕핏 1 + ADAS 1) 합계 1,280 TOPS. Nakul Duggal(2026-04)은 "칩당 700 TOPS sparse, 듀얼 1,400, 온디바이스 30B MoE" — <strong>640 vs 700 상충</strong>. 전력 70–80 W 추정. (<a href="https://www.xchuxing.com/article/154818">新出行</a> · <a href="https://vision-mobility.de/en/news/ces-2026-leapmotor-becomes-the-first-oem-to-use-qualcomms-dual-chipset-sa8797p-389375.html">vision-mobility</a> · <a href="https://chejiahao.autohome.com.cn/info/25366884">汽车之家</a> · <a href="https://news.qq.com/rain/a/20250707A07U3500">腾讯新闻</a>)</li>
+    <li>Li Auto 차세대 콕핏(2026-06-15)은 콕핏임에도 <strong>8797</strong> — "504K CPU, GPU 8.1 TFLOPS, NPU 320 TOPS". OEM은 콕핏에도 상위 8797을 택할 수 있다. (<a href="https://autonews.gasgoo.com/articles/icv/li-auto-launches-new-gen-cockpit-platform-powered-by-proprietary-os-qualcomms-latest-chip-2066711041814409217">Gasgoo</a>)</li>
+    <li>반대로 SAIC-GM은 8397/8797 병행, JLR×체리·Exeed·Zeekr은 8397 채택 보도. (<a href="https://www.xchuxing.com/article/154818">新出行</a> · <a href="https://m.ithome.com/html/934657.htm">IT之家</a>)</li>
+  </ul>
+</section>
+
+<section id="compare">
+  <p class="eyebrow"><span class="no">04</span>비교표</p>
+  <h2>8255P · 8295P · 8397P (참고: 8797P)</h2>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>SA8255P (82xx 중간)</th><th>SA8295P (82xx 최상위)</th><th><strong>SA8397P (83xx, Cockpit Elite)</strong></th><th>SA8797P (참고)</th></tr>
+    <tr><td>세대·발표</td><td>4세대 콕핏</td><td>4세대, 2021-01</td><td><strong>5세대, 2024-10-22</strong></td><td>5세대, 2024-10-22</td></tr>
+    <tr><td>공정</td><td>5nm(서드파티)</td><td>5nm(퀄컴 4세대 발표)</td><td><strong>4nm</strong>(서밋 보도)</td><td>4nm(추정)</td></tr>
+    <tr><td>CPU</td><td>Kryo Gen-6, Arm v8.2, 8코어</td><td>Kryo 695, Arm v8, 8코어</td><td><strong>Oryon(자체 설계)</strong>, 3×; 코어 수 미확인(12~16 추정)</td><td>Oryon 18코어 추정, 560K DMIPS</td></tr>
+    <tr><td>CPU 지표</td><td>PassMark MT 6,337</td><td>—</td><td>SPECint2017 rate 80</td><td>—</td></tr>
+    <tr><td>GPU</td><td>Adreno 663</td><td>Adreno 695</td><td>신형 Adreno <strong>3×</strong>, 레이 트레이싱, 120만 폴리곤</td><td>8.1 TFLOPS</td></tr>
+    <tr><td>NPU</td><td>Hexagon HTP(HVX×4+HMX×2); 24 또는 48 TOPS(<strong>상충</strong>)</td><td>Dual HTP; ~30 TOPS</td><td>Hexagon V83/V85, <strong>12×</strong>, <strong>320 TOPS dense</strong></td><td>320 dense / 640~700 sparse(<strong>상충</strong>)</td></tr>
+    <tr><td>온디바이스 LLM</td><td>—</td><td>—</td><td>~14B</td><td>30B MoE(퀄컴 발언)</td></tr>
+    <tr><td>메모리</td><td>LPDDR5 3ch 3200 (ADP 3×12 GB)</td><td>LPDDR4X-2133 8×16-bit (ADP 16 GB)</td><td><strong>256-bit LPDDR5X ~273 GB/s</strong>; DCU 24–36 GB</td><td>256-bit LPDDR5X(추정)</td></tr>
+    <tr><td>센서/카메라</td><td>MIPI-CSI ×4</td><td>MIPI-CSI ×4</td><td><strong>40+ 센서, 카메라 최대 20</strong></td><td>동일</td></tr>
+    <tr><td>디스플레이</td><td>eDP ×4(ADP)</td><td>DP 3 + eDP 4 + DSI 2(ADP)</td><td><strong>4K 16+</strong>(Counterpoint)</td><td>—</td></tr>
+    <tr><td>가상화</td><td>하이퍼바이저(GVM LA/LV)</td><td>동일</td><td><strong>Type-1 하이퍼바이저, 멀티유저 VM, 장기 API 호환</strong> 명시</td><td>QC Linux PVM 등재</td></tr>
+    <tr><td>안전</td><td>SEooC <strong>ASIL B</strong>, Safety Island(R52×4)</td><td>SEooC <strong>ASIL B</strong>, ARC HS46 lock-step</td><td><strong>ASIL-D 대응 safety island</strong>(계열 공통; 단독 등급 미확인)</td><td>동일</td></tr>
+    <tr><td>전력</td><td>—</td><td>—</td><td>15–20 W(<span class="tag uk">미확인</span>)</td><td>70–80 W(추정)</td></tr>
+    <tr><td>양산</td><td>2023~ (中 연 100만 대)</td><td>2022~</td><td><strong>2026</strong> (Freelander·Exeed·Zeekr)</td><td>2026 (Leapmotor D19·Li L9/L8)</td></tr>
+    <tr><td>공개 툴체인</td><td>AI Hub 등재</td><td>AI Hub 등재</td><td><strong>AI Hub 미등재, ExecuTorch 요청 중</strong></td><td>QAIRT 문서 등재</td></tr>
+  </table></div>
+  <p class="src">출처: 2·3장 각 항목. 퀄컴 공식 절대 수치는 없으며 "3×/12×"만 공식.</p>
+</section>
+
+<section id="diff">
+  <p class="eyebrow"><span class="no">05</span>차이의 본질</p>
+  <h2>그래서 무엇이 다른가 — 아키텍처 관점 6가지</h2>
+
+  <h3>5.1 CPU: Arm 설계 코어(Kryo) → 퀄컴 자체 설계 코어(Oryon)</h3>
+  <p>82xx의 Kryo는 Arm Cortex(v8/v8.2) 기반 커스텀 튜닝(<a href="https://cdn.lantronix.com/wp-content/uploads/pdf/MPB-00130-RevB-SA8295P-US.pdf">Lantronix</a>). 83xx의 Oryon은 Nuvia 인수 후 자체 설계한 코어로, PC(X Elite)·모바일(8 Elite)에 먼저 들어간 것을 차량용으로 맞춘 것(<a href="https://futurumgroup.com/insights/qualcomm-launches-new-elite-snapdragon-automotive-platforms/">Futurum</a> · <a href="https://news.qq.com/rain/a/20241025A09PRM00">腾讯新闻</a>). 공식 목표 3×. <strong>실무 의미(해석):</strong> ISA는 AArch64 유지 → 바이너리 호환. 코어 수·클러스터·캐시 계층 변경 → CPU 어피니티·실시간 스케줄링 재검증.</p>
+
+  <h3>5.2 NPU: "보조 가속기" → "LLM 실행 엔진"</h3>
+  <p>82xx Hexagon HTP는 스마트폰 공유 범용 세대(HVX+HMX). 83xx는 트랜스포머 가속기·혼합 정밀도 명시 12× NPU(<a href="https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-Cockpit-Elite-Snapdragon-Ride-Elite-Product-Brief.pdf">브리프</a>), 서드파티는 차량 전용 V83/V85·NPU 자체 ASIL-B(<a href="https://news.qq.com/rain/a/20250707A07U3500">腾讯新闻</a>). Tier-1 데모가 "Qwen 7B 온디바이스 컨시어지"(Visteon), "14B급 LLM"(JLR), "VLM+LLM+이미지 생성"(LG전자)로 바뀜. (<a href="https://www.visteon.com/investors/investor-news/news-details/2026/Visteon-Showcases-Production-Ready-High-Performance-Compute-Solution-on-Snapdragon-Cockpit-Elite-Platform/default.aspx">Visteon</a> · <a href="https://m.ithome.com/html/934657.htm">IT之家</a> · <a href="https://news.nate.com/view/20251211n35389">한국경제</a>)</p>
+
+  <h3>5.3 메모리: LPDDR4X/LPDDR5 → 256-bit LPDDR5X ~273 GB/s</h3>
+  <p>8295P ADP는 LPDDR4X-2133 8×16-bit(128-bit), 8255P ADP는 LPDDR5 3채널. 8397P는 256-bit LPDDR5X ~273 GB/s(Thundersoft "272 GB/s raw"). LLM 디코딩은 대역폭에 묶이므로 12× NPU보다 이 대역폭 도약이 온디바이스 LLM 체감 속도에 더 직접적(해석). DCU 실장 24–36 GB LPDDR5X·UFS 4.0 보도. (<a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a> · <a href="https://news.qq.com/rain/a/20250707A07U3500">腾讯新闻</a> · <a href="https://blog.csdn.net/m0_72165397/article/details/155090743">CSDN</a>)</p>
+
+  <h3>5.4 GPU·디스플레이: 레이 트레이싱, 4K 16화면, 120만 폴리곤</h3>
+  <p>공식 3×, 실시간 레이 트레이싱, 4K 16+ (Counterpoint), 120만 폴리곤 실시간 3D(퀄컴 부사장). 82xx의 "11개 디스플레이"(8295P, 서드파티) 대비 화면 수·해상도·렌더링 품질 한 단계 상승. (<a href="https://counterpointresearch.com/en/insights/qualcomm-snapdragon-cockpit-elite-powering-premium-visual-intelligent-cockpit-automotive-experiences">Counterpoint</a> · <a href="https://news.mydrivers.com/1/1112/1112866.htm">快科技</a>)</p>
+
+  <h3>5.5 안전·통합: ASIL B 콕핏 → ASIL-D 대응 safety island, 콕핏+ADAS 동일 SoC 옵션</h3>
+  <p>82xx는 SEooC ASIL B 순수 IVI 칩. Elite 브리프는 계열 공통 "ASIL-D 대응, safety island, 무간섭 격리"와 콕핏+자율주행 동일 SoC 결합을 서술. <strong>8397P 단독 ASIL 등급은 분리 명시 없음</strong> <span class="tag uk">미확인</span>. 40+ 센서·20 카메라는 콕핏 칩이 서라운드뷰·DMS/OMS·주차까지 흡수하는 "콕핏-주차 통합" 구성을 염두. (<a href="https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-Cockpit-Elite-Snapdragon-Ride-Elite-Product-Brief.pdf">브리프</a> · <a href="https://www.lantronix.com/products/ride-sx-4-0-automotive-development-platform/">Lantronix</a>)</p>
+
+  <h3>5.6 SW 플랫폼: Type-1 하이퍼바이저·멀티유저 VM·edge orchestrator·장기 API 호환</h3>
+  <p>브리프가 SW 스택을 사양 수준으로 명시. 클러스터/IVI/승객 인스턴스를 앱 중심 VM으로 분리하고 AI Orchestrator가 온디바이스 AI를 조율, AI Hub로 모델 온보딩. — 단, 2026-09-16 현재 AI Hub Automotive 칩셋 필터는 SA7255P/SA8255P/SA8295P/SA8650P/SA8775P뿐(<a href="https://aihub.qualcomm.com/automotive/models">AI Hub</a>). ExecuTorch는 "<code>-m SA8397</code> 실패, SA8295 기본값 미러링" 요청 단계(<a href="https://github.com/pytorch/executorch/issues/16535">#16535</a>). QAIRT 자동차 개요는 SA8797은 열거, SA8397은 미열거(<a href="https://docs.qualcomm.com/nav/home/auto_overview.html?product=1601111740009302">QAIRT</a>).</p>
+  <div class="callout warn"><strong>공개 툴체인 성숙도는 82xx가 앞선다.</strong> 양산 OEM은 퀄컴 직접 지원(NDA SDK)으로 진행 중으로 보인다(해석).</div>
+</section>
+
+<section id="adoption">
+  <p class="eyebrow"><span class="no">06</span>양산·생태계</p>
+  <h2>2026-09 기준 현황</h2>
+  <h3>6.1 OEM</h3>
+  <div class="tablewrap"><table>
+    <tr><th>OEM</th><th>칩</th><th>상태</th><th>출처</th></tr>
+    <tr><td>Leapmotor D19</td><td>8797P ×2</td><td>세계 최초 듀얼 Elite 중앙 컴퓨터, CES 2026, 2026-04 출시</td><td><a href="https://www.qualcomm.com/news/releases/2026/01/leapmotor-and-qualcomm-debuts-world-s-first-automotive-central-c">퀄컴 PR</a> · <a href="https://carnewschina.com/2026/01/06/leapmotor-partners-with-qualcomm-to-launch-worlds-first-central-computing-platform-with-dual-snapdragon-automotive-platforms/">CarNewsChina</a></td></tr>
+    <tr><td>Li Auto L9/L8·차세대 콕핏</td><td>8797</td><td>2026 H1, 5·6월 인도. 콕핏 8797 최초</td><td><a href="https://autonews.gasgoo.com/articles/icv/li-auto-launches-new-gen-cockpit-platform-powered-by-proprietary-os-qualcomms-latest-chip-2066711041814409217">Gasgoo</a> · <a href="https://www.marklines.com/en/news/346249">MarkLines</a></td></tr>
+    <tr class="hl"><td>JLR × 체리 Freelander</td><td><strong>8397</strong></td><td>2026-03-31, "세계 최초 8397 탑재군"</td><td><a href="https://m.ithome.com/html/934657.htm">IT之家</a></td></tr>
+    <tr class="hl"><td>체리 Exeed 신차</td><td><strong>8397</strong></td><td>2026 Carmind 2.0 + 8397</td><td><a href="https://news.qq.com/rain/a/20251223A05T4R00">腾讯新闻</a></td></tr>
+    <tr><td>Zeekr·GWM·NIO·Chery</td><td>Elite</td><td>CES 2026 디자인윈 10건</td><td><a href="https://www.marketscreener.com/news/qualcomm-drives-the-future-of-mobility-with-strong-snapdragon-digital-chassis-momentum-and-agentic-ce7e59deda80f026">퀄컴 PR</a></td></tr>
+    <tr><td>SAIC-GM</td><td>8397/8797</td><td>2026 양산 계획</td><td><a href="https://www.xchuxing.com/article/154818">新出行</a></td></tr>
+    <tr><td>Mercedes-Benz</td><td>Cockpit/Ride Elite</td><td>2024-10 협력 발표. 2026 CLA는 4세대 계열(품번 미기재)</td><td><a href="https://www.nasdaq.com/articles/qualcomm-debuts-snapdragon-cockpit-elite-and-snapdragon-ride-elite-platforms">Nasdaq</a> · <a href="https://www.qualcomm.com/news/releases/2025/09/qualcomm-s-snapdragon-cockpit-platforms-power-smart--intuitive-a">퀄컴 PR</a></td></tr>
+    <tr><td>기타</td><td>Elite</td><td>VW·Geely·Audi·BYD·동풍닛산 등 "2026 15종 이상"</td><td><a href="https://chejiahao.autohome.com.cn/info/25366884">汽车之家</a></td></tr>
+  </table></div>
+  <h3>6.2 Tier-1·플랫폼</h3>
+  <div class="tablewrap"><table>
+    <tr><th>회사</th><th>내용</th><th>출처</th></tr>
+    <tr class="hl"><td><strong>LG전자</strong></td><td>CES 2026 'AI 캐빈 플랫폼'(VLM·LLM·이미지 생성 온디바이스), 퀄컴 협업 HPC</td><td><a href="https://news.nate.com/view/20251211n35389">한국경제 via Nate</a></td></tr>
+    <tr><td>Visteon</td><td>양산 사양 HPC, Qwen 7B 컨시어지, 24+ 스피커</td><td><a href="https://www.visteon.com/investors/investor-news/news-details/2026/Visteon-Showcases-Production-Ready-High-Performance-Compute-Solution-on-Snapdragon-Cockpit-Elite-Platform/default.aspx">Visteon</a></td></tr>
+    <tr><td>Panasonic Automotive</td><td>CDC/HPC</td><td><a href="https://news.panasonic.com/global/press/en250107-5">Panasonic</a></td></tr>
+    <tr><td>Garmin</td><td>Nexus 플랫폼</td><td><a href="https://www.garmin.com/en-US/newsroom/press-release/corporate/garmin-and-qualcomm-reveal-next-gen-digital-cockpit-solution-powered-by-snapdragon-cockpit-elite-platform/">Garmin</a></td></tr>
+    <tr><td>Thundersoft</td><td>RazorDCX Sylvania — SA8397P DCU(320 TOPS, SPECint2017 rate 80, 272 GB/s)</td><td><a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft</a></td></tr>
+    <tr><td>车联天下</td><td>SA8397P 콕핏 + SA8797P 융합 컨트롤러(2026 양산)</td><td><a href="https://www.newsfcar.com/14736/">汽车之讯</a></td></tr>
+  </table></div>
+  <p><strong>규모 지표(퀄컴 공식, CES 2026):</strong> Cockpit Platform 누적 7,500만 대+(2025-06), Ride SoC ~100만 개, Elite 디자인윈 10건, Ride Flex 양산 8건. (<a href="https://www.marketscreener.com/news/qualcomm-drives-the-future-of-mobility-with-strong-snapdragon-digital-chassis-momentum-and-agentic-ce7e59deda80f026">퀄컴 PR</a>)</p>
+</section>
+
+<section id="takeaway">
+  <p class="eyebrow"><span class="no">07</span>시사점</p>
+  <h2>IPCU 성능형 SoC 관점 <span class="tag es">본 보고서 해석</span></h2>
+  <ol>
+    <li><strong>"83xx = 8397P 하나".</strong> 82xx처럼 최상위·중간 2단이 아니라 단일 품번. 계층을 나누려면 위로 8797P, 아래로 8255P/8295P와 조합. 하위 파생 품번은 공개 출처에 없음.</li>
+    <li><strong>CPU·NPU·메모리 모두 계단이 아니라 도약.</strong> 공식 3×/3×/12×, 서드파티 30→320 TOPS, 128-bit LPDDR4X→256-bit LPDDR5X. "성능형"이면 콕핏 도메인에서 현재 퀄컴 최상위 선택지.</li>
+    <li><strong>열·전력 예산 재산정.</strong> 8397P 절대 전력 공개 출처 없음(15–20 W는 미확인). 8797P 70–80 W 추정. DCU 메모리 24–36 GB. 하우징·방열이 8255P 기준과 다를 가능성.</li>
+    <li><strong>SW 이식 비용의 핵심은 CPU 토폴로지와 하이퍼바이저.</strong> Oryon은 AArch64 호환이나 코어 구성이 다르고, Elite 스택은 Type-1 하이퍼바이저·멀티유저 VM 전제. 안전 파티션/IVI 파티션 분리를 safety island 구조에 맞춰 재설계.</li>
+    <li><strong>AI 툴체인은 아직 82xx가 성숙.</strong> AI Hub·ExecuTorch·QAIRT 공개 문서에 SA8397P 없음(2026-09-16). 공개 자료 의존 개발이면 시차 감안.</li>
+    <li><strong>8397P vs 8797P.</strong> 콕핏만이면 8397P, 콕핏+주차/ADAS 융합 또는 30B급 모델이면 8797P. Li Auto는 콕핏에도 8797, JLR·Exeed·Zeekr은 8397. 같은 세대라 SW 자산 공유 가능이 퀄컴의 "유연 아키텍처" 주장.</li>
+    <li><strong>공급·시점.</strong> 2025 샘플링, 2026 양산 개시. 한국 Tier-1(LG전자)이 이미 Elite 플랫폼 공개. 2027~2028 SOP 프로그램이면 83xx가 표준 후보.</li>
+  </ol>
+</section>
+
+<section id="unknown">
+  <p class="eyebrow"><span class="no">08</span>미확인·상충</p>
+  <h2>확인하지 못한 것</h2>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>상태</th></tr>
+    <tr><td>SA8397P Oryon 코어 수·클럭·캐시</td><td><span class="tag uk">미확인</span> 12~16코어 추정만</td></tr>
+    <tr><td>SA8397P 소비 전력</td><td><span class="tag uk">미확인</span> 15–20 W는 검색 요약 수준</td></tr>
+    <tr><td>SA8397P 단독 ASIL 등급</td><td><span class="tag uk">미확인</span> 브리프는 계열 공통 ASIL-D 대응</td></tr>
+    <tr><td>SA8397P 공정</td><td>4nm — 서밋 보도 인용, 공식 문서 미확인</td></tr>
+    <tr><td>SA8255P NPU TOPS</td><td>상충: 24(ResearchInChina) vs 48(EEWORLD)</td></tr>
+    <tr><td>SA8797P sparse TOPS</td><td>상충: 640(新出行·D19 1,280/2) vs 700(Nakul)</td></tr>
+    <tr><td>Ride Flex SA8775P NPU</td><td>상충: 72 dense(新出行) vs 144(서밋 보도; sparse 추정)</td></tr>
+    <tr><td>8397P 외 83xx 품번</td><td><span class="tag uk">미확인</span></td></tr>
+    <tr><td>Mercedes Elite 양산 차종·시점</td><td><span class="tag uk">미확인</span> 협력 발표만</td></tr>
+    <tr><td>퀄컴 공식 절대 수치</td><td>없음. 배수만 공식</td></tr>
+  </table></div>
+</section>
+
+<section id="sources">
+  <p class="eyebrow"><span class="no">09</span>출처</p>
+  <h2>출처</h2>
+  <p>상세 수집·검증 기록: <a href="reference/references.md">reference/references.md</a> · 원본: <a href="qualcomm-83xx-cockpit-elite.md">qualcomm-83xx-cockpit-elite.md</a></p>
+  <h3>공식(퀄컴·OEM·Tier-1)</h3>
+  <ul>
+    <li><a href="https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-Cockpit-Elite-Snapdragon-Ride-Elite-Product-Brief.pdf">Cockpit Elite / Ride Elite 제품 브리프 (PDF)</a> · <a href="https://x.com/Qualcomm/status/1848811003225473177">퀄컴 X 2024-10-22</a></li>
+    <li><a href="https://www.qualcomm.com/news/releases/2026/01/leapmotor-and-qualcomm-debuts-world-s-first-automotive-central-c">퀄컴 PR 2026-01 Leapmotor</a> · <a href="https://www.marketscreener.com/news/qualcomm-drives-the-future-of-mobility-with-strong-snapdragon-digital-chassis-momentum-and-agentic-ce7e59deda80f026">퀄컴 PR 2026-01 Digital Chassis(전재)</a> · <a href="https://www.qualcomm.com/news/releases/2025/09/qualcomm-s-snapdragon-cockpit-platforms-power-smart--intuitive-a">퀄컴 PR 2025-09 Mercedes</a> · <a href="https://telematicswire.net/qualcomm-introduces-gen4-snapdragon-automotive-cockpit-platform/">4세대 발표 2021-01(전재)</a></li>
+    <li><a href="https://aihub.qualcomm.com/automotive/models">AI Hub Automotive</a> · <a href="https://docs.qualcomm.com/nav/home/auto_overview.html?product=1601111740009302">QAIRT Auto 개요</a></li>
+    <li><a href="https://news.panasonic.com/global/press/en250107-5">Panasonic 2025-01-07</a> · <a href="https://www.visteon.com/investors/investor-news/news-details/2026/Visteon-Showcases-Production-Ready-High-Performance-Compute-Solution-on-Snapdragon-Cockpit-Elite-Platform/default.aspx">Visteon 2026-01-08</a> · <a href="https://www.garmin.com/en-US/newsroom/press-release/corporate/garmin-and-qualcomm-reveal-next-gen-digital-cockpit-solution-powered-by-snapdragon-cockpit-elite-platform/">Garmin</a> · <a href="https://www.thundersoft.com/thundersoft-new-gen-ai-domain-control-released-at-ces-2026/">Thundersoft CES 2026</a></li>
+  </ul>
+  <h3>개발 플랫폼 벤더</h3>
+  <ul>
+    <li><a href="https://cdn.lantronix.com/wp-content/uploads/pdf/MPB-00130-RevB-SA8295P-US.pdf">Lantronix SA8295P ADP (PDF)</a> · <a href="https://www.lantronix.com/products/ride-sx-4-0-automotive-development-platform/">Lantronix Ride SX 4.0</a> · <a href="https://www.thundercomm.com/product/sa8255p-sa8775p-automotive-development-platform/">Thundercomm Ride SX 4.0</a> · <a href="https://www.arrow.com/en/products/sa-8255p-0-fcbga1723hs-tr-01-0-ab/qualcomm">Arrow SA-8255P</a></li>
+  </ul>
+  <h3>서드파티</h3>
+  <ul>
+    <li><a href="https://www.nasdaq.com/articles/qualcomm-debuts-snapdragon-cockpit-elite-and-snapdragon-ride-elite-platforms">Nasdaq/The Fly</a> · <a href="https://futurride.com/2024/10/22/qualcomm-ups-snapdragon-tech-with-cockpit-and-ride-elite-platforms/">Futurride</a> · <a href="https://futurumgroup.com/insights/qualcomm-launches-new-elite-snapdragon-automotive-platforms/">Futurum</a> · <a href="https://counterpointresearch.com/en/insights/qualcomm-snapdragon-cockpit-elite-powering-premium-visual-intelligent-cockpit-automotive-experiences">Counterpoint</a></li>
+    <li><a href="https://autonews.gasgoo.com/articles/icv/li-auto-launches-new-gen-cockpit-platform-powered-by-proprietary-os-qualcomms-latest-chip-2066711041814409217">Gasgoo</a> · <a href="https://carnewschina.com/2026/01/06/leapmotor-partners-with-qualcomm-to-launch-worlds-first-central-computing-platform-with-dual-snapdragon-automotive-platforms/">CarNewsChina</a> · <a href="https://vision-mobility.de/en/news/ces-2026-leapmotor-becomes-the-first-oem-to-use-qualcomms-dual-chipset-sa8797p-389375.html">vision-mobility</a> · <a href="https://www.marklines.com/en/news/346249">MarkLines</a></li>
+    <li><a href="https://chejiahao.autohome.com.cn/info/25366884">汽车之家 Nakul 인터뷰</a> · <a href="https://www.163.com/dy/article/KUP4MPM60511DTVV.html">网易 서밋</a> · <a href="https://m.ithome.com/html/934657.htm">IT之家</a> · <a href="https://news.mydrivers.com/1/1112/1112866.htm">快科技</a> · <a href="https://www.sina.cn/news/detail/5282621412351047.html">新浪</a> · <a href="https://www.xchuxing.com/article/154818">新出行</a></li>
+    <li><a href="https://news.qq.com/rain/a/20250707A07U3500">腾讯新闻 2025-07-07</a> · <a href="https://news.qq.com/rain/a/20250722A089YJ00">2025-07-22</a> · <a href="https://news.qq.com/rain/a/20241221A042RT00">2024-12-21</a> · <a href="https://news.qq.com/rain/a/20241025A09PRM00">2024-10-25</a> · <a href="https://news.qq.com/rain/a/20251223A05T4R00">2025-12-23</a></li>
+    <li><a href="https://www.newsfcar.com/14736/">汽车之讯</a> · <a href="https://blog.csdn.net/m0_72165397/article/details/155090743">CSDN 8397 vs 8295</a> · <a href="https://blog.csdn.net/GGAI_AI/article/details/139519069">高工智能汽车</a> · <a href="https://en.eeworld.com.cn/news/qcdz/eic657301.html">EEWORLD</a> · <a href="http://www.researchinchina.com/UpLoads/ArticleFreePartPath/20240723085131.pdf">ResearchInChina</a> · <a href="https://www.pcauto.com/my/news/30tops-a-deep-analysis-of-the-qualcomm-8295-chip-intelligent-driving-under-5nm-process-14039">pcauto</a> · <a href="https://www.cpubenchmark.net/cpu.php?cpu=Qualcomm+SA8255P&id=6866">PassMark</a></li>
+    <li><a href="https://news.nate.com/view/20251211n35389">한국경제 via Nate (LG전자)</a> · <a href="https://github.com/pytorch/executorch/issues/16535">ExecuTorch #16535</a></li>
+  </ul>
+</section>
+
+<footer>AI-Vehicle-Research · research/10-qualcomm-83xx-cockpit-elite · 작성 2026-09-16</footer>
+</main>
+</div>
+</body>
+</html>
