@@ -126,28 +126,29 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 비교를 위해 먼저 "일반" 플라이휠을 본다. NVIDIA가 GitHub에 공개한 데이터 플라이휠 블루프린트는 정의를 이렇게 적는다. "데이터 플라이휠은 생산 애플리케이션의 데이터 배기가스(예: LLM 프롬프트·응답 로그, 사용자 피드백, 전문가 라벨)를 사용해 생성형 AI 시스템의 정확도를 높이고 지연·비용을 줄이는 프로세스다" 🔍 ([data-flywheel README](https://raw.githubusercontent.com/NVIDIA-AI-Blueprints/data-flywheel/main/README.md)).
 
-같은 문서가 설명하는 단계는 일곱 개다 🔍.
+같은 문서가 "몇 시간 안에 자동으로 한다"고 설명하는 단계는 여섯 개다 🔍.
 
 1. 로그 저장소(Elasticsearch)에서 생산 데이터를 가져온다.
-2. 작업(task)별로 묶는다.
+2. 작업(task)별로 묶는다. 에이전트가 여러 일을 하면 노드마다 다른 작업이다.
 3. 중복을 없앤다.
-4. 계층화 분할로 평가용·미세조정용 데이터셋을 만든다(최소 50건).
-5. 데이터 저장소(NeMo Datastore)에 올린다.
-6. 미세조정 서비스(NeMo Customizer)로 작은 모델을 학습시킨다.
-7. 평가 서비스(NeMo Evaluator)가 "LLM-as-judge"(큰 모델이 채점자 역할)로 원래 모델과 비교하고, 좋으면 승격한다.
+4. 클래스별 계층화 분할로 평가용·미세조정용 데이터셋을 만들어 데이터 저장소(NeMo Datastore)에 올린다.
+5. 미세조정 서비스(NeMo Customizer)로 작은 모델을 학습시킨다.
+6. 평가 서비스(NeMo Evaluator)가 "LLM-as-judge"(큰 모델이 채점자 역할)로 원래 모델과 비교한다.
+
+승격은 자동이 아니다. README는 "플라이휠은 자동 조종 장치가 아니라 손전등"이라고 쓰고, 제한 사항 문서는 "이 플라이휠은 어떤 모델도 자동으로 승격·배포하지 않으며, 사용자 피드백도 받지 않는다"고 명시한다 🔍 ([제한 사항](https://raw.githubusercontent.com/NVIDIA-AI-Blueprints/data-flywheel/main/docs/05-limitations-best-practices.md), [구조 문서](https://raw.githubusercontent.com/NVIDIA-AI-Blueprints/data-flywheel/main/docs/01-architecture.md)). 즉 여섯 단계는 후보를 찾아 점수를 매기는 데서 끝나고, 승격은 사람이 결정한다.
 
 효과는 비용이다. README는 "NVIDIA 내부 실험에서 플라이휠로 추론 비용을 최대 98.6% 줄인 사례가 있다"고 쓰되, 바로 뒤에 "이런 사례는 에이전트가 소수의 도구 중 하나를 고르는 단순한 도구 호출 용도에 집중돼 있다"고 단서를 단다 🔍. 인사 챗봇에서 미세조정한 1B 모델이 70B 모델 정확도의 약 98%를 냈다는 것이 그 사례다. NVIDIA가 사내 지식 비서(직원 3만 명 이상 사용)에 같은 방식을 적용한 논문도 있다. 3개월간 부정 피드백 495건을 모아 라우팅 오류 5.25%를 찾아냈고, 라우터를 70B 모델에서 미세조정한 8B 모델로 바꿔 정확도 96%에 지연 70% 감소를 얻었다 📰 ([arXiv 2510.27051](https://arxiv.org/abs/2510.27051)).
 
 ![일반 AI 데이터 플라이휠](images/fig2-general-ai-flywheel.svg)
 
-*그림 5. 일반 AI(LLM 에이전트) 데이터 플라이휠. NVIDIA 블루프린트 README의 7단계를 원으로 그렸다. 데이터는 서버 로그에서 나오고, 정답은 사용자 피드백과 큰 모델의 채점이며, 배포는 소프트웨어 교체다. 자체 작성.*
+*그림 5. 일반 AI(LLM 에이전트) 데이터 플라이휠. NVIDIA 블루프린트 README의 6단계를 원으로 그렸다. 데이터는 서버 로그에서 나오고, 정답은 큰 모델의 채점이며, 승격은 사람이 결정하고, 배포는 소프트웨어 교체다. 자체 작성.*
 
-![NVIDIA 데이터 플라이휠 블루프린트 구조](images/src-nvidia-data-flywheel-blueprint.png)
+![NVIDIA 데이터 플라이휠 블루프린트 구조](images/src-nvidia-data-flywheel-blueprint-annotated.png)
 
-*그림 6. NVIDIA가 공개한 데이터 플라이휠 블루프린트의 공식 구조도. 배포된 에이전트 앱이 로그를 Elasticsearch에 쌓고, 플라이휠 서버가 이를 데이터셋으로 만들어 NeMo Customizer로 후보 소형 모델(1B~8B)을 미세조정하고 NeMo Evaluator로 채점한다. 통과한 LoRA 어댑터가 앱으로 되돌아간다(Merge). 출처: [NVIDIA-AI-Blueprints/data-flywheel](https://github.com/NVIDIA-AI-Blueprints/data-flywheel) `docs/images/data-flywheel-blueprint.png`, Apache-2.0. 크기만 줄임.*
+*그림 6. NVIDIA가 공개한 데이터 플라이휠 블루프린트의 공식 구조도에 위 6단계의 번호를 표시한 것. ① 배포된 에이전트 앱의 로그가 Elasticsearch에 쌓이고 플라이휠 서버가 가져온다. ②③④ 서버가 작업별로 묶고 중복을 없애고 데이터셋을 만들어 Datastore에 올린다. ⑤ NeMo Customizer가 후보 소형 모델(1B~8B)을 미세조정한다. ⑥ NeMo Evaluator가 제로샷·인컨텍스트 후보와 미세조정 후보를 채점한다. ★ 평가 보고서를 관리자가 검토해 승격을 결정하고, 승격된 LoRA 어댑터가 앱에 병합된다(Merge). 출처: [NVIDIA-AI-Blueprints/data-flywheel](https://github.com/NVIDIA-AI-Blueprints/data-flywheel) `docs/images/data-flywheel-blueprint.png`, Apache-2.0. 크기 축소 후 번호·범례를 덧그림(원본은 `images/src-nvidia-data-flywheel-blueprint.png`).*
 
 
-일반 플라이휠의 특징을 세 줄로 적어 두면 뒤의 비교가 쉽다. **데이터는 서버 로그에서 공짜로 나온다. 정답(라벨)은 사용자 피드백이나 큰 모델의 채점이다. 배포는 서버의 모델을 바꾸면 끝난다.**
+일반 플라이휠의 특징을 세 줄로 적어 두면 뒤의 비교가 쉽다. **데이터는 서버 로그에서 공짜로 나온다. 정답(라벨)은 큰 모델의 채점이고, 사람은 결과 검토와 승격만 맡는다. 배포는 서버의 모델을 바꾸면 끝난다.**
 
 ### 2.2 차량 데이터 플라이휠의 전체 구조
 
@@ -169,7 +170,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 | ⑧ 안전 관문·OTA | 인증 → 차 | 안전 논증 갱신, 규제(UN R156) 요건 확인 후 단계적 배포 | Tesla v14.x 주 단위 OTA 📰 |
 | ⑨ 다시 ① | 차 안 | 새 모델이 새 실패를 만든다 | — |
 
-일반 플라이휠의 7단계 중 "로그 수집·데이터셋·학습·평가·배포"는 그대로 있다. 차량에서 새로 생긴 것은 ①(차 안 선별), ⑥(시뮬레이션이 필수), ⑦(실차), ⑧(안전 관문·규제)이다.
+일반 플라이휠의 6단계 중 "로그 수집·데이터셋·학습·평가·배포"는 그대로 있다. 차량에서 새로 생긴 것은 ①(차 안 선별), ⑥(시뮬레이션이 필수), ⑦(실차), ⑧(안전 관문·규제)이다.
 
 ![Waymo ML Factory 슬라이드](images/src-waymo-ml-factory-slide.jpg)
 

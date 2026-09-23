@@ -2,42 +2,38 @@
 <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
 <title>일반 AI 데이터 플라이휠</title>
 <rect width="1240" height="640" fill="#ffffff"/>
-<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">일반 AI(LLM 에이전트) 데이터 플라이휠 — NVIDIA 블루프린트 README의 7단계</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">서버 로그에서 시작해 작은 모델을 미세조정하고, 큰 모델이 채점한 뒤 좋으면 승격한다. 출처: NVIDIA-AI-Blueprints/data-flywheel README 🔍. 자체 작성.</text>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">일반 AI(LLM 에이전트) 데이터 플라이휠 — NVIDIA 블루프린트 README의 6단계</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">서버 로그에서 시작해 작은 모델을 미세조정하고, 큰 모델이 채점한다. 승격은 사람이 결정한다. 출처: NVIDIA-AI-Blueprints/data-flywheel README·docs 🔍. 자체 작성.</text>
 <ellipse cx="400" cy="360" rx="300" ry="210" fill="none" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="6 5"/>
-<polygon points="538.7,173.7 522.5,173.9 525.9,163.7" fill="#2563eb"/>
-<polygon points="695.3,321.8 685.4,309.0 695.7,305.6" fill="#2563eb"/>
-<polygon points="627.8,496.9 635.7,482.7 642.8,490.8" fill="#2563eb"/>
-<polygon points="391.0,570.0 406.3,564.6 406.3,575.4" fill="#2563eb"/>
-<polygon points="158.7,485.0 173.7,491.0 166.6,499.1" fill="#2563eb"/>
-<polygon points="110.3,304.7 110.7,320.9 100.4,317.6" fill="#2563eb"/>
-<polygon points="278.4,167.9 265.6,177.9 262.1,167.7" fill="#2563eb"/>
+<polygon points="558.3,181.5 542.1,180.8 546.2,170.8" fill="#2563eb"/>
+<polygon points="700.0,369.0 694.6,353.7 705.4,353.7" fill="#2563eb"/>
+<polygon points="541.7,545.2 553.8,534.5 557.9,544.5" fill="#2563eb"/>
+<polygon points="241.7,538.5 257.9,539.2 253.8,549.2" fill="#2563eb"/>
+<polygon points="100.0,351.0 105.4,366.3 94.6,366.3" fill="#2563eb"/>
+<polygon points="258.3,174.8 246.2,185.5 242.1,175.5" fill="#2563eb"/>
 <rect x="300.0" y="117.195" width="200" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="308.0" y="138.32" font-size="12.5" fill="#111827" font-weight="700">① 생산 로그 수집</text>
-<text x="308.0" y="155.995" font-size="11" fill="#374151">Elasticsearch에 쌓인</text>
-<text x="308.0" y="171.175" font-size="11" fill="#374151">프롬프트·응답·피드백</text>
-<rect x="534.549444740409" y="196.26214160966597" width="200" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="542.549444740409" y="217.38714160966597" font-size="12.5" fill="#111827" font-weight="700">② 작업별로 묶기</text>
-<text x="542.549444740409" y="235.06214160966599" font-size="11" fill="#374151">어떤 도구 호출·어떤 질문 유형인지</text>
-<text x="542.549444740409" y="250.242141609666" font-size="11" fill="#374151">분류</text>
-<rect x="592.4783736545471" y="381.51439613082607" width="200" height="50.43000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="600.4783736545471" y="402.63939613082607" font-size="12.5" fill="#111827" font-weight="700">③ 중복 제거</text>
-<text x="600.4783736545471" y="420.3143961308261" font-size="11" fill="#374151">같은 요청은 하나만</text>
-<rect x="430.16512173526746" y="516.398462259508" width="200" height="65.6099999999999" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="438.16512173526746" y="537.523462259508" font-size="12.5" fill="#111827" font-weight="700">④ 데이터셋 만들기</text>
-<text x="438.16512173526746" y="555.198462259508" font-size="11" fill="#374151">계층화 분할로</text>
-<text x="438.16512173526746" y="570.378462259508" font-size="11" fill="#374151">평가용·미세조정용(최소 50건)</text>
-<rect x="169.8348782647326" y="523.988462259508" width="200" height="50.42999999999995" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="177.8348782647326" y="545.113462259508" font-size="12.5" fill="#111827" font-weight="700">⑤ 데이터 저장소 업로드</text>
-<text x="177.8348782647326" y="562.7884622595079" font-size="11" fill="#374151">NeMo Datastore</text>
-<rect x="7.521626345452887" y="373.924396130826" width="200" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="15.521626345452887" y="395.049396130826" font-size="12.5" fill="#111827" font-weight="700">⑥ 작은 모델 미세조정</text>
-<text x="15.521626345452887" y="412.724396130826" font-size="11" fill="#374151">NeMo Customizer로 1B~8B 모델</text>
-<text x="15.521626345452887" y="427.904396130826" font-size="11" fill="#374151">학습</text>
-<rect x="65.45055525959103" y="196.26214160966597" width="200" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="73.45055525959103" y="217.38714160966597" font-size="12.5" fill="#111827" font-weight="700">⑦ 평가 · 승격</text>
-<text x="73.45055525959103" y="235.06214160966599" font-size="11" fill="#374151">NeMo Evaluator,</text>
-<text x="73.45055525959103" y="250.242141609666" font-size="11" fill="#374151">LLM-as-judge로 원래 모델과 비교</text>
+<text x="308.0" y="138.32" font-size="12.5" fill="#111827" font-weight="700">① 로그 가져오기</text>
+<text x="308.0" y="155.995" font-size="11" fill="#374151">로그 저장소(Elasticsearch)의</text>
+<text x="308.0" y="171.175" font-size="11" fill="#374151">프롬프트·응답 로그</text>
+<rect x="559.8076211353316" y="222.195" width="200" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="567.8076211353316" y="243.32" font-size="12.5" fill="#111827" font-weight="700">② 작업별로 묶기</text>
+<text x="567.8076211353316" y="260.995" font-size="11" fill="#374151">어떤 도구 호출·어떤 질문 유형인지</text>
+<text x="567.8076211353316" y="276.175" font-size="11" fill="#374151">분류</text>
+<rect x="559.8076211353316" y="439.785" width="200" height="50.43000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="567.8076211353316" y="460.91" font-size="12.5" fill="#111827" font-weight="700">③ 중복 제거</text>
+<text x="567.8076211353316" y="478.58500000000004" font-size="11" fill="#374151">같은 요청은 하나만</text>
+<rect x="300.0" y="537.195" width="200" height="65.6099999999999" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="308.0" y="558.32" font-size="12.5" fill="#111827" font-weight="700">④ 데이터셋 만들기</text>
+<text x="308.0" y="575.995" font-size="11" fill="#374151">계층화 분할로 평가용·미세조정용 →</text>
+<text x="308.0" y="591.175" font-size="11" fill="#374151">NeMo Datastore</text>
+<rect x="40.1923788646684" y="432.195" width="200" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="48.1923788646684" y="453.32" font-size="12.5" fill="#111827" font-weight="700">⑤ 작은 모델 미세조정</text>
+<text x="48.1923788646684" y="470.995" font-size="11" fill="#374151">NeMo Customizer로 1B~8B 모델</text>
+<text x="48.1923788646684" y="486.175" font-size="11" fill="#374151">학습</text>
+<rect x="40.1923788646684" y="222.19499999999996" width="200" height="65.60999999999999" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="48.1923788646684" y="243.31999999999996" font-size="12.5" fill="#111827" font-weight="700">⑥ 평가 → 사람이 승격 결정</text>
+<text x="48.1923788646684" y="260.99499999999995" font-size="11" fill="#374151">NeMo Evaluator,</text>
+<text x="48.1923788646684" y="276.17499999999995" font-size="11" fill="#374151">LLM-as-judge로 원래 모델과 비교</text>
 <text x="400" y="352" font-size="15" fill="#111827" font-weight="700" text-anchor="middle">일반 AI</text>
 <text x="400" y="372" font-size="15" fill="#111827" font-weight="700" text-anchor="middle">데이터 플라이휠</text>
 <text x="800" y="120" font-size="13.5" fill="#111827" font-weight="700">이 플라이휠의 세 가지 특징 (뒤의 비교 기준)</text>
@@ -46,8 +42,8 @@
 <text x="810" y="175.325" font-size="11.5" fill="#374151">서버 로그. 전부 저장할 수 있고, 통신·저장 예산이 거의 문제가 되지 않는다.</text>
 <rect x="800" y="201.11999999999998" width="416" height="70.98999999999998" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
 <text x="810" y="224.24499999999998" font-size="12.5" fill="#111827" font-weight="700">정답(라벨)</text>
-<text x="810" y="242.44499999999996" font-size="11.5" fill="#374151">사용자 피드백(👍👎)과 큰 모델의 채점(LLM-as-judge). 사람이 라벨을</text>
-<text x="810" y="258.31499999999994" font-size="11.5" fill="#374151">만들 필요가 적다.</text>
+<text x="810" y="242.44499999999996" font-size="11.5" fill="#374151">큰 모델의 채점(LLM-as-judge). 블루프린트는 사용자 피드백을 받지</text>
+<text x="810" y="258.31499999999994" font-size="11.5" fill="#374151">않고, 사람은 결과 검토·승격만 맡는다.</text>
 <rect x="800" y="284.10999999999996" width="416" height="55.120000000000005" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
 <text x="810" y="307.23499999999996" font-size="12.5" fill="#111827" font-weight="700">배포</text>
 <text x="810" y="325.43499999999995" font-size="11.5" fill="#374151">서버의 모델을 바꾸면 끝. 하루에도 여러 번 가능하고 인증 절차가 없다.</text>
