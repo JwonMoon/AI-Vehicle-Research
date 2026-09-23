@@ -11,7 +11,7 @@
 | [vehicle-data-flywheel.html](vehicle-data-flywheel.html) | 웹 버전 (자체 완결 페이지, 다크 모드·목차) | 초판 |
 | [vehicle-data-flywheel-report.md](vehicle-data-flywheel-report.md) | 개조식 보고서 판 (표지·요약·장별 개요/핵심 결론/시사점, 항목·표 중심. 사실·수치·출처·그림은 줄글 판과 동일) | 초판 |
 | [vehicle-data-flywheel-report.html](vehicle-data-flywheel-report.html) | 개조식 보고서 웹 버전 | 초판 |
-| [images/](images/) | 자체 작성 도식(SVG 10장) + 공개 GitHub 저장소에서 내려받은 원본 그림 13장(NVIDIA·서베이·Waymo Open Dataset 공식 그림, Tesla·Waymo·Momenta·Baidu 발표 슬라이드 화면) | — |
+| [images/](images/) | 자체 작성 도식(SVG 10장) + 공개 GitHub 저장소에서 내려받은 원본 그림 13장(NVIDIA·서베이·Waymo Open Dataset 공식 그림, Tesla·Waymo·Momenta·Baidu 발표 슬라이드 화면) + AWS 블로그의 NVIDIA·AWS AV 3.0 파이프라인 다이어그램 1장 | — |
 | [reference/references.md](reference/references.md) · [reference/images.md](reference/images.md) | 출처 목록 · 이미지 출처 | — |
 
 ## 작성 규약

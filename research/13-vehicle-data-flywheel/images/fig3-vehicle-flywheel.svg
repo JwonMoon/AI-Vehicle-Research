@@ -1,59 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="600" viewBox="0 0 1240 600" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
 <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
 <title>차량 데이터 플라이휠 전체 구조</title>
-<rect width="1240" height="760" fill="#ffffff"/>
+<rect width="1240" height="600" fill="#ffffff"/>
 <text x="24" y="32" font-size="17" fill="#111827" font-weight="700">차량 데이터 플라이휠 — 차 안에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">파란 마디 = 일반 AI 플라이휠에도 있는 것. 주황 마디 = 차량에서만 생기는 것(차 안 선별, 시뮬레이션 검증, 실차 검증, 안전 관문·OTA). Tesla 데이터 엔진 📰 · NVIDIA/AWS AV 3.0 파이프라인 📰 · 학술 서베이 7단계 🔍를</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">색 = 마디가 도는 곳(주황 차 안, 파랑 클라우드, 초록 시험장·인증). &quot;차량 전용&quot; 표 = 일반 AI 플라이휠에 없는 마디(①⑥⑦⑧). Tesla 데이터 엔진 📰 · NVIDIA/AWS AV 3.0 파이프라인 📰 · Li et al. 2024 서베이 7단계 🔍를</text>
 <text x="24" y="67.87" font-size="11.5" fill="#6b7280">합쳐 자체 작성.</text>
-<ellipse cx="620" cy="400" rx="480" ry="265" fill="none" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="6 5"/>
-<polygon points="793.0,152.8 776.9,155.0 779.1,144.4" fill="#4b5563"/>
-<polygon points="1042.2,273.7 1027.4,267.0 1034.9,259.2" fill="#4b5563"/>
-<polygon points="1090.0,454.6 1089.5,438.4 1099.8,441.7" fill="#4b5563"/>
-<polygon points="920.4,606.8 932.0,595.5 936.5,605.3" fill="#4b5563"/>
-<polygon points="611.0,665.0 626.3,659.6 626.3,670.4" fill="#4b5563"/>
-<polygon points="303.3,599.2 319.4,600.8 314.9,610.5" fill="#4b5563"/>
-<polygon points="144.6,437.4 154.4,450.4 144.1,453.7" fill="#4b5563"/>
-<polygon points="210.8,261.3 203.5,275.8 196.0,268.0" fill="#4b5563"/>
-<polygon points="464.7,149.2 450.7,157.5 448.6,146.9" fill="#4b5563"/>
-<rect x="515.0" y="102.195" width="210" height="65.61000000000001" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
-<text x="523.0" y="123.32" font-size="12.5" fill="#111827" font-weight="700">① 온보드 선별 · 섀도 모드</text>
-<text x="523.0" y="140.995" font-size="11" fill="#374151">차 안. 트리거에 걸린 짧은 클립만</text>
-<text x="523.0" y="156.175" font-size="11" fill="#374151">고르고, 새 모델을 몰래 실어 비교</text>
-<rect x="823.5380526495389" y="164.19322257347082" width="210" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="831.5380526495389" y="185.31822257347082" font-size="12.5" fill="#111827" font-weight="700">② 업로드 · 저장</text>
-<text x="831.5380526495389" y="202.99322257347083" font-size="11" fill="#374151">통신·저장 예산 안에서 요약 먼저,</text>
-<text x="831.5380526495389" y="218.17322257347084" font-size="11" fill="#374151">원본은 요청 시</text>
-<rect x="987.70772144586" y="321.17823291826346" width="210" height="65.61000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="995.70772144586" y="342.30323291826346" font-size="12.5" fill="#111827" font-weight="700">③ 검색 · 큐레이션</text>
-<text x="995.70772144586" y="359.9782329182635" font-size="11" fill="#374151">임베딩 검색, 중복 제거 (Cosmos</text>
-<text x="995.70772144586" y="375.1582329182635" font-size="11" fill="#374151">Curator · FiftyOne)</text>
-<rect x="930.6921938165306" y="499.695" width="210" height="65.60999999999984" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="938.6921938165306" y="520.8199999999999" font-size="12.5" fill="#111827" font-weight="700">④ 라벨링</text>
-<text x="938.6921938165306" y="538.4949999999999" font-size="11" fill="#374151">사람 또는 오프라인 대형 모델의 자동</text>
-<text x="938.6921938165306" y="553.6749999999998" font-size="11" fill="#374151">라벨링</text>
-<rect x="679.169668796321" y="616.2135445082657" width="210" height="65.6099999999999" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="687.169668796321" y="637.3385445082657" font-size="12.5" fill="#111827" font-weight="700">⑤ 학습</text>
-<text x="687.169668796321" y="655.0135445082657" font-size="11" fill="#374151">실데이터 + 합성 데이터로 재학습</text>
-<text x="687.169668796321" y="670.1935445082656" font-size="11" fill="#374151">(Cortex · DGX)</text>
-<rect x="350.830331203679" y="616.2135445082657" width="210" height="65.6099999999999" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
-<text x="358.830331203679" y="637.3385445082657" font-size="12.5" fill="#111827" font-weight="700">⑥ 시뮬레이션 검증</text>
-<text x="358.830331203679" y="655.0135445082657" font-size="11" fill="#374151">로그 재생 · 3D 재구성 · 생성</text>
-<text x="358.830331203679" y="670.1935445082656" font-size="11" fill="#374151">시나리오, 회귀 테스트</text>
-<rect x="99.30780618346944" y="507.285" width="210" height="50.43000000000001" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
-<text x="107.30780618346944" y="528.4100000000001" font-size="12.5" fill="#111827" font-weight="700">⑦ 실차 검증</text>
-<text x="107.30780618346944" y="546.085" font-size="11" fill="#374151">HIL · 테스트 트랙 · 시험 플릿</text>
-<rect x="42.292278554140125" y="321.1782329182634" width="210" height="65.61000000000001" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
-<text x="50.292278554140125" y="342.3032329182634" font-size="12.5" fill="#111827" font-weight="700">⑧ 안전 관문 · OTA</text>
-<text x="50.292278554140125" y="359.9782329182634" font-size="11" fill="#374151">안전 논증 갱신, UN R156 요건 확인 후</text>
-<text x="50.292278554140125" y="375.1582329182634" font-size="11" fill="#374151">단계적 배포</text>
-<rect x="206.46194735046106" y="171.78322257347085" width="210" height="50.43000000000001" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
-<text x="214.46194735046106" y="192.90822257347085" font-size="12.5" fill="#111827" font-weight="700">⑨ 다시 플릿으로</text>
-<text x="214.46194735046106" y="210.58322257347086" font-size="11" fill="#374151">새 모델이 새 실패를 만든다 → ①</text>
-<text x="620" y="360" font-size="16" fill="#111827" font-weight="700" text-anchor="middle">차량 데이터 플라이휠</text>
-<text x="620" y="390" font-size="12" fill="#d97706" font-weight="700" text-anchor="middle">차 안 (온보드): ①②⑨</text>
-<text x="620" y="410" font-size="12" fill="#2563eb" font-weight="700" text-anchor="middle">클라우드: ③④⑤⑥</text>
-<text x="620" y="430" font-size="12" fill="#d97706" font-weight="700" text-anchor="middle">시험장 · 인증: ⑦⑧</text>
-<text x="470" y="458" font-size="11" fill="#6b7280">일반 플라이휠의 &quot;로그 → 데이터셋 → 학습 → 평가 → 배포&quot;는</text>
-<text x="470" y="473.18" font-size="11" fill="#6b7280">그대로 있고, 주황 네 마디가 끼어들어 원이 길어지고</text>
-<text x="470" y="488.36" font-size="11" fill="#6b7280">관문이 많아진다.</text>
+<ellipse cx="620" cy="340" rx="400" ry="210" fill="none" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="6 5"/>
+<polygon points="765.6,144.4 749.6,146.8 751.6,136.2" fill="#4b5563"/>
+<polygon points="973.1,241.1 958.1,234.8 965.4,226.8" fill="#4b5563"/>
+<polygon points="1011.1,385.0 1010.8,368.8 1021.0,372.2" fill="#4b5563"/>
+<polygon points="868.9,504.5 880.7,493.4 885.1,503.3" fill="#4b5563"/>
+<polygon points="611.0,550.0 626.3,544.6 626.3,555.4" fill="#4b5563"/>
+<polygon points="354.6,497.2 370.8,498.5 366.5,508.4" fill="#4b5563"/>
+<polygon points="223.2,367.9 233.2,380.7 223.0,384.2" fill="#4b5563"/>
+<polygon points="280.2,228.9 272.6,243.2 265.3,235.2" fill="#4b5563"/>
+<polygon points="492.0,141.0 478.0,149.2 476.0,138.5" fill="#4b5563"/>
+<rect x="505.0" y="96.16" width="230" height="67.67999999999998" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="513.0" y="117.81" font-size="13" fill="#111827" font-weight="700">① 온보드 선별 · 섀도 모드</text>
+<text x="513.0" y="136.175" font-size="11.5" fill="#374151">차 안. 트리거에 걸린 짧은 클립만</text>
+<text x="513.0" y="152.045" font-size="11.5" fill="#374151">고르고, 새 모델을 몰래 실어 비교</text>
+<rect x="675.2" y="87.16" width="53.8" height="16" rx="8" fill="#fff" stroke="#d97706" stroke-width="1.2"/>
+<text x="702.1" y="98.66" font-size="9.5" fill="#d97706" font-weight="700" text-anchor="middle">차량 전용</text>
+<rect x="762.1150438746158" y="145.2906669450146" width="230" height="67.67999999999995" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="770.1150438746158" y="166.9406669450146" font-size="13" fill="#111827" font-weight="700">② 업로드 · 저장</text>
+<text x="770.1150438746158" y="185.3056669450146" font-size="11.5" fill="#374151">통신·저장 예산 안에서 요약 먼저, 원본은</text>
+<text x="770.1150438746158" y="201.17566694501457" font-size="11.5" fill="#374151">요청 시</text>
+<rect x="898.9231012048832" y="269.69388268994464" width="230" height="67.68" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="906.9231012048832" y="291.3438826899446" font-size="13" fill="#111827" font-weight="700">③ 검색 · 큐레이션</text>
+<text x="906.9231012048832" y="309.70888268994463" font-size="11.5" fill="#374151">임베딩 검색, 중복 제거 (Cosmos</text>
+<text x="906.9231012048832" y="325.57888268994463" font-size="11.5" fill="#374151">Curator · FiftyOne)</text>
+<rect x="851.4101615137755" y="411.16" width="230" height="67.68" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="859.4101615137755" y="432.81" font-size="13" fill="#111827" font-weight="700">④ 라벨링</text>
+<text x="859.4101615137755" y="451.175" font-size="11.5" fill="#374151">사람 또는 오프라인 대형 모델의 자동</text>
+<text x="859.4101615137755" y="467.045" font-size="11.5" fill="#374151">라벨링</text>
+<rect x="641.8080573302675" y="503.49545036504077" width="230" height="67.68" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="649.8080573302675" y="525.1454503650408" font-size="13" fill="#111827" font-weight="700">⑤ 학습</text>
+<text x="649.8080573302675" y="543.5104503650408" font-size="11.5" fill="#374151">실데이터 + 합성 데이터로 재학습</text>
+<text x="649.8080573302675" y="559.3804503650408" font-size="11.5" fill="#374151">(Cortex · DGX)</text>
+<rect x="368.1919426697325" y="503.49545036504077" width="230" height="67.68" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="376.1919426697325" y="525.1454503650408" font-size="13" fill="#111827" font-weight="700">⑥ 시뮬레이션 검증</text>
+<text x="376.1919426697325" y="543.5104503650408" font-size="11.5" fill="#374151">로그 재생 · 3D 재구성 · 생성 시나리오,</text>
+<text x="376.1919426697325" y="559.3804503650408" font-size="11.5" fill="#374151">회귀 테스트</text>
+<rect x="538.3919426697325" y="494.49545036504077" width="53.8" height="16" rx="8" fill="#fff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="565.2919426697325" y="505.99545036504077" font-size="9.5" fill="#2563eb" font-weight="700" text-anchor="middle">차량 전용</text>
+<rect x="158.5898384862245" y="419.095" width="230" height="51.81" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
+<text x="166.5898384862245" y="440.745" font-size="13" fill="#111827" font-weight="700">⑦ 실차 검증</text>
+<text x="166.5898384862245" y="459.11" font-size="11.5" fill="#374151">HIL · 테스트 트랙 · 시험 플릿</text>
+<rect x="328.7898384862245" y="410.095" width="53.8" height="16" rx="8" fill="#fff" stroke="#059669" stroke-width="1.2"/>
+<text x="355.6898384862245" y="421.595" font-size="9.5" fill="#059669" font-weight="700" text-anchor="middle">차량 전용</text>
+<rect x="111.07689879511679" y="269.69388268994464" width="230" height="67.68" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
+<text x="119.07689879511679" y="291.3438826899446" font-size="13" fill="#111827" font-weight="700">⑧ 안전 관문 · OTA</text>
+<text x="119.07689879511679" y="309.70888268994463" font-size="11.5" fill="#374151">안전 논증 갱신, UN R156 요건 확인 후</text>
+<text x="119.07689879511679" y="325.57888268994463" font-size="11.5" fill="#374151">단계적 배포</text>
+<rect x="281.2768987951168" y="260.69388268994464" width="53.8" height="16" rx="8" fill="#fff" stroke="#059669" stroke-width="1.2"/>
+<text x="308.1768987951168" y="272.19388268994464" font-size="9.5" fill="#059669" font-weight="700" text-anchor="middle">차량 전용</text>
+<rect x="247.88495612538424" y="153.22566694501464" width="230" height="51.809999999999974" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="255.88495612538424" y="174.87566694501464" font-size="13" fill="#111827" font-weight="700">⑨ 다시 플릿으로</text>
+<text x="255.88495612538424" y="193.24066694501462" font-size="11.5" fill="#374151">새 모델이 새 실패를 만든다 → ①</text>
+<text x="620" y="294" font-size="16" fill="#111827" font-weight="700" text-anchor="middle">차량 데이터 플라이휠</text>
+<text x="620" y="322" font-size="12.5" fill="#d97706" font-weight="700" text-anchor="middle">차 안 (온보드): ①②⑨</text>
+<text x="620" y="342" font-size="12.5" fill="#2563eb" font-weight="700" text-anchor="middle">클라우드: ③④⑤⑥</text>
+<text x="620" y="362" font-size="12.5" fill="#059669" font-weight="700" text-anchor="middle">시험장 · 인증: ⑦⑧</text>
+<text x="480" y="388" font-size="11" fill="#6b7280">일반 플라이휠의 &quot;로그 → 데이터셋 → 학습 → 평가 →</text>
+<text x="480" y="403.18" font-size="11" fill="#6b7280">배포&quot;는 그대로 있고, &quot;차량 전용&quot; 네 마디가 끼어들어</text>
+<text x="480" y="418.36" font-size="11" fill="#6b7280">원이 길어지고 관문이 많아진다.</text>
 </svg>

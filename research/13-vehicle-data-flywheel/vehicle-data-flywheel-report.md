@@ -232,12 +232,12 @@
 
 - **구성 근거**: 세 종류의 공개 자료가 공통으로 말하는 것을 합침.
   - Tesla 2021년 AI Day 데이터 엔진 📰 ([CleanTechnica](https://cleantechnica.com/2021/08/30/observations-on-teslas-ai-day/)).
-  - NVIDIA·AWS의 "AV 3.0 데이터 파이프라인"(2026-03) 📰 ([AWS 블로그, 요약만 확인](https://aws.amazon.com/blogs/industries/building-an-end-to-end-physical-ai-data-pipeline-for-autonomous-vehicle-3-0-on-aws-with-nvidia/)).
-  - 학술 서베이의 7단계 폐쇄루프 🔍.
+  - NVIDIA·AWS의 "AV 3.0 데이터 파이프라인"(2026-03) 📰 ([AWS 블로그](https://aws.amazon.com/blogs/industries/building-an-end-to-end-physical-ai-data-pipeline-for-autonomous-vehicle-3-0-on-aws-with-nvidia/), 본문은 요약만 확인·다이어그램은 그림 8).
+  - Li et al. 2024 서베이(arXiv 2401.12888)의 7단계 폐쇄루프 🔍 ([README 3.1절](https://raw.githubusercontent.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving/main/README.md)).
 
 ![차량 데이터 플라이휠 전체 구조](images/fig3-vehicle-flywheel.svg)
 
-*그림 7. 차량 데이터 플라이휠. 차 안(온보드)에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다. 일반 플라이휠에 없는 마디를 색으로 표시했다. 자체 작성.*
+*그림 7. 차량 데이터 플라이휠. 차 안(온보드)에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다. 색은 마디가 도는 곳(차 안·클라우드·시험장), "차량 전용" 표는 일반 플라이휠에 없는 마디를 뜻한다. Li et al. 2024 서베이 7단계·Tesla 데이터 엔진·NVIDIA/AWS AV 3.0 파이프라인을 합쳐 자체 작성.*
 
 - **9개 마디**
 
@@ -254,10 +254,21 @@
 | ⑨ 다시 ① | 차 안 | 새 모델이 새 실패를 만듦 | — |
 
 - **일반 플라이휠과의 대응**: 6단계 중 "로그 수집·데이터셋·학습·평가·배포"는 그대로 있음. 차량에서 새로 생긴 것은 ①(차 안 선별), ⑥(시뮬레이션 필수), ⑦(실차), ⑧(안전 관문·규제)임.
+- **세 근거와 마디의 대응**
+  - 서베이 7단계 "(I) 수집 → (II) 저장 → (III) 선별·전처리 → (IV) 라벨링 → (V) 학습 → (VI) 시뮬레이션·테스트 검증 → (VII) 실세계 배포" = ②③④⑤⑥⑧.
+  - ①(온보드 선별·섀도 모드) = Tesla 데이터 엔진. ⑦(실차 검증) = Waymo 사례. ⑧의 안전 관문·UN R156 = 규제 자료.
+
+![NVIDIA·AWS AV 3.0 데이터 파이프라인](images/src-aws-nvidia-av3-pipeline.png)
+
+*그림 8. NVIDIA·AWS가 2026년 3월 공개한 "AV 3.0 물리 AI 데이터 파이프라인" 참조 아키텍처. 1 클라우드 수집(차량 → AWS Data Transfer Terminal → S3 원본 기록) → 2 품질 검사·센서 추출(AWS Batch) → 3 영상 큐레이션: 분할·라벨·주석(SageMaker HyperPod + Cosmos Curator) → 4 검색(OpenSearch 벡터·키워드, Cosmos Dataset Search) → 5 대화형 데이터 조작·증강(Cosmos Transfer → S3 골드 데이터셋) → 6 장면 재구성(AWS Batch + Omniverse NuRec → S3 3D 장면) → 7 SIL 시험·검증(AlpaSim → S3 시뮬레이션 지표) → 8 모델 개발·학습: 미세조정·후학습·강화학습(Alpamayo) → 차량. 그림 7과 대응하면 1·2 = ②, 3·4 = ③④, 5·8 = ⑤, 6·7 = ⑥이고, ①(차 안 선별)·⑦(실차 검증)·⑧(안전 관문·OTA)은 이 아키텍처에 없다. 출처: [AWS 블로그](https://aws.amazon.com/blogs/industries/building-an-end-to-end-physical-ai-data-pipeline-for-autonomous-vehicle-3-0-on-aws-with-nvidia/) 다이어그램(원 저작권 AWS·NVIDIA). 블로그 본문은 접근이 차단되어 요약만 확인 ⚠️. 원본 크기.*
+
+- **AV 3.0 파이프라인과 그림 7의 차이**
+  - 클라우드 안쪽(수집 이후 → 학습 → 시뮬레이션)만 그리며, 차 안 선별·실차 검증·규제 관문은 없음. 그림 7의 ③~⑥을 도구 이름 수준으로 채운 그림임.
+  - 사람(Users)이 검색과 증강 도구에 붙어 있음. "사람이 고르고 만든다"는 3.2·3.4절 흐름과 같음.
 
 ![Waymo ML Factory 슬라이드](images/src-waymo-ml-factory-slide.jpg)
 
-*그림 8. Waymo가 발표한 "ML Factory for Self Driving Models" 슬라이드. 센서 로그 → 데이터 마이닝·능동학습으로 선별 → 라벨러 또는 자동 라벨 → 모델(자동 튜닝) → 테스트·검증 → 릴리스 → 다시 수집. 위 표의 ③④⑤⑥⑧ 마디가 그대로 보인다. 출처: Waymo 발표 슬라이드 화면, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-2_Waymo_close_loop.png`, 저장소 Apache-2.0). 원 저작권은 Waymo에 있다. 크기만 줄임.*
+*그림 9. Waymo가 발표한 "ML Factory for Self Driving Models" 슬라이드. 센서 로그 → 데이터 마이닝·능동학습으로 선별 → 라벨러 또는 자동 라벨 → 모델(자동 튜닝) → 테스트·검증 → 릴리스 → 다시 수집. 위 표의 ③④⑤⑥⑧ 마디가 그대로 보인다. 출처: Waymo 발표 슬라이드 화면, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-2_Waymo_close_loop.png`, 저장소 Apache-2.0). 원 저작권은 Waymo에 있다. 크기만 줄임.*
 
 > **시사점.** 차량 플라이휠의 고유 마디 네 개(①⑥⑦⑧)는 모두 "관문"임. 원을 빨리 돌리는 것과 관문을 통과하는 것을 동시에 설계해야 함.
 
@@ -274,7 +285,7 @@
 
 ![일반 AI 플라이휠과 차량 플라이휠의 차이](images/fig4-general-vs-vehicle.svg)
 
-*그림 9. 같은 원, 다른 마디. 일반 AI 플라이휠(안쪽)에 차량에서만 생기는 네 마디(바깥쪽)가 더해진다. 자체 작성.*
+*그림 10. 같은 원, 다른 마디. 일반 AI 플라이휠(안쪽)에 차량에서만 생기는 네 마디(바깥쪽)가 더해진다. 자체 작성.*
 
 > **시사점.** 일반 플라이휠은 "얼마나 빨리 도는가"의 문제이고, 차량 플라이휠은 "관문을 통과하면서도 계속 돌게 하는가"의 문제임.
 
@@ -286,7 +297,7 @@
 
 ![Tesla 데이터 엔진 슬라이드](images/src-tesla-data-engine-slide.jpg)
 
-*그림 10. Tesla가 발표한 데이터 엔진 슬라이드. 배포된 플릿(data source)에서 틀린 사례를 찾고(identify an inaccuracy) → 단위 테스트 세트에 넣고 → 비슷한 사례를 플릿에서 모아(boost) → 라벨·정제 → 학습 → 배포를 반복한다("you spin this data engine"). 2장·3장에서 말하는 회귀 세트와 유사 장면 회수가 이미 이 초기 발표에 들어 있다(발표 연도는 수록 저장소에 기재 없음 ⚠️). 출처: Tesla 발표 화면(서베이 저장소는 "Tesla AutoPilot Data Platform" 강연으로 표기), [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-1_Tesla_close_loop.png`, 저장소 Apache-2.0). 원 저작권은 Tesla에 있다. 크기만 줄임.*
+*그림 11. Tesla가 발표한 데이터 엔진 슬라이드. 배포된 플릿(data source)에서 틀린 사례를 찾고(identify an inaccuracy) → 단위 테스트 세트에 넣고 → 비슷한 사례를 플릿에서 모아(boost) → 라벨·정제 → 학습 → 배포를 반복한다("you spin this data engine"). 2장·3장에서 말하는 회귀 세트와 유사 장면 회수가 이미 이 초기 발표에 들어 있다(발표 연도는 수록 저장소에 기재 없음 ⚠️). 출처: Tesla 발표 화면(서베이 저장소는 "Tesla AutoPilot Data Platform" 강연으로 표기), [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-1_Tesla_close_loop.png`, 저장소 Apache-2.0). 원 저작권은 Tesla에 있다. 크기만 줄임.*
 
 - **2026년 플라이휠**: 원의 모양은 같지만 각 마디의 부품이 바뀜.
 
@@ -302,7 +313,7 @@
 
 ![기존 데이터 엔진과 최근 플라이휠](images/fig5-old-vs-new-loop.svg)
 
-*그림 11. 2021년 데이터 엔진(왼쪽)과 2026년 플라이휠(오른쪽). 마디는 같고 부품이 바뀌었다. 자체 작성.*
+*그림 12. 2021년 데이터 엔진(왼쪽)과 2026년 플라이휠(오른쪽). 마디는 같고 부품이 바뀌었다. 자체 작성.*
 
 - **바뀐 부품들의 공통점**: 사람이 하던 일(트리거 작성, 라벨링, 시나리오 작성)을 큰 모델이 대신하고, 실차로만 하던 일(재현, 검증)을 클라우드가 대신함.
 
@@ -324,7 +335,7 @@
 
 ![가상 사례의 흐름](images/fig6-case-flow.svg)
 
-*그림 12. 콘 옆 작업자 사례가 플라이휠 한 바퀴를 도는 경로. 각 마디에 실제 도구 이름을 적었다. 자체 작성.*
+*그림 13. 콘 옆 작업자 사례가 플라이휠 한 바퀴를 도는 경로. 각 마디에 실제 도구 이름을 적었다. 자체 작성.*
 
 ### 3.1 1단계 — 수집·선별 (차 안)
 
@@ -378,7 +389,7 @@
 
 ![Cosmos Curator 파이프라인](images/src-nvidia-cosmos-curator-pipelines.png)
 
-*그림 13. Cosmos Curator의 공식 파이프라인 그림. 분할·주석 파이프라인(다운로드 → 디코드 → 샷 경계 분할 → 트랜스코드 → 움직임·품질 필터 → VLM 캡션 → 영상 임베딩 → 저장), 의미 기반 중복 제거, 데이터셋 샤딩의 세 단계가 Ray 위에서 돈다. 출처: [nvidia-cosmos/cosmos-curate](https://github.com/nvidia-cosmos/cosmos-curate) `docs/assets/cosmos-curator-pipelines.png`, Apache-2.0. 원본 크기.*
+*그림 14. Cosmos Curator의 공식 파이프라인 그림. 분할·주석 파이프라인(다운로드 → 디코드 → 샷 경계 분할 → 트랜스코드 → 움직임·품질 필터 → VLM 캡션 → 영상 임베딩 → 저장), 의미 기반 중복 제거, 데이터셋 샤딩의 세 단계가 Ray 위에서 돈다. 출처: [nvidia-cosmos/cosmos-curate](https://github.com/nvidia-cosmos/cosmos-curate) `docs/assets/cosmos-curator-pipelines.png`, Apache-2.0. 원본 크기.*
 
 - **원칙: 정답은 소급해서 붙임**
   - 온보드 모델은 현재 프레임까지만 보고 작은 모델로 빨리 답해야 함. 클라우드의 자동 라벨러는 그 제약이 없음.
@@ -396,11 +407,11 @@
 
 ![라벨링 파이프라인 세 유형](images/src-li2024-labeling-pipelines.png)
 
-*그림 14. 라벨링 파이프라인의 세 유형. (a) 사람이 라벨링하고 사람이 검사, (b) 알고리즘이 라벨링하고 전문가가 개입, (c) 종단간 대형 모델·생성형 AI가 라벨링하고 자동 품질 검사. 완전 자동에서도 "통과/재작업" 루프는 남는다. 출처: [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/3-5-Mainstream-AD-Labeling-Pipelines.png`, Apache-2.0. 크기만 줄임.*
+*그림 15. 라벨링 파이프라인의 세 유형. (a) 사람이 라벨링하고 사람이 검사, (b) 알고리즘이 라벨링하고 전문가가 개입, (c) 종단간 대형 모델·생성형 AI가 라벨링하고 자동 품질 검사. 완전 자동에서도 "통과/재작업" 루프는 남는다. 출처: [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/3-5-Mainstream-AD-Labeling-Pipelines.png`, Apache-2.0. 크기만 줄임.*
 
 ![Waymo Open Dataset 보행자 3D 라벨 예](images/src-waymo-3d-label-example.jpg)
 
-*그림 15. 라이다 포인트클라우드 위에 붙은 보행자 3D 박스(주황)와 같은 순간의 카메라 영상(왼쪽 아래). 온보드 모델이 늦게 본 작업자도 클라우드의 자동 라벨러는 이런 3D 박스를 미래 프레임과 여러 주행을 합쳐 첫 프레임부터 만든다. 출처: [waymo-research/waymo-open-dataset](https://github.com/waymo-research/waymo-open-dataset) `docs/images/pedestrian-3D-labeling-example.png`(저장소 Apache-2.0, 데이터 자체는 Waymo Open Dataset 이용약관). JPEG로 변환.*
+*그림 16. 라이다 포인트클라우드 위에 붙은 보행자 3D 박스(주황)와 같은 순간의 카메라 영상(왼쪽 아래). 온보드 모델이 늦게 본 작업자도 클라우드의 자동 라벨러는 이런 3D 박스를 미래 프레임과 여러 주행을 합쳐 첫 프레임부터 만든다. 출처: [waymo-research/waymo-open-dataset](https://github.com/waymo-research/waymo-open-dataset) `docs/images/pedestrian-3D-labeling-example.png`(저장소 Apache-2.0, 데이터 자체는 Waymo Open Dataset 이용약관). JPEG로 변환.*
 
 - **사람의 역할 = 검수로 이동**
   - 업계 관행: 자동 라벨 뒤에 사람이 배치당 10% 정도를 무작위 검수해 정확도 98% 이상을 확인 📰⚠️.
@@ -421,7 +432,7 @@
 
 ![합성 데이터의 세 갈래](images/fig7-synthetic-three-routes.svg)
 
-*그림 16. 재생·재구성·생성. 오른쪽으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차를 검증해야 한다. 자체 작성.*
+*그림 17. 재생·재구성·생성. 오른쪽으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차를 검증해야 한다. 자체 작성.*
 
 | 갈래 | 무엇을 하나 | 장점·한계 | 대표 도구 |
 |---|---|---|---|
@@ -433,7 +444,7 @@
 
 ![Cosmos Transfer1 구조](images/src-nvidia-cosmos-transfer1.png)
 
-*그림 17. Cosmos Transfer1의 공식 구조도. 깊이·엣지·세그멘테이션 영상이 각각의 제어 가지(DepthControl·EdgeControl·SegControl)로 들어가고, 시공간 가중치 영상으로 섞여 디퓨전 백본에 조건을 준다. 기하는 입력 조건이 정하고 외관은 생성된다. 출처: [nvidia-cosmos/cosmos-transfer1](https://github.com/nvidia-cosmos/cosmos-transfer1) `assets/transfer1_diagram.png`, Apache-2.0. 원본 크기.*
+*그림 18. Cosmos Transfer1의 공식 구조도. 깊이·엣지·세그멘테이션 영상이 각각의 제어 가지(DepthControl·EdgeControl·SegControl)로 들어가고, 시공간 가중치 영상으로 섞여 디퓨전 백본에 조건을 준다. 기하는 입력 조건이 정하고 외관은 생성된다. 출처: [nvidia-cosmos/cosmos-transfer1](https://github.com/nvidia-cosmos/cosmos-transfer1) `assets/transfer1_diagram.png`, Apache-2.0. 원본 크기.*
 
 - **폐루프 학습**
   - 문제: 기록을 흉내 내는 학습(모방학습)만 하면 모델은 자기 실수의 결과를 겪어 보지 못함.
@@ -446,11 +457,11 @@
 
 ![Alpamayo 강화학습 프레임워크](images/src-nvidia-alpamayo-rl-framework.png)
 
-*그림 18. NVIDIA가 공개한 Alpamayo 강화학습 레시피의 구조도. 롤아웃 복제본(vLLM)이 주행을 생성해 보상과 함께 롤아웃 풀에 넣고, 정책 복제본이 이를 소비해 가중치를 갱신하며, 갱신된 가중치가 롤아웃 쪽으로 되돌아간다. 출처: [NVlabs/alpamayo-recipes](https://github.com/NVlabs/alpamayo-recipes) `recipes/alpamayo1_x_rl/assets/alpamayo_rl_framework.png`, Apache-2.0. 원본 크기.*
+*그림 19. NVIDIA가 공개한 Alpamayo 강화학습 레시피의 구조도. 롤아웃 복제본(vLLM)이 주행을 생성해 보상과 함께 롤아웃 풀에 넣고, 정책 복제본이 이를 소비해 가중치를 갱신하며, 갱신된 가중치가 롤아웃 쪽으로 되돌아간다. 출처: [NVlabs/alpamayo-recipes](https://github.com/NVlabs/alpamayo-recipes) `recipes/alpamayo1_x_rl/assets/alpamayo_rl_framework.png`, Apache-2.0. 원본 크기.*
 
 ![AlpaSim 구조](images/alpasim-architecture.png)
 
-*그림 19. NVIDIA AlpaSim의 마이크로서비스 구조. 센서 시뮬레이션(렌더러) → 정책 → 궤적 → 물리 → 런타임 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png`, Apache-2.0.*
+*그림 20. NVIDIA AlpaSim의 마이크로서비스 구조. 센서 시뮬레이션(렌더러) → 정책 → 궤적 → 물리 → 런타임 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png`, Apache-2.0.*
 
 - **학습 컴퓨트(회사 발표 수치, 독립 검증 없음)**
   - Tesla Cortex: 2024년 말 약 5만 H100 → 2026년 1분기 "10만 H100 상당 이상" 📰⚠️.
@@ -521,7 +532,7 @@
 
 ![기업별 플라이휠 유형 지도](images/fig8-company-map.svg)
 
-*그림 20. 데이터 원천(가로)과 공개도(세로)로 본 기업 유형. 자체 작성. 수치는 각 사 공개 주장.*
+*그림 21. 데이터 원천(가로)과 공개도(세로)로 본 기업 유형. 자체 작성. 수치는 각 사 공개 주장.*
 
 ### 4.1 플릿형 — 양산차가 데이터를 만든다
 
@@ -571,7 +582,7 @@
 
 ![Baidu 폐쇄루프 데이터 시스템](images/src-baidu-closed-loop.png)
 
-*그림 21. Baidu가 공개한 "Closed-Loop Data System" 그림. 합규 데이터 수집(차량 개조·탈민감화) → 데이터 처리·관리 → 라벨링 → 알고리즘 개발·학습·평가 → 시나리오 라이브러리(OpenX 표준)·시뮬레이션 테스트 → 차량 배포·OTA. 출처: Baidu Apollo 공개 자료, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-4_Baidu_Close_Loop_Data_System.jpg`, 저장소 Apache-2.0). 원 저작권은 Baidu에 있다. 원본 크기.*
+*그림 22. Baidu가 공개한 "Closed-Loop Data System" 그림. 합규 데이터 수집(차량 개조·탈민감화) → 데이터 처리·관리 → 라벨링 → 알고리즘 개발·학습·평가 → 시나리오 라이브러리(OpenX 표준)·시뮬레이션 테스트 → 차량 배포·OTA. 출처: Baidu Apollo 공개 자료, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-2-4_Baidu_Close_Loop_Data_System.jpg`, 저장소 Apache-2.0). 원 저작권은 Baidu에 있다. 원본 크기.*
 
 > **시사점.** 로보택시형은 플릿이 작은 대신 센서가 많고 시뮬레이션 비중이 크며, 플릿 통계를 안전 케이스로 직접 연결함(안전 허브·백서). 규제 면제(Zoox)가 배포 관문의 새 선례임.
 
@@ -605,7 +616,7 @@
 
 ![Momenta 데이터 기반 알고리즘 로드맵 슬라이드](images/src-momenta-roadmap-slide.jpg)
 
-*그림 22. Momenta가 발표한 "완전 데이터 기반 알고리즘 로드맵" 슬라이드. 규칙 기반(주황) 계획을 단계적으로 데이터 기반(파랑) 모듈로 바꾸고, 2025년 중반에 인지와 계획을 한 모델로 합치는 목표를 적었다. 4.7절의 "강화학습이 양산으로" 흐름의 출발점이다. 출처: Momenta 발표 슬라이드 화면, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-1_momenta_data_driven_planning.png`, 저장소 Apache-2.0). 원 저작권은 Momenta에 있다. 크기만 줄임.*
+*그림 23. Momenta가 발표한 "완전 데이터 기반 알고리즘 로드맵" 슬라이드. 규칙 기반(주황) 계획을 단계적으로 데이터 기반(파랑) 모듈로 바꾸고, 2025년 중반에 인지와 계획을 한 모델로 합치는 목표를 적었다. 4.7절의 "강화학습이 양산으로" 흐름의 출발점이다. 출처: Momenta 발표 슬라이드 화면, [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving)에 수록(`img_resource/3-1_momenta_data_driven_planning.png`, 저장소 Apache-2.0). 원 저작권은 Momenta에 있다. 크기만 줄임.*
 
 > **시사점.** 공급자형은 여러 OEM의 차에서 데이터를 받으므로 지역·차종 다양성이 강점이고, 그 데이터로 만든 지도(REM)·월드모델(GAIA)·플라이휠 모델(R6/R7)이 곧 상품임.
 
@@ -720,7 +731,7 @@
 
 ![병목에서 경쟁력으로](images/fig9-bottleneck-to-competitiveness.svg)
 
-*그림 23. 네 가지 병목(왼쪽)을 풀면 다섯 가지 경쟁력(오른쪽)으로 이어진다. 자체 작성.*
+*그림 24. 네 가지 병목(왼쪽)을 풀면 다섯 가지 경쟁력(오른쪽)으로 이어진다. 자체 작성.*
 
 ### 5.1 병목 ① 데이터 발견 — 무엇이 필요한지 모른다
 
@@ -867,7 +878,7 @@
 | 10 | Waymo "200억 시뮬 마일"(2026 시점), 컴퓨트 지출 | "수십억"만 확인 |
 | 11 | Mobileye REM 일일 매핑 km(2025~26) | 800만 대·"일 수백만 km"만 확인 |
 | 12 | Applied Intuition "Data Explorer", 현대모비스 "S-CORE" 명칭 | 검색에서 미확인 |
-| 13 | AWS×NVIDIA AV 3.0 블로그 본문·다이어그램 | 요약만 확인 |
+| 13 | AWS×NVIDIA AV 3.0 블로그 본문 | 요약만 확인. 아키텍처 다이어그램은 별도 확보해 그림 8로 수록 |
 | 14 | 라벨 단가·검수 비율 | 벤더 블로그 기반 범위 |
 | 15 | "트리거 → 배포 X주" 같은 한 바퀴 소요 시간 | 어느 회사도 공개하지 않음 |
 | 16 | 발표 슬라이드 화면(Tesla·Waymo·Momenta)의 발표 행사·연도 | 수록 저장소에 기재 없음 |
