@@ -24,13 +24,13 @@
 
 ---
 
-## 1. 자율주행에서 데이터 플라이휠이 주목받는 이유
+## 1. 배경
 
 > **이 장의 질문.** 왜 지금 모두가 "데이터 플라이휠"을 말하는가.
 >
 > **세 줄 답.** ① 주행 소프트웨어가 사람이 쓴 규칙에서 데이터로 학습한 모델로 바뀌었다. 모델은 데이터가 없는 상황에서는 무엇을 해야 할지 모른다. ② 사고를 결정하는 것은 드문 상황이고, 드문 상황은 지역·날씨·차종이 바뀌면 또 달라지며, 새 모델은 예전 상황을 잊을 수 있다. ③ 실도로 주행으로 안전을 증명하기엔 필요한 거리가 너무 길다. 그래서 "차에서 데이터를 모아 → 고쳐서 → 시뮬레이션으로 확인하고 → 다시 차에 보내는" 루프를 멈추지 않고 돌려야 한다.
 
-### 1.1 플라이휠이라는 말의 뜻
+### 1.1 데이터 플라이휠의 개념
 
 플라이휠(flywheel)은 원래 무거운 바퀴를 뜻한다. 처음 돌리기는 힘들지만 한번 돌면 관성으로 계속 돈다. 사업에서는 Amazon의 제프 베조스가 2001년에 그린 선순환 그림이 유명하다. 가격을 낮추면 고객이 늘고, 고객이 늘면 판매자와 상품이 늘고, 그러면 고객 경험이 좋아져 다시 고객이 는다 📰 ([retaildogma](https://www.retaildogma.com/amazon-flywheel/), [feedvisor](https://feedvisor.com/resources/amazon-trends/amazon-flywheel-explained/)).
 
@@ -38,7 +38,7 @@ AI에서 말하는 **데이터 플라이휠**은 이 그림의 주어를 데이�
 
 자율주행에서는 같은 말을 "데이터 엔진(data engine)"이나 "폐쇄루프(closed loop)"라고도 부른다. 2024년 학술 서베이는 자율주행의 폐쇄루프를 "(1) 데이터 수집 → (2) 저장 → (3) 선별·전처리 → (4) 라벨링 → (5) 모델 학습 → (6) 시뮬레이션·테스트 검증 → (7) 실세계 배포"의 반복으로 정의하고, Tesla·NVIDIA·Momenta·Horizon·Baidu·XPeng·Pony.ai·Amazon 등 아홉 개 회사의 파이프라인을 산업 사례로 든다 🔍 ([Awesome Data-Centric AD README](https://raw.githubusercontent.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving/main/README.md), 논문 arXiv 2401.12888).
 
-### 1.2 규칙 코드에서 학습 모델로
+### 1.2 규칙 기반 시스템에서 학습 기반 시스템으로의 진화
 
 자율주행 소프트웨어는 오랫동안 사람이 쓴 규칙의 집합이었다. "앞차와 거리가 이만큼이면 감속한다", "차선이 이렇게 보이면 중앙을 유지한다" 같은 조건문이 수십만 줄 쌓였다. 2024년 3월 Tesla는 FSD v12 릴리스 노트에서 "도심 주행 스택을 수백만 개 영상 클립으로 학습한 단일 종단간(end-to-end) 신경망으로 바꾸고, 30만 줄 이상의 명시적 C++ 코드를 대체했다"고 썼다 📰 ([릴리스 노트 인용](https://www.notateslaapp.com/software-updates/version/2024.3.20/release-notes)). 종단간이란 카메라 영상이 들어가면 조향·제동·가속이 바로 나온다는 뜻이다.
 
@@ -55,7 +55,11 @@ Tesla만이 아니다. Waymo는 2024년 10월 "Waymo Foundation Model이 인지�
 *그림 2. 학계 서베이가 정리한 고전 파이프라인(a: 인지 → 예측 → 계획을 사람이 정한 인터페이스로 잇는다)과 종단간 패러다임(b: 모듈 사이를 학습으로 잇고 역전파로 함께 고친다). 맨 아래 "미래 과제"에 데이터 엔진(Data Engine)이 들어 있다. 출처: Chen et al., 「End-to-end Autonomous Driving: Challenges and Frontiers」(TPAMI 2024) 공식 저장소 [OpenDriveLab/End-to-end-Autonomous-Driving](https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving) `assets/overview.jpg`, MIT. 크기만 줄임.*
 
 
-### 1.3 드문 상황이 안전을 좌우한다 — 롱테일
+### 1.3 기존 AI 학습 방식의 한계 (데이터 플라이휠이 주목받는 이유)
+
+학습 기반 시스템은 규칙이 아니라 데이터로만 고칠 수 있다(1.2절). 그래서 문제는 "어떤 데이터가, 왜 부족한가"로 바뀐다. 아래 네 가지 한계가 그 답이다. 드문 상황이 사고를 좌우하고(롱테일), 장소가 바뀌면 성능이 떨어지며(분포 변화), 다시 학습하면 예전 능력이 지워지고(성능 회귀), 실도로 데이터만으로는 안전을 증명할 수 없다. 넷 다 "한 번 모은 데이터로 한 번 학습해 배포하는" 기존 방식으로는 풀리지 않는다. 이것이 데이터 플라이휠이 주목받는 이유다.
+
+#### 1.3.1 롱테일 문제
 
 주행의 대부분은 평범하다. 직진, 차선 유지, 앞차 따라가기. 모델은 이런 상황을 금방 배운다. 문제는 드물게 일어나는 상황이다. 공사 구간에서 콘 옆에 서 있는 작업자, 갑자기 뛰어드는 동물, 비 오는 밤의 역광, 예측하기 어려운 사람의 행동. 이런 것을 **롱테일(long tail)** 이라고 부른다. 빈도 그래프를 그리면 오른쪽으로 길게 늘어진 꼬리처럼 각각은 드물지만 종류가 무한히 많다는 뜻이다.
 
@@ -68,7 +72,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 왜 드문 상황이 안전을 지배하는가. 안전 지표 자체가 드문 사건이기 때문이다. 미국에서 사람 운전자의 부상 신고 충돌은 100만 마일당 2.80건이다 📰 ([Waymo 비교 연구](https://waymo.com/research/comparison-of-waymo-rider-only-crash-data-to-human/)). 100만 마일에서 세 번 남짓 일어나는 사건을 줄이려면, 100만 마일 중 99.99%를 잘하는 것으로는 부족하고 나머지 0.01%에서 무엇을 하는지가 결정한다. Elon Musk가 말하는 "9의 행진(march of nines)"도 같은 뜻이다. 신뢰도 99%에서 99.9%, 99.99%로 9를 하나씩 더 붙일 때마다 남은 예외 상황을 처리해야 하고, 그 예외가 곧 롱테일이다 📰 ([보도](https://www.carswithcords.net/2020/07/tesla-and-long-march-of-nines-to-full.html)).
 
-### 1.4 장소가 바뀌면 성능이 떨어진다 — 분포 변화
+#### 1.3.2 데이터 분포 변화
 
 한 도시에서 배운 모델을 다른 도시에 가져가면 성능이 떨어진다. 이것을 **분포 변화(distribution shift)** 라고 한다. 학습 데이터와 실제 데이터의 "분포"(어떤 상황이 얼마나 자주 나오는가)가 다르다는 뜻이다.
 
@@ -76,13 +80,13 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 기업의 경험도 같다. Wayve는 영국(좌측통행)에서만 배운 모델을 미국에 그대로 가져갔을 때 처음에는 영국 수준에 못 미쳤고, 미국 데이터 100시간을 더하자 크게 좋아졌으며, 8주 동안 모은 500시간으로 영국 수준에 근접했다고 밝혔다 📰 ([Wayve](https://wayve.ai/thinking/multi-country-generalization/)). 새 시장에 들어갈 때마다 그 시장의 데이터를 모아 넣어야 한다는 뜻이고, 이것이 플라이휠이 지역 확장의 도구가 되는 이유다.
 
-### 1.5 새 모델이 예전 것을 잊는다 — 성능 회귀
+#### 1.3.3 성능 회귀
 
 모델을 다시 학습시키면 새로 넣은 상황은 좋아지지만 예전에 잘하던 상황이 나빠질 수 있다. 학습 분야에서는 이를 **파국적 망각(catastrophic forgetting)** 이라고 부른다. 새 데이터에 맞춰 가중치를 바꾸다가 예전 지식이 덮어써지는 현상이다. 자율주행의 지속 학습에서도 보호 장치 없이 재학습만 하면 망각이 생긴다는 연구가 있다 📰 ([IEEE](https://ieeexplore.ieee.org/abstract/document/10801619)).
 
 그래서 플라이휠에는 **회귀 테스트**가 반드시 들어간다. Tesla의 Andrej Karpathy는 2021년 CVPR 발표에서 데이터 엔진 루프를 이렇게 설명했다. "섀도 모드로 배포 → 예측을 관찰 → 트리거를 조정해 새 데이터 수집 → **잘못된 예측을 '유닛 테스트'로 만들기** → 비슷한 예제를 데이터셋에 추가 → 재학습 → 반복". 당시 플릿에서 221개 트리거가 돌고 있었다 📰 ([발표 요약](https://dynamicallytyped.com/stories/2021/karpathy-autopilot-cvpr/)). 틀렸던 상황을 테스트로 남겨 두면 다음 모델이 그 상황을 다시 틀리는지 확인할 수 있다. Waymo도 새 소프트웨어를 낼 때마다 "테스트 트랙·실도로·합성 시나리오 전부를 시뮬레이션에서 다시 실행"하고, 충돌 회피 시나리오는 상대 차량의 위치·속도를 조금씩 바꿔 가며(fuzzing) 돌린다 📰 ([Waymo CAT](https://waymo.com/blog/2022/12/waymos-collision-avoidance-testing/)).
 
-### 1.6 실도로 주행만으로는 안전을 증명할 수 없다
+#### 1.3.4 실도로 데이터 확보와 안전성 문제
 
 가장 근본적인 이유는 통계다. RAND 연구소의 2016년 보고서 "Driving to Safety"는 2013년 미국 교통사고 사망률(1억 마일당 1.09명)을 기준으로 이렇게 계산했다. 자율주행차가 사람보다 사망률이 낮다는 것을 95% 신뢰 수준으로 보이려면 **무사고로 2억 7,500만 마일**을 달려야 하고, "사람보다 20% 더 안전하다"를 95% 신뢰·80% 검정력으로 보이려면 **110억 마일**이 필요하다. 보고서의 결론은 "주행만으로는 안전에 도달할 수 없다(cannot drive their way to safety)"였다 📰 ([RAND RR-1478](https://www.rand.org/pubs/research_reports/RR1478.html)).
 
@@ -92,9 +96,9 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 그래서 Waymo는 실주행 2,000만 마일에 시뮬레이션 200억 마일 이상을 얹었고, 자체 시뮬레이터 Carcraft는 하루 800만~1,000만 마일을 달린다 📰 ([Simulation City](https://waymo.com/blog/2021/07/simulation-city/), [CACM 2018](https://cacmb4.acm.org/magazines/2018/2/224621-a-comprehensive-self-driving-car-test)). 2026년 2월에는 Google DeepMind의 Genie 3 기반 "Waymo World Model"로 플릿이 본 적 없는 상황(토네이도, 도로 위 코끼리)까지 만들어 시험한다고 밝혔다 📰 ([Waymo 블로그](https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation/)).
 
-### 1.7 그래서 "지속적 폐쇄루프"
+### 1.4 지속적 closed-loop learning의 필요성
 
-정리하면 네 가지 압력이 한 방향을 가리킨다.
+1.3절의 네 가지 한계를 정리하면 한 방향을 가리킨다.
 
 | 압력 | 무엇이 문제인가 | 플라이휠이 하는 일 |
 |---|---|---|
@@ -180,7 +184,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 | 2 | **정답(라벨)의 성격** | 사용자 클릭·피드백·큰 모델 채점 | 운전자 개입, 니어미스, 충돌 같은 **물리적 결과**. 사람이 못 만드는 라벨(3D 위치·속도)이 많아 자동 라벨링이 필수 | Tesla 섀도 모드는 모델 출력과 운전자 행동을 비교 📰; NHTSA는 자율주행 충돌을 1~5일 내 보고하게 함 📰 ([SGO 2021-01](https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting)) |
 | 3 | **배포 앞의 안전 관문** | 평가 점수가 좋으면 교체 | ISO 26262(오작동)·ISO 21448(기능 부족)·ISO/PAS 8800(AI 안전)에 따른 안전 논증을 갱신해야 함 | 📰 ([UL 해설](https://www.ul.com/sis/blog/safety-related-systems-road-vehicles-artificial-intelligence-are-addressed-isopas-88002024)) |
 | 4 | **업데이트 주기가 규제에 묶임** | 하루에도 여러 번 | UN R156은 인증된 소프트웨어 업데이트 관리체계(SUMS), 버전 식별번호(RxSWIN), 호환성 확인, 주행 중 안전 확보를 요구. EU는 2024년 7월부터 전 신차 적용 | 📰 ([요약](https://diadrom.com/insights/un-r156-sums-requirements)) |
-| 5 | **시뮬레이터가 필수** | 실제 사용자로 A/B 테스트 | 위험한 상황을 실차로 반복할 수 없고, 실주행 거리로는 증명이 안 됨(1.6절) | Waymo 실주행 2,000만 vs 시뮬 200억 마일 📰 |
+| 5 | **시뮬레이터가 필수** | 실제 사용자로 A/B 테스트 | 위험한 상황을 실차로 반복할 수 없고, 실주행 거리로는 증명이 안 됨(1.3.4절) | Waymo 실주행 2,000만 vs 시뮬 200억 마일 📰 |
 | 6 | **개인정보·데이터 주권** | 서비스 약관 안에서 처리 | 얼굴·번호판·위치가 찍히고, 나라 밖으로 못 나가는 경우가 있음. Tesla는 중국 도로 데이터를 미국으로 못 보내 상하이 데이터센터와 중국 내 학습 인프라를 따로 만들었고, 한국은 2024년부터 규제 샌드박스로만 원본 영상 학습을 허용 | 📰 ([Electrek 2026-02](https://electrek.co/2026/02/06/tesla-ai-training-capability-china-critical-step-full-self-driving/), [국내 보도](https://m.news.nate.com/view/20260123n23984)) |
 
 ![일반 AI 플라이휠과 차량 플라이휠의 차이](images/fig4-general-vs-vehicle.svg)

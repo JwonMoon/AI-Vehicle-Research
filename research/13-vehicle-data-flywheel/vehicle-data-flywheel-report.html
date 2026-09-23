@@ -118,7 +118,8 @@ main{min-width:0;max-width:var(--w);margin:0 auto;width:100%}
 @media (max-width:560px){.meta div{grid-template-columns:1fr;gap:.15rem}}
 
 /* headings */
-h2,h3{scroll-margin-top:72px;letter-spacing:-.01em;line-height:1.3}
+h2,h3,h4{scroll-margin-top:72px;letter-spacing:-.01em;line-height:1.3}
+h4{font-size:1.02rem;margin:1.7rem 0 .6rem;font-weight:600;color:var(--fg)}
 h2{font-size:1.55rem;margin:0 0 1rem;font-weight:700}
 h3{font-size:1.16rem;margin:2.2rem 0 .8rem;font-weight:600;color:var(--fg)}
 h2 .anchor,h3 .anchor{color:inherit}
@@ -245,15 +246,12 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
   <ol class="toc-list">
 <li><a href="#summary" data-target="summary">요약</a>
 </li>
-<li><a href="#s1" data-target="s1">1. 자율주행에서 데이터 플라이휠이 주목받는 이유</a>
+<li><a href="#s1" data-target="s1">1. 배경</a>
 <ol class="toc-sub">
-<li><a href="#s1-1" data-target="s1-1">1.1 플라이휠이라는 말의 뜻</a></li>
-<li><a href="#s1-2" data-target="s1-2">1.2 규칙 코드에서 학습 모델로</a></li>
-<li><a href="#s1-3" data-target="s1-3">1.3 드문 상황이 안전을 좌우한다</a></li>
-<li><a href="#s1-4" data-target="s1-4">1.4 장소가 바뀌면 성능이 떨어진다</a></li>
-<li><a href="#s1-5" data-target="s1-5">1.5 새 모델이 예전 것을 잊는다</a></li>
-<li><a href="#s1-6" data-target="s1-6">1.6 실도로 주행만으로는 안전을 증명할 수 없다</a></li>
-<li><a href="#s1-7" data-target="s1-7">1.7 그래서 &quot;지속적 폐쇄루프&quot;</a></li>
+<li><a href="#s1-1" data-target="s1-1">1.1 데이터 플라이휠의 개념</a></li>
+<li><a href="#s1-2" data-target="s1-2">1.2 규칙 기반 시스템에서 학습 기반 시스템으로의 진화</a></li>
+<li><a href="#s1-3" data-target="s1-3">1.3 기존 AI 학습 방식의 한계 (데이터 플라이휠이 주목받는 이유)</a></li>
+<li><a href="#s1-4" data-target="s1-4">1.4 지속적 closed-loop learning의 필요성</a></li>
 </ol></li>
 <li><a href="#s2" data-target="s2">2. 차량·클라우드·검증 환경을 연결하는 데이터 플라이휠 생태계</a>
 <ol class="toc-sub">
@@ -415,12 +413,12 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 
 </section>
 <section id="sec-s1" class="chapter" data-num="1">
-<h2 id="s1"><a class="anchor" href="#s1">1. 자율주행에서 데이터 플라이휠이 주목받는 이유</a></h2>
+<h2 id="s1"><a class="anchor" href="#s1">1. 배경</a></h2>
 <aside class="callout qa">
-<div class="qa-q"><span class="lbl">개요</span><p>왜 지금 모두가 "데이터 플라이휠"을 말하는지를 네 가지 압력(학습 모델 전환, 롱테일, 분포 변화, 성능 회귀·검증 한계)으로 설명함.</p></div>
+<div class="qa-q"><span class="lbl">개요</span><p>자율주행에서 데이터 플라이휠이 주목받는 이유를 설명함. 데이터 플라이휠의 개념(1.1), 규칙 기반에서 학습 기반 시스템으로의 진화(1.2), 기존 AI 학습 방식의 네 가지 한계(1.3), 지속적 closed-loop learning의 필요성(1.4) 순서임.</p></div>
 <div class="qa-a"><span class="lbl">핵심 결론</span><ol class="three"><li><span class="num">①</span><span>주행 소프트웨어가 사람이 쓴 규칙에서 데이터로 학습한 모델로 바뀌었고, 모델은 데이터가 없는 상황에서는 무엇을 해야 할지 모름.</span></li><li><span class="num">②</span><span>사고를 결정하는 것은 드문 상황이고, 드문 상황은 지역·날씨·차종이 바뀌면 또 달라지며, 새 모델은 예전 상황을 잊을 수 있음.</span></li><li><span class="num">③</span><span>실도로 주행으로 안전을 증명하기엔 필요한 거리가 너무 길므로, "차에서 데이터를 모아 → 고쳐서 → 시뮬레이션으로 확인하고 → 다시 차에 보내는" 루프를 멈추지 않고 돌려야 함.</span></li></ol></div>
 </aside>
-<h3 id="s1-1"><a class="anchor" href="#s1-1">1.1 플라이휠이라는 말의 뜻</a></h3>
+<h3 id="s1-1"><a class="anchor" href="#s1-1">1.1 데이터 플라이휠의 개념</a></h3>
 <ul>
 <li><strong>원뜻</strong>: 플라이휠(flywheel)은 무거운 바퀴를 뜻함. 처음 돌리기는 힘들지만 한번 돌면 관성으로 계속 돎.</li>
 <li><strong>사업 용례</strong>: Amazon의 제프 베조스가 2001년에 그린 선순환 그림이 유명함. 가격을 낮추면 고객이 늘고, 고객이 늘면 판매자와 상품이 늘고, 그러면 고객 경험이 좋아져 다시 고객이 늚 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.retaildogma.com/amazon-flywheel/">retaildogma</a>, <a href="https://feedvisor.com/resources/amazon-trends/amazon-flywheel-explained/">feedvisor</a>).</li>
@@ -432,7 +430,7 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 <li>같은 서베이가 산업 사례로 드는 회사: Tesla·NVIDIA·Momenta·Horizon·Baidu·XPeng·Pony.ai·Amazon 등 아홉 개 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>.</li>
 </ul>
 <aside class="callout hpc"><span class="lbl">시사점</span><p>용어(플라이휠·데이터 엔진·폐쇄루프)는 다르지만 구조는 같음. "쓰면서 나온 데이터를 다시 학습에 쓰고, 이를 반복한다"가 공통 정의임.</p></aside>
-<h3 id="s1-2"><a class="anchor" href="#s1-2">1.2 규칙 코드에서 학습 모델로</a></h3>
+<h3 id="s1-2"><a class="anchor" href="#s1-2">1.2 규칙 기반 시스템에서 학습 기반 시스템으로의 진화</a></h3>
 <ul>
 <li><strong>과거 구조</strong>: 자율주행 소프트웨어는 오랫동안 사람이 쓴 규칙의 집합이었음. "앞차와 거리가 이만큼이면 감속", "차선이 이렇게 보이면 중앙 유지" 같은 조건문이 수십만 줄 쌓임.</li>
 <li><strong>전환 사례</strong></li>
@@ -480,7 +478,13 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 <figure class="fig"><img src="images/fig1-rule-vs-learned-loop.svg" alt="규칙 기반 개발 루프와 학습 기반 개발 루프" width="1240" height="470" loading="lazy"><figcaption>그림 1. 규칙 기반 개발(왼쪽)은 사람이 문제를 분석해 코드를 고친다. 학습 기반 개발(오른쪽)은 문제 상황의 데이터를 모아 모델을 다시 학습시킨다. 오른쪽 루프를 계속 돌리는 장치가 데이터 플라이휠이다. 자체 작성.</figcaption></figure>
 <figure class="fig"><img src="images/src-chen2024-e2e-overview.jpg" alt="고전 파이프라인과 종단간 패러다임" width="1800" height="1110" loading="lazy"><figcaption>그림 2. 학계 서베이가 정리한 고전 파이프라인(a: 인지 → 예측 → 계획을 사람이 정한 인터페이스로 잇는다)과 종단간 패러다임(b: 모듈 사이를 학습으로 잇고 역전파로 함께 고친다). 맨 아래 "미래 과제"에 데이터 엔진(Data Engine)이 들어 있다. 출처: Chen et al., 「End-to-end Autonomous Driving: Challenges and Frontiers」(TPAMI 2024) 공식 저장소 <a href="https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving">OpenDriveLab/End-to-end-Autonomous-Driving</a> <code>assets/overview.jpg</code>, MIT. 크기만 줄임.</figcaption></figure>
 <aside class="callout hpc"><span class="lbl">시사점</span><p>병목이 "사람의 분석·코딩 시간"에서 "데이터 파이프라인과 GPU"로 옮겨감. 루프를 얼마나 자주·싸게 돌리느냐가 성능을 결정함.</p></aside>
-<h3 id="s1-3"><a class="anchor" href="#s1-3">1.3 드문 상황이 안전을 좌우한다 — 롱테일</a></h3>
+<h3 id="s1-3"><a class="anchor" href="#s1-3">1.3 기존 AI 학습 방식의 한계 (데이터 플라이휠이 주목받는 이유)</a></h3>
+<ul>
+<li><strong>전제</strong>: 학습 기반 시스템은 규칙이 아니라 데이터로만 고칠 수 있음(1.2절). 따라서 문제는 "어떤 데이터가, 왜 부족한가"로 바뀜.</li>
+<li><strong>네 가지 한계</strong>: 드문 상황이 사고를 좌우하는 롱테일(1.3.1), 장소·날씨가 바뀌면 성능이 떨어지는 분포 변화(1.3.2), 재학습이 예전 능력을 지우는 성능 회귀(1.3.3), 실도로 데이터로는 안전을 증명할 수 없는 문제(1.3.4).</li>
+<li><strong>공통점</strong>: 넷 다 "한 번 모은 데이터로 한 번 학습해 배포하는" 기존 방식으로는 풀리지 않음. 이것이 데이터 플라이휠이 주목받는 이유임.</li>
+</ul>
+<h4 id="s1-3-1"><a class="anchor" href="#s1-3-1">1.3.1 롱테일 문제</a></h4>
 <ul>
 <li><strong>정의</strong>: 주행의 대부분(직진, 차선 유지, 앞차 따라가기)은 평범하고 모델은 금방 배움. 문제는 드물게 일어나는 상황임(공사 구간 콘 옆 작업자, 갑자기 뛰어드는 동물, 비 오는 밤의 역광, 예측하기 어려운 사람의 행동). 이를 <strong>롱테일(long tail)</strong> 이라 부름. 빈도 그래프의 오른쪽으로 길게 늘어진 꼬리처럼, 각각은 드물지만 종류가 무한히 많음.</li>
 </ul>
@@ -496,7 +500,7 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 <li>Elon Musk의 "9의 행진(march of nines)"도 같은 뜻임. 신뢰도 99% → 99.9% → 99.99%로 9를 하나씩 붙일 때마다 남은 예외 상황을 처리해야 하고, 그 예외가 곧 롱테일임 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.carswithcords.net/2020/07/tesla-and-long-march-of-nines-to-full.html">보도</a>).</li>
 </ul>
 <aside class="callout hpc"><span class="lbl">시사점</span><p>흔한 상황을 더 잘하는 것은 사고율에 거의 기여하지 않음. 플라이휠은 드문 상황을 찾아내고 늘리는 장치여야 함.</p></aside>
-<h3 id="s1-4"><a class="anchor" href="#s1-4">1.4 장소가 바뀌면 성능이 떨어진다 — 분포 변화</a></h3>
+<h4 id="s1-3-2"><a class="anchor" href="#s1-3-2">1.3.2 데이터 분포 변화</a></h4>
 <ul>
 <li><strong>정의</strong>: 한 도시에서 배운 모델을 다른 도시에 가져가면 성능이 떨어짐. 이를 <strong>분포 변화(distribution shift)</strong> 라 함. 학습 데이터와 실제 데이터의 "분포"(어떤 상황이 얼마나 자주 나오는가)가 다르다는 뜻임.</li>
 <li><strong>수치로 확인된 사례</strong></li>
@@ -528,7 +532,7 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 </tbody>
 </table></div>
 <aside class="callout hpc"><span class="lbl">시사점</span><p>새 시장에 들어갈 때마다 그 시장의 데이터를 모아 넣어야 함. 플라이휠이 지역 확장의 도구가 되는 이유임.</p></aside>
-<h3 id="s1-5"><a class="anchor" href="#s1-5">1.5 새 모델이 예전 것을 잊는다 — 성능 회귀</a></h3>
+<h4 id="s1-3-3"><a class="anchor" href="#s1-3-3">1.3.3 성능 회귀</a></h4>
 <ul>
 <li><strong>현상</strong>: 모델을 다시 학습시키면 새로 넣은 상황은 좋아지지만 예전에 잘하던 상황이 나빠질 수 있음. 학습 분야에서는 <strong>파국적 망각(catastrophic forgetting)</strong> 이라 부름. 새 데이터에 맞춰 가중치를 바꾸다가 예전 지식이 덮어써지는 현상임.</li>
 <li><strong>연구 근거</strong>: 자율주행의 지속 학습에서도 보호 장치 없이 재학습만 하면 망각이 생김 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://ieeexplore.ieee.org/abstract/document/10801619">IEEE</a>).</li>
@@ -538,7 +542,7 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 <li>Waymo: 새 소프트웨어를 낼 때마다 "테스트 트랙·실도로·합성 시나리오 전부를 시뮬레이션에서 다시 실행"하고, 충돌 회피 시나리오는 상대 차량의 위치·속도를 조금씩 바꿔 가며(fuzzing) 돌림 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2022/12/waymos-collision-avoidance-testing/">Waymo CAT</a>).</li>
 </ul>
 <aside class="callout hpc"><span class="lbl">시사점</span><p>실패 사례는 한 번 고치고 버리는 것이 아니라 영구 회귀 세트로 축적해야 함. 이것이 5장의 "장기 검증 자산"임.</p></aside>
-<h3 id="s1-6"><a class="anchor" href="#s1-6">1.6 실도로 주행만으로는 안전을 증명할 수 없다</a></h3>
+<h4 id="s1-3-4"><a class="anchor" href="#s1-3-4">1.3.4 실도로 데이터 확보와 안전성 문제</a></h4>
 <ul>
 <li><strong>통계적 한계(RAND, 2016, "Driving to Safety")</strong>: 2013년 미국 교통사고 사망률(1억 마일당 1.09명) 기준 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.rand.org/pubs/research_reports/RR1478.html">RAND RR-1478</a>).</li>
 </ul>
@@ -576,9 +580,9 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 <li>2026년 2월: Google DeepMind의 Genie 3 기반 "Waymo World Model"로 플릿이 본 적 없는 상황(토네이도, 도로 위 코끼리)까지 만들어 시험 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation/">Waymo 블로그</a>).</li>
 </ul>
 <aside class="callout hpc"><span class="lbl">시사점</span><p>실주행 거리는 안전 통계의 재료일 뿐 증명 수단이 아님. 시뮬레이션과 시나리오 기반 검증이 플라이휠의 필수 마디가 되는 근거임.</p></aside>
-<h3 id="s1-7"><a class="anchor" href="#s1-7">1.7 그래서 "지속적 폐쇄루프"</a></h3>
+<h3 id="s1-4"><a class="anchor" href="#s1-4">1.4 지속적 closed-loop learning의 필요성</a></h3>
 <ul>
-<li><strong>네 가지 압력의 정리</strong></li>
+<li><strong>1.3의 네 가지 한계를 정리하면</strong> 한 방향을 가리킴</li>
 </ul>
 <div class="table-wrap"><table class="cols-3">
 <thead>
@@ -809,7 +813,7 @@ footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap
 <td>5</td>
 <td><strong>시뮬레이터가 필수</strong></td>
 <td>실제 사용자로 A/B 테스트</td>
-<td>위험한 상황을 실차로 반복할 수 없고, 실주행 거리로는 증명이 안 됨(1.6절)</td>
+<td>위험한 상황을 실차로 반복할 수 없고, 실주행 거리로는 증명이 안 됨(1.3.4절)</td>
 <td class="src">Waymo 실주행 2,000만 vs 시뮬 200억 마일 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
 </tr>
 <tr>
