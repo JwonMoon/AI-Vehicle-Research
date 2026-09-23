@@ -52,7 +52,7 @@ Tesla만이 아니다. Waymo는 2024년 10월 "Waymo Foundation Model이 인지�
 
 ![고전 파이프라인과 종단간 패러다임](images/src-chen2024-e2e-overview.jpg)
 
-*그림 2. 학계 서베이가 정리한 고전 파이프라인(a: 인지 → 예측 → 계획을 사람이 정한 인터페이스로 잇는다)과 종단간 패러다임(b: 모듈 사이를 학습으로 잇고 역전파로 함께 고친다). 맨 아래 "미래 과제"에 데이터 엔진(Data Engine)이 들어 있다. 출처: Chen et al., *End-to-end Autonomous Driving: Challenges and Frontiers* (TPAMI 2024) 공식 저장소 [OpenDriveLab/End-to-end-Autonomous-Driving](https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving) `assets/overview.jpg`, MIT. 크기만 줄임.*
+*그림 2. 학계 서베이가 정리한 고전 파이프라인(a: 인지 → 예측 → 계획을 사람이 정한 인터페이스로 잇는다)과 종단간 패러다임(b: 모듈 사이를 학습으로 잇고 역전파로 함께 고친다). 맨 아래 "미래 과제"에 데이터 엔진(Data Engine)이 들어 있다. 출처: Chen et al., 「End-to-end Autonomous Driving: Challenges and Frontiers」(TPAMI 2024) 공식 저장소 [OpenDriveLab/End-to-end-Autonomous-Driving](https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving) `assets/overview.jpg`, MIT. 크기만 줄임.*
 
 
 ### 1.3 드문 상황이 안전을 좌우한다 — 롱테일
@@ -61,7 +61,7 @@ Tesla만이 아니다. Waymo는 2024년 10월 "Waymo Foundation Model이 인지�
 
 ![롱테일 분포](images/src-li2024-long-tail.png)
 
-*그림 3. 주행 시나리오의 빈도 분포. 도심 직진 같은 상황이 90%를 차지하고, 안개·폭우 야간 같은 상황은 1% 아래의 긴 꼬리에 있다. 출처: Li et al., *Data-Centric Evolution in Autonomous Driving* (arXiv 2401.12888) 공식 저장소 [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/1-1_Long_Tail_Distribution.png`, Apache-2.0. 크기만 줄임.*
+*그림 3. 주행 시나리오의 빈도 분포. 도심 직진 같은 상황이 90%를 차지하고, 안개·폭우 야간 같은 상황은 1% 아래의 긴 꼬리에 있다. 출처: Li et al., 「Data-Centric Evolution in Autonomous Driving」(arXiv 2401.12888) 공식 저장소 [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/1-1_Long_Tail_Distribution.png`, Apache-2.0. 크기만 줄임.*
 
 
 Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으로 겨눈다. 일상 주행에서 **발생 빈도 0.03% 미만**인 상황만 골라 4,021개 구간(약 12시간)을 모았고, 평가 지표도 "기록된 궤적과 얼마나 가까운가"가 아니라 "사람 평가자가 선호한 궤적에 얼마나 가까운가"(RFS, Rater Feedback Score)로 바꿨다 📰 ([arXiv 2510.26125](https://arxiv.org/abs/2510.26125)). 흔한 상황에서는 이미 잘하기 때문에 드문 상황에서만 모델 간 차이가 드러난다는 판단이다.

@@ -1,0 +1,2521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>자율주행 데이터 플라이휠 — 조사 보고서(개조식)</title>
+<meta name="description" content="실도로 데이터가 모델을 키우고, 그 모델이 다시 더 좋은 데이터를 만드는 순환 구조의 필요성·구조·기술·기업 전략·병목을 항목별로 정리">
+<meta name="author" content="AI-Vehicle-Research">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f6f2; --bg-2:#ffffff; --bg-3:#efede6; --fg:#1d1f22; --fg-2:#4a4e55; --fg-3:#767b84;
+  --line:#dcd9d0; --line-2:#e9e6de;
+  --accent:#0f6f8e; --accent-2:#0a5a74; --accent-bg:#e5f1f5;
+  --hpc:#9a5a00; --hpc-bg:#fbf1df; --hpc-line:#e7c98f;
+  --howto-bg:#eeede8;
+  --myth:#8c3a3a; --fact:#1d5f3a;
+  --code-bg:#f0efea; --pre-bg:#1e2126; --pre-fg:#e6e8ec;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px -12px rgba(0,0,0,.18);
+  --radius:12px;
+  --w:860px; --toc-w:272px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131518; --bg-2:#1b1e23; --bg-3:#22262c; --fg:#e7e9ec; --fg-2:#b7bcc5; --fg-3:#858c97;
+    --line:#2f343c; --line-2:#272c33;
+    --accent:#5cc0e0; --accent-2:#8ad4ec; --accent-bg:#152a33;
+    --hpc:#f0b458; --hpc-bg:#2a2115; --hpc-line:#5a4520;
+    --howto-bg:#1e2126;
+    --myth:#e08a8a; --fact:#7fce9f;
+    --code-bg:#262a31; --pre-bg:#0e1013; --pre-fg:#dfe3e8;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131518; --bg-2:#1b1e23; --bg-3:#22262c; --fg:#e7e9ec; --fg-2:#b7bcc5; --fg-3:#858c97;
+  --line:#2f343c; --line-2:#272c33;
+  --accent:#5cc0e0; --accent-2:#8ad4ec; --accent-bg:#152a33;
+  --hpc:#f0b458; --hpc-bg:#2a2115; --hpc-line:#5a4520;
+  --howto-bg:#1e2126;
+  --myth:#e08a8a; --fact:#7fce9f;
+  --code-bg:#262a31; --pre-bg:#0e1013; --pre-fg:#dfe3e8;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:"IBM Plex Sans KR","Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-size:16px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}
+code,pre,kbd{font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;height:auto}
+.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:#fff;padding:.5rem 1rem;z-index:100}
+.skip:focus{left:8px;top:8px}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line-2)}
+.topbar-in{max-width:calc(var(--w) + var(--toc-w) + 96px);margin:0 auto;padding:.55rem 1.1rem;
+  display:flex;align-items:center;gap:.75rem}
+.brand{font-weight:600;font-size:.9rem;color:var(--fg-2);letter-spacing:.01em;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand em{font-style:normal;color:var(--accent)}
+.iconbtn{appearance:none;border:1px solid var(--line);background:var(--bg-2);color:var(--fg);
+  border-radius:999px;height:34px;padding:0 .8rem;font:inherit;font-size:.8rem;cursor:pointer;
+  display:inline-flex;align-items:center;gap:.4rem}
+.iconbtn:hover{border-color:var(--accent)}
+.iconbtn svg{width:16px;height:16px}
+#toc-toggle{display:none}
+
+/* layout */
+.layout{max-width:calc(var(--w) + var(--toc-w) + 96px);margin:0 auto;padding:0 1.1rem 4rem;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:0 48px}
+main{min-width:0;max-width:var(--w);margin:0 auto;width:100%}
+.toc{display:none}
+@media (min-width:1240px){
+  .layout{grid-template-columns:var(--toc-w) minmax(0,var(--w))}
+  .toc{display:block;position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);
+    overflow-y:auto;padding:1.4rem 0 1rem;font-size:.82rem;scrollbar-width:thin}
+  main{margin:0}
+}
+.toc-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--fg-3);margin:0 0 .6rem .75rem;font-weight:600}
+.toc-list,.toc-sub{list-style:none;margin:0;padding:0}
+.toc-list>li{margin:.05rem 0}
+.toc-list a{display:block;padding:.3rem .75rem;border-left:2px solid transparent;color:var(--fg-2);
+  line-height:1.4;border-radius:0 6px 6px 0}
+.toc-list a:hover{background:var(--bg-3);text-decoration:none;color:var(--fg)}
+.toc-list a.active{border-left-color:var(--accent);color:var(--accent);background:var(--accent-bg);font-weight:600}
+.toc-sub{margin:.05rem 0 .3rem .6rem}
+.toc-sub a{padding:.22rem .75rem;font-size:.78rem;color:var(--fg-3)}
+@media (max-width:1239.98px){
+  #toc-toggle{display:inline-flex}
+  .toc.open{display:block;position:fixed;top:52px;left:0;right:0;bottom:0;z-index:49;background:var(--bg);
+    overflow-y:auto;padding:1rem 1.1rem 3rem;font-size:.9rem}
+}
+
+/* hero */
+.hero{padding:3rem 0 1.5rem;border-bottom:1px solid var(--line-2);margin-bottom:1.5rem}
+.eyebrow{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .8rem}
+.hero h1{font-size:clamp(1.9rem,4.6vw,2.7rem);line-height:1.2;margin:0 0 .7rem;letter-spacing:-.02em;font-weight:700}
+.hero .sub{font-size:clamp(1.02rem,2.2vw,1.22rem);color:var(--fg-2);line-height:1.55;margin:0 0 1.3rem;font-weight:400}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.2rem}
+.chip{display:inline-flex;align-items:baseline;gap:.45rem;border:1px solid var(--line);background:var(--bg-2);
+  border-radius:999px;padding:.3rem .85rem;font-size:.82rem}
+.chip .k{color:var(--fg-3);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.meta{display:grid;gap:.7rem;margin:0;font-size:.9rem;background:var(--bg-2);border:1px solid var(--line-2);
+  border-radius:var(--radius);padding:1rem 1.15rem}
+.meta div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:.6rem}
+.meta dt{color:var(--fg-3);font-size:.76rem;font-weight:600;letter-spacing:.04em;padding-top:.2rem}
+.meta dd{margin:0;color:var(--fg-2);line-height:1.6}
+@media (max-width:560px){.meta div{grid-template-columns:1fr;gap:.15rem}}
+
+/* headings */
+h2,h3{scroll-margin-top:72px;letter-spacing:-.01em;line-height:1.3}
+h2{font-size:1.55rem;margin:0 0 1rem;font-weight:700}
+h3{font-size:1.16rem;margin:2.2rem 0 .8rem;font-weight:600;color:var(--fg)}
+h2 .anchor,h3 .anchor{color:inherit}
+h2 .anchor:hover,h3 .anchor:hover{text-decoration:none;color:var(--accent)}
+section{margin:0 0 3.4rem;padding-top:1.4rem}
+section.chapter{border-top:1px solid var(--line);padding-top:2rem}
+section.chapter::before{content:"CHAPTER " attr(data-num);display:block;font-family:"IBM Plex Mono",monospace;
+  font-size:.7rem;letter-spacing:.18em;color:var(--accent);font-weight:600;margin-bottom:.5rem}
+section.section{border-top:1px solid var(--line);padding-top:2rem}
+p{margin:0 0 1.05rem}
+p>strong:first-child{color:var(--fg)}
+ul,ol{padding-left:1.4rem;margin:0 0 1.1rem}
+li{margin:.3rem 0}
+li::marker{color:var(--fg-3)}
+strong{font-weight:600}
+em{font-style:italic}
+code{background:var(--code-bg);padding:.08em .28em;border-radius:4px;font-size:.84em;color:var(--fg)}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:1rem 1.1rem;border-radius:10px;overflow-x:auto;
+  font-size:.8rem;line-height:1.6;margin:0 0 1.2rem;border:1px solid rgba(255,255,255,.06)}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:0;border-top:1px solid var(--line);margin:2rem 0}
+
+/* evidence marks */
+.ev{font-size:.8em;cursor:help;opacity:.92;vertical-align:baseline}
+.ev-legend{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin:.6rem 0 0;padding:0;list-style:none;font-size:.8rem;color:var(--fg-2)}
+.ev-legend li{display:inline-flex;gap:.35rem;align-items:baseline}
+
+/* callouts */
+.callout{border-radius:var(--radius);padding:1.1rem 1.25rem;margin:0 0 1.6rem;border:1px solid var(--line-2);position:relative}
+.callout .lbl{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:.35rem}
+.callout p:last-child,.callout ol:last-child{margin-bottom:0}
+.callout.howto{background:var(--howto-bg);font-size:.92rem;color:var(--fg-2)}
+.callout.howto .lbl{color:var(--fg-3)}
+.callout.qa{background:var(--bg-2);border-left:4px solid var(--accent);padding:0;overflow:hidden;box-shadow:var(--shadow)}
+.callout.qa .qa-q{padding:1rem 1.25rem .9rem;background:var(--accent-bg)}
+.callout.qa .qa-q p{margin:0;font-weight:600;font-size:1.02rem;line-height:1.55}
+.callout.qa .qa-a{padding:.9rem 1.25rem 1.05rem}
+.callout.qa .lbl{color:var(--accent)}
+ol.three{list-style:none;padding:0;margin:0;display:grid;gap:.45rem}
+ol.three li{display:grid;grid-template-columns:1.5rem minmax(0,1fr);gap:.4rem;margin:0;font-size:.95rem;line-height:1.65}
+ol.three .num{color:var(--accent);font-weight:700;font-size:1.05rem;line-height:1.5}
+.callout.hpc{background:var(--hpc-bg);border-color:var(--hpc-line);border-left:4px solid var(--hpc);
+  padding-left:1.25rem;font-size:.95rem}
+.callout.hpc .lbl{color:var(--hpc)}
+.callout.hpc .lbl::before{content:"";display:inline-block;width:.55rem;height:.55rem;border-radius:2px;background:var(--hpc);
+  margin-right:.45rem;vertical-align:1px}
+
+/* summary cards */
+ol.summary{list-style:none;padding:0;margin:0 0 .5rem;display:grid;gap:.7rem;counter-reset:card}
+ol.summary li{counter-increment:card;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--radius);
+  padding:1rem 1.15rem 1rem 3.6rem;position:relative;margin:0;line-height:1.65;box-shadow:var(--shadow)}
+ol.summary li::before{content:counter(card);position:absolute;left:1.05rem;top:.95rem;width:1.75rem;height:1.75rem;
+  border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace}
+ol.summary li>strong{display:block;margin-bottom:.25rem;font-size:1.02rem;color:var(--fg)}
+
+/* tables */
+.table-wrap{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--line-2);border-radius:10px;background:var(--bg-2);
+  -webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.86rem;line-height:1.55}
+th,td{padding:.6rem .75rem;border-bottom:1px solid var(--line-2);vertical-align:top;text-align:left}
+th{background:var(--bg-3);font-weight:600;font-size:.8rem;color:var(--fg-2);white-space:nowrap;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:color-mix(in srgb,var(--accent-bg) 45%,transparent)}
+td.src{font-size:.78rem;color:var(--fg-3);white-space:nowrap}
+td code,th code{font-size:.8em}
+table.cols-4{min-width:640px}
+table.cols-5{min-width:760px}
+table.cols-6{min-width:900px}
+table.cols-9{min-width:1500px}
+table.myth td.myth-c{color:var(--myth);font-weight:500;min-width:190px}
+table.myth td.fact-c{min-width:340px}
+table.myth td.src{white-space:normal;min-width:120px}
+table.myth thead th:first-child{color:var(--myth)}
+table.myth thead th:nth-child(2){color:var(--fact)}
+
+/* figures */
+figure.fig{margin:1.2rem 0 1.6rem;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--radius);padding:.8rem .8rem .6rem}
+figure.fig img{display:block;width:100%;height:auto;border-radius:6px;background:#fff}
+figure.fig figcaption{font-size:.8rem;color:var(--fg-3);line-height:1.55;padding:.7rem .3rem .2rem;font-style:normal}
+:root[data-theme="dark"] figure.fig img{filter:none}
+
+/* footer */
+footer{border-top:1px solid var(--line);margin-top:3rem;padding:1.6rem 0 0;font-size:.85rem;color:var(--fg-3)}
+footer ul{list-style:none;padding:0;margin:.5rem 0 0;display:flex;flex-wrap:wrap;gap:.4rem 1.2rem}
+
+/* to top */
+.totop{position:fixed;right:18px;bottom:18px;z-index:40;appearance:none;border:1px solid var(--line);background:var(--bg-2);
+  color:var(--fg-2);border-radius:999px;height:40px;padding:0 .9rem 0 .7rem;font:inherit;font-size:.78rem;cursor:pointer;
+  display:inline-flex;align-items:center;gap:.35rem;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);
+  transition:opacity .2s,transform .2s;pointer-events:none}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+.totop svg{width:14px;height:14px}
+@media (max-width:640px){
+  body{font-size:15.5px}
+  .hero{padding-top:2rem}
+  .callout{padding:.9rem 1rem}
+  .callout.qa .qa-q,.callout.qa .qa-a{padding-left:1rem;padding-right:1rem}
+  ol.summary li{padding-left:3.1rem}
+  ol.summary li::before{left:.8rem}
+  .totop span{display:none}
+  .totop{padding:0 .7rem}
+}
+@media print{
+  .topbar,.toc,.totop{display:none!important}
+  .layout{display:block}
+  .table-wrap{overflow:visible}
+}
+</style>
+<script>(function(){try{var s=localStorage.getItem('vdf-report-theme');if(s==='dark'||s==='light')document.documentElement.setAttribute('data-theme',s);}catch(e){}})();</script>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><em>AI-Vehicle-Research</em> · 자율주행 데이터 플라이휠 (개조식 보고서)</div>
+  <button id="toc-toggle" class="iconbtn" aria-expanded="false" aria-controls="toc">목차</button>
+  <button id="theme-toggle" class="iconbtn" type="button"><svg class="t-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="t-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span>다크</span></button>
+</div></div>
+
+<div class="layout">
+<nav id="toc" class="toc" aria-label="목차">
+  <p class="toc-title">목차</p>
+  <ol class="toc-list">
+<li><a href="#summary" data-target="summary">요약</a>
+</li>
+<li><a href="#s1" data-target="s1">1. 자율주행에서 데이터 플라이휠이 주목받는 이유</a>
+<ol class="toc-sub">
+<li><a href="#s1-1" data-target="s1-1">1.1 플라이휠이라는 말의 뜻</a></li>
+<li><a href="#s1-2" data-target="s1-2">1.2 규칙 코드에서 학습 모델로</a></li>
+<li><a href="#s1-3" data-target="s1-3">1.3 드문 상황이 안전을 좌우한다</a></li>
+<li><a href="#s1-4" data-target="s1-4">1.4 장소가 바뀌면 성능이 떨어진다</a></li>
+<li><a href="#s1-5" data-target="s1-5">1.5 새 모델이 예전 것을 잊는다</a></li>
+<li><a href="#s1-6" data-target="s1-6">1.6 실도로 주행만으로는 안전을 증명할 수 없다</a></li>
+<li><a href="#s1-7" data-target="s1-7">1.7 그래서 &quot;지속적 폐쇄루프&quot;</a></li>
+</ol></li>
+<li><a href="#s2" data-target="s2">2. 차량·클라우드·검증 환경을 연결하는 데이터 플라이휠 생태계</a>
+<ol class="toc-sub">
+<li><a href="#s2-1" data-target="s2-1">2.1 기준점</a></li>
+<li><a href="#s2-2" data-target="s2-2">2.2 차량 데이터 플라이휠의 전체 구조</a></li>
+<li><a href="#s2-3" data-target="s2-3">2.3 일반 AI 플라이휠과 다른 여섯 가지</a></li>
+<li><a href="#s2-4" data-target="s2-4">2.4 기존 방식과 최근 방식</a></li>
+</ol></li>
+<li><a href="#s3" data-target="s3">3. 실도로 데이터를 모델 개선으로 연결하는 단계별 기술</a>
+<ol class="toc-sub">
+<li><a href="#s3-0" data-target="s3-0">3.0 따라갈 사례</a></li>
+<li><a href="#s3-1" data-target="s3-1">3.1 1단계</a></li>
+<li><a href="#s3-2" data-target="s3-2">3.2 2단계</a></li>
+<li><a href="#s3-3" data-target="s3-3">3.3 3단계</a></li>
+<li><a href="#s3-4" data-target="s3-4">3.4 4단계</a></li>
+<li><a href="#s3-5" data-target="s3-5">3.5 한 바퀴의 처리량</a></li>
+</ol></li>
+<li><a href="#s4" data-target="s4">4. 기업별 데이터 플라이휠 전략과 최근 산업 동향</a>
+<ol class="toc-sub">
+<li><a href="#s4-1" data-target="s4-1">4.1 플릿형</a></li>
+<li><a href="#s4-2" data-target="s4-2">4.2 로보택시형</a></li>
+<li><a href="#s4-3" data-target="s4-3">4.3 공급자형</a></li>
+<li><a href="#s4-4" data-target="s4-4">4.4 OEM 자체형</a></li>
+<li><a href="#s4-5" data-target="s4-5">4.5 툴체인형</a></li>
+<li><a href="#s4-6" data-target="s4-6">4.6 한눈 비교</a></li>
+<li><a href="#s4-7" data-target="s4-7">4.7 공통 흐름 다섯 가지</a></li>
+<li><a href="#s4-8" data-target="s4-8">4.8 2025~2026 동향</a></li>
+</ol></li>
+<li><a href="#s5" data-target="s5">5. 데이터 플라이휠의 기술적 병목과 사업 경쟁력, 향후 진화 방향</a>
+<ol class="toc-sub">
+<li><a href="#s5-1" data-target="s5-1">5.1 병목 ① 데이터 발견</a></li>
+<li><a href="#s5-2" data-target="s5-2">5.2 병목 ② 검증</a></li>
+<li><a href="#s5-3" data-target="s5-3">5.3 병목 ③ 비용</a></li>
+<li><a href="#s5-4" data-target="s5-4">5.4 병목 ④ 규제와 데이터 주권</a></li>
+<li><a href="#s5-5" data-target="s5-5">5.5 플라이휠이 사업 경쟁력으로 바뀌는 다섯 경로</a></li>
+<li><a href="#s5-6" data-target="s5-6">5.6 향후 진화 방향</a></li>
+<li><a href="#s5-7" data-target="s5-7">5.7 차량 HPC 플랫폼 관점 메모</a></li>
+</ol></li>
+<li><a href="#appendix-a" data-target="appendix-a">부록 A. 용어 풀이</a>
+</li>
+<li><a href="#appendix-b" data-target="appendix-b">부록 B. 미확인 항목</a>
+</li>
+<li><a href="#appendix-c" data-target="appendix-c">부록 C. 출처</a>
+</li>
+</ol>
+</nav>
+
+<main id="main">
+<header class="hero">
+  <p class="eyebrow">Research · 자율주행 데이터 플라이휠 · 개조식 보고서</p>
+  <h1>자율주행 데이터 플라이휠 — 조사 보고서(개조식)</h1>
+  <p class="sub">실도로 데이터가 모델을 키우고, 그 모델이 다시 더 좋은 데이터를 만드는 순환 구조의 필요성·구조·기술·기업 전략·병목을 항목별로 정리</p>
+  <div class="chips"><span class="chip"><span class="k">작성일</span><span class="v">2026-09-23 (조사 기준일 2026-09-22)</span></span><span class="chip"><span class="k">읽는 시간</span><span class="v">요약 5분 · 본문 30분</span></span></div>
+  <dl class="meta"><div><dt>문서 성격</dt><dd>기술 조사 보고서, 개조식. 같은 내용의 줄글 판은 <a href="vehicle-data-flywheel.md">vehicle-data-flywheel.md</a>이며, 두 판의 사실·수치·출처·그림은 동일함</dd></div><div><dt>다루는 것</dt><dd>1장 데이터 플라이휠이 필요한 이유 · 2장 차량·클라우드·검증 환경을 잇는 전체 구조와 일반 AI 플라이휠과의 차이 · 3장 실도로 데이터가 모델 개선으로 이어지는 단계별 기술(가상 실패 사례 1건으로 추적) · 4장 기업별 전략과 2025~2026 동향 · 5장 병목·사업 경쟁력·진화 방향</dd></div><div><dt>근거 표기</dt><dd>모든 사실 항목 뒤에 등급을 붙임. <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> 1차 출처 원문을 직접 읽음(GitHub 저장소 README·릴리스 노트 등) · <span class="ev" title="복수 출처 교차 확인">✅</span> 두 개 이상 출처로 교차 확인 · <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> 보도·검색 요약만 확인(원문 미열람) · <span class="ev" title="미확인·추정">⚠️</span> 미확인·추정. 기업이 스스로 밝힌 수치는 "공개 주장"으로 표기</dd></div><div><dt>조사 제약</dt><dd>세션 네트워크 정책상 tesla.com·waymo.com·wayve.ai·mobileye.com·nvidia.com·arxiv.org·법령 사이트 원문 접근 불가. GitHub 원문과 웹 검색 요약을 사용했으므로 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> 등급이 많음. 전체 출처는 <a href="reference/references.md">reference/references.md</a>, 그림 출처는 <a href="reference/images.md">reference/images.md</a></dd></div></dl>
+</header>
+
+<aside class="callout howto"><span class="lbl">읽는 법</span><p>각 장은 <strong>개요 → 핵심 결론 → 절별 항목 → 시사점</strong> 순서임. 문장은 개조식("~함/~임")으로 통일하고, 한 항목에 한 가지 사실만 담음. 전문 용어는 처음 나올 때 괄호 안에 풀이하고 부록 A에 모음. 그림은 자체 작성이 기본이며(실선 = 출처로 확인, 점선 = 추정), 외부 그림은 공개 저장소에서 내려받은 것만 실음.</p></aside>
+
+<ul class="ev-legend" aria-label="근거 등급 범례"><li><span class="ev">💻</span>코드·스크립트 출력에서 직접 확인(파일:줄)</li><li><span class="ev">🔍</span>1차 출처 원문 확인(README·LICENSE·공식 문서)</li><li><span class="ev">✅</span>복수 출처 교차 확인</li><li><span class="ev">📰</span>검색 요약·보도만 확인(원문 미열람)</li><li><span class="ev">⚠️</span>미확인·추정</li></ul>
+
+<section id="sec-summary" class="section">
+<h2 id="summary"><a class="anchor" href="#summary">요약</a></h2>
+<p><strong>핵심 결론 5가지</strong></p>
+<ol>
+<li><strong>성능의 결정 요인이 코드에서 데이터로 이동함.</strong> Tesla는 FSD v12에서 도심 주행 스택을 "30만 줄 이상의 C++ 코드를 대체하는 단일 신경망"으로 바꿨다고 릴리스 노트에 명시함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 규칙은 사람이 고치지만 모델은 데이터로만 고칠 수 있으므로, 데이터를 모아 고쳐 배포하는 루프가 곧 개발 방법이 됨.</li>
+<li><strong>사고율은 드문 상황(롱테일)이 좌우함.</strong> Waymo의 WOD-E2E 데이터셋은 일상 주행에서 발생 빈도 0.03% 미만 상황만 모은 것임 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 도시·날씨·나라가 바뀌면 성능이 떨어지고(분포 변화), 재학습한 모델은 예전에 잘하던 것을 잊음(성능 회귀).</li>
+<li><strong>실도로 주행만으로는 안전을 증명할 수 없음.</strong> RAND는 사람보다 안전함을 95% 신뢰로 보이려면 무사고 2억 7,500만 마일이 필요하다고 계산함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 따라서 시뮬레이션과 "계속 도는 폐쇄루프"가 필수임.</li>
+<li><strong>차량 플라이휠은 일반 AI 플라이휠과 여섯 가지가 다름.</strong> ① 데이터가 차 안에서 태어나 업로드 예산에 묶임 ② 정답이 개입·사고 같은 물리적 결과임 ③ 배포 앞에 안전 인증 관문이 있음 ④ 업데이트가 규제(UN R156)에 묶임 ⑤ 시뮬레이터가 필수임 ⑥ 개인정보·데이터 국외 반출 규제를 받음.</li>
+<li><strong>2021년 "데이터 엔진"과 2026년 플라이휠은 같은 원, 다른 부품임.</strong> 사람이 짠 트리거 → 임베딩 검색, 사람 라벨링 → 파운데이션 모델 자동 라벨링, 로그 재생 → 3D 재구성·생성형 월드모델, 모방학습 → 폐루프 강화학습, 연 단위 릴리스 → 주 단위 OTA로 이동 중임.</li>
+</ol>
+<p><strong>핵심 수치</strong></p>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>구분</th>
+<th>수치</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규칙 → 모델</td>
+<td>Tesla FSD v12: C++ 30만 줄 이상을 단일 종단간 신경망으로 대체(2024-03)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>롱테일</td>
+<td>Waymo WOD-E2E: 발생 빈도 0.03% 미만 상황 4,021개 구간(약 12시간)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>사고 빈도</td>
+<td>미국 사람 운전자 부상 신고 충돌 100만 마일당 2.80건</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>분포 변화</td>
+<td>Waymo Open Dataset: 도심→교외 차량 APH −8.0, 교외→도심 보행자 APH −19.8; Wayve 영국→미국 적응에 100시간·8주 500시간</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>안전 증명</td>
+<td>RAND: 무사고 2억 7,500만 마일(95% 신뢰), "20% 더 안전" 입증에 110억 마일</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>실적</td>
+<td>Waymo 무인 2억 2,060만 마일(2026-03), 중상 이상 충돌 92% 감소(1억 7,070만 마일 분석), IIHS 부상 충돌 81% 감소</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>시뮬 규모</td>
+<td>Waymo 실주행 2,000만 vs 시뮬 200억 마일 이상, Carcraft 하루 800만~1,000만 마일</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>온보드 선별</td>
+<td>Tesla 트리거 221개·약 10초 클립·첫 데이터셋 100만 클립·1.5PB·루프 7회(2021)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>자동 라벨링</td>
+<td>Tesla 1만 주행: 수작업 500만 시간 → 클러스터 12시간(2022, GPU 4,000장)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>큐레이션</td>
+<td>Cosmos Curator: 2,000만 시간 영상을 Blackwell 14일(Hopper 40일, CPU 3년 이상)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>재구성</td>
+<td>InstantNuRec: 10~20초 다중 카메라 장면을 약 1.5초에 3DGS로 재구성</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>배포</td>
+<td>Tesla 대형 버전 약 10개월(v13→v14), 포인트 릴리스 1~2주, 초기 롤아웃 0.1% 미만</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>일반 AI 플라이휠</td>
+<td>NVIDIA 블루프린트: 추론 비용 최대 98.6% 절감(단순 도구 호출 용도 한정, README 단서)</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>오픈소스</td>
+<td>openpilot 0.11(2026-03): 학습된 시뮬레이터로 전량 학습한 모델 배포, 월드모델 2B·250만 분</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>시사점</strong></p>
+<ul>
+<li>플라이휠의 경쟁력은 "한 바퀴를 얼마나 자주·싸게·믿을 수 있게 돌리느냐"로 귀결됨. 병목(데이터 발견·검증·비용·규제)이 이 세 변수를 막음.</li>
+<li>병목의 위치가 "사람 손"(트리거 작성·라벨링·시나리오 작성)에서 "GPU와 데이터 파이프라인"으로 이동함. 자동 라벨링·재구성·생성이 그 원인임.</li>
+<li>플라이휠의 첫 마디(온보드 선별·섀도 실행)와 마지막 마디(OTA·규제 기록)는 차 안에 있으므로, 차량 HPC 플랫폼 설계 조건이 됨(5.7절).</li>
+</ul>
+
+</section>
+<section id="sec-s1" class="chapter" data-num="1">
+<h2 id="s1"><a class="anchor" href="#s1">1. 자율주행에서 데이터 플라이휠이 주목받는 이유</a></h2>
+<aside class="callout qa">
+<div class="qa-q"><span class="lbl">개요</span><p>왜 지금 모두가 "데이터 플라이휠"을 말하는지를 네 가지 압력(학습 모델 전환, 롱테일, 분포 변화, 성능 회귀·검증 한계)으로 설명함.</p></div>
+<div class="qa-a"><span class="lbl">핵심 결론</span><ol class="three"><li><span class="num">①</span><span>주행 소프트웨어가 사람이 쓴 규칙에서 데이터로 학습한 모델로 바뀌었고, 모델은 데이터가 없는 상황에서는 무엇을 해야 할지 모름.</span></li><li><span class="num">②</span><span>사고를 결정하는 것은 드문 상황이고, 드문 상황은 지역·날씨·차종이 바뀌면 또 달라지며, 새 모델은 예전 상황을 잊을 수 있음.</span></li><li><span class="num">③</span><span>실도로 주행으로 안전을 증명하기엔 필요한 거리가 너무 길므로, "차에서 데이터를 모아 → 고쳐서 → 시뮬레이션으로 확인하고 → 다시 차에 보내는" 루프를 멈추지 않고 돌려야 함.</span></li></ol></div>
+</aside>
+<h3 id="s1-1"><a class="anchor" href="#s1-1">1.1 플라이휠이라는 말의 뜻</a></h3>
+<ul>
+<li><strong>원뜻</strong>: 플라이휠(flywheel)은 무거운 바퀴를 뜻함. 처음 돌리기는 힘들지만 한번 돌면 관성으로 계속 돎.</li>
+<li><strong>사업 용례</strong>: Amazon의 제프 베조스가 2001년에 그린 선순환 그림이 유명함. 가격을 낮추면 고객이 늘고, 고객이 늘면 판매자와 상품이 늘고, 그러면 고객 경험이 좋아져 다시 고객이 늚 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.retaildogma.com/amazon-flywheel/">retaildogma</a>, <a href="https://feedvisor.com/resources/amazon-trends/amazon-flywheel-explained/">feedvisor</a>).</li>
+<li><strong>AI 용례(데이터 플라이휠)</strong>: 위 그림의 주어를 데이터로 바꾼 것임. NVIDIA 용어집 정의는 "상호작용과 프로세스에서 모은 데이터로 AI 모델을 계속 개선하고, 그 모델이 더 좋은 결과와 더 가치 있는 데이터를 낳는 피드백 루프" <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.nvidia.com/en-us/glossary/data-flywheel/">NVIDIA Glossary</a>).</li>
+<li>핵심 ①: 모델을 쓰면서 나온 데이터를 버리지 않고 다시 학습에 씀.</li>
+<li>핵심 ②: 그 과정이 한 번이 아니라 계속 반복됨.</li>
+<li><strong>자율주행 용례</strong>: 같은 말을 "데이터 엔진(data engine)" 또는 "폐쇄루프(closed loop)"라고도 부름.</li>
+<li>2024년 학술 서베이의 정의: "(1) 데이터 수집 → (2) 저장 → (3) 선별·전처리 → (4) 라벨링 → (5) 모델 학습 → (6) 시뮬레이션·테스트 검증 → (7) 실세계 배포"의 반복 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving/main/README.md">Awesome Data-Centric AD README</a>, 논문 arXiv 2401.12888).</li>
+<li>같은 서베이가 산업 사례로 드는 회사: Tesla·NVIDIA·Momenta·Horizon·Baidu·XPeng·Pony.ai·Amazon 등 아홉 개 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>용어(플라이휠·데이터 엔진·폐쇄루프)는 다르지만 구조는 같음. "쓰면서 나온 데이터를 다시 학습에 쓰고, 이를 반복한다"가 공통 정의임.</p></aside>
+<h3 id="s1-2"><a class="anchor" href="#s1-2">1.2 규칙 코드에서 학습 모델로</a></h3>
+<ul>
+<li><strong>과거 구조</strong>: 자율주행 소프트웨어는 오랫동안 사람이 쓴 규칙의 집합이었음. "앞차와 거리가 이만큼이면 감속", "차선이 이렇게 보이면 중앙 유지" 같은 조건문이 수십만 줄 쌓임.</li>
+<li><strong>전환 사례</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-4">
+<thead>
+<tr>
+<th>회사</th>
+<th>전환 내용</th>
+<th>시점</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tesla</td>
+<td>FSD v12 릴리스 노트: "도심 주행 스택을 수백만 개 영상 클립으로 학습한 단일 종단간(end-to-end) 신경망으로 바꾸고, 30만 줄 이상의 명시적 C++ 코드를 대체"</td>
+<td>2024-03</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.notateslaapp.com/software-updates/version/2024.3.20/release-notes">릴리스 노트 인용</a>)</td>
+</tr>
+<tr>
+<td>Waymo</td>
+<td>"Waymo Foundation Model이 인지·예측·계획에 걸쳐 스택 전반의 성능을 끌어올리고 있다"</td>
+<td>2024-10</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2024/10/ai-and-ml-at-waymo/">Waymo 블로그</a>)</td>
+</tr>
+<tr>
+<td>Wayve</td>
+<td>"AV2.0": 센서 입력에서 주행 결정까지를 하나의 네트워크로 잇는 방식</td>
+<td>—</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://wayve.ai/technology/">Wayve</a>)</td>
+</tr>
+<tr>
+<td>comma.ai openpilot</td>
+<td>종방향 제어의 고전 제어기(MPC)를 월드모델 기반 종단간 계획으로 교체(2025-08); "학습된 시뮬레이터로 전량 학습한" 주행 모델 배포(2026-03)</td>
+<td>2025-08 / 2026-03</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md">openpilot RELEASES.md</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>종단간의 뜻</strong>: 카메라 영상이 들어가면 조향·제동·가속이 바로 나옴. 중간에 사람이 짠 규칙이 없음.</li>
+<li><strong>전환의 의미</strong>: <strong>규칙은 사람이 고치지만, 모델은 데이터로 고침.</strong> 모델이 어떤 상황에서 틀렸다면 그 상황의 데이터를 더 모아 다시 학습시키는 것 외에 방법이 없음. 따라서 데이터를 모으고 고치고 다시 배포하는 루프가 곧 개발 방법이 됨.</li>
+</ul>
+<figure class="fig"><img src="images/fig1-rule-vs-learned-loop.svg" alt="규칙 기반 개발 루프와 학습 기반 개발 루프" width="1240" height="470" loading="lazy"><figcaption>그림 1. 규칙 기반 개발(왼쪽)은 사람이 문제를 분석해 코드를 고친다. 학습 기반 개발(오른쪽)은 문제 상황의 데이터를 모아 모델을 다시 학습시킨다. 오른쪽 루프를 계속 돌리는 장치가 데이터 플라이휠이다. 자체 작성.</figcaption></figure>
+<figure class="fig"><img src="images/src-chen2024-e2e-overview.jpg" alt="고전 파이프라인과 종단간 패러다임" width="1800" height="1110" loading="lazy"><figcaption>그림 2. 학계 서베이가 정리한 고전 파이프라인(a: 인지 → 예측 → 계획을 사람이 정한 인터페이스로 잇는다)과 종단간 패러다임(b: 모듈 사이를 학습으로 잇고 역전파로 함께 고친다). 맨 아래 "미래 과제"에 데이터 엔진(Data Engine)이 들어 있다. 출처: Chen et al., 「End-to-end Autonomous Driving: Challenges and Frontiers」(TPAMI 2024) 공식 저장소 <a href="https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving">OpenDriveLab/End-to-end-Autonomous-Driving</a> <code>assets/overview.jpg</code>, MIT. 크기만 줄임.</figcaption></figure>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>병목이 "사람의 분석·코딩 시간"에서 "데이터 파이프라인과 GPU"로 옮겨감. 루프를 얼마나 자주·싸게 돌리느냐가 성능을 결정함.</p></aside>
+<h3 id="s1-3"><a class="anchor" href="#s1-3">1.3 드문 상황이 안전을 좌우한다 — 롱테일</a></h3>
+<ul>
+<li><strong>정의</strong>: 주행의 대부분(직진, 차선 유지, 앞차 따라가기)은 평범하고 모델은 금방 배움. 문제는 드물게 일어나는 상황임(공사 구간 콘 옆 작업자, 갑자기 뛰어드는 동물, 비 오는 밤의 역광, 예측하기 어려운 사람의 행동). 이를 <strong>롱테일(long tail)</strong> 이라 부름. 빈도 그래프의 오른쪽으로 길게 늘어진 꼬리처럼, 각각은 드물지만 종류가 무한히 많음.</li>
+</ul>
+<figure class="fig"><img src="images/src-li2024-long-tail.png" alt="롱테일 분포" width="1600" height="660" loading="lazy"><figcaption>그림 3. 주행 시나리오의 빈도 분포. 도심 직진 같은 상황이 90%를 차지하고, 안개·폭우 야간 같은 상황은 1% 아래의 긴 꼬리에 있다. 출처: Li et al., 「Data-Centric Evolution in Autonomous Driving」(arXiv 2401.12888) 공식 저장소 <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a> <code>img_resource/1-1_Long_Tail_Distribution.png</code>, Apache-2.0. 크기만 줄임.</figcaption></figure>
+<ul>
+<li><strong>Waymo WOD-E2E(2025-10)</strong>: 롱테일을 정면으로 겨눈 데이터셋 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/abs/2510.26125">arXiv 2510.26125</a>).</li>
+<li>일상 주행에서 <strong>발생 빈도 0.03% 미만</strong>인 상황만 골라 4,021개 구간(약 12시간)을 모음.</li>
+<li>평가 지표를 "기록된 궤적과의 거리"가 아니라 "사람 평가자가 선호한 궤적과의 거리"(RFS, Rater Feedback Score)로 바꿈.</li>
+<li>판단 근거: 흔한 상황에서는 이미 잘하므로 드문 상황에서만 모델 간 차이가 드러남.</li>
+<li><strong>드문 상황이 안전을 지배하는 이유</strong>: 안전 지표 자체가 드문 사건이기 때문임.</li>
+<li>미국 사람 운전자의 부상 신고 충돌은 100만 마일당 2.80건 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/research/comparison-of-waymo-rider-only-crash-data-to-human/">Waymo 비교 연구</a>).</li>
+<li>100만 마일에서 세 번 남짓 일어나는 사건을 줄이려면 99.99%를 잘하는 것으로는 부족하고, 나머지 0.01%에서 무엇을 하는지가 결정함.</li>
+<li>Elon Musk의 "9의 행진(march of nines)"도 같은 뜻임. 신뢰도 99% → 99.9% → 99.99%로 9를 하나씩 붙일 때마다 남은 예외 상황을 처리해야 하고, 그 예외가 곧 롱테일임 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.carswithcords.net/2020/07/tesla-and-long-march-of-nines-to-full.html">보도</a>).</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>흔한 상황을 더 잘하는 것은 사고율에 거의 기여하지 않음. 플라이휠은 드문 상황을 찾아내고 늘리는 장치여야 함.</p></aside>
+<h3 id="s1-4"><a class="anchor" href="#s1-4">1.4 장소가 바뀌면 성능이 떨어진다 — 분포 변화</a></h3>
+<ul>
+<li><strong>정의</strong>: 한 도시에서 배운 모델을 다른 도시에 가져가면 성능이 떨어짐. 이를 <strong>분포 변화(distribution shift)</strong> 라 함. 학습 데이터와 실제 데이터의 "분포"(어떤 상황이 얼마나 자주 나오는가)가 다르다는 뜻임.</li>
+<li><strong>수치로 확인된 사례</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>사례</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Waymo Open Dataset 논문(2020)</td>
+<td>샌프란시스코 도심 데이터로 학습한 3D 차량 검출기를 교외(피닉스·마운틴뷰)에서 평가 시 정확도 지표(APH) 8.0 하락; 교외로만 학습한 보행자 검출기를 도심에서 평가 시 19.8 하락. 저자들은 "뚜렷한 도메인 갭"이라 표현</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/pdf/1912.04838">arXiv 1912.04838</a>)</td>
+</tr>
+<tr>
+<td>nuScenes 기반 연구</td>
+<td>보스턴(우측통행)·싱가포르(좌측통행)를 함께 담은 데이터셋에서 "장면·날씨·밤낮"이 바뀔 때 적응 없이는 성능이 크게 하락</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/pdf/2211.17126">BEVUDA</a>, <a href="https://arxiv.org/pdf/2401.08687">DA-BEV</a>)</td>
+</tr>
+<tr>
+<td>Wayve 영국 → 미국</td>
+<td>영국(좌측통행)에서만 배운 모델을 미국에 가져갔을 때 처음에는 영국 수준 미달; 미국 데이터 100시간 추가로 크게 개선; 8주간 모은 500시간으로 영국 수준에 근접</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://wayve.ai/thinking/multi-country-generalization/">Wayve</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>새 시장에 들어갈 때마다 그 시장의 데이터를 모아 넣어야 함. 플라이휠이 지역 확장의 도구가 되는 이유임.</p></aside>
+<h3 id="s1-5"><a class="anchor" href="#s1-5">1.5 새 모델이 예전 것을 잊는다 — 성능 회귀</a></h3>
+<ul>
+<li><strong>현상</strong>: 모델을 다시 학습시키면 새로 넣은 상황은 좋아지지만 예전에 잘하던 상황이 나빠질 수 있음. 학습 분야에서는 <strong>파국적 망각(catastrophic forgetting)</strong> 이라 부름. 새 데이터에 맞춰 가중치를 바꾸다가 예전 지식이 덮어써지는 현상임.</li>
+<li><strong>연구 근거</strong>: 자율주행의 지속 학습에서도 보호 장치 없이 재학습만 하면 망각이 생김 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://ieeexplore.ieee.org/abstract/document/10801619">IEEE</a>).</li>
+<li><strong>대응 = 회귀 테스트</strong>: 플라이휠에는 회귀 테스트가 반드시 들어감.</li>
+<li>Tesla의 Andrej Karpathy가 CVPR 2021 발표에서 설명한 데이터 엔진 루프: "섀도 모드로 배포 → 예측을 관찰 → 트리거를 조정해 새 데이터 수집 → <strong>잘못된 예측을 '유닛 테스트'로 만들기</strong> → 비슷한 예제를 데이터셋에 추가 → 재학습 → 반복". 당시 플릿에서 221개 트리거 가동 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://dynamicallytyped.com/stories/2021/karpathy-autopilot-cvpr/">발표 요약</a>).</li>
+<li>틀렸던 상황을 테스트로 남겨 두면 다음 모델이 그 상황을 다시 틀리는지 확인 가능함.</li>
+<li>Waymo: 새 소프트웨어를 낼 때마다 "테스트 트랙·실도로·합성 시나리오 전부를 시뮬레이션에서 다시 실행"하고, 충돌 회피 시나리오는 상대 차량의 위치·속도를 조금씩 바꿔 가며(fuzzing) 돌림 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2022/12/waymos-collision-avoidance-testing/">Waymo CAT</a>).</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>실패 사례는 한 번 고치고 버리는 것이 아니라 영구 회귀 세트로 축적해야 함. 이것이 5장의 "장기 검증 자산"임.</p></aside>
+<h3 id="s1-6"><a class="anchor" href="#s1-6">1.6 실도로 주행만으로는 안전을 증명할 수 없다</a></h3>
+<ul>
+<li><strong>통계적 한계(RAND, 2016, "Driving to Safety")</strong>: 2013년 미국 교통사고 사망률(1억 마일당 1.09명) 기준 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.rand.org/pubs/research_reports/RR1478.html">RAND RR-1478</a>).</li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>입증하려는 명제</th>
+<th>필요한 주행 거리</th>
+<th>조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>자율주행차가 사람보다 사망률이 낮다</td>
+<td>무사고 <strong>2억 7,500만 마일</strong></td>
+<td>95% 신뢰 수준</td>
+</tr>
+<tr>
+<td>사람보다 20% 더 안전하다</td>
+<td><strong>110억 마일</strong></td>
+<td>95% 신뢰·80% 검정력</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>보고서 결론: "주행만으로는 안전에 도달할 수 없다(cannot drive their way to safety)".</li>
+<li><strong>실제 수치와의 비교</strong></li>
+<li>Waymo: 2026년 3월 기준 무인(rider-only) 누적 2억 2,060만 마일. 1억 7,070만 마일 분석에서 사람 대비 중상 이상 충돌 92% 감소, 에어백 전개 83% 감소, 보행자 부상 92% 감소 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/shorts/waymo-safety-impact-update-170m/">Waymo Safety Impact</a>).</li>
+<li>독립 기관 IIHS 분석: 부상 충돌 81% 감소로 조금 낮음 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li>해석: 10년 가까이 세계에서 가장 많이 달린 회사가 이제 RAND의 첫 번째 문턱을 넘었을 뿐임.</li>
+<li>Tesla: FSD 누적 100억 마일을 공개했으나 충돌 집계 방식이 정부 데이터와 달라 독립 검증이 없다는 비판을 받음 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.tesla.com/fsd/safety">tesla.com/fsd/safety</a>, <a href="https://cryptobriefing.com/tesla-fsd-safety-data-collision-reduction/">비판</a>).</li>
+<li><strong>안전 표준의 결론</strong>: ISO 21448(SOTIF, 의도된 기능의 안전)은 주행 상황을 "알려짐/모름 × 안전/불안전"의 네 영역으로 나누고, "모르는 불안전 상황(unknown unsafe)"을 합리적 노력으로 최대한 줄이는 반복 과정을 요구함. 주요 수단은 시뮬레이션을 포함한 광범위한 검증임 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.ansys.com/simulation-topics/what-is-sotif">Ansys SOTIF 해설</a>).</li>
+<li><strong>시뮬레이션 규모(Waymo)</strong></li>
+<li>실주행 2,000만 마일에 시뮬레이션 200억 마일 이상을 얹음. 자체 시뮬레이터 Carcraft는 하루 800만~1,000만 마일 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2021/07/simulation-city/">Simulation City</a>, <a href="https://cacmb4.acm.org/magazines/2018/2/224621-a-comprehensive-self-driving-car-test">CACM 2018</a>).</li>
+<li>2026년 2월: Google DeepMind의 Genie 3 기반 "Waymo World Model"로 플릿이 본 적 없는 상황(토네이도, 도로 위 코끼리)까지 만들어 시험 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation/">Waymo 블로그</a>).</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>실주행 거리는 안전 통계의 재료일 뿐 증명 수단이 아님. 시뮬레이션과 시나리오 기반 검증이 플라이휠의 필수 마디가 되는 근거임.</p></aside>
+<h3 id="s1-7"><a class="anchor" href="#s1-7">1.7 그래서 "지속적 폐쇄루프"</a></h3>
+<ul>
+<li><strong>네 가지 압력의 정리</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>압력</th>
+<th>무엇이 문제인가</th>
+<th>플라이휠이 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>학습 모델</td>
+<td>데이터 없는 상황은 못 푼다</td>
+<td>실패한 상황의 데이터를 모아 다시 학습</td>
+</tr>
+<tr>
+<td>롱테일</td>
+<td>드문 상황이 사고율을 결정</td>
+<td>드문 상황을 찾아내고 늘려서(합성) 학습</td>
+</tr>
+<tr>
+<td>분포 변화</td>
+<td>장소·날씨·차종이 바뀌면 성능 하락</td>
+<td>새 시장 데이터를 빠르게 모아 적응</td>
+</tr>
+<tr>
+<td>성능 회귀·검증 한계</td>
+<td>새 모델이 예전 것을 잊고, 실주행으로는 증명 불가</td>
+<td>회귀 테스트 세트와 시뮬레이션으로 배포 전 확인</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>결론</strong>: 네 가지를 한 번에 해결하는 방법은 하나임. 차에서 데이터를 모으고, 고쳐서, 시뮬레이션으로 확인하고, 다시 차에 보내는 루프를 <strong>계속</strong> 돌리는 것임. "데이터 플라이휠"이든 "데이터 엔진"이든 구조는 같음. 그 구조를 2장에서 펼침.</li>
+</ul>
+<figure class="fig"><img src="images/src-li2024-upper-bound.png" alt="고정 데이터셋의 성능 상한" width="1400" height="933" loading="lazy"><figcaption>그림 4. 같은 서베이의 개념도. 데이터셋을 고정하고 모델만 바꾸면(파랑) 성능이 상한에 막히고, 데이터셋을 계속 키우면(보라) 그 상한을 넘는다는 저자들의 주장이다. 실측 곡선이 아니라 개념도다. 출처: <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a> <code>img_resource/1-2_Illustration-of-AD-Model-Performance-Upper-Bound.png</code>, Apache-2.0. 크기만 줄임.</figcaption></figure>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>플라이휠은 선택이 아니라 학습 기반 자율주행의 전제 조건임. 다음 장은 그 부품(마디)을 하나씩 펼침.</p></aside>
+
+</section>
+<section id="sec-s2" class="chapter" data-num="2">
+<h2 id="s2"><a class="anchor" href="#s2">2. 차량·클라우드·검증 환경을 연결하는 데이터 플라이휠 생태계</a></h2>
+<aside class="callout qa">
+<div class="qa-q"><span class="lbl">개요</span><p>차량 데이터 플라이휠의 부품(마디)을 펼치고, 챗봇 같은 일반 AI 플라이휠과의 차이, 그리고 2021년 방식과 2026년 방식의 차이를 비교함.</p></div>
+<div class="qa-a"><span class="lbl">핵심 결론</span><ol class="three"><li><span class="num">①</span><span>일반 AI 플라이휠은 "생산 로그 → 데이터셋 → 미세조정 → 평가 → 배포"의 루프이며, NVIDIA가 이를 소프트웨어 블루프린트로 공개함.</span></li><li><span class="num">②</span><span>차량 플라이휠은 여기에 "차 안에서의 선별·업로드", "시뮬레이션 검증", "안전 인증 관문", "OTA 규제"가 끼어들어 원이 더 길고 관문이 더 많음.</span></li><li><span class="num">③</span><span>2021년의 데이터 엔진과 2026년의 플라이휠은 원의 모양은 같지만 부품이 바뀜. 사람이 짠 트리거 → 임베딩 검색, 사람 라벨링 → 파운데이션 모델 자동 라벨링, 로그 재생 → 3D 재구성과 생성형 월드모델, 연 단위 릴리스 → 주 단위 OTA.</span></li></ol></div>
+</aside>
+<h3 id="s2-1"><a class="anchor" href="#s2-1">2.1 기준점 — 일반 AI 데이터 플라이휠</a></h3>
+<ul>
+<li><strong>정의(NVIDIA 블루프린트 README)</strong>: "데이터 플라이휠은 생산 애플리케이션의 데이터 배기가스(예: LLM 프롬프트·응답 로그, 사용자 피드백, 전문가 라벨)를 사용해 생성형 AI 시스템의 정확도를 높이고 지연·비용을 줄이는 프로세스" <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/NVIDIA-AI-Blueprints/data-flywheel/main/README.md">data-flywheel README</a>).</li>
+<li><strong>7단계</strong> <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></li>
+</ul>
+<div class="table-wrap"><table class="cols-2">
+<thead>
+<tr>
+<th>단계</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>로그 저장소(Elasticsearch)에서 생산 데이터를 가져옴</td>
+</tr>
+<tr>
+<td>2</td>
+<td>작업(task)별로 묶음</td>
+</tr>
+<tr>
+<td>3</td>
+<td>중복 제거</td>
+</tr>
+<tr>
+<td>4</td>
+<td>계층화 분할로 평가용·미세조정용 데이터셋 생성(최소 50건)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>데이터 저장소(NeMo Datastore)에 업로드</td>
+</tr>
+<tr>
+<td>6</td>
+<td>미세조정 서비스(NeMo Customizer)로 작은 모델 학습</td>
+</tr>
+<tr>
+<td>7</td>
+<td>평가 서비스(NeMo Evaluator)가 "LLM-as-judge"(큰 모델이 채점자 역할)로 원래 모델과 비교하고, 좋으면 승격</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>효과 = 비용 절감(단서 포함)</strong></li>
+<li>README: "NVIDIA 내부 실험에서 플라이휠로 추론 비용을 최대 98.6% 줄인 사례가 있다" <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>.</li>
+<li>같은 문장의 단서: "이런 사례는 에이전트가 소수의 도구 중 하나를 고르는 단순한 도구 호출 용도에 집중돼 있다" <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>.</li>
+<li>사례 내용: 인사 챗봇에서 미세조정한 1B 모델이 70B 모델 정확도의 약 98%를 냄.</li>
+<li>사내 지식 비서 논문(직원 3만 명 이상 사용): 3개월간 부정 피드백 495건을 모아 라우팅 오류 5.25%를 찾아내고, 라우터를 70B 모델에서 미세조정한 8B 모델로 바꿔 정확도 96%·지연 70% 감소 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/abs/2510.27051">arXiv 2510.27051</a>).</li>
+</ul>
+<figure class="fig"><img src="images/fig2-general-ai-flywheel.svg" alt="일반 AI 데이터 플라이휠" width="1240" height="640" loading="lazy"><figcaption>그림 5. 일반 AI(LLM 에이전트) 데이터 플라이휠. NVIDIA 블루프린트 README의 7단계를 원으로 그렸다. 데이터는 서버 로그에서 나오고, 정답은 사용자 피드백과 큰 모델의 채점이며, 배포는 소프트웨어 교체다. 자체 작성.</figcaption></figure>
+<figure class="fig"><img src="images/src-nvidia-data-flywheel-blueprint.png" alt="NVIDIA 데이터 플라이휠 블루프린트 구조" width="1800" height="1112" loading="lazy"><figcaption>그림 6. NVIDIA가 공개한 데이터 플라이휠 블루프린트의 공식 구조도. 배포된 에이전트 앱이 로그를 Elasticsearch에 쌓고, 플라이휠 서버가 이를 데이터셋으로 만들어 NeMo Customizer로 후보 소형 모델(1B~8B)을 미세조정하고 NeMo Evaluator로 채점한다. 통과한 LoRA 어댑터가 앱으로 되돌아간다(Merge). 출처: <a href="https://github.com/NVIDIA-AI-Blueprints/data-flywheel">NVIDIA-AI-Blueprints/data-flywheel</a> <code>docs/images/data-flywheel-blueprint.png</code>, Apache-2.0. 크기만 줄임.</figcaption></figure>
+<ul>
+<li><strong>일반 플라이휠의 세 가지 특징(뒤의 비교 기준)</strong></li>
+<li>데이터는 서버 로그에서 공짜로 나옴.</li>
+<li>정답(라벨)은 사용자 피드백이나 큰 모델의 채점임.</li>
+<li>배포는 서버의 모델을 바꾸면 끝남.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>일반 플라이휠의 "98.6% 절감"은 단순 도구 호출을 70B → 1B로 증류한 사례이므로 자율주행에 그대로 적용할 수 없음(5.5절).</p></aside>
+<h3 id="s2-2"><a class="anchor" href="#s2-2">2.2 차량 데이터 플라이휠의 전체 구조</a></h3>
+<ul>
+<li><strong>구성 근거</strong>: 세 종류의 공개 자료가 공통으로 말하는 것을 합침.</li>
+<li>Tesla 2021년 AI Day 데이터 엔진 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://cleantechnica.com/2021/08/30/observations-on-teslas-ai-day/">CleanTechnica</a>).</li>
+<li>NVIDIA·AWS의 "AV 3.0 데이터 파이프라인"(2026-03) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://aws.amazon.com/blogs/industries/building-an-end-to-end-physical-ai-data-pipeline-for-autonomous-vehicle-3-0-on-aws-with-nvidia/">AWS 블로그, 요약만 확인</a>).</li>
+<li>학술 서베이의 7단계 폐쇄루프 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>.</li>
+</ul>
+<figure class="fig"><img src="images/fig3-vehicle-flywheel.svg" alt="차량 데이터 플라이휠 전체 구조" width="1240" height="760" loading="lazy"><figcaption>그림 7. 차량 데이터 플라이휠. 차 안(온보드)에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다. 일반 플라이휠에 없는 마디를 색으로 표시했다. 자체 작성.</figcaption></figure>
+<ul>
+<li><strong>9개 마디</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-4">
+<thead>
+<tr>
+<th>마디</th>
+<th>어디서</th>
+<th>무엇을 하나</th>
+<th>대표 사례</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 온보드 선별</td>
+<td>차 안</td>
+<td>모든 데이터를 올릴 수 없으므로 "트리거"(조건)에 걸린 짧은 클립만 고름. 새 모델을 몰래 실어 기존 모델·운전자와 비교하는 <strong>섀도 모드</strong>도 여기서 돎</td>
+<td>Tesla 트리거 221개, 약 10초 클립 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; openpilot은 카메라·CAN·GPS·IMU를 기본 업로드 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>② 업로드·저장</td>
+<td>차 → 클라우드</td>
+<td>통신비·저장비 예산 안에서 올림</td>
+<td>Mobileye REM은 km당 약 10KB만 전송 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; comma는 월 수백 TB 처리 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>③ 검색·큐레이션</td>
+<td>클라우드</td>
+<td>수백만 클립에서 원하는 상황을 찾고 중복을 없앰</td>
+<td>NVIDIA Cosmos Curator·Dataset Search <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>④ 라벨링</td>
+<td>클라우드</td>
+<td>정답을 붙임. 사람 또는 오프라인 대형 모델</td>
+<td>Tesla 자동 라벨링(주 1만 클립) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>⑤ 학습</td>
+<td>클라우드</td>
+<td>실데이터 + 합성 데이터로 재학습</td>
+<td>Tesla Cortex, NVIDIA DGX <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>⑥ 시뮬레이션 검증</td>
+<td>클라우드</td>
+<td>로그 재생·3D 재구성·생성 시나리오로 폐루프 시험, 회귀 테스트</td>
+<td>Waymo 하루 800만~1,000만 시뮬 마일 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>⑦ 실차 검증</td>
+<td>시험장·시험 플릿</td>
+<td>HIL(하드웨어 인 더 루프)·테스트 트랙·시험 차량</td>
+<td>Waymo 테스트 트랙 + 실도로 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>⑧ 안전 관문·OTA</td>
+<td>인증 → 차</td>
+<td>안전 논증 갱신, 규제(UN R156) 요건 확인 후 단계적 배포</td>
+<td>Tesla v14.x 주 단위 OTA <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>⑨ 다시 ①</td>
+<td>차 안</td>
+<td>새 모델이 새 실패를 만듦</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>일반 플라이휠과의 대응</strong>: 7단계 중 "로그 수집·데이터셋·학습·평가·배포"는 그대로 있음. 차량에서 새로 생긴 것은 ①(차 안 선별), ⑥(시뮬레이션 필수), ⑦(실차), ⑧(안전 관문·규제)임.</li>
+</ul>
+<figure class="fig"><img src="images/src-waymo-ml-factory-slide.jpg" alt="Waymo ML Factory 슬라이드" width="1600" height="899" loading="lazy"><figcaption>그림 8. Waymo가 발표한 "ML Factory for Self Driving Models" 슬라이드. 센서 로그 → 데이터 마이닝·능동학습으로 선별 → 라벨러 또는 자동 라벨 → 모델(자동 튜닝) → 테스트·검증 → 릴리스 → 다시 수집. 위 표의 ③④⑤⑥⑧ 마디가 그대로 보인다. 출처: Waymo 발표 슬라이드 화면, <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a>에 수록(<code>img_resource/3-2-2_Waymo_close_loop.png</code>, 저장소 Apache-2.0). 원 저작권은 Waymo에 있다. 크기만 줄임.</figcaption></figure>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>차량 플라이휠의 고유 마디 네 개(①⑥⑦⑧)는 모두 "관문"임. 원을 빨리 돌리는 것과 관문을 통과하는 것을 동시에 설계해야 함.</p></aside>
+<h3 id="s2-3"><a class="anchor" href="#s2-3">2.3 일반 AI 플라이휠과 다른 여섯 가지</a></h3>
+<div class="table-wrap"><table class="cols-5">
+<thead>
+<tr>
+<th>#</th>
+<th>차이</th>
+<th>일반 AI</th>
+<th>차량</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>데이터가 태어나는 곳과 예산</strong></td>
+<td>서버 로그. 전부 저장 가능</td>
+<td>차 안. 카메라 원본을 다 올릴 수 없어 차에서 골라야 하고 통신·저장 예산이 있음</td>
+<td class="src">Tesla HW4 카메라는 시간당 약 20GB 생성(커뮤니티 추정 <span class="ev" title="미확인·추정">⚠️</span>); Mobileye REM은 km당 10KB로 설계 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; comma는 마일당 $0.003 미만으로 서비스 비용을 맞춤 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>정답(라벨)의 성격</strong></td>
+<td>사용자 클릭·피드백·큰 모델 채점</td>
+<td>운전자 개입, 니어미스, 충돌 같은 <strong>물리적 결과</strong>. 사람이 못 만드는 라벨(3D 위치·속도)이 많아 자동 라벨링이 필수</td>
+<td class="src">Tesla 섀도 모드는 모델 출력과 운전자 행동을 비교 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; NHTSA는 자율주행 충돌을 1~5일 내 보고하게 함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting">SGO 2021-01</a>)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>배포 앞의 안전 관문</strong></td>
+<td>평가 점수가 좋으면 교체</td>
+<td>ISO 26262(오작동)·ISO 21448(기능 부족)·ISO/PAS 8800(AI 안전)에 따른 안전 논증을 갱신해야 함</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.ul.com/sis/blog/safety-related-systems-road-vehicles-artificial-intelligence-are-addressed-isopas-88002024">UL 해설</a>)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>업데이트 주기가 규제에 묶임</strong></td>
+<td>하루에도 여러 번</td>
+<td>UN R156은 인증된 소프트웨어 업데이트 관리체계(SUMS), 버전 식별번호(RxSWIN), 호환성 확인, 주행 중 안전 확보를 요구. EU는 2024년 7월부터 전 신차 적용</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://diadrom.com/insights/un-r156-sums-requirements">요약</a>)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>시뮬레이터가 필수</strong></td>
+<td>실제 사용자로 A/B 테스트</td>
+<td>위험한 상황을 실차로 반복할 수 없고, 실주행 거리로는 증명이 안 됨(1.6절)</td>
+<td class="src">Waymo 실주행 2,000만 vs 시뮬 200억 마일 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>개인정보·데이터 주권</strong></td>
+<td>서비스 약관 안에서 처리</td>
+<td>얼굴·번호판·위치가 찍히고, 나라 밖으로 못 나가는 경우가 있음. Tesla는 중국 도로 데이터를 미국으로 못 보내 상하이 데이터센터와 중국 내 학습 인프라를 따로 만들었고, 한국은 2024년부터 규제 샌드박스로만 원본 영상 학습을 허용</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://electrek.co/2026/02/06/tesla-ai-training-capability-china-critical-step-full-self-driving/">Electrek 2026-02</a>, <a href="https://m.news.nate.com/view/20260123n23984">국내 보도</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig"><img src="images/fig4-general-vs-vehicle.svg" alt="일반 AI 플라이휠과 차량 플라이휠의 차이" width="1240" height="700" loading="lazy"><figcaption>그림 9. 같은 원, 다른 마디. 일반 AI 플라이휠(안쪽)에 차량에서만 생기는 네 마디(바깥쪽)가 더해진다. 자체 작성.</figcaption></figure>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>일반 플라이휠은 "얼마나 빨리 도는가"의 문제이고, 차량 플라이휠은 "관문을 통과하면서도 계속 돌게 하는가"의 문제임.</p></aside>
+<h3 id="s2-4"><a class="anchor" href="#s2-4">2.4 기존 방식과 최근 방식 — 같은 원, 다른 부품</a></h3>
+<ul>
+<li><strong>기존 방식의 교과서 = Tesla 2021 AI Day 데이터 엔진</strong> <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://cleantechnica.com/2021/08/27/how-teslas-autopilot-team-refines-an-unfathomable-amount-of-data-is-pretty-cool/">CleanTechnica</a>, <a href="https://electrek.co/2021/12/01/tesla-releases-new-footage-auto-labeling-tool-self-driving/">Electrek</a>).</li>
+<li>흐름: 사람이 쓴 트리거가 차에서 돎 → 걸리면 약 10초 클립 업로드 → 오프라인 자동 라벨링 → 재학습 → 섀도 모드로 배포.</li>
+<li>당시 수치: 누적 100만 클립, 60억 개 객체 라벨, 1.5PB, 주당 1만 클립 자동 라벨링.</li>
+</ul>
+<figure class="fig"><img src="images/src-tesla-data-engine-slide.jpg" alt="Tesla 데이터 엔진 슬라이드" width="1600" height="894" loading="lazy"><figcaption>그림 10. Tesla가 발표한 데이터 엔진 슬라이드. 배포된 플릿(data source)에서 틀린 사례를 찾고(identify an inaccuracy) → 단위 테스트 세트에 넣고 → 비슷한 사례를 플릿에서 모아(boost) → 라벨·정제 → 학습 → 배포를 반복한다("you spin this data engine"). 2장·3장에서 말하는 회귀 세트와 유사 장면 회수가 이미 이 초기 발표에 들어 있다(발표 연도는 수록 저장소에 기재 없음 <span class="ev" title="미확인·추정">⚠️</span>). 출처: Tesla 발표 화면(서베이 저장소는 "Tesla AutoPilot Data Platform" 강연으로 표기), <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a>에 수록(<code>img_resource/3-2-1_Tesla_close_loop.png</code>, 저장소 Apache-2.0). 원 저작권은 Tesla에 있다. 크기만 줄임.</figcaption></figure>
+<ul>
+<li><strong>2026년 플라이휠</strong>: 원의 모양은 같지만 각 마디의 부품이 바뀜.</li>
+</ul>
+<div class="table-wrap"><table class="cols-4">
+<thead>
+<tr>
+<th>마디</th>
+<th>기존 방식(2021년 전후)</th>
+<th>최근 방식(2025~2026)</th>
+<th>무엇이 달라졌나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 발굴</td>
+<td>사람이 조건을 코드로 쓴 트리거(Tesla 221개) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td><strong>임베딩 검색</strong>: 영상을 숫자 벡터로 바꿔 놓고 "비 오는 밤 공사 구간"처럼 글로 검색. NVIDIA Cosmos Dataset Search는 약 800만 영상으로 학습한 영상-텍스트 임베딩(Cosmos-Embed1)을 씀 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; Voxel51 FiftyOne <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>무엇을 찾을지 미리 코드로 정하지 않아도 됨</td>
+</tr>
+<tr>
+<td>라벨링</td>
+<td>사람 라벨링 회사(Scale AI, 인력 24만 명) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; Tesla는 2022년 자체 라벨팀 감원 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td><strong>파운데이션 모델 자동 라벨링</strong>: NVIDIA Cosmos Curator가 "처리·주석·필터·중복 제거"를 맡고 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/NVIDIA/Cosmos/main/README.md">Cosmos README</a>), Cosmos Reason 같은 시각언어모델이 "왜 이렇게 운전했나"까지 글로 붙임 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>라벨 비용이 사람 수가 아니라 GPU 시간에 비례</td>
+</tr>
+<tr>
+<td>장면 재현</td>
+<td>로그 재생 + HIL(dSPACE 리플레이 시스템) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td><strong>3D 재구성</strong>: Waymo Block-NeRF는 사진 280만 장으로 샌프란시스코 한 구역(0.5km²)을 35개 신경 모델로 재구성 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/pdf/2202.05263">arXiv 2202.05263</a>); NVIDIA NuRec은 3D 가우시안 스플래팅으로 주행 로그를 다시 걸어 다닐 수 있는 3D 장면으로 만듦 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>기록된 그대로만이 아니라 "그때 왼쪽으로 꺾었다면"을 볼 수 있음</td>
+</tr>
+<tr>
+<td>장면 생성</td>
+<td>사람이 시나리오 파일(OpenSCENARIO)을 작성 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td><strong>생성형 월드모델</strong>: Wayve GAIA-3(150억 파라미터, 10배 데이터) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://wayve.ai/thinking/gaia-3/">Wayve</a>); Waymo World Model(Genie 3 기반) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; NVIDIA Cosmos <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>본 적 없는 상황을 영상으로 만들어 냄</td>
+</tr>
+<tr>
+<td>학습</td>
+<td>기록된 주행을 흉내 내는 모방학습(오픈루프)</td>
+<td><strong>폐루프 강화학습·학습된 시뮬레이터</strong>: NVIDIA AlpaGym은 시뮬레이터 안에서 정책이 스스로 운전하며 배움 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; openpilot 0.11은 "학습된 시뮬레이터로 전량 학습" <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+<td>모델이 자기 실수의 결과를 겪으며 배움</td>
+</tr>
+<tr>
+<td>평가</td>
+<td>기록 궤적과의 거리(ADE/FDE 같은 규칙 지표)</td>
+<td><strong>사람 선호 지표</strong>: Waymo WOD-E2E의 RFS <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; LLM-as-judge(일반 플라이휠) <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+<td>"기록과 같은가"에서 "사람이 보기에 좋은가"로</td>
+</tr>
+<tr>
+<td>배포</td>
+<td>연 단위 대형 릴리스(Tesla v13 → v14까지 약 1년) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td><strong>주 단위 OTA</strong>(v14.x는 1~2주 간격) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.autopilotreview.com/full-self-driving-update/">보도</a>)</td>
+<td>루프 한 바퀴가 짧아짐</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig"><img src="images/fig5-old-vs-new-loop.svg" alt="기존 데이터 엔진과 최근 플라이휠" width="1240" height="524" loading="lazy"><figcaption>그림 11. 2021년 데이터 엔진(왼쪽)과 2026년 플라이휠(오른쪽). 마디는 같고 부품이 바뀌었다. 자체 작성.</figcaption></figure>
+<ul>
+<li><strong>바뀐 부품들의 공통점</strong>: 사람이 하던 일(트리거 작성, 라벨링, 시나리오 작성)을 큰 모델이 대신하고, 실차로만 하던 일(재현, 검증)을 클라우드가 대신함.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>플라이휠 한 바퀴의 병목이 "사람 손"에서 "GPU와 데이터 파이프라인"으로 이동함. 3장에서 단계별 기술을, 5장에서 비용 병목을 봐야 하는 이유임.</p></aside>
+
+</section>
+<section id="sec-s3" class="chapter" data-num="3">
+<h2 id="s3"><a class="anchor" href="#s3">3. 실도로 데이터를 모델 개선으로 연결하는 단계별 기술</a></h2>
+<aside class="callout qa">
+<div class="qa-q"><span class="lbl">개요</span><p>차에서 생긴 실패 하나가 어떤 단계와 기술을 거쳐 더 나은 모델이 되어 돌아오는지를, 가상의 실패 사례 하나를 끝까지 따라가며 4단계로 정리함.</p></div>
+<div class="qa-a"><span class="lbl">핵심 결론</span><ol class="three"><li><span class="num">①</span><span>차 안에서는 "요약 먼저, 원본은 요청할 때"라는 두 단계 업로드와 세 종류의 트리거(규칙·모델 점수·사람)가 돎.</span></li><li><span class="num">②</span><span>클라우드에서는 비슷한 장면을 임베딩으로 찾아 모으고, 온보드보다 큰 모델이 미래 프레임까지 보면서 정답을 소급해 붙임.</span></li><li><span class="num">③</span><span>부족한 장면은 재생·재구성·생성 세 갈래로 늘리고, 개루프 점수가 아니라 폐루프·사람 선호 지표로 검증한 뒤 섀도 배포와 단계적 OTA로 내보냄.</span></li></ol></div>
+</aside>
+<h3 id="s3-0"><a class="anchor" href="#s3-0">3.0 따라갈 사례</a></h3>
+<blockquote><p><strong>가상 사례.</strong> 밤 10시, 비가 오는 편도 2차선 도로. 공사 구간이라 콘이 차선을 막고 있고, 콘 옆에 형광 조끼를 입은 작업자가 서 있다. 차의 모델은 콘은 일찍 봤지만 작업자를 늦게 인식했고, 운전자가 브레이크를 밟아 개입했다. 사고는 없었다.</p></blockquote>
+<ul>
+<li><strong>성격</strong>: 롱테일의 전형임. 밤 + 비 + 공사 + 서 있는 사람이라는 네 조건이 겹쳤고, 각각은 흔하지만 조합은 드묾.</li>
+<li><strong>추적 방식</strong>: 이 클립 하나가 어떻게 모델을 고치는지 네 단계로 봄.</li>
+</ul>
+<figure class="fig"><img src="images/fig6-case-flow.svg" alt="가상 사례의 흐름" width="1240" height="386" loading="lazy"><figcaption>그림 12. 콘 옆 작업자 사례가 플라이휠 한 바퀴를 도는 경로. 각 마디에 실제 도구 이름을 적었다. 자체 작성.</figcaption></figure>
+<h3 id="s3-1"><a class="anchor" href="#s3-1">3.1 1단계 — 수집·선별 (차 안)</a></h3>
+<ul>
+<li><strong>전제: 모든 것을 올릴 수는 없음</strong></li>
+<li>Intel 추정(2016): 차량당 하루 약 4,000GB(카메라 초당 20~60MB, 라이다 초당 10~70MB) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://download.intel.com/newsroom/2021/archive/2016-11-15-editorials-krzanich-the-future-of-automated-driving.pdf">Intel 2016</a>).</li>
+<li>최근 업계 추정: 시간당 1~5TB <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://blogs.sw.siemens.com/polarion/the-data-deluge-what-do-we-do-with-the-data-generated-by-avs/">Siemens 블로그</a>).</li>
+<li>양산차 통신 요금으로는 감당할 수 없으므로 차 안에서 골라야 함.</li>
+<li><strong>오픈소스가 보여 주는 실제 설계(comma.ai openpilot)</strong>: 양산차에 붙어 매일 도는 오픈소스 스택이라 로깅 설계를 코드로 확인 가능 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (커밋 <code>521db4c</code>, 2026-09-20 기준).</li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>설계 항목</th>
+<th>내용</th>
+<th>코드 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>세그먼트</td>
+<td>주행을 <strong>1분 단위 세그먼트</strong>로 자름(<code>SEGMENT_LENGTH = 60</code>)</td>
+<td><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>영상 압축</td>
+<td>메인 카메라는 HEVC 5Mbps(폭 1,344픽셀 이하) 또는 10Mbps, 20fps. 따로 <strong>저화질 카메라(qcamera)</strong> 를 H.264 256kbps로 생성</td>
+<td><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> <code>system/loggerd/loggerd.h</code></td>
+</tr>
+<tr>
+<td>두 겹 로그</td>
+<td>전체 로그(rlog)와 서비스별로 솎아 낸 <strong>요약 로그(qlog)</strong>. 차량 상태(carState)는 100Hz 중 1/10만, CAN 메시지는 100Hz 중 1/2,053만 qlog에 포함</td>
+<td><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> <code>cereal/services.py</code></td>
+</tr>
+<tr>
+<td>업로드 우선순위</td>
+<td>qlog(0) &gt; qcamera(1) &gt; 나머지(1,000). 종량제 통신망에서는 사용자가 앱에서 본 주행만 저화질 영상 업로드. qlog 25MB, qcamera 5MB 상한</td>
+<td><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> <code>system/loggerd/uploader.py</code></td>
+</tr>
+<tr>
+<td>원본 당겨오기</td>
+<td>클라우드가 특정 세그먼트를 지목하면 그때 전체 로그와 풀 화질 영상을 <strong>당겨옴</strong>(<code>uploadFilesToUrls</code>, 셀룰러 허용 플래그, 31일 지나면 만료, 최대 30회 재시도)</td>
+<td><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> <code>system/athena/athenad.py</code></td>
+</tr>
+<tr>
+<td>보존·삭제</td>
+<td>운전자가 버튼을 누르면(북마크) 세그먼트에 보존 속성이 붙음. 삭제기는 여유 공간이 5GiB 또는 10% 미만일 때만 가장 오래된 것부터 지우되 최근 북마크 5개와 그 앞 2개 세그먼트는 남김</td>
+<td><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> <code>system/loggerd/deleter.py</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>정리: <strong>"요약을 먼저 올리고, 흥미로운 구간은 서버가 지목해 원본을 당긴다"</strong> 는 두 단계 구조임.</li>
+<li>규모 비교: openpilot 설정으로 계산하면 카메라 3대 × 5Mbps ≈ 시간당 약 6.75GB(압축 후)로, Intel의 비압축 추정과 두 자릿수 배 차이가 남.</li>
+<li>온보드 설계의 핵심은 "무엇을 올릴지"보다 "무엇을 고화질로 남길지"임.</li>
+<li><strong>트리거 세 종류</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>종류</th>
+<th>무엇이 걸리게 하나</th>
+<th>사례</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규칙</td>
+<td>운전자 개입, 급제동, 충돌, 시스템 오류</td>
+<td>openpilot의 <code>crash/</code> 폴더는 즉시 업로드 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>; UN R157의 DSSAD는 시스템 켜짐·꺼짐, 전환 요구, 최소위험기동, 운전자 개입을 시각과 함께 기록하도록 요구 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://autocrypt.io/edr-dssad-vehicle-accident-analysis-tools/">해설</a>)</td>
+</tr>
+<tr>
+<td>모델 점수</td>
+<td>온보드 소형 분류기가 "가치 있는 장면" 점수를 매기거나, <strong>섀도 모드</strong>의 새 모델과 현행 모델의 출력이 다를 때</td>
+<td>Tesla는 2021년 기준 221개 트리거를 플릿에서 돌렸고, 걸리면 약 10초 클립을 올렸음 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://dynamicallytyped.com/stories/2021/karpathy-autopilot-cvpr/">Karpathy CVPR'21 요약</a>); NVIDIA는 모델 앙상블의 불일치로 고른 데이터가 수동 선별보다 야간 보행자 검출을 3배, 자전거를 4.4배 개선했다고 보고 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://medium.com/nvidia-ai/scalable-active-learning-for-autonomous-driving-a-practical-implementation-and-a-b-test-4d315ed04b5f">NVIDIA 블로그</a>)</td>
+</tr>
+<tr>
+<td>사람</td>
+<td>운전자 북마크, 테스트 드라이버 태깅</td>
+<td>openpilot <code>userBookmark</code> <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>사례 적용</strong></li>
+<li>운전자가 브레이크를 밟은 순간 개입 플래그가 찍힘. 규제용 기록(DSSAD)과 개발용 로거 양쪽에 남음.</li>
+<li>동시에 "급감속 + 보행자 클래스의 신뢰도가 직전 프레임 대비 급등 + 야간 + 와이퍼 켜짐"이라는 복합 트리거가 걸림. 또는 섀도 모드로 실려 있던 후보 모델이 작업자를 더 일찍 봤다면 두 모델의 출력 차이가 트리거가 됨.</li>
+<li>요약 로그와 저화질 영상이 먼저 올라가고, 서버가 이 세그먼트를 지목해 풀 화질 영상과 전체 로그를 당겨옴.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>온보드 선별은 가장 싼 비용 절감 수단임(올리지 않은 데이터는 저장·반출·라벨링 비용이 0, 5.3절). 규제용 기록(DSSAD)과 개발용 트리거가 같은 이벤트를 찍으므로 한 파이프라인으로 설계하는 것이 자연스러움(5.6절).</p></aside>
+<h3 id="s3-2"><a class="anchor" href="#s3-2">3.2 2단계 — 검색·라벨링 (클라우드)</a></h3>
+<ul>
+<li><strong>원칙: 하나를 찾았으면 비슷한 것을 모음</strong></li>
+<li>클립 하나로는 모델을 못 고침. 플릿 전체에서 "비 오는 밤 공사 구간의 서 있는 사람"과 비슷한 장면을 수백~수천 개 모아야 함.</li>
+<li>수단은 <strong>임베딩 검색</strong>임. 영상을 숫자 벡터로 바꿔 두면 글("worker standing next to traffic cone at night in rain")이나 다른 영상으로 비슷한 것을 찾을 수 있음.</li>
+<li>핵심 가치: 트리거에 걸리지 않았던 "개입은 없었지만 아슬아슬했던" 장면까지 회수 가능함.</li>
+<li><strong>도구</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>도구</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NVIDIA Cosmos Dataset Search</td>
+<td>오픈 블루프린트. 영상·텍스트를 같은 공간에 놓는 임베딩 모델(Cosmos-Embed1) + GPU 가속 벡터 DB(Milvus + cuVS) + Ray 기반 배치 수집 파이프라인. 임베딩 모델은 약 800만 영상으로 학습</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/NVIDIA-Omniverse-blueprints/cosmos-dataset-search/main/README.md">README</a>); 800만 영상은 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>Voxel51 FiftyOne</td>
+<td>오픈소스 데이터셋 도구. README: "데이터 문제·라벨 오류·엣지 케이스를 빠르게 찾고 고친다"</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/voxel51/fiftyone/develop/README.md">README</a>)</td>
+</tr>
+<tr>
+<td>NVIDIA Cosmos Curator</td>
+<td>분할 → 필터 → 캡션 → 임베딩 → 중복 제거 → 데이터셋 생성 파이프라인. NVIDIA 발표: 2,000만 시간 영상을 Blackwell GPU로 14일(Hopper 40일, CPU로는 3년 이상). 단, README에는 처리량 수치가 없음</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/nvidia-cosmos/cosmos-curate/main/README.md">README</a>); 처리량은 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://nvidianews.nvidia.com/news/nvidia-launches-cosmos-world-foundation-model-platform-to-accelerate-physical-ai-development">NVIDIA 뉴스룸</a>)</td>
+</tr>
+<tr>
+<td>시각언어모델(VLM) 캡션</td>
+<td>영상에 글 설명을 붙여 검색 가능하게 만듦. Cosmos Reason 2(2B/8B/32B)는 "영상 캡션, 시간 구간 찾기, 물리 추론" 수행. Uber가 자율주행 학습 데이터 캡션에 검토 중이라고 AWS 블로그가 전함</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/nvidia-cosmos/cosmos-reason2/main/README.md">README</a>); Uber 건은 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig"><img src="images/src-nvidia-cosmos-curator-pipelines.png" alt="Cosmos Curator 파이프라인" width="1900" height="918" loading="lazy"><figcaption>그림 13. Cosmos Curator의 공식 파이프라인 그림. 분할·주석 파이프라인(다운로드 → 디코드 → 샷 경계 분할 → 트랜스코드 → 움직임·품질 필터 → VLM 캡션 → 영상 임베딩 → 저장), 의미 기반 중복 제거, 데이터셋 샤딩의 세 단계가 Ray 위에서 돈다. 출처: <a href="https://github.com/nvidia-cosmos/cosmos-curate">nvidia-cosmos/cosmos-curate</a> <code>docs/assets/cosmos-curator-pipelines.png</code>, Apache-2.0. 원본 크기.</figcaption></figure>
+<ul>
+<li><strong>원칙: 정답은 소급해서 붙임</strong></li>
+<li>온보드 모델은 현재 프레임까지만 보고 작은 모델로 빨리 답해야 함. 클라우드의 자동 라벨러는 그 제약이 없음.</li>
+<li>자동 라벨러의 세 가지 이점: <strong>미래 프레임을 볼 수 있음, 여러 차의 주행을 합칠 수 있음, 훨씬 큰 모델을 쓸 수 있음.</strong></li>
+<li>효과: 온보드 모델이 늦게 본 작업자를 "3초 뒤 프레임에서 확실히 보인 그 사람"으로 거슬러 올라가 첫 프레임부터 라벨링 가능. 콘 작업자 사례가 딱 이 경우임.</li>
+<li><strong>자동 라벨링 사례·도구</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>주체·도구</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tesla(AI Day 2022)</td>
+<td>여러 주행을 합쳐 4D(3D + 시간)로 재구성한 뒤 차선·객체 라벨을 자동 생성. 1만 주행 기준 "수작업 500만 시간 → 클러스터 12시간" 주장(자동 라벨링용 GPU 4,000장)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.nocode.ai/recap-tesla-ai-day-2022/">요약</a>)</td>
+</tr>
+<tr>
+<td>Waymo 3D 자동 라벨링(CVPR 2021)</td>
+<td>포인트클라우드 시퀀스 전체를 써서 만든 3D 박스가 사람 라벨과 대등</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/abs/2103.05073">arXiv 2103.05073</a>)</td>
+</tr>
+<tr>
+<td>Grounding DINO(오픈)</td>
+<td>글 프롬프트("construction worker . traffic cone")로 박스 생성. COCO 제로샷 52.5 AP</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/IDEA-Research/GroundingDINO/main/README.md">README</a>)</td>
+</tr>
+<tr>
+<td>SAM 2(오픈)</td>
+<td>점·박스 프롬프트로 영상 전체의 마스크와 추적 생성. tiny 38.9M ~ large 224.4M 파라미터, A100에서 91.2~39.5 FPS</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/facebookresearch/sam2/main/README.md">README</a>)</td>
+</tr>
+<tr>
+<td>라벨 형식</td>
+<td>ASAM OpenLABEL(2021-11): JSON으로 2D/3D 박스·폴리곤과 "객체·행동·사건·맥락" 태그를 통일한 표준</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.asam.net/news-media/news/detail/news/asam-releases-asam-openlabel-v100/">ASAM</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig"><img src="images/src-li2024-labeling-pipelines.png" alt="라벨링 파이프라인 세 유형" width="2400" height="321" loading="lazy"><figcaption>그림 14. 라벨링 파이프라인의 세 유형. (a) 사람이 라벨링하고 사람이 검사, (b) 알고리즘이 라벨링하고 전문가가 개입, (c) 종단간 대형 모델·생성형 AI가 라벨링하고 자동 품질 검사. 완전 자동에서도 "통과/재작업" 루프는 남는다. 출처: <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a> <code>img_resource/3-5-Mainstream-AD-Labeling-Pipelines.png</code>, Apache-2.0. 크기만 줄임.</figcaption></figure>
+<figure class="fig"><img src="images/src-waymo-3d-label-example.jpg" alt="Waymo Open Dataset 보행자 3D 라벨 예" width="1200" height="760" loading="lazy"><figcaption>그림 15. 라이다 포인트클라우드 위에 붙은 보행자 3D 박스(주황)와 같은 순간의 카메라 영상(왼쪽 아래). 온보드 모델이 늦게 본 작업자도 클라우드의 자동 라벨러는 이런 3D 박스를 미래 프레임과 여러 주행을 합쳐 첫 프레임부터 만든다. 출처: <a href="https://github.com/waymo-research/waymo-open-dataset">waymo-research/waymo-open-dataset</a> <code>docs/images/pedestrian-3D-labeling-example.png</code>(저장소 Apache-2.0, 데이터 자체는 Waymo Open Dataset 이용약관). JPEG로 변환.</figcaption></figure>
+<ul>
+<li><strong>사람의 역할 = 검수로 이동</strong></li>
+<li>업계 관행: 자동 라벨 뒤에 사람이 배치당 10% 정도를 무작위 검수해 정확도 98% 이상을 확인 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>.</li>
+<li>주의: 흔한 클래스가 99.8%여도 희귀 클래스는 85%인 "착시"가 있어, 사례처럼 희귀한 클래스는 전수 검수로 격상함.</li>
+<li>외주 라벨 단가: 2D 박스 개당 $0.03~1.00, 세그멘테이션 마스크 $0.05~3.00 범위. Scale AI 같은 회사는 공개 단가표가 없음 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.basic.ai/blog-post/how-much-do-data-annotation-services-cost-complete-guide-2025">업계 가이드</a>).</li>
+<li><strong>사례 적용</strong></li>
+<li>클립을 임베딩해 플릿 전체에서 유사 장면을 검색하고, VLM으로 "roadwork, worker, night, rain" 태그를 붙여 걸러 냄.</li>
+<li>자동 라벨러가 미래 프레임과 여러 주행을 합쳐 작업자의 3D 박스를 첫 프레임부터 만듦.</li>
+<li>희귀 클래스이므로 사람이 전수 검수한 뒤 OpenLABEL로 저장함.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>라벨 비용이 사람 수에서 GPU 시간으로 이동하되, 검수 인력은 남음. 희귀 클래스일수록 검수 비율을 높여야 정확도 "착시"를 피할 수 있음.</p></aside>
+<h3 id="s3-3"><a class="anchor" href="#s3-3">3.3 3단계 — 학습·합성 데이터 (클라우드)</a></h3>
+<ul>
+<li><strong>전제: 모은 것만으로는 부족함</strong></li>
+<li>첫 번째 방법: 수백 개 클립을 오버샘플링해 학습 비중을 높임. Tesla FSD v14.3 릴리스 노트는 "강화학습 단계를 업그레이드해 어려운 예에 집중"했다고 적음 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.notateslaapp.com/software-updates/version/2026.2.9.6/release-notes">릴리스 노트 인용</a>).</li>
+<li>한계: "작업자가 콘 뒤에서 나오는" 변형이나 "비가 더 세게 오는" 변형은 플릿에 없음. 따라서 합성 데이터가 필요하며, 방법은 세 갈래임.</li>
+</ul>
+<figure class="fig"><img src="images/fig7-synthetic-three-routes.svg" alt="합성 데이터의 세 갈래" width="1240" height="390" loading="lazy"><figcaption>그림 16. 재생·재구성·생성. 오른쪽으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차를 검증해야 한다. 자체 작성.</figcaption></figure>
+<div class="table-wrap"><table class="cols-4">
+<thead>
+<tr>
+<th>갈래</th>
+<th>무엇을 하나</th>
+<th>장점·한계</th>
+<th>대표 도구</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>재생(replay)</strong></td>
+<td>기록된 로그를 그대로 틀고 새 모델을 돌림. 다른 차들은 기록대로 움직임(비반응)</td>
+<td>가장 싸고 정확하지만, 내 차가 다르게 움직여도 남들이 반응하지 않아 인과가 끊김. "기록된 틈을 기다리는" 편법을 배울 위험 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/pdf/2510.14677">분석</a>)</td>
+<td>nuPlan, NAVSIM <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td><strong>재구성(reconstruction)</strong></td>
+<td>실제 로그를 3D 장면으로 복원해 다른 궤적·시점에서 다시 렌더링</td>
+<td>실제 장면 기반이라 현실감이 높고 "그때 왼쪽으로 꺾었다면"을 볼 수 있음. 기록 범위 밖 시점은 품질 저하</td>
+<td>3D 가우시안 스플래팅(1080p 30fps 이상, 학습에 24GB VRAM) <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/graphdeco-inria/gaussian-splatting/main/README.md">README</a>); NVIDIA 3DGRUT(어안·롤링셔터·반사까지 처리, USD/NuRec 내보내기) <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>; <strong>InstantNuRec</strong>은 10~20초 다중 카메라 장면을 약 1.5초에 재구성하고 Waymo Open Dataset에서 기존 최고 대비 +2.01dB <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/NVIDIA/instant-nurec/main/README.md">README</a>); Waymo Block-NeRF는 사진 280만 장으로 샌프란시스코 한 구역을 35개 신경 모델로 복원 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td><strong>생성(generation)</strong></td>
+<td>조건(지도·라이다·세그멘테이션)을 주고 없던 영상을 만듦</td>
+<td>밤·비·작업자 조합처럼 존재하지 않는 교차 조건을 만들 수 있는 유일한 길. 현실과의 격차 검증이 필수</td>
+<td>NVIDIA Cosmos Transfer1은 세그멘테이션·깊이·엣지, 자율주행용 라이다·HD맵 조건으로 영상을 만들고, 영상 1개를 다시점으로 늘리며, 2025-08 증류 모델은 36스텝을 1스텝으로 줄임 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/nvidia-cosmos/cosmos-transfer1/main/README.md">README</a>); Wayve GAIA-3(150억 파라미터, 데이터 10배)는 안전 관련 희귀 장면을 만들어 평가하며 "합성 테스트 기각률 5배 감소"를 주장 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>; Waymo World Model <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>중간 다리 = 조건부 변환(Cosmos Transfer 등)</strong>: 지도와 라이다는 그대로 두고 외관만 밤·비로 바꾸므로, 장면의 기하는 실제이고 조명·날씨만 합성임.</li>
+</ul>
+<figure class="fig"><img src="images/src-nvidia-cosmos-transfer1.png" alt="Cosmos Transfer1 구조" width="1280" height="720" loading="lazy"><figcaption>그림 17. Cosmos Transfer1의 공식 구조도. 깊이·엣지·세그멘테이션 영상이 각각의 제어 가지(DepthControl·EdgeControl·SegControl)로 들어가고, 시공간 가중치 영상으로 섞여 디퓨전 백본에 조건을 준다. 기하는 입력 조건이 정하고 외관은 생성된다. 출처: <a href="https://github.com/nvidia-cosmos/cosmos-transfer1">nvidia-cosmos/cosmos-transfer1</a> <code>assets/transfer1_diagram.png</code>, Apache-2.0. 원본 크기.</figcaption></figure>
+<ul>
+<li><strong>폐루프 학습</strong></li>
+<li>문제: 기록을 흉내 내는 학습(모방학습)만 하면 모델은 자기 실수의 결과를 겪어 보지 못함.</li>
+<li>해법: 시뮬레이터 안에서 정책이 직접 운전하고 그 결과로 배우는 폐루프 강화학습.</li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>사례</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NVIDIA AlpaGym</td>
+<td>"시뮬레이터 안에서 정책을 폐루프로 돌리고, 주행을 채점하고, 그것으로 학습한다"는 오픈 프레임워크. AlpaSim(시뮬레이터) + Cosmos-RL(학습기) 조합. 현재 Alpamayo 1.5(10B) 정책을 GPU 2장 추론으로 지원하며 "초기 개발 단계"라고 밝힘</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/NVlabs/alpagym/main/README.md">README</a>)</td>
+</tr>
+<tr>
+<td>comma.ai openpilot</td>
+<td>2022-11 0.9.0 "재투영 시뮬레이터로 학습" → 2025-08 0.10.0 "월드모델 기반 종단간 계획이 종방향 MPC 대체" → 2026-03 0.11.0 "<strong>학습된 시뮬레이터로 전량 학습한</strong> 새 주행 모델" 배포. 블로그: 이 월드모델은 2B 파라미터, 주행 영상 250만 분으로 학습. 합성 환경에서 학습한 정책을 실제 사용자에게 배포한 드문 공개 사례</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md">RELEASES.md</a>); 2B·250만 분은 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig"><img src="images/src-nvidia-alpamayo-rl-framework.png" alt="Alpamayo 강화학습 프레임워크" width="1024" height="527" loading="lazy"><figcaption>그림 18. NVIDIA가 공개한 Alpamayo 강화학습 레시피의 구조도. 롤아웃 복제본(vLLM)이 주행을 생성해 보상과 함께 롤아웃 풀에 넣고, 정책 복제본이 이를 소비해 가중치를 갱신하며, 갱신된 가중치가 롤아웃 쪽으로 되돌아간다. 출처: <a href="https://github.com/NVlabs/alpamayo-recipes">NVlabs/alpamayo-recipes</a> <code>recipes/alpamayo1_x_rl/assets/alpamayo_rl_framework.png</code>, Apache-2.0. 원본 크기.</figcaption></figure>
+<figure class="fig"><img src="images/alpasim-architecture.png" alt="AlpaSim 구조" width="1414" height="569" loading="lazy"><figcaption>그림 19. NVIDIA AlpaSim의 마이크로서비스 구조. 센서 시뮬레이션(렌더러) → 정책 → 궤적 → 물리 → 런타임 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: <a href="https://github.com/NVlabs/alpasim">NVlabs/alpasim</a> <code>docs/assets/images/alpasim-architecture.png</code>, Apache-2.0.</figcaption></figure>
+<ul>
+<li><strong>학습 컴퓨트(회사 발표 수치, 독립 검증 없음)</strong></li>
+<li>Tesla Cortex: 2024년 말 약 5만 H100 → 2026년 1분기 "10만 H100 상당 이상" <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>.</li>
+<li>Tesla AI Day 2022 기준: GPU 1만 4,000장(자동 라벨링 4,000 + 학습 1만) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>.</li>
+<li><strong>사례 적용</strong></li>
+<li>회수한 클립을 오버샘플링함.</li>
+<li>원 클립을 InstantNuRec/3DGS로 재구성해 작업자 위치·자차 속도·조명을 바꾼 변형을 수십 개 만듦.</li>
+<li>Cosmos Transfer로 같은 지도·라이다 조건에서 강우 강도를 바꿈.</li>
+<li>월드모델로 "콘 뒤에서 작업자가 나오는" 존재하지 않는 조합을 만듦.</li>
+<li>재구성 장면 안에서 정책을 굴려 "더 일찍 감속"에 보상을 줌.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>재생 → 재구성 → 생성으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차 검증 부담이 커짐(5.2절). 조건부 변환은 기하를 실제로 유지해 그 부담을 줄이는 절충안임.</p></aside>
+<h3 id="s3-4"><a class="anchor" href="#s3-4">3.4 4단계 — 검증·배포</a></h3>
+<ul>
+<li><strong>전제: 개루프 점수는 이 사례를 못 잡음</strong></li>
+<li>개루프(open-loop) 평가 = 기록된 궤적과 예측 궤적의 거리(ADE/FDE)로 채점.</li>
+<li>사례의 기록 궤적은 "늦게 본 운전자"의 궤적이므로, 그것과 가까울수록 좋은 점수를 받는다면 늦게 보는 모델이 이김.</li>
+<li>따라서 검증은 사다리처럼 올라감.</li>
+<li><strong>검증 사다리</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-4">
+<thead>
+<tr>
+<th>단</th>
+<th>무엇을 재나</th>
+<th>대표 도구</th>
+<th>이전 단에서 못 보던 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>개루프</td>
+<td>기록과의 거리</td>
+<td>ADE/FDE</td>
+<td>—</td>
+</tr>
+<tr>
+<td>유사 폐루프</td>
+<td>4초 비반응 시뮬에서 충돌·주행 가능 영역·충돌 시간(TTC)·진행·승차감을 곱하고 더한 점수</td>
+<td>NAVSIM PDMS = (충돌 없음 × 주행 영역 준수) × 가중 평균(TTC·진행·승차감) <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/autonomousvision/navsim/main/docs/metrics.md">metrics.md</a>); v2는 차선 유지·신호 준수를 더하고 "사람도 위반한 경우 페널티 해제"</td>
+<td>내 궤적이 물리적으로 안전한가</td>
+</tr>
+<tr>
+<td>사람 선호</td>
+<td>희귀 장면에서 평가자가 고른 궤적 3개와의 정합을 0~10점</td>
+<td>Waymo WOD-E2E RFS <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>기록과 달라도 사람이 보기에 좋은 선택</td>
+</tr>
+<tr>
+<td>시뮬 폐루프</td>
+<td>시뮬레이터 안에서 끝까지 운전</td>
+<td>Bench2Drive(CARLA 220 루트·44 시나리오, 클립 13,638개) <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/Thinklab-SJTU/Bench2Drive/main/README.md">README</a>); 재구성·생성 시뮬</td>
+<td>남들이 반응하는 상황에서의 누적 결과</td>
+</tr>
+<tr>
+<td>회귀 세트</td>
+<td>예전 실패 사례를 모두 다시 통과하는가</td>
+<td>Waymo는 사고 재구성 시나리오에서 상대 차량 위치·속도를 바꿔 가며(fuzzing) 시험하고, 기준 모델(NIEON)이 62% 회피할 때 Waymo Driver는 75% 회피 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2022/12/waymos-collision-avoidance-testing/">Waymo CAT</a>)</td>
+<td>새 모델이 예전 것을 잊지 않았는가</td>
+</tr>
+<tr>
+<td>HIL 재생</td>
+<td>실제 ECU에 원시 센서·버스 데이터를 시간 맞춰 주입</td>
+<td>dSPACE ESI + SCALEXIO(카메라·레이더·라이다·CAN·이더넷 동기 주입) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; 현대모비스는 시뮬레이터 60대를 연결하면 "1만 시간 검증을 1주일에" 끝낸다는 계획(2026-04) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+<td>실제 하드웨어·센서 파이프라인에서의 동작</td>
+</tr>
+<tr>
+<td>섀도 배포</td>
+<td>새 모델을 제어권 없이 플릿에 실어 개입·불일치 통계</td>
+<td>Tesla 컷인 네트워크는 여러 라운드 섀도 후 활성화 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>실제 운전자·실제 환경</td>
+</tr>
+<tr>
+<td>단계적 OTA</td>
+<td>직원 → 얼리 액세스 → 소규모 → 광역</td>
+<td>Tesla v14 Lite는 플릿 0.1% 미만에서 시작해 약 10%로 확대 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+<td>대규모 분포</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>규제가 마지막 단을 관리 프로세스로 만듦</strong></li>
+<li>UN R156: 소프트웨어 업데이트 관리체계(SUMS)를 형식승인 조건으로 요구. 요건 = 모든 소프트웨어 버전의 고유 식별(RxSWIN), 무결성 검증, 대상 차량 구성과의 호환성 확인, 주행 중 안전한 실행, 사용자 고지, 기록. EU는 2024년 7월부터 모든 신차 적용 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156">UL 해설</a>).</li>
+<li>UL 4600 안전 케이스 표준: "분석 + 시뮬레이션 + 폐쇄 도로 + 공도 시험의 조합"으로 안전을 논증하고 소프트웨어 업데이트마다 논증을 갱신하라고 함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li>배포가 곧 기록(DSSAD)으로 이어지므로, 플라이휠의 마지막 마디는 자동으로 첫 마디에 연결됨.</li>
+<li><strong>사례 적용</strong></li>
+<li>원 클립과 변형들을 EPDMS(충돌·TTC)와 사람 선호로 채점하고, 원 클립을 영구 회귀 세트에 넣음.</li>
+<li>원시 로그를 ECU에 재생해 새 모델의 검출 시점이 몇 프레임 앞당겨졌는지 비교함.</li>
+<li>섀도로 배포해 같은 조건에서 개입률이 떨어지는지 확인한 뒤 0.1% → 10% → 광역으로 내보내고, RxSWIN을 갱신함.</li>
+<li>배포된 새 모델이 다음 실패를 만들면 다시 1단계임.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>검증은 한 지표가 아니라 사다리임. 각 단은 이전 단이 못 보던 것을 보며, 마지막 단(OTA)은 규제 프로세스이므로 개발 파이프라인과 인증 산출물을 함께 설계해야 함.</p></aside>
+<h3 id="s3-5"><a class="anchor" href="#s3-5">3.5 한 바퀴의 처리량 — 공개된 숫자</a></h3>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>마디</th>
+<th>수치</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>차 → 클라우드</td>
+<td>Tesla 트리거 221개, 약 10초 클립, 첫 데이터셋 약 100만 클립·1.5PB, 루프 7회 반복(2021)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>큐레이션</td>
+<td>Cosmos Curator 2,000만 시간을 14일(Blackwell)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>자동 라벨링</td>
+<td>Tesla 1만 주행: 수작업 500만 시간 → 12시간(2022)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>재구성</td>
+<td>InstantNuRec 10~20초 장면 → 약 1.5초</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>시뮬 검증</td>
+<td>Waymo 하루 1,000만 마일(2018), 누적 100억 마일(2019)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>HIL</td>
+<td>현대모비스 60대 연결 시 주당 1만 시간(계획)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>배포</td>
+<td>Tesla v14.x 포인트 릴리스 1~2주 간격, 초기 롤아웃 0.1% 미만</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>오픈소스</td>
+<td>openpilot 2021년 "100만 분" 학습 → 2026년 월드모델 250만 분·2B</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>미공개 항목</strong>: "트리거에서 배포까지 몇 주"라는 명시적 수치는 어느 회사도 공개하지 않음. 확인되는 것은 "수주 단위 OTA"라는 정성 표현뿐임 <span class="ev" title="미확인·추정">⚠️</span>.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>마디별 처리량은 공개돼 있으나 한 바퀴의 소요 시간은 어디에도 없음. 자사 플라이휠을 설계할 때는 이 "한 바퀴 시간"을 핵심 지표로 직접 재야 함.</p></aside>
+
+</section>
+<section id="sec-s4" class="chapter" data-num="4">
+<h2 id="s4"><a class="anchor" href="#s4">4. 기업별 데이터 플라이휠 전략과 최근 산업 동향</a></h2>
+<aside class="callout qa">
+<div class="qa-q"><span class="lbl">개요</span><p>회사마다 플라이휠을 어떻게 다르게 돌리는지를 데이터 원천 기준 다섯 유형으로 나눠 비교하고, 공통으로 향하는 흐름과 2025~2026 동향을 정리함.</p></div>
+<div class="qa-a"><span class="lbl">핵심 결론</span><ol class="three"><li><span class="num">①</span><span>데이터가 어디서 오느냐로 다섯 유형이 갈림. 양산차 플릿(Tesla·comma), 로보택시(Waymo·Baidu), 공급자(Mobileye·Wayve·Momenta), OEM 자체(현대차·42dot, XPeng), 툴체인(NVIDIA·Applied Intuition·TIER IV).</span></li><li><span class="num">②</span><span>공통 흐름은 "월드모델이 시뮬레이션의 중심으로, 강화학습이 양산으로, 라벨링은 자동으로, 데이터 주권이 아키텍처를 가르고, 툴체인은 열린다"는 다섯 가지임.</span></li><li><span class="num">③</span><span>이 장의 수치는 대부분 기업 발표이므로 "공개 주장"으로 읽어야 함.</span></li></ol></div>
+</aside>
+<figure class="fig"><img src="images/fig8-company-map.svg" alt="기업별 플라이휠 유형 지도" width="1240" height="610" loading="lazy"><figcaption>그림 20. 데이터 원천(가로)과 공개도(세로)로 본 기업 유형. 자체 작성. 수치는 각 사 공개 주장.</figcaption></figure>
+<h3 id="s4-1"><a class="anchor" href="#s4-1">4.1 플릿형 — 양산차가 데이터를 만든다</a></h3>
+<ul>
+<li><strong>Tesla</strong> — 가장 큰 플릿을 가진 회사</li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 규모</td>
+<td>FSD(Supervised) 누적 주행 2026년 5월 100억 마일, 8월 140억 마일 돌파 발표(하루 약 3,500만 마일 추정)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://electrek.co/2026/05/03/tesla-fsd-10-billion-miles-no-magical-milestone-autonomy/">Electrek</a>)</td>
+</tr>
+<tr>
+<td>수집 방식</td>
+<td>FSD를 켜지 않은 차에서도 백그라운드에서 판단을 내려 실제 운전과 비교하는 섀도 모드 가동</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>학습 인프라</td>
+<td>Cortex 2026년 1분기 "H100 상당 10만 장 이상", Cortex 2 추가 가동. 2026년 설비투자 가이던스 250억 달러 이상(2025년 85억의 약 3배)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://techcrunch.com/2026/04/22/tesla-just-increased-its-capex-to-25b-heres-where-the-money-is-going/">TechCrunch</a>)</td>
+</tr>
+<tr>
+<td>배포 주기</td>
+<td>대형 버전 약 10개월(v13 2024-12 → v14 2025-10), 포인트 릴리스는 1주 간격까지 단축</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>데이터 주권</td>
+<td>중국 데이터는 국외 반출이 막혀 상하이 데이터센터에서 따로 학습</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>공개도</td>
+<td>데이터·시뮬레이터·모델 모두 비공개</td>
+<td class="src">—</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>comma.ai openpilot</strong> — 플릿형의 열린 표본</li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 규모</td>
+<td>사용자 2만 명 이상, 누적 3억 마일 이상(56%가 openpilot 주행)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.comma.ai/openpilot">comma.ai</a>)</td>
+</tr>
+<tr>
+<td>진화 이력(릴리스 노트)</td>
+<td>2025-08 0.10.0 "종방향 MPC를 월드모델 종단간 계획으로 대체" → 2025-09 0.10.1 "4배 많은 세그먼트로 학습" → 2026-03 0.11.0 "학습된 시뮬레이터로 전량 학습" → 2026-08 0.11.2 "880M 파라미터 대형 모델"</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md">RELEASES.md</a>)</td>
+</tr>
+<tr>
+<td>배포 주기</td>
+<td>릴리스 간격 약 2개월</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>공개도</td>
+<td>코드 MIT</td>
+<td class="src"><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>플릿형의 강점은 데이터 양과 섀도 모드임. 같은 유형 안에서도 Tesla(폐쇄)와 comma(오픈소스)는 공개도가 정반대이며, comma의 릴리스 노트가 플릿형 플라이휠의 진화를 코드 수준에서 확인할 수 있는 유일한 창임.</p></aside>
+<h3 id="s4-2"><a class="anchor" href="#s4-2">4.2 로보택시형 — 적은 차, 많은 센서, 많은 시뮬레이션</a></h3>
+<ul>
+<li><strong>Waymo</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 규모</td>
+<td>2026년 3월 말 기준 무인 누적 2억 2,060만 마일, 주 400만 마일 이상</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/safety/impact/">Waymo</a>)</td>
+</tr>
+<tr>
+<td>안전 실적</td>
+<td>안전 허브: 사람 대비 중상·사망 충돌 94% 감소, 에어백 전개 82% 감소, 부상 충돌 82% 감소(5개 도시). IIHS 독립 연구: 부상 충돌 81% 감소</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>시뮬레이션</td>
+<td>"수천만 실주행 마일 + 수십억 시뮬 마일". 2026-02 Genie 3 기반 Waymo World Model로 카메라와 라이다를 동시에 생성해 플릿이 본 적 없는 상황을 만듦</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation/">Waymo 블로그</a>)</td>
+</tr>
+<tr>
+<td>공개 자산</td>
+<td>롱테일 데이터셋 WOD-E2E(4,021 세그먼트, 발생 빈도 0.03% 미만) 공개; 안전 케이스 접근 백서(UL 4600 계열) 발간</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026년 목표</td>
+<td>10개 이상 도시 추가, 런던 진출, 연말 주 100만 회 탑승</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Baidu Apollo Go</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규모</td>
+<td>2026년 2분기 완전 무인 탑승 약 100만 회, 6월 누적 2,300만 회</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.sec.gov/Archives/edgar/data/1329099/000119312526110843/d34060dex991.pdf">Baidu 6-K</a>)</td>
+</tr>
+<tr>
+<td>안전 실적(공개 주장)</td>
+<td>무인 차량의 에어백 전개는 평균 1,440만 km당 1회</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>모델·확장</td>
+<td>6세대 RT6는 자체 파운데이션 모델 ADFM 탑재. 2026년부터 Lyft와 독일·영국에 투입</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Zoox</strong>: 2026년 7월 30일 NHTSA에서 핸들 없는 로보택시의 첫 상업 면제(연 2,500대) 획득 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://techcrunch.com/2026/07/30/zoox-clears-final-federal-hurdle-to-launch-paid-robotaxi-service/">TechCrunch</a>).</li>
+</ul>
+<figure class="fig"><img src="images/src-baidu-closed-loop.png" alt="Baidu 폐쇄루프 데이터 시스템" width="1024" height="376" loading="lazy"><figcaption>그림 21. Baidu가 공개한 "Closed-Loop Data System" 그림. 합규 데이터 수집(차량 개조·탈민감화) → 데이터 처리·관리 → 라벨링 → 알고리즘 개발·학습·평가 → 시나리오 라이브러리(OpenX 표준)·시뮬레이션 테스트 → 차량 배포·OTA. 출처: Baidu Apollo 공개 자료, <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a>에 수록(<code>img_resource/3-2-4_Baidu_Close_Loop_Data_System.jpg</code>, 저장소 Apache-2.0). 원 저작권은 Baidu에 있다. 원본 크기.</figcaption></figure>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>로보택시형은 플릿이 작은 대신 센서가 많고 시뮬레이션 비중이 크며, 플릿 통계를 안전 케이스로 직접 연결함(안전 허브·백서). 규제 면제(Zoox)가 배포 관문의 새 선례임.</p></aside>
+<h3 id="s4-3"><a class="anchor" href="#s4-3">4.3 공급자형 — 남의 차에서 데이터를 받는다</a></h3>
+<ul>
+<li><strong>Mobileye</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 원천</td>
+<td>REM(Road Experience Management) 크라우드소싱 지도. 18개 브랜드·50개 차종·800만 대 이상의 양산 ADAS 차량이 km당 약 10KB의 익명 데이터를 전송</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.mobileye.com/technology/rem/">Mobileye REM</a>)</td>
+</tr>
+<tr>
+<td>산출물</td>
+<td>10cm 정확도의 "Roadbook" 지도를 만들어 다시 내려보냄</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>검증</td>
+<td>"True Redundancy"(카메라 계열과 레이더·라이다 계열을 독립 운영)로 필요한 검증 데이터 양을 줄인다고 주장</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>규모</td>
+<td>2026년 EyeQ 칩 출하 약 3,800만 개 가이던스, Surround ADAS 누적 수주 1,900만 대 이상</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Wayve</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>핵심 자산</td>
+<td>월드모델 GAIA 시리즈. GAIA-3(2025-12): 150억 파라미터, 이전 세대의 10배 데이터, 검증용으로 외부 제공. GAIA-4(2026-08): AI Driver를 루프 안에 넣어 기록된 장면에서 출발하는 반사실 시나리오 생성</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://wayve.ai/thinking/gaia-4/">Wayve</a>)</td>
+</tr>
+<tr>
+<td>일반화(공개 주장)</td>
+<td>단일 모델로 유럽·북미·일본 506개 도시 주행, 그중 219개(43%)는 현지 데이터 없이 주행</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>상용화</td>
+<td>Nissan LEAF 기반 로보택시로 2026년 말 도쿄 Uber 파일럿 계획</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Momenta</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규모</td>
+<td>양산 탑재 차량 100만 대 돌파(2025년 30만 → 80만 → 상장 직전 100만)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://momenta.cn/en/article/568.html">Momenta</a>)</td>
+</tr>
+<tr>
+<td>모델(공개 주장)</td>
+<td>R6 "플라이휠 대형 모델": 고가치 클립 7,000만 개와 실주행 30억 km로 학습한 강화학습 기반 종단간 모델. R7(2026-04): 사전학습·시뮬레이션·강화학습 3층 구조, 누적 120억 km와 "골든 데이터" 1억 건</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>고객</td>
+<td>2026년 2월 기준 글로벌 OEM 24곳(BMW 중국·아우디·도요타·BYD·포드 등)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>자금</td>
+<td>2026년 7월 홍콩 상장, 7억 5,000만 달러 조달</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<figure class="fig"><img src="images/src-momenta-roadmap-slide.jpg" alt="Momenta 데이터 기반 알고리즘 로드맵 슬라이드" width="1600" height="921" loading="lazy"><figcaption>그림 22. Momenta가 발표한 "완전 데이터 기반 알고리즘 로드맵" 슬라이드. 규칙 기반(주황) 계획을 단계적으로 데이터 기반(파랑) 모듈로 바꾸고, 2025년 중반에 인지와 계획을 한 모델로 합치는 목표를 적었다. 4.7절의 "강화학습이 양산으로" 흐름의 출발점이다. 출처: Momenta 발표 슬라이드 화면, <a href="https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving">Li et al. 2024 서베이 저장소</a>에 수록(<code>img_resource/3-1_momenta_data_driven_planning.png</code>, 저장소 Apache-2.0). 원 저작권은 Momenta에 있다. 크기만 줄임.</figcaption></figure>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>공급자형은 여러 OEM의 차에서 데이터를 받으므로 지역·차종 다양성이 강점이고, 그 데이터로 만든 지도(REM)·월드모델(GAIA)·플라이휠 모델(R6/R7)이 곧 상품임.</p></aside>
+<h3 id="s4-4"><a class="anchor" href="#s4-4">4.4 OEM 자체형 — 내 차, 내 데이터, 내 모델</a></h3>
+<ul>
+<li><strong>현대차그룹·42dot</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>발표</td>
+<td>2026년 9월 13일 "AI 기반 데이터 플라이휠 본격 가동". 수집 → 학습 → 검증 → 배포의 순환을 자율주행 전략의 핵심 엔진으로 설정</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel">현대차그룹</a>)</td>
+</tr>
+<tr>
+<td>수집</td>
+<td>42dot이 개발한 종단간 시스템 Atria AI를 2026년 말까지 국내 차량에 실어 엣지 케이스 데이터 수집. 국토부와 협력해 전남·광주에 Atria AI 탑재 "SDV Pace Car" 투입</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>이중 트랙</td>
+<td>NVIDIA 검증 플랫폼 기반 L2+/L2++ 양산 2028년, 자체 Atria AI 기반 L2++ 양산 2029년 하반기 목표</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>NVIDIA 협력</td>
+<td>2026년 3월 GTC에서 DRIVE AGX Thor·Hyperion 기반 양산과 Motional을 통한 L4 발표</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>현대모비스</strong>: 2026년 4월 실차 주행·주차 센서 데이터를 데이터 관리 솔루션과 시뮬레이터에 통합한 검증 체계 발표. 시뮬레이터 60대를 연결하면 "1만 시간 상당 검증을 1주일에" 끝내는 것이 목표이며, 야간·우천·돌발 상황 재현이 강점이라고 밝힘(계획치) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.prnewswire.com/news-releases/hyundai-mobis-develops-data-driven-validation-system-to-dramatically-cut-testing-time-for-sdvs-302745490.html">PR Newswire</a>).</li>
+<li><strong>다른 OEM</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>OEM</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Toyota·Woven</td>
+<td>Arene: 동의 기반 주행 데이터 수집·분석(Arene Data)과 가상 검증(Arene Tools)을 2025년 RAV4부터 적용</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>VW</td>
+<td>Bosch와의 자율주행 얼라이언스에 약 15억 유로를 쓴 뒤 2026년 7월 조기 종료 확인</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.electrive.com/2026/07/02/vw-confirms-end-of-automated-driving-alliance-with-bosch/">electrive</a>)</td>
+</tr>
+<tr>
+<td>Mercedes</td>
+<td>중국 CLA에 Momenta, 미국 CLA에 NVIDIA DRIVE AV를 쓰는 지역 분할</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>XPeng</td>
+<td>자체형의 극단. 롱테일 클립 약 1억 개, 학습비 20억 위안 이상, 제어 가능한 생성 월드모델 X-World를 폐루프 시뮬·온라인 강화학습·데이터 합성에 통합</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>Li Auto</td>
+<td>MindVLA-o1을 데이터 엔진(MindData)·월드모델(MindSim)·강화학습 인프라로 구성</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>OEM 자체형은 데이터 주권과 수직 통합이 동기이나, 플릿·인프라를 스스로 갖춰야 하므로 비용 부담이 큼(VW·Bosch 종료가 실패 비용의 예). 현대차그룹은 NVIDIA 플랫폼과 자체 Atria AI의 이중 트랙으로 위험을 나눔.</p></aside>
+<h3 id="s4-5"><a class="anchor" href="#s4-5">4.5 툴체인형 — 플라이휠을 만들어 파는 회사</a></h3>
+<ul>
+<li><strong>NVIDIA</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Physical AI Data Factory Blueprint(2026-03)</td>
+<td>Cosmos Curator(대규모 처리·주석) → Cosmos Transfer(날씨·조명·환경 변형으로 희소 시나리오 증폭) → Cosmos Reason/Evaluator(물리 정확성 자동 점수) → OSMO 오케스트레이션(코딩 에이전트 연동). Uber·Skild AI 등 채택</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://nvidianews.nvidia.com/news/nvidia-announces-open-physical-ai-data-factory-blueprint-to-accelerate-robotics-vision-ai-agents-and-autonomous-vehicle-development">NVIDIA 뉴스룸</a>)</td>
+</tr>
+<tr>
+<td>오픈 자산</td>
+<td>Alpamayo(100억 파라미터 추론형 VLA, 인과 추론 자동 라벨링, 1,700시간 이상 공개 주행 데이터), Alpamayo 2 Super(340억), AlpaSim·AlpaGym, Omniverse NuRec</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>Uber 협력</td>
+<td>Hyperion 기반 L4 10만 대(2027~)와 Cosmos 기반 "AI 데이터 팩토리"로 Uber 플릿 데이터 큐레이션</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>기타 툴체인</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>회사</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Applied Intuition</td>
+<td>2025년 6월 기업가치 150억 달러에 6억 달러 조달. 상위 20개 OEM 중 18개가 고객, 시뮬·테스트가 매출의 약 1/3이라는 추정</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://sacra.com/c/applied-intuition/">Sacra</a>)</td>
+</tr>
+<tr>
+<td>Scale AI</td>
+<td>2025년 6월 Meta의 143억 달러 투자 뒤 고객 이탈과 감원. 자율주행 라벨링 비중은 2022년 이후 줄어 LLM 데이터로 이동</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>Voxel51</td>
+<td>페타바이트급 플릿 로그에서 임베딩·자연어 검색으로 엣지 케이스를 캐고 NuRec과 연동</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>Foretellix</td>
+<td>2025년 10월 NVIDIA DRIVE AV에 시나리오 도구 Foretify 통합</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>TIER IV Co-MLOps</td>
+<td>2024년 출범한 다사 데이터 공유 플랫폼. 2026년 8월 Astemo와 양산급 종단간 모델 공동 개발 MoU. "사람은 요구사항만 정하고 AI 에이전트가 라벨링·정제·학습·평가를 자율 수행하는" 에이전틱 개발 주장</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://tier4.co.jp/en/updates/20260805-tieriv-develops-platform-with-astemo">TIER IV</a>)</td>
+</tr>
+<tr>
+<td>표준·데이터 스페이스</td>
+<td>ASAM이 OpenSCENARIO DSL 2.2(2026-03)·OpenLABEL·OpenODD 유지. Catena-X는 2026년 11월 중국–유럽 간 첫 국경 간 자동차 데이터 생태계 운영 발표</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>툴체인형은 플라이휠의 마디(큐레이션·합성·시뮬·라벨링)를 부품으로 팔며, NVIDIA는 오픈소스로 표준화를 노림. 라벨링 시장(Scale AI)의 축소는 자동 라벨링 전환의 뒷면임.</p></aside>
+<h3 id="s4-6"><a class="anchor" href="#s4-6">4.6 한눈 비교</a></h3>
+<div class="table-wrap"><table class="cols-6">
+<thead>
+<tr>
+<th>기업</th>
+<th>유형</th>
+<th>데이터 원천·규모(공개 주장)</th>
+<th>시뮬·합성</th>
+<th>배포 주기</th>
+<th>공개도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tesla</td>
+<td>플릿</td>
+<td>FSD 140억 마일, 섀도 모드</td>
+<td>비공개, Cortex 10만 H100e+</td>
+<td>대형 ~10개월, 포인트 1주</td>
+<td>폐쇄</td>
+</tr>
+<tr>
+<td>comma.ai</td>
+<td>플릿(개방)</td>
+<td>3억 마일, 2만 사용자</td>
+<td>학습된 시뮬레이터(0.11)</td>
+<td>약 2개월</td>
+<td>오픈소스</td>
+</tr>
+<tr>
+<td>Waymo</td>
+<td>로보택시</td>
+<td>무인 2.2억 마일, 주 400만</td>
+<td>수십억 시뮬 마일, World Model</td>
+<td>도시 단위</td>
+<td>데이터셋 일부 공개</td>
+</tr>
+<tr>
+<td>Baidu</td>
+<td>로보택시</td>
+<td>누적 2,300만 회 탑승</td>
+<td>ADFM</td>
+<td>분기별 확장</td>
+<td>폐쇄</td>
+</tr>
+<tr>
+<td>Mobileye</td>
+<td>공급자</td>
+<td>REM 800만 대, EyeQ 3,800만/년</td>
+<td>True Redundancy</td>
+<td>OEM 프로그램 단위</td>
+<td>폐쇄</td>
+</tr>
+<tr>
+<td>Wayve</td>
+<td>공급자</td>
+<td>506개 도시</td>
+<td>GAIA-3/4</td>
+<td>파트너 단위</td>
+<td>연구 공개</td>
+</tr>
+<tr>
+<td>Momenta</td>
+<td>공급자</td>
+<td>100만 대, 120억 km</td>
+<td>R7 월드모델 + RL</td>
+<td>세대 연 1회</td>
+<td>폐쇄</td>
+</tr>
+<tr>
+<td>현대차·42dot</td>
+<td>OEM 자체</td>
+<td>Atria AI 국내 수집(2026 말~)</td>
+<td>모비스 시뮬레이터 60대</td>
+<td>2028 / 2029</td>
+<td>폐쇄</td>
+</tr>
+<tr>
+<td>XPeng</td>
+<td>OEM 자체</td>
+<td>1억 클립</td>
+<td>X-World</td>
+<td>VLA 2.0 2026-Q1</td>
+<td>기술보고서</td>
+</tr>
+<tr>
+<td>NVIDIA</td>
+<td>툴체인</td>
+<td>1,700h 오픈 데이터, Uber 10만 대 계획</td>
+<td>Cosmos·NuRec·AlpaSim</td>
+<td>CES·GTC 반기</td>
+<td>오픈소스 다수</td>
+</tr>
+<tr>
+<td>Applied Intuition</td>
+<td>툴체인</td>
+<td>고객 18/20 OEM</td>
+<td>시뮬 매출 1/3</td>
+<td>제품 릴리스</td>
+<td>상용</td>
+</tr>
+<tr>
+<td>TIER IV</td>
+<td>툴체인(공유)</td>
+<td>Co-MLOps 파트너</td>
+<td>scenario_simulator_v2 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+<td>2030 양산 목표</td>
+<td>오픈소스(Autoware)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="s4-7"><a class="anchor" href="#s4-7">4.7 공통 흐름 다섯 가지</a></h3>
+<ol>
+<li><strong>월드모델이 시뮬레이션의 중심이 됨.</strong> Waymo World Model(2026-02), Wayve GAIA-4(2026-08), XPeng X-World, Momenta R7, Huawei의 클라우드 월드모델, comma의 학습된 시뮬레이터. 2026년 한 해에 거의 모든 진영이 "생성 모델로 시험한다"를 선언함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li><strong>강화학습·폐루프 학습이 양산에 들어옴.</strong> Momenta R6("강화학습 기반 종단간 양산 최초" 주장), Tesla v14.3 릴리스 노트의 강화학습 단계, NVIDIA AlpaGym, XPeng 온라인 강화학습 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>.</li>
+<li><strong>라벨링이 자동으로 이동함.</strong> NVIDIA 인과 추론 자동 라벨링, TIER IV Co-MLOps 자동 라벨링(2026), Bosch의 신경망 자동 라벨링은 3D 박스 비용 최대 70% 절감을 주장 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>. Scale AI의 자율주행 라벨링 축소가 같은 흐름의 뒷면임.</li>
+<li><strong>데이터 주권이 아키텍처를 가름.</strong> Mercedes CLA(중국 Momenta / 미국 NVIDIA), BMW iX3(중국 Momenta / 글로벌 Qualcomm), Tesla 상하이 데이터센터. 어느 나라의 데이터로 어느 나라의 모델을 만드느냐가 공급 구조를 정함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li><strong>툴체인은 열리고 데이터 공유는 실험 중임.</strong> NVIDIA Alpamayo·AlpaSim 오픈소스, Waymo WOD-E2E, TIER IV Co-MLOps, Catena-X 중–유럽 확장. 반면 Tesla·Baidu는 폐쇄를 유지함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+</ol>
+<h3 id="s4-8"><a class="anchor" href="#s4-8">4.8 2025~2026 동향</a></h3>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>날짜</th>
+<th>기업</th>
+<th>사건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-06</td>
+<td>Applied Intuition / Scale AI</td>
+<td>시리즈 F 6억 달러(150억 달러 가치) / Meta 143억 달러 투자 뒤 고객 이탈·감원 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2025-08</td>
+<td>Momenta·GM</td>
+<td>Buick Electra L7에 R6 플라이휠 모델 첫 탑재 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2025-09-12</td>
+<td>EU</td>
+<td>Data Act 적용 개시(차량 데이터 접근 의무) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2025-10-07</td>
+<td>Tesla</td>
+<td>FSD v14 공개(v13 이후 약 10개월) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2025-10</td>
+<td>NVIDIA·Uber / Foretellix</td>
+<td>L4 10만 대 + Cosmos 데이터 팩토리 / DRIVE AV에 Foretify 통합 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2025-10-30</td>
+<td>Waymo</td>
+<td>WOD-E2E 롱테일 데이터셋 논문 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2025-12</td>
+<td>Wayve</td>
+<td>GAIA-3(150억 파라미터) 검증용 공개 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-01-05</td>
+<td>NVIDIA</td>
+<td>Alpamayo 오픈 VLA·1,700시간 데이터셋·AlpaSim(CES) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-01-30</td>
+<td>중국 8개 부처</td>
+<td>자동차 데이터 국외 이전 보안 가이드라인(2026판) 시행 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-01</td>
+<td>한국 개인정보위</td>
+<td>자율주행 원본 영상 활용 규제 샌드박스(9개사 신청) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-02-06</td>
+<td>Waymo</td>
+<td>Genie 3 기반 Waymo World Model <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-03-16</td>
+<td>현대차·기아·NVIDIA / NHTSA</td>
+<td>GTC 파트너십 확대 / 핸들 없는 차량 대상 FMVSS 개정안 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-03-17</td>
+<td>comma.ai</td>
+<td>openpilot 0.11, 학습된 시뮬레이터로 학습한 모델 배포 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>2026-04-16</td>
+<td>현대모비스</td>
+<td>데이터 기반 SDV 검증 체계(시뮬레이터 60대 확장 계획) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-04-25</td>
+<td>Momenta</td>
+<td>R7 월드모델 양산 발표 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-05-07</td>
+<td>EU</td>
+<td>AI Act 옴니버스 합의, 차량(부속서 I) 고위험 의무 2028-08-02로 연기 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-06-01</td>
+<td>NVIDIA</td>
+<td>Alpamayo 2 Super(340억)·AlpaGym <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-07-02</td>
+<td>VW·Bosch</td>
+<td>자율주행 얼라이언스 조기 종료(15억 유로) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-07</td>
+<td>Momenta</td>
+<td>홍콩 상장, 7.5억 달러 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-07-30</td>
+<td>Zoox·NHTSA</td>
+<td>핸들 없는 로보택시 첫 상업 면제(연 2,500대) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-08-05</td>
+<td>TIER IV·Astemo</td>
+<td>Co-MLOps 기반 종단간 개발 MoU(2030 상용화) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-08</td>
+<td>Wayve / Tesla</td>
+<td>GAIA-4 폐루프 월드모델 / FSD 140억 마일 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2026-09-13</td>
+<td>현대차그룹</td>
+<td>AI 데이터 플라이휠 가동 발표(Atria AI, 2028·2029 목표) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>2026년 동향의 무게중심은 세 곳임. 월드모델(Waymo·Wayve·Momenta·NVIDIA), 데이터 주권 규제(중국·한국·EU), 규제 관문의 변화(Zoox 면제·FMVSS 개정·AI Act 연기).</p></aside>
+
+</section>
+<section id="sec-s5" class="chapter" data-num="5">
+<h2 id="s5"><a class="anchor" href="#s5">5. 데이터 플라이휠의 기술적 병목과 사업 경쟁력, 향후 진화 방향</a></h2>
+<aside class="callout qa">
+<div class="qa-q"><span class="lbl">개요</span><p>플라이휠이 막히는 네 곳(데이터 발견·검증·비용·규제)을 분석하고, 잘 도는 플라이휠이 사업에서 무엇으로 바뀌는지(개발 속도·원가·시장 확장·안전성 입증·장기 검증 자산)와 다음 5년의 방향을 정리함.</p></div>
+<div class="qa-a"><span class="lbl">핵심 결론</span><ol class="three"><li><span class="num">①</span><span>병목은 네 곳임. 무엇을 찾아야 할지 모르는 데이터 발견, 시뮬레이션을 얼마나 믿을 수 있는지의 검증, 저장·통신·GPU·라벨링 비용, 개인정보·국외 반출·업데이트 규제.</span></li><li><span class="num">②</span><span>잘 도는 플라이휠은 개발 속도(주 단위 OTA), 원가(자동 라벨링), 시장 확장(현지 데이터 없이 진입), 안전성 입증(안전 허브·안전 케이스), 장기 검증 자산(회귀 세트·시나리오 라이브러리)으로 바뀜.</span></li><li><span class="num">③</span><span>방향은 월드모델 기반 검증, 학습된 시뮬레이터, 플릿 간 데이터 공유, 에이전트형 개발, "증거로서의 로깅"임.</span></li></ol></div>
+</aside>
+<figure class="fig"><img src="images/fig9-bottleneck-to-competitiveness.svg" alt="병목에서 경쟁력으로" width="1240" height="511" loading="lazy"><figcaption>그림 23. 네 가지 병목(왼쪽)을 풀면 다섯 가지 경쟁력(오른쪽)으로 이어진다. 자체 작성.</figcaption></figure>
+<h3 id="s5-1"><a class="anchor" href="#s5-1">5.1 병목 ① 데이터 발견 — 무엇이 필요한지 모른다</a></h3>
+<ul>
+<li><strong>문제 정의</strong>: 가장 어려운 데이터는 "아직 본 적 없어서 찾을 줄도 모르는" 데이터임.</li>
+<li>ISO 21448(SOTIF)은 이를 "모르는 불안전 시나리오(영역 3)"라 부르고, 이 영역을 합리적 노력으로 최대한 줄이는 것을 표준의 핵심으로 둠 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.tuvsud.com/-/jssmedia/global/pdf-files/whitepaper-report-e-books/tuvsud-sotif.pdf">TÜV SÜD 백서</a>).</li>
+<li>희소성의 수치: Waymo는 수억 마일 플릿에서 발생 빈도 0.03% 미만 상황을 골랐는데 12시간 분량이었음 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li><strong>기술적 대응(두 방향)</strong></li>
+<li>임베딩·자연어 검색으로 "비슷하지만 트리거는 안 걸린" 장면을 회수함(3.2절).</li>
+<li>플릿이 못 본 상황은 생성함. Waymo World Model의 목적에 "플릿이 직접 관찰한 적 없는 상황 탐색"이 명시됨 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li><strong>한계와 최신 연구</strong></li>
+<li>불확실성 기반 능동학습은 초기 라벨 집합에 아예 없는 클래스("unknown unknown")를 잡지 못함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://lacuna.tiptreesystems.com/work/active-data-discovery-mining-unknown-data-using-submodular-information-measures/wrk_c7958570151368a9e16a1f703eafc370">해설</a>).</li>
+<li>2026년 연구는 예측 월드모델의 "놀람" 신호로 희소 사건을 고르는 접근을 제안함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/abs/2608.29772">arXiv 2608.29772</a>).</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>검색은 "알지만 못 찾은" 데이터를, 생성은 "본 적 없는" 데이터를 겨냥함. 둘 다 "무엇을 모르는지 모르는" 영역은 못 잡으므로 월드모델의 놀람 신호 같은 발견 기법이 다음 과제임.</p></aside>
+<h3 id="s5-2"><a class="anchor" href="#s5-2">5.2 병목 ② 검증 — 시뮬레이션을 얼마나 믿을 수 있나</a></h3>
+<ul>
+<li><strong>개루프 점수의 한계</strong>: nuScenes 개루프 평가에서 카메라·라이다 없이 과거 궤적만 외삽해도 최신 모델을 이기는 사례가 보고됨 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 정적 데이터셋 점수가 도로 안전으로 이어지지 않는다는 뜻임.</li>
+<li><strong>중간 해법과 그 한계</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>접근</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NAVSIM v2 의사 시뮬레이션</td>
+<td>3D 가우시안 스플래팅으로 후속 관측을 합성해 폐루프 시뮬과 상관 0.89를 얻으면서 환경 상호작용을 6배 줄임</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span> (<a href="https://github.com/autonomousvision/navsim/blob/main/README.md">NAVSIM</a>)</td>
+</tr>
+<tr>
+<td>Bench2Drive-Robust(2026-05)</td>
+<td>프레임 드롭·GPS 잡음·추론 지연 같은 "배포 교란"이 폐루프 성능을 크게 떨어뜨리는데 기존 이미지 손상 평가로는 잡히지 않음</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/abs/2605.18059">arXiv 2605.18059</a>)</td>
+</tr>
+<tr>
+<td>자율주행 테스트 서베이(2025-12)</td>
+<td>미해결 과제로 "코너 케이스 다양성, 시뮬–실제 격차, 체계적 기준 부재, 파운데이션 모델 테스트 비용"을 지목</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://arxiv.org/abs/2512.11887">arXiv 2512.11887</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>규제는 시뮬레이션 증거를 조건부로 수용</strong></li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>규정</th>
+<th>내용</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UN R157(자동 차선 유지) 부속서 4</td>
+<td>시험장·실도로에서 재현하기 어려운 시나리오에 시뮬레이션 사용을 허용하되, 제조사가 도구의 범위·해당 시나리오의 유효성·물리 시험과의 상관을 입증하도록 함</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.tuvsud.com/-/jssmedia/global/pdf-files/whitepaper-report-e-books/tuvsud_virtual-homologation-of-an-alks-according-to-unece-r157.pdf">TÜV SÜD 해설</a>)</td>
+</tr>
+<tr>
+<td>EU 완전자동화차량 형식승인 규정 2022/1426</td>
+<td>시나리오 기반 평가와 가상 시험을 허용하고 "시뮬레이션 기반 시험의 신뢰성 평가" 지침 포함(조문 원문 미확인 <span class="ev" title="미확인·추정">⚠️</span>)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>미국</td>
+<td>2026년 AV 프레임워크 갱신·FMVSS 개정안·Zoox 면제로 "규제 장벽 제거" 방향</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>시뮬레이션은 증거가 될 수 있지만, 시뮬레이터 자체를 검증했다는 증거를 함께 내야 함. 월드모델 기반 검증이 규제 증거로 인정받으려면 R157 부속서 4의 "도구 검증" 요건이 관문임(5.6절).</p></aside>
+<h3 id="s5-3"><a class="anchor" href="#s5-3">5.3 병목 ③ 비용 — 저장·통신·GPU·라벨링</a></h3>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>항목</th>
+<th>공개된 수치</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 양</td>
+<td>개발 차량 1대가 8시간에 200TB 이상, 소규모 시험 플릿이 하루 페타바이트급</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://introl.com/blog/autonomous-vehicle-ai-infrastructure-edge-cloud">Introl</a>)</td>
+</tr>
+<tr>
+<td>저장</td>
+<td>"단일 모델 학습에 100~500PB, 장기 저장비 연 1,000만~2,000만 달러 이상"(제3자 투자 자료 인용)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>클라우드 반출(egress)</td>
+<td>AWS $0.09/GB, Azure $0.087/GB, GCP $0.12/GB(2026). 1PB 반출 ≈ 9만 달러</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.cloudzero.com/blog/s3-pricing/">CloudZero</a>)</td>
+</tr>
+<tr>
+<td>라벨링</td>
+<td>3D 큐보이드 개당 $0.121부터, 2D 박스 $0.036부터; 교차로 프레임 약 $4.84 vs 고속도로 $0.48(10배)</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.basic.ai/blog-post/how-much-do-data-annotation-services-cost-complete-guide-2025">업계 가이드</a>)</td>
+</tr>
+<tr>
+<td>자동 라벨링 절감</td>
+<td>Bosch "3D 박스당 비용 최대 70% 절감"</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span> (<a href="https://www.bosch-engineering.com/stories/neural-automated-labeling/">Bosch</a>)</td>
+</tr>
+<tr>
+<td>학습 인프라</td>
+<td>Tesla 2026 설비투자 250억 달러 이상, XPeng 학습비 20억 위안 이상</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td>실패 비용</td>
+<td>VW가 Bosch 얼라이언스에 약 15억 유로 투자 후 조기 종료</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>비용 구조가 말해 주는 것</strong></li>
+<li><strong>차에서 고르는 것이 가장 싼 절감임.</strong> 올리지 않은 데이터는 저장·반출·라벨링 비용이 모두 0임.</li>
+<li><strong>라벨링은 사람 수에서 GPU 시간으로 이동 중임.</strong> 자동 라벨링의 70% 절감 주장이 맞다면, 남는 비용은 검수 인력과 GPU임.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>비용 최적화의 순서는 온보드 선별 → 자동 라벨링 → 반출 최소화(현지 학습)임. 이는 3.1절의 두 단계 업로드와 5.4절의 데이터 주권 대응과 같은 방향임.</p></aside>
+<h3 id="s5-4"><a class="anchor" href="#s5-4">5.4 병목 ④ 규제와 데이터 주권</a></h3>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>지역</th>
+<th>규정</th>
+<th>플라이휠에 미치는 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EU</td>
+<td>GDPR + EDPB 커넥티드카 가이드라인(차량 데이터 대부분을 개인정보로 간주, 차내 처리 권고) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; <strong>Data Act</strong> 2025-09-12 적용, 2026-09-12부터 설계 의무(사용자가 데이터에 직접 접근) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.mayerbrown.com/en/insights/publications/2025/11/the-eu-data-act-has-taken-effect-focus-on-automotive-and-cloud-providers">Mayer Brown</a>); <strong>AI Act</strong> 부속서 I(형식승인 대상 안전 부품의 AI) 의무는 2028-08-02로 12개월 연기 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>수집 동의·익명화 비용, 제3자 데이터 개방 의무, 안전 부품 AI의 문서화</td>
+</tr>
+<tr>
+<td>UNECE(64개 체약국)</td>
+<td><strong>R155</strong>(사이버보안 관리체계)·<strong>R156</strong>(소프트웨어 업데이트 관리체계) — 2024-07부터 신차 전체 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; <strong>R157</strong> DSSAD 기록 의무 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>OTA가 "관리 프로세스"가 됨(RxSWIN·무결성·이력), 로깅이 의무가 됨</td>
+</tr>
+<tr>
+<td>중국</td>
+<td>2026-01-30 8개 부처 "자동차 데이터 국외 이전 보안 가이드라인(2026판)": 연구개발·자율주행·소프트웨어 업그레이드 시나리오별 중요 데이터 식별, 보안 평가·표준 계약·인증, 로그 3년 보관 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.china-briefing.com/news/vehicle-data-export-rules-china/">China Briefing</a>)</td>
+<td>외국계 OEM은 중국 데이터로 중국 안에서만 학습(Tesla 상하이 데이터센터)</td>
+</tr>
+<tr>
+<td>한국</td>
+<td>2026-01 개인정보위: 규제 샌드박스로 안전 조치 시 자율주행차·로봇의 <strong>원본 영상</strong>(비식별 없이) 활용 허용, 9개사 신청; "자율주행 영상처리장치" 정의, 접근 기록·삭제 의무 신설 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span> (<a href="https://www.mt.co.kr/tech/2026/01/23/2026012309533977120">머니투데이</a>)</td>
+<td>얼굴을 가리면 인식 학습이 안 되는 문제를 샌드박스로 풀기 시작</td>
+</tr>
+<tr>
+<td>미국</td>
+<td>2025-04 AV 프레임워크, 2026-01 AV STEP 철회, 2026-03 FMVSS 개정안, 2026-07 Zoox 면제 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+<td>배포 장벽 완화, 대신 충돌 보고(SGO) 의무 유지</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>규제는 플라이휠의 세 마디를 직접 건드림. 수집(개인정보·주권), 배포(R156 SUMS), 기록(R157 DSSAD·EDR). 규제를 사후 대응이 아니라 아키텍처 조건으로 넣어야 함.</p></aside>
+<h3 id="s5-5"><a class="anchor" href="#s5-5">5.5 플라이휠이 사업 경쟁력으로 바뀌는 다섯 경로</a></h3>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>경쟁력</th>
+<th>플라이휠이 어떻게 만드나</th>
+<th>근거 사례</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>개발 속도</strong></td>
+<td>트리거 → 배포 한 바퀴가 짧을수록 문제를 빨리 고침</td>
+<td>Tesla 대형 버전 연 1회 + 포인트 릴리스 주 단위; comma 약 2개월; Waymo 2026년 10개 이상 도시 확장(2024년 2개, 2025년 2개 대비) <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span></td>
+</tr>
+<tr>
+<td><strong>원가</strong></td>
+<td>자동 라벨링과 온보드 선별이 사람·저장·반출 비용을 줄임</td>
+<td>Bosch 70% 절감 주장 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>. 주의: NVIDIA의 "98.6% 추론 비용 절감"은 사내 인사 챗봇의 단순 도구 호출을 70B → 1B로 증류한 사례이며 자율주행에 그대로 적용할 수 없음 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td><strong>시장 확장</strong></td>
+<td>새 지역 데이터를 빠르게 흡수해 현지화 비용을 줄임</td>
+<td>Wayve 506개 도시·43% 현지 데이터 없이·HD 지도 불사용 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>; Momenta 24개 OEM·100만 대 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; Mobileye Surround ADAS 1,900만 대 수주 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td><strong>안전성 입증</strong></td>
+<td>플릿 데이터가 곧 안전 통계이고, 시뮬·회귀 세트가 안전 케이스의 증거가 됨</td>
+<td>Waymo 안전 허브(2.2억 마일, 중상·사망 94% 감소)와 동료 심사 논문 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; Baidu 에어백 1,440만 km당 1회 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; Mercedes L3 95km/h는 TÜV Rheinland 시험과 트랙·공도 동적 시험으로 KBA 승인 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; UL 4600 안전 케이스 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td><strong>장기 검증 자산</strong></td>
+<td>한 번 만든 시나리오·회귀 세트는 다음 모델, 다음 차종에도 쓰임</td>
+<td>Waymo Simulation City·Waymax <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; ASAM OpenSCENARIO DSL 2.2·OpenLABEL·OpenODD로 이식성 확보 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>; TIER IV scenario_simulator_v2 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>; Foretellix 시나리오 커버리지 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>공통 조건</strong>: 다섯 경쟁력의 공통 조건은 <strong>한 바퀴를 얼마나 자주, 얼마나 싸게, 얼마나 믿을 수 있게 돌리느냐</strong>임. 5.1~5.4의 병목이 바로 그 세 변수를 막는 곳임.</li>
+</ul>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>경쟁력 지표를 "자주(주기)·싸게(바퀴당 비용)·믿을 수 있게(검증 신뢰도)" 세 변수로 정의하면, 병목 해소 우선순위가 그대로 투자 우선순위가 됨.</p></aside>
+<h3 id="s5-6"><a class="anchor" href="#s5-6">5.6 향후 진화 방향</a></h3>
+<ol>
+<li><strong>월드모델 기반 검증이 표준이 됨.</strong> Wayve GAIA-4(AI Driver 인더루프, 반사실 재생), NVIDIA Cosmos Transfer·NuRec, Waymo World Model(라이다 동시 생성), Huawei 클라우드 월드모델, XPeng X-World <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 관건은 "월드모델이 만든 장면을 규제가 증거로 받아 주는가"이며, R157 부속서 4의 "도구 검증" 요건이 그 관문임.</li>
+<li><strong>학습된 시뮬레이터에서 직접 학습한 모델이 양산차에 실림.</strong> comma 0.11이 첫 공개 사례이고 <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span>, NVIDIA AlpaGym·Momenta R7이 같은 방향임 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li><strong>플릿 간 데이터 공유가 실험 단계를 지남.</strong> TIER IV Co-MLOps(택시 회사·Astemo), Catena-X 중–유럽(2026-11), NVIDIA 1,700시간 오픈 데이터, Waymo WOD-E2E <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 데이터 주권 규제가 오히려 "국경 안에서의 공유"를 밀어 올림.</li>
+<li><strong>에이전트가 플라이휠을 돌림.</strong> TIER IV는 "사람은 요구사항, AI 에이전트가 라벨링·정제·학습·평가·개선"을 주장하고 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span><span class="ev" title="미확인·추정">⚠️</span>, NVIDIA OSMO는 코딩 에이전트와 연동해 재구성·큐레이션을 자동화함 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 아직 주장 단계임.</li>
+<li><strong>파운데이션 모델이 라벨링을 줄임.</strong> VLM이 차종·치수를 추론해 3D 박스의 초깃값을 만들고, VLM을 "라벨 생성기"로 써서 가벼운 검출기를 학습시킴 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>.</li>
+<li><strong>로깅이 규제 증거가 됨.</strong> R157 DSSAD, EU EDR 의무(2024-07), 2022/1426의 L3 이상 데이터 저장 요구, 중국 로그 3년 보관, 한국 접근 기록 의무 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span>. 개발용 트리거와 규제용 기록이 같은 이벤트(개입·전환 요구·최소위험기동)를 찍으므로, 둘을 한 파이프라인으로 설계하는 것이 자연스러움.</li>
+</ol>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>여섯 방향 중 ①②⑤는 기술 성숙도의 문제이고, ③④는 아직 주장 단계이며, ⑥은 이미 의무임. 우선순위는 ⑥(로깅 통합) → ①(월드모델 검증) → ②(학습된 시뮬레이터) 순이 합리적임.</p></aside>
+<h3 id="s5-7"><a class="anchor" href="#s5-7">5.7 차량 HPC 플랫폼 관점 메모</a></h3>
+<ul>
+<li><strong>전제</strong>: 플라이휠의 첫 마디와 마지막 마디는 차 안에 있음. 차량용 고성능 컴퓨팅 플랫폼(HPC)이 플라이휠에 제공해야 하는 것을 이 보고서의 근거에서 추리면 다섯 가지임.</li>
+</ul>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>#</th>
+<th>요구</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>섀도 실행 자원.</strong> 현행 모델과 후보 모델을 동시에 돌리려면 추론 자원의 여유가 필요함</td>
+<td class="src">Tesla 섀도 모드 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>선별·압축·2단계 로깅.</strong> 요약 로그 + 저화질 영상 + 원본 지목 업로드 구조는 저장·통신 예산과 온보드 인코더 자원을 전제로 함</td>
+<td class="src">openpilot <span class="ev" title="1차 출처 원문 확인(README·LICENSE·공식 문서)">🔍</span></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>규제 기록의 무결성.</strong> DSSAD·EDR·R156의 버전 식별·이력은 변조 방지 저장과 시간 동기화를 요구함</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>HIL 재생 호환.</strong> 원시 센서·버스 데이터를 실제 ECU에 시간 맞춰 주입하는 검증이 되려면 플랫폼의 입력 경로가 재생을 지원해야 함</td>
+<td class="src">dSPACE, 현대모비스 <span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>OTA 관리 프로세스.</strong> R156의 SUMS·RxSWIN 요건은 플랫폼의 업데이트 경로 설계 조건임</td>
+<td class="src"><span class="ev" title="검색 요약·보도만 확인(원문 미열람)">📰</span></td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout hpc"><span class="lbl">시사점</span><p>플라이휠은 클라우드만의 일이 아님. 온보드 플랫폼이 섀도 실행·2단계 로깅·규제 기록·HIL 재생·OTA 관리의 다섯 가지를 지원하지 않으면 첫 마디와 마지막 마디가 막힘.</p></aside>
+
+</section>
+<section id="sec-appendix-a" class="section">
+<h2 id="appendix-a"><a class="anchor" href="#appendix-a">부록 A. 용어 풀이</a></h2>
+<div class="table-wrap"><table class="cols-2">
+<thead>
+<tr>
+<th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>데이터 플라이휠</strong></td>
+<td>서비스를 쓰면서 나온 데이터로 모델을 고치고, 고친 모델이 더 좋은 데이터를 만드는 반복 구조. 자율주행에서는 "데이터 엔진", "폐쇄루프"라고도 부름</td>
+</tr>
+<tr>
+<td><strong>종단간(end-to-end, E2E)</strong></td>
+<td>카메라 영상이 들어가면 조향·제동이 바로 나오는 하나의 학습 모델. 중간에 사람이 짠 규칙이 없음</td>
+</tr>
+<tr>
+<td><strong>롱테일(long tail)</strong></td>
+<td>각각은 드물지만 종류가 무한히 많은 예외 상황. 빈도 그래프의 긴 꼬리</td>
+</tr>
+<tr>
+<td><strong>분포 변화(distribution shift)</strong></td>
+<td>학습할 때 본 상황의 분포와 실제로 만나는 상황의 분포가 다른 것. 도시·날씨·나라가 바뀌면 생김</td>
+</tr>
+<tr>
+<td><strong>파국적 망각(catastrophic forgetting)</strong></td>
+<td>새 데이터로 다시 학습한 모델이 예전에 잘하던 것을 잊는 현상</td>
+</tr>
+<tr>
+<td><strong>트리거(trigger)</strong></td>
+<td>차 안에서 "이 순간의 데이터를 저장·업로드하라"고 판단하는 조건. 규칙, 모델 점수, 사람 버튼이 있음</td>
+</tr>
+<tr>
+<td><strong>섀도 모드(shadow mode)</strong></td>
+<td>새 모델을 차에 싣되 제어권은 주지 않고, 그 판단을 기록해 현행 모델·운전자와 비교하는 방식</td>
+</tr>
+<tr>
+<td><strong>자동 라벨링(auto-labeling)</strong></td>
+<td>클라우드의 큰 모델이 미래 프레임과 여러 주행을 합쳐 정답(박스·차선·궤적)을 만드는 것</td>
+</tr>
+<tr>
+<td><strong>임베딩 검색</strong></td>
+<td>영상을 숫자 벡터로 바꿔 두고 글이나 다른 영상으로 비슷한 것을 찾는 방법</td>
+</tr>
+<tr>
+<td><strong>재생 / 재구성 / 생성</strong></td>
+<td>합성 데이터의 세 갈래. 기록을 그대로 틀기 / 기록을 3D로 복원해 다른 시점에서 보기 / 조건을 주고 없던 영상을 만들기</td>
+</tr>
+<tr>
+<td><strong>3D 가우시안 스플래팅(3DGS)</strong></td>
+<td>장면을 수백만 개의 작은 타원체(가우시안)로 표현해 빠르게 다시 그리는 3D 재구성 기법</td>
+</tr>
+<tr>
+<td><strong>월드모델(world model)</strong></td>
+<td>지금 장면과 행동을 주면 다음 장면을 예측·생성하는 모델. 시뮬레이터로 쓰임</td>
+</tr>
+<tr>
+<td><strong>개루프 / 폐루프 평가</strong></td>
+<td>기록 궤적과의 거리만 재기 / 시뮬레이터 안에서 실제로 운전시켜 결과를 재기</td>
+</tr>
+<tr>
+<td><strong>PDMS / RFS</strong></td>
+<td>NAVSIM의 유사 폐루프 점수 / Waymo의 사람 평가자 선호 점수</td>
+</tr>
+<tr>
+<td><strong>HIL(Hardware-in-the-Loop)</strong></td>
+<td>실제 제어기(ECU)에 기록·합성 센서 데이터를 주입해 시험하는 방법</td>
+</tr>
+<tr>
+<td><strong>OTA(Over-the-Air)</strong></td>
+<td>무선으로 차량 소프트웨어를 갱신하는 것. UN R156이 관리 방식을 규정함</td>
+</tr>
+<tr>
+<td><strong>DSSAD / EDR</strong></td>
+<td>자율주행 시스템의 켜짐·꺼짐·개입을 기록하는 장치 / 사고 순간 데이터를 기록하는 장치</td>
+</tr>
+<tr>
+<td><strong>SOTIF(ISO 21448)</strong></td>
+<td>고장이 없어도 기능의 한계 때문에 생기는 위험을 다루는 안전 표준</td>
+</tr>
+<tr>
+<td><strong>RxSWIN</strong></td>
+<td>UN R156이 요구하는 형식승인 관련 소프트웨어 식별 번호</td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+<section id="sec-appendix-b" class="section">
+<h2 id="appendix-b"><a class="anchor" href="#appendix-b">부록 B. 미확인 항목</a></h2>
+<div class="table-wrap"><table class="cols-3">
+<thead>
+<tr>
+<th>#</th>
+<th>항목</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>RAND 보고서의 "88억 마일·400년" 같은 세부 표 수치</td>
+<td>2.75억·110억 마일만 검색 요약으로 확인</td>
+</tr>
+<tr>
+<td>2</td>
+<td>UN R156 조항 원문, EU 2022/1426 가상 시험 조문</td>
+<td>원문 접근 실패, 해설로만 확인</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Tesla 수치 전반(221 트리거, 1.5PB, 500만 시간 → 12시간, Cortex GPU 수, 롤아웃 비율, 140억 마일)</td>
+<td>회사 발표·팬 사이트 전언, 독립 검증 없음</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tesla 10초 클립의 크기, HW4 시간당 20GB</td>
+<td>커뮤니티 추정</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Cosmos Curator "2,000만 시간/14일"</td>
+<td>뉴스룸 수치, README에는 처리량 없음</td>
+</tr>
+<tr>
+<td>6</td>
+<td>DSSAD 저장 규격("2,500 타임스탬프/6개월" vs 초기안)</td>
+<td>판본별 상이</td>
+</tr>
+<tr>
+<td>7</td>
+<td>현대모비스 60대·주당 1만 시간</td>
+<td>"계획" 표현</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Wayve GAIA-3 "기각률 5배 감소", 506개 도시·43%</td>
+<td>회사 주장</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Momenta "26개 OEM", "two legs" 원문</td>
+<td>확인된 것은 24개 OEM(2026-02)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Waymo "200억 시뮬 마일"(2026 시점), 컴퓨트 지출</td>
+<td>"수십억"만 확인</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Mobileye REM 일일 매핑 km(2025~26)</td>
+<td>800만 대·"일 수백만 km"만 확인</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Applied Intuition "Data Explorer", 현대모비스 "S-CORE" 명칭</td>
+<td>검색에서 미확인</td>
+</tr>
+<tr>
+<td>13</td>
+<td>AWS×NVIDIA AV 3.0 블로그 본문·다이어그램</td>
+<td>요약만 확인</td>
+</tr>
+<tr>
+<td>14</td>
+<td>라벨 단가·검수 비율</td>
+<td>벤더 블로그 기반 범위</td>
+</tr>
+<tr>
+<td>15</td>
+<td>"트리거 → 배포 X주" 같은 한 바퀴 소요 시간</td>
+<td>어느 회사도 공개하지 않음</td>
+</tr>
+<tr>
+<td>16</td>
+<td>발표 슬라이드 화면(Tesla·Waymo·Momenta)의 발표 행사·연도</td>
+<td>수록 저장소에 기재 없음</td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+<section id="sec-appendix-c" class="section">
+<h2 id="appendix-c"><a class="anchor" href="#appendix-c">부록 C. 출처</a></h2>
+<ul>
+<li>전체 출처 목록(URL·등급·확인한 사실·접근 실패 목록): <a href="reference/references.md">reference/references.md</a>. 이 개조식 판은 줄글 판과 같은 출처 집합을 씀.</li>
+<li>그림 출처(23장, 라이선스·원본 크기·축소 여부): <a href="reference/images.md">reference/images.md</a>.</li>
+<li>1차로 직접 읽은 저장소: NVIDIA-AI-Blueprints/data-flywheel, commaai/openpilot(RELEASES.md·README·loggerd·uploader·deleter·athenad·services), LincanLi-X/Awesome-Data-Centric-Autonomous-Driving, NVIDIA/Cosmos, nvidia-cosmos/cosmos-curate·cosmos-reason2·cosmos-transfer1·cosmos-predict2, NVIDIA-Omniverse-blueprints/cosmos-dataset-search, NVIDIA/instant-nurec, nv-tlabs/3dgrut, graphdeco-inria/gaussian-splatting, NVlabs/alpagym·alpasim·alpamayo-recipes, voxel51/fiftyone, IDEA-Research/GroundingDINO, facebookresearch/sam2, autonomousvision/navsim, Thinklab-SJTU/Bench2Drive, tier4/data_recording_system·scenario_simulator_v2, autowarefoundation/autoware-documentation, OpenDriveLab/End-to-end-Autonomous-Driving, waymo-research/waymo-open-dataset.</li>
+</ul>
+</section>
+
+<footer>
+  <p><strong>자율주행 데이터 플라이휠 — 조사 보고서(개조식)</strong> — 작성일 2026-09-23. 이 페이지는 Markdown 원본을 웹용으로 변환한 것이며 내용은 원본과 동일하다. 같은 내용의 줄글 판은 <a href="vehicle-data-flywheel.html">vehicle-data-flywheel.html</a>.</p>
+  <ul>
+    <li><a href="vehicle-data-flywheel-report.md">Markdown 원본(개조식)</a></li>
+    <li><a href="vehicle-data-flywheel.md">줄글 판 Markdown</a></li>
+    <li><a href="reference/references.md">reference/references.md (출처 전체)</a></li>
+    <li><a href="reference/images.md">reference/images.md (그림 출처)</a></li>
+  </ul>
+</footer>
+</main>
+</div>
+
+<button id="totop" class="totop" type="button" aria-label="맨 위로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>맨 위로</span></button>
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var s=localStorage.getItem('vdf-report-theme');if(s==='dark'||s==='light')root.setAttribute('data-theme',s);}catch(e){}
+})();
+document.addEventListener('DOMContentLoaded',function(){
+  var root=document.documentElement;
+  var btn=document.getElementById('theme-toggle');
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t)return t;
+    return (window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  }
+  function paint(){
+    var dark=current()==='dark';
+    btn.querySelector('.t-sun').hidden=!dark;
+    btn.querySelector('.t-moon').hidden=dark;
+    btn.querySelector('span').textContent=dark?'라이트':'다크';
+    btn.setAttribute('aria-label',dark?'라이트 테마로 전환':'다크 테마로 전환');
+  }
+  btn.addEventListener('click',function(){
+    var next=current()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('vdf-report-theme',next);}catch(e){}
+    paint();
+  });
+  if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',paint);}
+  paint();
+
+  // mobile TOC
+  var toc=document.getElementById('toc');
+  var tt=document.getElementById('toc-toggle');
+  tt.addEventListener('click',function(){
+    var open=toc.classList.toggle('open');
+    tt.setAttribute('aria-expanded',open?'true':'false');
+  });
+  toc.addEventListener('click',function(e){
+    if(e.target.tagName==='A'){toc.classList.remove('open');tt.setAttribute('aria-expanded','false');}
+  });
+
+  // scroll-spy
+  var links={};
+  toc.querySelectorAll('a[data-target]').forEach(function(a){links[a.getAttribute('data-target')]=a;});
+  var heads=Array.prototype.slice.call(document.querySelectorAll('main h2[id], main h3[id]'));
+  var active=null;
+  function setActive(id){
+    if(active===id)return;
+    if(active&&links[active])links[active].classList.remove('active');
+    active=id;
+    if(links[id]){var a=links[id];a.classList.add('active');
+      if(toc.scrollHeight>toc.clientHeight){
+        var at=a.offsetTop,ah=a.offsetHeight,st=toc.scrollTop,ch=toc.clientHeight;
+        if(at<st+40||at+ah>st+ch-40){toc.scrollTop=Math.max(0,at-ch/2+ah/2);}
+      }
+    }
+  }
+  function spy(){
+    var y=window.scrollY+90,cur=heads[0]?heads[0].id:null;
+    for(var i=0;i<heads.length;i++){if(heads[i].offsetTop<=y)cur=heads[i].id;else break;}
+    if(cur)setActive(cur);
+  }
+  var ticking=false;
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(function(){spy();ticking=false;});}},{passive:true});
+  window.addEventListener('resize',spy);
+  spy();
+
+  // to-top
+  var top=document.getElementById('totop');
+  function tv(){top.classList.toggle('show',window.scrollY>600);}
+  window.addEventListener('scroll',tv,{passive:true});tv();
+  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+});
+</script>
+</body>
+</html>
