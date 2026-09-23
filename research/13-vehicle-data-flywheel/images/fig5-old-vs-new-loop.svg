@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="524" viewBox="0 0 1240 524" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
+<title>기존 데이터 엔진과 최근 플라이휠</title>
+<rect width="1240" height="524" fill="#ffffff"/>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">2021년 데이터 엔진과 2026년 플라이휠 — 마디는 같고 부품이 바뀌었다</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">왼쪽 회색 = 기존 방식(2021년 전후, Tesla AI Day 데이터 엔진·전통 MLOps 📰). 오른쪽 파랑 = 최근 방식(2025~2026, 각 사 공개 자료 🔍📰). 자체 작성.</text>
+<text x="24" y="100" font-size="12.5" fill="#6b7280" font-weight="700">마디</text>
+<text x="150" y="100" font-size="12.5" fill="#9ca3af" font-weight="700">기존 방식 (2021년 전후)</text>
+<text x="560" y="100" font-size="12.5" fill="#2563eb" font-weight="700">최근 방식 (2025~2026)</text>
+<text x="990" y="100" font-size="12.5" fill="#374151" font-weight="700">무엇이 달라졌나</text>
+<rect x="150" y="112" width="390" height="33.869999999999976" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="133.075" font-size="11.5" fill="#374151">사람이 조건을 코드로 쓴 트리거 (Tesla 221개)</text>
+<rect x="560" y="112" width="410" height="49.73999999999995" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="133.075" font-size="11.5" fill="#111827">임베딩 검색 — 영상을 벡터로 바꿔 글로 검색 (Cosmos Dataset Search ·</text>
+<text x="569" y="148.94499999999996" font-size="11.5" fill="#111827">FiftyOne)</text>
+<text x="24" y="140.86999999999998" font-size="13" fill="#111827" font-weight="700">데이터 발굴</text>
+<line x1="546" y1="136.86999999999998" x2="552" y2="136.86999999999998" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="134.86999999999998" font-size="11" fill="#374151">무엇을 찾을지 미리 코드로 정하지 않아도</text>
+<text x="990" y="150.04999999999998" font-size="11" fill="#374151">된다</text>
+<rect x="150" y="173.73999999999995" width="390" height="33.869999999999976" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="194.81499999999994" font-size="11.5" fill="#374151">사람 라벨링 회사 (Scale AI 인력 24만 명)</text>
+<rect x="560" y="173.73999999999995" width="410" height="49.73999999999995" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="194.81499999999994" font-size="11.5" fill="#111827">파운데이션 모델 자동 라벨링 (Cosmos Curator · Cosmos Reason ·</text>
+<text x="569" y="210.68499999999992" font-size="11.5" fill="#111827">Grounding DINO · SAM 2)</text>
+<text x="24" y="202.60999999999993" font-size="13" fill="#111827" font-weight="700">라벨링</text>
+<line x1="546" y1="198.60999999999993" x2="552" y2="198.60999999999993" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="196.60999999999993" font-size="11" fill="#374151">라벨 비용이 사람 수가 아니라 GPU 시간에</text>
+<text x="990" y="211.78999999999994" font-size="11" fill="#374151">비례</text>
+<rect x="150" y="235.4799999999999" width="390" height="33.870000000000005" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="256.5549999999999" font-size="11.5" fill="#374151">로그 재생 + HIL (dSPACE 리플레이)</text>
+<rect x="560" y="235.4799999999999" width="410" height="33.870000000000005" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="256.5549999999999" font-size="11.5" fill="#111827">3D 재구성 (Block-NeRF · NuRec · 3D 가우시안 스플래팅)</text>
+<text x="24" y="256.4149999999999" font-size="13" fill="#111827" font-weight="700">장면 재현</text>
+<line x1="546" y1="252.4149999999999" x2="552" y2="252.4149999999999" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="256.4149999999999" font-size="11" fill="#374151">&quot;그때 왼쪽으로 꺾었다면&quot;을 볼 수 있다</text>
+<rect x="150" y="281.3499999999999" width="390" height="33.870000000000005" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="302.4249999999999" font-size="11.5" fill="#374151">사람이 시나리오 파일 작성 (OpenSCENARIO)</text>
+<rect x="560" y="281.3499999999999" width="410" height="33.870000000000005" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="302.4249999999999" font-size="11.5" fill="#111827">생성형 월드모델 (Cosmos · GAIA-3 · Waymo World Model)</text>
+<text x="24" y="302.2849999999999" font-size="13" fill="#111827" font-weight="700">장면 생성</text>
+<line x1="546" y1="298.2849999999999" x2="552" y2="298.2849999999999" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="302.2849999999999" font-size="11" fill="#374151">본 적 없는 상황을 영상으로 만든다</text>
+<rect x="150" y="327.2199999999999" width="390" height="33.870000000000005" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="348.2949999999999" font-size="11.5" fill="#374151">기록을 흉내 내는 모방학습 (개루프)</text>
+<rect x="560" y="327.2199999999999" width="410" height="33.870000000000005" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="348.2949999999999" font-size="11.5" fill="#111827">폐루프 강화학습 · 학습된 시뮬레이터 (AlpaGym · openpilot 0.11)</text>
+<text x="24" y="348.1549999999999" font-size="13" fill="#111827" font-weight="700">학습</text>
+<line x1="546" y1="344.1549999999999" x2="552" y2="344.1549999999999" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="348.1549999999999" font-size="11" fill="#374151">자기 실수의 결과를 겪으며 배운다</text>
+<rect x="150" y="373.0899999999999" width="390" height="33.870000000000005" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="394.1649999999999" font-size="11.5" fill="#374151">기록 궤적과의 거리 (ADE / FDE)</text>
+<rect x="560" y="373.0899999999999" width="410" height="33.870000000000005" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="394.1649999999999" font-size="11.5" fill="#111827">사람 선호 지표 (WOD-E2E RFS) · LLM-as-judge</text>
+<text x="24" y="394.0249999999999" font-size="13" fill="#111827" font-weight="700">평가</text>
+<line x1="546" y1="390.0249999999999" x2="552" y2="390.0249999999999" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="394.0249999999999" font-size="11" fill="#374151">&quot;기록과 같은가&quot; → &quot;사람이 보기에 좋은가&quot;</text>
+<rect x="150" y="418.9599999999999" width="390" height="33.870000000000005" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="159" y="440.0349999999999" font-size="11.5" fill="#374151">연 단위 대형 릴리스 (v13 → v14 약 1년)</text>
+<rect x="560" y="418.9599999999999" width="410" height="33.870000000000005" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569" y="440.0349999999999" font-size="11.5" fill="#111827">주 단위 OTA (v14.x 1~2주 간격)</text>
+<text x="24" y="439.8949999999999" font-size="13" fill="#111827" font-weight="700">배포</text>
+<line x1="546" y1="435.8949999999999" x2="552" y2="435.8949999999999" stroke="#374151" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="990" y="439.8949999999999" font-size="11" fill="#374151">루프 한 바퀴가 짧아진다</text>
+<text x="24" y="478.8299999999999" font-size="11.5" fill="#374151">공통점: 사람이 하던 일(트리거 작성 · 라벨링 · 시나리오 작성)을 큰 모델이 대신하고, 실차로만 하던 일(재현 · 검증)을 클라우드가 대신한다. 그래서 병목이 &quot;사람 손&quot;에서 &quot;GPU와 데이터 파이프라인&quot;으로 옮겨갔다.</text>
+</svg>

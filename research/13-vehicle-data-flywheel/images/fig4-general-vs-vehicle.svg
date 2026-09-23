@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="700" viewBox="0 0 1240 700" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
+<title>일반 AI 플라이휠과 차량 플라이휠의 차이</title>
+<rect width="1240" height="700" fill="#ffffff"/>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">같은 원, 다른 마디 — 일반 AI 플라이휠(안쪽)과 차량 플라이휠(바깥쪽)</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">안쪽 다섯 마디는 두 플라이휠에 공통이다. 바깥쪽 네 마디는 차량에서만 생기며, 오른쪽 여섯 가지 차이가 그 이유다. 자체 작성.</text>
+<ellipse cx="470" cy="390" rx="250" ry="140" fill="none" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="6 5"/>
+<polygon points="625.3,280.1 609.1,279.4 613.1,269.4" fill="#2563eb"/>
+<polygon points="703.2,441.0 706.3,425.1 715.6,430.5" fill="#2563eb"/>
+<polygon points="461.0,530.0 476.3,524.6 476.3,535.4" fill="#2563eb"/>
+<polygon points="227.7,425.5 240.1,436.0 230.7,441.4" fill="#2563eb"/>
+<polygon points="331.4,273.3 319.3,284.1 315.2,274.1" fill="#2563eb"/>
+<rect x="415.0" y="233.375" width="110" height="33.25" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="423.0" y="254.5" font-size="12.5" fill="#111827" font-weight="700">로그 수집</text>
+<rect x="652.7641290737884" y="330.11262078750735" width="110" height="33.25" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="660.7641290737884" y="351.23762078750735" font-size="12.5" fill="#111827" font-weight="700">데이터셋</text>
+<rect x="561.9463130731183" y="486.63737921249265" width="110" height="33.25" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="569.9463130731183" y="507.76237921249265" font-size="12.5" fill="#111827" font-weight="700">학습</text>
+<rect x="268.0536869268817" y="486.63737921249265" width="110" height="33.25" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="276.0536869268817" y="507.76237921249265" font-size="12.5" fill="#111827" font-weight="700">평가</text>
+<rect x="177.2358709262116" y="330.11262078750735" width="110" height="33.25" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="185.2358709262116" y="351.23762078750735" font-size="12.5" fill="#111827" font-weight="700">배포</text>
+<text x="470" y="395" font-size="13" fill="#2563eb" font-weight="700" text-anchor="middle">공통 마디</text>
+<ellipse cx="470" cy="390" rx="430" ry="275" fill="none" stroke="#d97706" stroke-width="1.4" stroke-dasharray="6 5"/>
+<polygon points="479.0,115.0 463.7,120.4 463.7,109.6" fill="#d97706"/>
+<polygon points="900.0,399.0 894.6,383.7 905.4,383.7" fill="#d97706"/>
+<polygon points="461.0,665.0 476.3,659.6 476.3,670.4" fill="#d97706"/>
+<polygon points="40.0,381.0 45.4,396.3 34.6,396.3" fill="#d97706"/>
+<rect x="65.94408408978461" y="170.33063517369942" width="200" height="50.43000000000001" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="73.94408408978461" y="191.45563517369942" font-size="12.5" fill="#111827" font-weight="700">차 안 선별 · 섀도 모드</text>
+<text x="73.94408408978461" y="209.13063517369943" font-size="11" fill="#374151">올릴 수 있는 데이터가 정해져 있다</text>
+<rect x="674.0559159102154" y="170.33063517369945" width="200" height="50.43000000000001" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="682.0559159102154" y="191.45563517369945" font-size="12.5" fill="#111827" font-weight="700">시뮬레이션 검증</text>
+<text x="682.0559159102154" y="209.13063517369946" font-size="11" fill="#374151">위험 상황을 실차로 반복할 수 없다</text>
+<rect x="674.0559159102154" y="559.2393648263005" width="200" height="50.42999999999995" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="682.0559159102154" y="580.3643648263005" font-size="12.5" fill="#111827" font-weight="700">실차 검증 (HIL · 시험 플릿)</text>
+<text x="682.0559159102154" y="598.0393648263005" font-size="11" fill="#374151">물리적 결과를 확인해야 한다</text>
+<rect x="65.94408408978461" y="559.2393648263005" width="200" height="50.42999999999995" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="73.94408408978461" y="580.3643648263005" font-size="12.5" fill="#111827" font-weight="700">안전 관문 · OTA 규제</text>
+<text x="73.94408408978461" y="598.0393648263005" font-size="11" fill="#374151">인증·SUMS를 거쳐야 배포된다</text>
+<text x="470" y="690" font-size="13" fill="#d97706" font-weight="700" text-anchor="middle">차량에서만 생기는 마디</text>
+<text x="930" y="96" font-size="13.5" fill="#111827" font-weight="700">여섯 가지 차이</text>
+<rect x="930" y="108" width="286" height="53.74000000000001" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="940" y="130.6" font-size="12" fill="#111827" font-weight="700">1 데이터의 출생지·예산</text>
+<text x="940" y="148.11" font-size="11" fill="#374151">서버 로그 ↔ 차 안, 통신·저장 예산</text>
+<rect x="930" y="169.74" width="286" height="53.74000000000001" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="940" y="192.34" font-size="12" fill="#111827" font-weight="700">2 정답의 성격</text>
+<text x="940" y="209.85000000000002" font-size="11" fill="#374151">클릭·채점 ↔ 개입·충돌 같은 물리적 결과</text>
+<rect x="930" y="231.48000000000002" width="286" height="53.74000000000001" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="940" y="254.08" font-size="12" fill="#111827" font-weight="700">3 배포 앞 안전 관문</text>
+<text x="940" y="271.59000000000003" font-size="11" fill="#374151">점수 ↔ ISO 26262 · 21448 · PAS 8800 논증</text>
+<rect x="930" y="293.22" width="286" height="53.74000000000001" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="940" y="315.82000000000005" font-size="12" fill="#111827" font-weight="700">4 업데이트 주기</text>
+<text x="940" y="333.33000000000004" font-size="11" fill="#374151">하루 여러 번 ↔ UN R156 SUMS · RxSWIN</text>
+<rect x="930" y="354.96000000000004" width="286" height="53.74000000000001" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="940" y="377.56000000000006" font-size="12" fill="#111827" font-weight="700">5 시뮬레이터 필수</text>
+<text x="940" y="395.07000000000005" font-size="11" fill="#374151">실사용자 A/B ↔ 실주행 2천만 vs 시뮬 200억 마일</text>
+<rect x="930" y="416.70000000000005" width="286" height="53.74000000000001" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="940" y="439.30000000000007" font-size="12" fill="#111827" font-weight="700">6 개인정보·데이터 주권</text>
+<text x="940" y="456.81000000000006" font-size="11" fill="#374151">약관 내 처리 ↔ 얼굴·번호판·국외 반출 제한</text>
+</svg>

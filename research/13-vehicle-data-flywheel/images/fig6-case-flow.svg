@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="386" viewBox="0 0 1240 386" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
+<title>가상 사례의 흐름</title>
+<rect width="1240" height="386" fill="#ffffff"/>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">가상 사례 — &quot;밤 · 비 · 공사 구간, 콘 옆 작업자를 늦게 인식해 운전자가 개입&quot;이 플라이휠 한 바퀴를 도는 경로</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">네 단계에 실제 도구 이름을 적었다. 각 도구의 근거 등급은 본문 3.1~3.4절 참고. 자체 작성.</text>
+<rect x="24" y="76" width="1192" height="44" rx="6" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.2"/>
+<text x="36" y="94" font-size="11.5" fill="#374151">🚗 밤 10시 · 비 · 편도 2차선 · 공사 콘 · 형광 조끼 작업자. 콘은 일찍 봤지만 작업자는 늦게 인식 → 운전자가 브레이크 → 개입 플래그 기록. 네 조건은 흔하지만 조합은 드물다(롱테일).</text>
+<rect x="24" y="140" width="280" height="167.38000000000005" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+<text x="34" y="163.65" font-size="13" fill="#111827" font-weight="700">1단계 수집 · 선별 (차 안)</text>
+<text x="34" y="181.49" font-size="11" fill="#374151">• 개입 플래그: 규제용 DSSAD + 개발용 로거에</text>
+<text x="34" y="196.67000000000002" font-size="11" fill="#374151">동시 기록</text>
+<text x="34" y="213.85000000000002" font-size="11" fill="#374151">• 복합 트리거: 급감속 + 보행자 신뢰도 급등 + 야간</text>
+<text x="34" y="229.03000000000003" font-size="11" fill="#374151">+ 와이퍼</text>
+<text x="34" y="246.21000000000004" font-size="11" fill="#374151">• 섀도 모드의 후보 모델이 더 일찍 봤다면</text>
+<text x="34" y="261.39000000000004" font-size="11" fill="#374151">&quot;불일치&quot;로도 걸림</text>
+<text x="34" y="278.57000000000005" font-size="11" fill="#374151">• 요약 로그·저화질 먼저, 원본은 서버가 지목해</text>
+<text x="34" y="293.75000000000006" font-size="11" fill="#374151">당김 (openpilot qlog → rlog)</text>
+<rect x="328" y="140" width="280" height="182.56000000000006" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="338" y="163.65" font-size="13" fill="#111827" font-weight="700">2단계 검색 · 라벨링 (클라우드)</text>
+<text x="338" y="181.49" font-size="11" fill="#374151">• 임베딩 검색으로 플릿 전체에서 유사 장면</text>
+<text x="338" y="196.67000000000002" font-size="11" fill="#374151">수백~수천 개 회수 (Cosmos Dataset Search ·</text>
+<text x="338" y="211.85000000000002" font-size="11" fill="#374151">FiftyOne)</text>
+<text x="338" y="229.03000000000003" font-size="11" fill="#374151">• VLM 태그 &quot;roadwork · worker · night · rain&quot;</text>
+<text x="338" y="244.21000000000004" font-size="11" fill="#374151">(Cosmos Reason)</text>
+<text x="338" y="261.39000000000004" font-size="11" fill="#374151">• 자동 라벨러가 미래 프레임·여러 주행을 합쳐 첫</text>
+<text x="338" y="276.57000000000005" font-size="11" fill="#374151">프레임부터 3D 박스 (Grounding DINO · SAM 2)</text>
+<text x="338" y="293.75000000000006" font-size="11" fill="#374151">• 희귀 클래스 → 사람 전수 검수 → OpenLABEL</text>
+<text x="338" y="308.93000000000006" font-size="11" fill="#374151">저장</text>
+<rect x="632" y="140" width="280" height="167.38000000000005" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.2"/>
+<text x="642" y="163.65" font-size="13" fill="#111827" font-weight="700">3단계 학습 · 합성 데이터 (클라우드)</text>
+<text x="642" y="181.49" font-size="11" fill="#374151">• 회수 클립 오버샘플링</text>
+<text x="642" y="198.67000000000002" font-size="11" fill="#374151">• 재구성: InstantNuRec · 3DGS로 작업자</text>
+<text x="642" y="213.85000000000002" font-size="11" fill="#374151">위치·속도·조명 변형 수십 개</text>
+<text x="642" y="231.03000000000003" font-size="11" fill="#374151">• 생성: Cosmos Transfer로 같은</text>
+<text x="642" y="246.21000000000004" font-size="11" fill="#374151">지도·라이다에서 강우 강도 변경, 월드모델로 &quot;콘</text>
+<text x="642" y="261.39000000000004" font-size="11" fill="#374151">뒤에서 나오는&quot; 변형</text>
+<text x="642" y="278.57000000000005" font-size="11" fill="#374151">• 폐루프 RL (AlpaGym) 또는 학습된 시뮬레이터로</text>
+<text x="642" y="293.75000000000006" font-size="11" fill="#374151">재학습</text>
+<rect x="936" y="140" width="280" height="152.20000000000005" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
+<text x="946" y="163.65" font-size="13" fill="#111827" font-weight="700">4단계 검증 · 배포</text>
+<text x="946" y="181.49" font-size="11" fill="#374151">• EPDMS(충돌·TTC) + 사람 선호 점수, 원 클립은</text>
+<text x="946" y="196.67000000000002" font-size="11" fill="#374151">영구 회귀 세트로</text>
+<text x="946" y="213.85000000000002" font-size="11" fill="#374151">• HIL 재생: 원시 로그를 ECU에 주입해 검출</text>
+<text x="946" y="229.03000000000003" font-size="11" fill="#374151">시점이 몇 프레임 앞당겨졌는지</text>
+<text x="946" y="246.21000000000004" font-size="11" fill="#374151">• 섀도 배포로 같은 조건의 개입·불일치 통계</text>
+<text x="946" y="263.39000000000004" font-size="11" fill="#374151">• 단계적 OTA (0.1% → 10% → 전체), UN R156</text>
+<text x="946" y="278.57000000000005" font-size="11" fill="#374151">SUMS 기록</text>
+<line x1="307" y1="180" x2="324" y2="180" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="611" y1="180" x2="628" y2="180" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="915" y1="180" x2="932" y2="180" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+<path d="M 1076.0 322.56000000000006 L 1076.0 346.56000000000006 L 164.0 346.56000000000006 L 164.0 328.56000000000006" fill="none" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="500" y="334.56000000000006" width="260" height="24" rx="6" fill="#fff" stroke="#fff" stroke-width="1.2"/>
+<text x="630" y="350.56000000000006" font-size="11.5" fill="#374151" font-weight="700" text-anchor="middle">새 모델이 플릿으로 → 새 실패 → 다시 1단계</text>
+</svg>

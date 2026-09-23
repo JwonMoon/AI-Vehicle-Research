@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="470" viewBox="0 0 1240 470" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
+<title>규칙 기반 개발 루프와 학습 기반 개발 루프</title>
+<rect width="1240" height="470" fill="#ffffff"/>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">규칙 기반 개발 루프와 학습 기반 개발 루프</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">왼쪽은 사람이 문제를 분석해 코드를 고치고, 오른쪽은 문제 상황의 데이터를 모아 모델을 다시 학습시킨다. 오른쪽 루프를 계속 돌리는 장치가 데이터 플라이휠이다.</text>
+<text x="24" y="92" font-size="14" fill="#9ca3af" font-weight="700">규칙 기반 (전통 소프트웨어)</text>
+<rect x="24" y="108" width="230" height="69.67999999999995" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="33" y="130.65" font-size="13" fill="#111827" font-weight="700">① 실도로에서 문제 발생</text>
+<text x="33" y="149.015" font-size="11.5" fill="#374151">예: 공사 구간에서 콘 옆 작업자를 늦게</text>
+<text x="33" y="164.88499999999996" font-size="11.5" fill="#374151">인식</text>
+<rect x="324" y="108" width="230" height="69.67999999999995" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="333" y="130.65" font-size="13" fill="#111827" font-weight="700">② 사람이 로그를 분석</text>
+<text x="333" y="149.015" font-size="11.5" fill="#374151">엔지니어가 원인을 찾아 어떤 규칙이</text>
+<text x="333" y="164.88499999999996" font-size="11.5" fill="#374151">빠졌는지 판단</text>
+<rect x="324" y="260" width="230" height="69.68" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="333" y="282.65" font-size="13" fill="#111827" font-weight="700">③ 규칙 코드 수정</text>
+<text x="333" y="301.015" font-size="11.5" fill="#374151">if/else 조건, 임계값, 상태기계를</text>
+<text x="333" y="316.885" font-size="11.5" fill="#374151">손으로 고침</text>
+<rect x="24" y="260" width="230" height="53.81" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="33" y="282.65" font-size="13" fill="#111827" font-weight="700">④ 테스트 · 릴리스</text>
+<text x="33" y="301.015" font-size="11.5" fill="#374151">단위 테스트 · 시험장 · 연 단위 릴리스</text>
+<line x1="254" y1="154.0" x2="320" y2="154.0" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="439.0" y1="200" x2="439.0" y2="256" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="324" y1="306.0" x2="258" y2="306.0" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="139.0" y1="260" x2="139.0" y2="204" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="24" y="374" width="530" height="52" rx="6" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="34" y="394" font-size="11.5" fill="#374151">병목 = 사람의 분석·코딩 시간. 규칙이 늘수록 서로 충돌해 고치기 어려워진다(롱테일에 약함).</text>
+<text x="660" y="92" font-size="14" fill="#2563eb" font-weight="700">학습 기반 (AI 중심 자율주행)</text>
+<rect x="660" y="108" width="230" height="69.67999999999995" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="669" y="130.65" font-size="13" fill="#111827" font-weight="700">① 실도로에서 문제 발생</text>
+<text x="669" y="149.015" font-size="11.5" fill="#374151">같은 사례. 모델이 늦게 인식했고</text>
+<text x="669" y="164.88499999999996" font-size="11.5" fill="#374151">운전자가 개입</text>
+<rect x="960" y="108" width="230" height="69.67999999999995" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="969" y="130.65" font-size="13" fill="#111827" font-weight="700">② 데이터 수집 · 선별</text>
+<text x="969" y="149.015" font-size="11.5" fill="#374151">트리거·개입 플래그로 클립을 올리고</text>
+<text x="969" y="164.88499999999996" font-size="11.5" fill="#374151">비슷한 장면을 플릿에서 검색</text>
+<rect x="960" y="260" width="230" height="69.68" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="969" y="282.65" font-size="13" fill="#111827" font-weight="700">③ 라벨링 · 재학습</text>
+<text x="969" y="301.015" font-size="11.5" fill="#374151">자동 라벨링 + 합성 데이터로</text>
+<text x="969" y="316.885" font-size="11.5" fill="#374151">데이터셋을 보강해 모델을 다시 학습</text>
+<rect x="660" y="260" width="230" height="69.68" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
+<text x="669" y="282.65" font-size="13" fill="#111827" font-weight="700">④ 검증 · OTA</text>
+<text x="669" y="301.015" font-size="11.5" fill="#374151">시뮬 · 회귀 세트 · 섀도 배포를 거쳐</text>
+<text x="669" y="316.885" font-size="11.5" fill="#374151">단계적 무선 업데이트</text>
+<line x1="890" y1="154.0" x2="956" y2="154.0" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="1075.0" y1="200" x2="1075.0" y2="256" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="960" y1="306.0" x2="894" y2="306.0" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="775.0" y1="260" x2="775.0" y2="204" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="660" y="374" width="530" height="52" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="670" y="394" font-size="11.5" fill="#374151">병목 = 데이터 파이프라인과 GPU. 사람이 규칙을 짜지 않으므로, 루프를 얼마나 자주·싸게</text>
+<text x="670" y="409.87" font-size="11.5" fill="#374151">돌리느냐가 성능을 결정한다.</text>
+<text x="24" y="452" font-size="11" fill="#6b7280">실선 = 공개 자료(Tesla AI Day 2021 데이터 엔진 📰, NVIDIA data-flywheel README 🔍)에서 확인한 구조. 자체 작성.</text>
+</svg>
