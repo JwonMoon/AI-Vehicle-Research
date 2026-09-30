@@ -1,17 +1,17 @@
 # 자율주행 데이터 플라이휠 — 실도로 데이터가 모델을 키우는 순환 구조
 
-> **작성일**: 2026-09-22 · **상태**: 줄글 판 초판, 개조식 판 2판(2026-09-30)
+> **작성일**: 2026-09-22 · **상태**: 2판(2026-09-30, 줄글 판·개조식 판 공통)
 > **목적**: 자율주행에서 "데이터 플라이휠"이 왜 필요한지, 차량·클라우드·검증 환경을 잇는 전체 구조가 무엇인지, 플라이휠이 어떤 기술로 작동하는지, 기업들은 플라이휠을 어떤 구조로 돌리는지, 병목과 해법·진화 방향은 무엇인지를 사실 근거로 정리한다.
 
 ## 문서 목록
 
 | 문서 | 내용 | 상태 |
 |---|---|---|
-| [vehicle-data-flywheel.md](vehicle-data-flywheel.md) | 보고서 원본, 줄글 판 (5장, 모든 사실 문장에 출처·등급) | 초판 |
-| [vehicle-data-flywheel.html](vehicle-data-flywheel.html) | 웹 버전 (자체 완결 페이지, 다크 모드·목차) | 초판 |
-| [vehicle-data-flywheel-report.md](vehicle-data-flywheel-report.md) | 개조식 보고서 판 (표지·요약·장별 개요/핵심 결론/시사점, 항목·표 중심). **2판(2026-09-30)**: 2.3절 문장 정리(개인정보·데이터 주권의 차량 특수성 보충), 3장을 "작동 방식과 핵심 기술" 4묶음으로 재구성, 4장을 기업별 9단계 담당 구조 분석으로 개편, 2.4절(플라이휠의 진화)을 5.1절로 이동, 5장을 병목별 정의·해법·비용·기업 사례와 향후 방향(차량 HPC 관점 포함)으로 확장. "마디" 표기를 "단계"로 통일. 1~2장 사실·수치는 줄글 판과 동일하며, 3~5장 구성은 줄글 판(초판 구조)과 다름 | 2판 |
+| [vehicle-data-flywheel.md](vehicle-data-flywheel.md) | 보고서 원본, 줄글 판 (5장, 모든 사실 문장에 출처·등급). 2판 구성은 아래 개조식 판과 동일 | 2판 |
+| [vehicle-data-flywheel.html](vehicle-data-flywheel.html) | 웹 버전 (자체 완결 페이지, 다크 모드·목차) | 2판 |
+| [vehicle-data-flywheel-report.md](vehicle-data-flywheel-report.md) | 개조식 보고서 판 (표지·요약·장별 개요/핵심 결론/시사점, 항목·표 중심). **2판(2026-09-30)**: 2.3절 문장 정리(개인정보·데이터 주권의 차량 특수성 보충), 3장을 "작동 방식과 핵심 기술" 4묶음으로 재구성, 4장을 기업별 9단계 담당 구조 분석으로 개편, 2.4절(플라이휠의 진화)을 5.1절로 이동, 5장을 병목별 정의·해법·비용·기업 사례와 향후 방향(차량 HPC 관점 포함)으로 확장. "마디" 표기를 "단계"로 통일. 사실·수치·출처·그림은 줄글 판과 동일 | 2판 |
 | [vehicle-data-flywheel-report.html](vehicle-data-flywheel-report.html) | 개조식 보고서 웹 버전 | 2판 |
-| [images/](images/) | 자체 작성 도식(SVG 11장) + 공개 GitHub 저장소에서 내려받은 원본 그림 13장(NVIDIA·서베이·Waymo Open Dataset 공식 그림, Tesla·Waymo·Momenta·Baidu 발표 슬라이드 화면) + AWS 블로그의 NVIDIA·AWS AV 3.0 파이프라인 다이어그램 1장. 두 판의 그림 번호 대응은 [reference/images.md](reference/images.md) 끝의 표 참고 | — |
+| [images/](images/) | 자체 작성 도식(SVG 11장) + 공개 GitHub 저장소에서 내려받은 원본 그림 13장(NVIDIA·서베이·Waymo Open Dataset 공식 그림, Tesla·Waymo·Momenta·Baidu 발표 슬라이드 화면) + AWS 블로그의 NVIDIA·AWS AV 3.0 파이프라인 다이어그램 1장. 초판 → 2판 그림 번호 변경은 [reference/images.md](reference/images.md) 끝의 표 참고 | — |
 | [reference/references.md](reference/references.md) · [reference/images.md](reference/images.md) | 출처 목록 · 이미지 출처 | — |
 
 ## 작성 규약
