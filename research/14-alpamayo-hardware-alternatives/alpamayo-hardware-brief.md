@@ -1,6 +1,6 @@
 # Alpamayo 실행 하드웨어 요약 보고 — 공식 요구 사양과 후보 하드웨어 지원 범위
 
-- 작성일: 2026-09-30 · 상태: 3판 (초판·2판 2026-09-30)
+- 작성일: 2026-09-30 · 상태: 4판 (초판~3판 2026-09-30)
 - 범위: NVIDIA가 공식 저장소·모델카드·문서에서 밝힌 요구 사양만 다룬다. 양자화·서드파티 최적화(FP8, NVFP4, W4A8, FlashDrive 등)는 별도 문서로 정리한다.
 - 표기: 본문에는 출처를 달지 않았다. 검증에 쓴 자료는 6절에 항목별로 나열했다. 원화는 1 USD = 1,360원(2026-09-30 매매기준율 1,358원 반올림)으로 환산했고, 국내 유통가가 확인된 경우 함께 적었다.
 
@@ -197,6 +197,10 @@
 | NVlabs/alpamayo 이슈 #69 | https://github.com/NVlabs/alpamayo/issues/69 | "Jetson AGX Orin 64GB가 최소 사양인가" 질문, 무응답 |
 | arXiv 2605.08975 Latency Analysis and Optimization of Alpamayo 1 | https://arxiv.org/abs/2605.08975 | DGX Spark(GB10)에서 Alpamayo 1 6궤적 실행 |
 | arXiv 2605.11678 OOM-Free Alpamayo via CPU-GPU Memory Swapping | https://arxiv.org/abs/2605.11678 | RTX 5090에서 R1 1샘플 1.03 s, R1 BF16 21.52 GB, 16 GB 카드는 스와핑 없이는 불가 |
+| arXiv 2511.00088 Alpamayo-R1 논문 | https://arxiv.org/abs/2511.00088 | RTX 6000 Pro Blackwell에서 99 ms(추론 40토큰·flow 5스텝) / 29 ms(궤적만) |
+| arXiv 2608.12932 FlashDrive 논문 · z-lab/flashdrive README | https://arxiv.org/abs/2608.12932 · https://github.com/z-lab/flashdrive | RTX PRO 6000·Jetson Thor·RTX 3090/4090/5090에서 Alpamayo 1·1.5 기준 지연과 최적화 후 지연 |
+| NVIDIA Tech Blog: Build Next-Gen Physical AI with Edge-First LLMs (2026-03-12) | https://developer.nvidia.com/blog/build-next-gen-physical-ai-with-edge%E2%80%91first-llms-for-autonomous-vehicles-and-robotics/ | "DRIVE Thor에서 Alpamayo 1이 production-viable latency", ViT FP8 (수치 없음) |
+| NVIDIA NIM Alpamayo 1.5 문서 (prerequisites · support-matrix) | https://docs.nvidia.com/nim/alpamayo/latest/prerequisites.html · https://docs.nvidia.com/nim/alpamayo/1.0.0/support-matrix.html | x86 호스트, GPU 1장/컨테이너, BF16 30 GB 이상·양자화 프로파일 20 GB 이상 |
 | autowarefoundation/alpamayo-autoware (alpamayo1.5 · alpamayo2.0-super 브랜치) | https://github.com/autowarefoundation/alpamayo-autoware | RTX PRO 6000 96 GB에서 1.5·2 Super 노드 실행, 2 Super 피크 69.1 GiB |
 
 ### 6.4 하드웨어 사양
@@ -235,3 +239,51 @@
 | L40S (gpudojo) · A100 (jarvislabs) · H100 (jarvislabs·compute.exchange) · H200 (jarvislabs) | https://gpudojo.com/l40s · https://jarvislabs.ai/blog/a100-price · https://jarvislabs.ai/blog/h100-price · https://compute.exchange/blogs/h100-gpu-price-2026 · https://jarvislabs.ai/blog/h200-price | 서버 GPU 구매가 |
 | 클라우드 임대: Lambda · RunPod · Vast(computeprices) · AWS(vantage) | https://lambda.ai/pricing · https://www.runpod.io/pricing · https://computeprices.com/providers/vast · https://instances.vantage.sh/aws/ec2/p5.48xlarge · https://instances.vantage.sh/aws/ec2/g6e.xlarge | 시간당 임대가 |
 | 환율 (2026-09-30 매매기준율 1,358.34원) | https://github.com/seotaiji0324/Daily_Finance_Briefing/issues/44 · https://kr.investing.com/currencies/usd-krw | 원화 환산 기준 |
+
+---
+
+## 7. 공식·논문·벤치마크의 실행 환경 한눈에 보기
+
+### 7.1 읽는 법
+
+- "성격" 열: **공식** = NVIDIA 저장소·모델카드·문서·블로그, **논문** = arXiv 학술 논문, **서드파티** = 외부 기관의 공개 저장소, **커뮤니티** = NVIDIA 포럼 사용자 보고.
+- 최적화·양자화가 들어간 결과는 "실행 방식" 열에 그렇게 적었다. 그 기법 자체는 별도 문서에서 다룬다.
+- 지연은 모두 궤적 1회 추론 기준이며, 측정 범위(전처리 포함 여부 등)가 자료마다 달라 행 사이 직접 비교는 조건을 확인한 뒤 해야 한다.
+
+### 7.2 추론 실행 환경
+
+| 자료 | 모델 | 하드웨어 | 실행 방식 | 결과 | 성격 |
+|---|---|---|---|---|---|
+| NVlabs/alpamayo README | 1 (R1) | RTX 3090 · A100 · H100 (예시에 RTX 4090·A5000) | PyTorch 2.8, BF16, flash-attn(또는 SDPA), `test_inference.py` 1샘플 | 동작 확인용. 지연·메모리 수치 없음 (최소 VRAM 24 GB) | 공식 |
+| Alpamayo-R1 논문 (arXiv 2511.00088) | 1 (R1) | RTX 6000 Pro Blackwell (워크스테이션 GPU) | 추론 텍스트 40토큰, flow 5스텝 | 1회 99 ms (궤적만 29 ms). 시험 차량 공로 주행도 보고, 차량 컴퓨터 사양은 미기재 | 논문 (NVIDIA) |
+| NVlabs/alpamayo1.5 README | 1.5 | H100 80 GB (테스트 GPU: RTX 3090 · A100 · H100 · B200) | PyTorch 2.8, BF16, 1 / 16샘플, 내비 CFG | 1샘플 약 24 GB, 16샘플 약 40 GB, 16샘플 + CFG 약 60 GB. 지연 수치 없음 | 공식 |
+| Alpamayo 2 Super 모델카드 · NVlabs/alpamayo2 README | 2 Super | H100 80 GB 1장 · 내비 CFG는 H100 80 GB 2장 | BF16, SDPA, 7카메라 × 4프레임, 1샘플, CFG 끔, 10스텝 · CFG 예제는 VLM/expert를 GPU 2장에 수동 배치 | 피크 72,115 MiB · CFG 예제 67 GiB + 71 GiB. 지연 수치 없음 | 공식 |
+| NVIDIA NIM Alpamayo 1.5 | 1.5 | x86 서버, GPU 1장/컨테이너 (CC 8.0 이상) | 컨테이너 배포, BF16 · FP8 · W4A16 프로파일 자동 선택 | BF16은 30 GB 이상, 양자화 프로파일은 20 GB 이상. 지연 수치 없음 | 공식 |
+| TensorRT Edge-LLM Alpamayo 예제 | 1 (R1) | Jetson AGX Thor (JetPack 7) · DRIVE Thor (DriveOS 7.2) · DGX Spark · Jetson Orin (JetPack 7.2) | x86에서 ONNX export(FP16만) → 장치에서 TensorRT 엔진 빌드(LLM·visual·action 3개, 최대 배치 6) → C++ 런타임 | 지연·메모리 수치 없음 | 공식 |
+| NVIDIA 블로그: Edge-First LLMs (2026-03) | 1 (R1) | DRIVE Thor | Edge-LLM, ViT에 FP8 가속 | "production-viable latencies" 표현만, 수치 없음 | 공식 |
+| arXiv 2605.08975 지연 분석 | 1 (R1) | DGX Spark (GB10, 128 GB) | PyTorch, 6궤적. 다중 추론 → 단일 추론 재설계, expert 커널 정리, CUDA graph + 정적 KV 캐시 | 13.33 s → 4.10 s (69% 감소) | 논문 |
+| arXiv 2605.11678 OOM-Free Alpamayo | 1 (R1) | RTX 5070 Ti 16 GB (기준 비교: RTX 5090 32 GB) | BF16 유지, 층 단위 CPU-GPU 스와핑 | RTX 5090 전량 적재 시 1.03 s. 5070 Ti는 UVM 기준 69.6 s/추론에서 오프로드 대비 최대 3.55배 개선 | 논문 |
+| FlashDrive 논문 · z-lab/flashdrive | 1 (R1) · 1.5 | RTX PRO 6000 · RTX 5090 · RTX 4090 · RTX 3090 · Jetson AGX Thor | PyTorch, 1샘플. 기준(BF16) 대비 W4A8 양자화 + 추측 디코딩 + 스트리밍 KV 캐시 + CUDA graph 적용 | 기준 → 최적화: RTX PRO 6000 716.9 → 151.4 ms, RTX 5090 878.1 → 183.7 ms, RTX 4090 1,307.1 → 217.2 ms, RTX 3090 1,891.9 → 382.3 ms, Jetson Thor 3,770.3 → 943.6 ms. 메모리 FP16 약 31.6 GB → W4A8 약 18.3 GB | 논문 (UCSD Z Lab, 서드파티) |
+| autowarefoundation/alpamayo-autoware `alpamayo1.5` | 1.5 | RTX PRO 6000 Blackwell 96 GB | ROS 2 Humble 노드, 카메라 4대 × 4프레임 1080×1920, greedy 디코딩, flow 5스텝, expert만 TensorRT INT8/FP16 | 1회 0.60~0.82 s (구성별) | 서드파티 (TIER IV) |
+| autowarefoundation/alpamayo-autoware `alpamayo2.0-super` | 2 Super | RTX PRO 6000 Blackwell 96 GB | ROS 2 노드, 카메라 6대, BF16, SDPA, 304회 측정 · 내비 CFG는 VLM 2회 prefill로 1장에서 구현 | 평균 3.35 s(p90 3.97 s), 피크 69.1 GiB · CFG 켜면 5.2 s, 70.9 GiB. "폐루프 사용 불가" 명시 | 서드파티 (TIER IV) |
+| NVIDIA 포럼 "Build alpamayo1_5 native on Thor" | 1.5 | Jetson AGX Thor | PyTorch 소스 빌드, flash-attn 없이 SDPA | 실행 성공 보고. 지연 수치 없음 | 커뮤니티 |
+| NVIDIA 포럼 "Alpamayo-R1-10B TensorRT engine OOM on DRIVE AGX Thor" 외 1건 | 1 (R1) | DRIVE AGX Thor 개발킷 (DriveOS 7.2.5, CUDA 13.3, TensorRT 11.0.1) | Edge-LLM FP16 엔진 빌드 | 엔진 직렬화 중 15.17 GB 요청 OOM (CUDA 가용 6.0 GiB 보고). 미해결 | 커뮤니티 |
+| NVIDIA 포럼 "Spark DGX Alpamayo + Alpasim" | 1.x + AlpaSim | DGX Spark | 로컬 설치 시도 | "부분적으로 동작하나 Spark 단일 노드 구조와 맞지 않음". 수치 없음 | 커뮤니티 |
+
+### 7.3 학습·폐루프·양자화 실행 환경
+
+| 자료 | 작업 | 하드웨어 | 실행 방식 | 결과 | 성격 |
+|---|---|---|---|---|---|
+| alpamayo-recipes `alpamayo1_sft` | SFT | 8× H100 80 GB | HF Trainer + DeepSpeed ZeRO-2, `torchrun --nproc_per_node 8`, Stage 1(VLM) → Stage 2(expert) | 검증 완료 표기. 소요 시간 미기재 | 공식 |
+| alpamayo-recipes `alpamayo1_5_sft` | SFT (내비·VQA) | 8 GPU 실행 예시 | 같은 스택 | — | 공식 |
+| alpamayo-recipes `alpamayo1_x_rl` | RL (GRPO) | 로컬 테스트 GPU 5장(각 80 GB 이상) · 8× H100 노드 · 8× A100 노드 · 대규모 640 GPU | Cosmos-RL, 정책 4장 FSDP + 롤아웃 1장 | 8× H100 약 10분(동작 보상), 8× A100 약 1.1시간(추론+동작 보상) | 공식 |
+| NVlabs/alpagym | 폐루프 RL 스모크 | 2× RTX 6000 Ada 50 GB (40 GB 이상 2장 권장) | AlpaSim + Cosmos-RL, 정책·롤아웃 GPU 분리 | 동작 확인용 | 공식 |
+| NVlabs/alpasim ONBOARDING | 폐루프 평가 | GPU 1장 96 GB (1.5 단일 카메라 프리셋) / 48 GB (경량 드라이버) | FlashDreams 렌더러 + 드라이버 동일 GPU | — | 공식 |
+| alpamayo-recipes `alpamayo1_5_quant` | 양자화 (FP8 · AutoQuant) | RTX 5090 + CUDA 12 · B300 + CUDA 13 | ModelOpt 0.43, 보정 클립 100개 | FP8 약 11 GB, AutoQuant 6.5 bit 약 9 GB (정확도·지연 미기재) | 공식 |
+
+### 7.4 한눈에 보는 요점
+
+- **NVIDIA가 지연을 숫자로 공개한 것은 R1 논문의 99 ms(RTX 6000 Pro Blackwell) 하나뿐이다.** 차량용 Thor에서의 공식 지연 수치는 없고 "production-viable"이라는 표현만 있다.
+- **메모리를 숫자로 공개한 것은 1.5 README(H100, 24/40/60 GB)와 2 Super 모델카드(H100, 72,115 MiB)다.**
+- **임베디드 보드에서의 실측은 전부 논문·커뮤니티 몫이다.** Jetson Thor(FlashDrive, 포럼), DGX Spark(지연 분석 논문, 포럼), DRIVE Thor(포럼, 실패)뿐이고 Jetson Orin 실측은 없다.
+- **공식 학습 환경은 H100 8장 노드가 기준이며**, 폐루프 RL 스모크만 48 GB급 2장으로 내려온다.
