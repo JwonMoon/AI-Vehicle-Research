@@ -7,6 +7,7 @@
 
 | 문서 | 내용 |
 |---|---|
+| [alpamayo-hardware-brief.md](alpamayo-hardware-brief.md) | **요약 보고**. 공식 요구 사양(모델별·궤적 샘플 수별, 양자화·최적화 제외)과 후보 하드웨어 17종 지원 범위 표(DRIVE Thor 기준). 본문에 출처 미표기, 끝에 근거 자료 목록 |
 | [alpamayo-hardware-alternatives.md](alpamayo-hardware-alternatives.md) | 보고서. 결론, 1부 요구 사양(기능별 메모리·세대·양자화 경로), 2부 Thor 기준선과 동일 런타임 3플랫폼 대리 지표, 3부 후보별 실행 범위 매트릭스·보드별 상세·가격, 4부 목표별 최저가 후보와 시나리오, 5부 제외 후보, 부록 미확인 항목 |
 | [alpamayo-hardware-alternatives.html](alpamayo-hardware-alternatives.html) | 웹 버전 (자체 완결 페이지, 목차·다크 모드. 내용은 Markdown 원본과 동일) |
 | [images/01-memory-ladder.svg](images/01-memory-ladder.svg) | 메모리 요구 사다리(11·18.3·24·31.6·40·60·72·96·138 GB) vs 후보 하드웨어 메모리 도식(자체 작성) |
