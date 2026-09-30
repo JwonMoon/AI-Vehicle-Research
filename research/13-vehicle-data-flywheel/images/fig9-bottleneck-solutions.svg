@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="560" viewBox="0 0 1240 560" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
+<title>네 가지 병목과 해법, 기업 사례</title>
+<rect width="1240" height="560" fill="#ffffff"/>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">네 가지 병목 — 지금의 해법과 기업 사례</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">왼쪽 병목(5.2~5.5절) → 가운데 푸는 기술(3장) → 오른쪽 기업 사례(4장). 실선 = 본문에서 출처로 확인, 점선 = 추정. 어느 병목도 완전히 풀리지 않았다(회색 글씨 = 남는 문제). 자체 작성.</text>
+
+<text x="140" y="90" font-size="13" fill="#374151" font-weight="700" text-anchor="middle">병목</text>
+<text x="560" y="90" font-size="13" fill="#374151" font-weight="700" text-anchor="middle">푸는 기술</text>
+<text x="1020" y="90" font-size="13" fill="#374151" font-weight="700" text-anchor="middle">기업 사례</text>
+
+<!-- row 1: discovery -->
+<rect x="24" y="104" width="232" height="92" rx="10" fill="#fdf2f2" stroke="#c53030" stroke-width="1.5"/>
+<text x="40" y="128" font-size="13.5" fill="#9b2c2c" font-weight="700">① 데이터 발견</text>
+<text x="40" y="148" font-size="11.5" fill="#374151">무엇을 찾아야 할지 모른다</text>
+<text x="40" y="165" font-size="11.5" fill="#374151">(SOTIF 영역 3, 0.03% 미만 상황)</text>
+<text x="40" y="186" font-size="10.5" fill="#9ca3af">남는 문제: "모르는 것을 모르는" 영역</text>
+<line x1="256" y1="150" x2="330" y2="150" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="336" y="104" width="448" height="92" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+<text x="352" y="128" font-size="13" fill="#1e40af" font-weight="700">임베딩 검색 · 섀도/불일치 트리거 · 생성형 월드모델</text>
+<text x="352" y="148" font-size="11.5" fill="#374151">검색은 "알지만 못 찾은" 장면을, 생성은 "본 적 없는" 장면을 겨냥</text>
+<text x="352" y="165" font-size="11.5" fill="#374151">비용: 플릿 영상 전체 임베딩(GPU), 온보드 후보 모델 실행 여유</text>
+<text x="352" y="186" font-size="10.5" fill="#9ca3af">연구: 월드모델의 "놀람" 신호로 희소 사건 탐색(2026)</text>
+<line x1="784" y1="150" x2="858" y2="150" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="864" y="104" width="352" height="92" rx="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="880" y="128" font-size="12" fill="#111827">Tesla — 트리거 221개 + 섀도 + 유사 사례 회수</text>
+<text x="880" y="148" font-size="12" fill="#111827">NVIDIA — 앙상블 불일치 선별, Dataset Search</text>
+<text x="880" y="168" font-size="12" fill="#111827">현대차그룹 — Hard Example Mining</text>
+<text x="880" y="188" font-size="12" fill="#111827">Waymo — World Model로 미관측 상황 탐색</text>
+
+<!-- row 2: verification -->
+<rect x="24" y="214" width="232" height="92" rx="10" fill="#fdf2f2" stroke="#c53030" stroke-width="1.5"/>
+<text x="40" y="238" font-size="13.5" fill="#9b2c2c" font-weight="700">② 검증</text>
+<text x="40" y="258" font-size="11.5" fill="#374151">시뮬레이션을 얼마나 믿을 수 있나</text>
+<text x="40" y="275" font-size="11.5" fill="#374151">(시뮬–실제 격차, 배포 교란)</text>
+<text x="40" y="296" font-size="10.5" fill="#9ca3af">남는 문제: 격차의 정량 기준 부재</text>
+<line x1="256" y1="260" x2="330" y2="260" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="336" y="214" width="448" height="92" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+<text x="352" y="238" font-size="13" fill="#1e40af" font-weight="700">검증 사다리 · 의사 시뮬 · 시뮬–실차 대조 · 도구 검증</text>
+<text x="352" y="258" font-size="11.5" fill="#374151">개루프 → 폐루프 → 사람 선호 → 회귀 세트 → HIL → 섀도 → 단계적 OTA</text>
+<text x="352" y="275" font-size="11.5" fill="#374151">비용: 단이 늘수록 한 바퀴가 길어짐, 실차·HIL 자원</text>
+<text x="352" y="296" font-size="10.5" fill="#9ca3af">규제: R157 부속서 4 — 시뮬레이터 자체의 유효성 입증 요구</text>
+<line x1="784" y1="260" x2="858" y2="260" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="864" y="214" width="352" height="92" rx="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="880" y="238" font-size="12" fill="#111827">Waymo — 전체 시나리오 재실행, fuzzing, 안전 허브</text>
+<text x="880" y="258" font-size="12" fill="#111827">Wayve — GAIA-3를 검증용으로 외부 제공</text>
+<text x="880" y="278" font-size="12" fill="#111827">현대모비스 — HIL 60대(계획), 3D 재구성 검증</text>
+<text x="880" y="298" font-size="12" fill="#111827">Tesla — 여러 라운드 섀도 후 0.1% → 10% → 광역</text>
+
+<!-- row 3: cost -->
+<rect x="24" y="324" width="232" height="92" rx="10" fill="#fdf2f2" stroke="#c53030" stroke-width="1.5"/>
+<text x="40" y="348" font-size="13.5" fill="#9b2c2c" font-weight="700">③ 비용</text>
+<text x="40" y="368" font-size="11.5" fill="#374151">저장 · 통신 · 반출 · GPU · 라벨링</text>
+<text x="40" y="385" font-size="11.5" fill="#374151">(1PB 반출 ≈ 9만 달러)</text>
+<text x="40" y="406" font-size="10.5" fill="#9ca3af">남는 문제: 검수 인력, 지역별 인프라 중복</text>
+<line x1="256" y1="370" x2="330" y2="370" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="336" y="324" width="448" height="92" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+<text x="352" y="348" font-size="13" fill="#1e40af" font-weight="700">온보드 선별 → 자동 라벨링 → 현지 학습 → 증류·재구성</text>
+<text x="352" y="368" font-size="11.5" fill="#374151">올리지 않은 데이터는 저장·반출·라벨 비용이 0 (가장 싼 절감)</text>
+<text x="352" y="385" font-size="11.5" fill="#374151">라벨 비용이 사람 수에서 GPU 시간으로 이동(Bosch 70% 주장)</text>
+<text x="352" y="406" font-size="10.5" fill="#9ca3af">교사 모델은 한 번, 학생 모델만 자주 학습</text>
+<line x1="784" y1="370" x2="858" y2="370" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="864" y="324" width="352" height="92" rx="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="880" y="348" font-size="12" fill="#111827">comma.ai — 요약 먼저·원본은 지목 시, $0.003/마일</text>
+<text x="880" y="368" font-size="12" fill="#111827">Mobileye — 의미 정보만 km당 10KB</text>
+<text x="880" y="388" font-size="12" fill="#111827">Tesla — 라벨팀 감원 → 자동 라벨링 GPU 4,000장</text>
+<text x="880" y="408" font-size="12" fill="#111827">NVIDIA — Curator 2,000만 시간/14일(주장)</text>
+
+<!-- row 4: regulation -->
+<rect x="24" y="434" width="232" height="92" rx="10" fill="#fdf2f2" stroke="#c53030" stroke-width="1.5"/>
+<text x="40" y="458" font-size="13.5" fill="#9b2c2c" font-weight="700">④ 규제 · 데이터 주권</text>
+<text x="40" y="478" font-size="11.5" fill="#374151">개인정보 · 지리정보 · 국외 반출</text>
+<text x="40" y="495" font-size="11.5" fill="#374151">UN R156 SUMS · R157 DSSAD · EU AI Act</text>
+<text x="40" y="516" font-size="10.5" fill="#9ca3af">남는 문제: 나라마다 다른 기준</text>
+<line x1="256" y1="480" x2="330" y2="480" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="336" y="434" width="448" height="92" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+<text x="352" y="458" font-size="13" fill="#1e40af" font-weight="700">차내 처리 · 샌드박스 · 지역별 인프라 · SUMS 내장 · 로깅 통합</text>
+<text x="352" y="478" font-size="11.5" fill="#374151">수집(무엇을 차 밖으로) · 배포(얼마나 자주) · 기록(무엇을 남길지)</text>
+<text x="352" y="495" font-size="11.5" fill="#374151">비용: 인프라 중복, 인증 체계, 변조 방지 저장</text>
+<text x="352" y="516" font-size="10.5" fill="#9ca3af">규제를 사후 대응이 아니라 아키텍처 조건으로</text>
+<line x1="784" y1="480" x2="858" y2="480" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="864" y="434" width="352" height="92" rx="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
+<text x="880" y="458" font-size="12" fill="#111827">Tesla — 상하이 데이터센터·중국 내 학습</text>
+<text x="880" y="478" font-size="12" fill="#111827">Mercedes·BMW — 중국 Momenta / 미국 NVIDIA 분할</text>
+<text x="880" y="498" font-size="12" fill="#111827">한국 9개사 — 원본 영상 샌드박스 신청(2026-01)</text>
+<text x="880" y="518" font-size="12" fill="#111827">Waymo — 가명 처리 국외 이전 절차 문의(2026-08)</text>
+
+<text x="24" y="548" font-size="11.5" fill="#374151">잣대 = 한 바퀴를 얼마나 자주 · 얼마나 싸게 · 얼마나 믿을 수 있게 돌리느냐(5.1절). 네 병목은 이 세 변수 중 하나 이상을 막는 곳이고, 각 해법도 같은 잣대로 평가한다.</text>
+</svg>

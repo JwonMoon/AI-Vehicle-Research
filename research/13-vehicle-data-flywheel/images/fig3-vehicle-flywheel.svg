@@ -3,7 +3,7 @@
 <title>차량 데이터 플라이휠 전체 구조</title>
 <rect width="1240" height="600" fill="#ffffff"/>
 <text x="24" y="32" font-size="17" fill="#111827" font-weight="700">차량 데이터 플라이휠 — 차 안에서 시작해 클라우드·시뮬레이션·실차 검증을 거쳐 OTA로 돌아온다</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">색 = 마디가 도는 곳(주황 차 안, 파랑 클라우드, 초록 시험장·인증). &quot;차량 전용&quot; 표 = 일반 AI 플라이휠에 없는 마디(①⑥⑦⑧). Tesla 데이터 엔진 📰 · NVIDIA/AWS AV 3.0 파이프라인 📰 · Li et al. 2024 서베이 7단계 🔍를</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">색 = 단계가 도는 곳(주황 차 안, 파랑 클라우드, 초록 시험장·인증). &quot;차량 전용&quot; 표 = 일반 AI 플라이휠에 없는 단계(①⑥⑦⑧). Tesla 데이터 엔진 📰 · NVIDIA/AWS AV 3.0 파이프라인 📰 · Li et al. 2024 서베이 7단계 🔍를</text>
 <text x="24" y="67.87" font-size="11.5" fill="#6b7280">합쳐 자체 작성.</text>
 <ellipse cx="620" cy="340" rx="400" ry="210" fill="none" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="6 5"/>
 <polygon points="765.6,144.4 749.6,146.8 751.6,136.2" fill="#4b5563"/>
@@ -62,6 +62,6 @@
 <text x="620" y="342" font-size="12.5" fill="#2563eb" font-weight="700" text-anchor="middle">클라우드: ③④⑤⑥</text>
 <text x="620" y="362" font-size="12.5" fill="#059669" font-weight="700" text-anchor="middle">시험장 · 인증: ⑦⑧</text>
 <text x="480" y="388" font-size="11" fill="#6b7280">일반 플라이휠의 &quot;로그 → 데이터셋 → 학습 → 평가 →</text>
-<text x="480" y="403.18" font-size="11" fill="#6b7280">배포&quot;는 그대로 있고, &quot;차량 전용&quot; 네 마디가 끼어들어</text>
+<text x="480" y="403.18" font-size="11" fill="#6b7280">배포&quot;는 그대로 있고, &quot;차량 전용&quot; 네 단계가 끼어들어</text>
 <text x="480" y="418.36" font-size="11" fill="#6b7280">원이 길어지고 관문이 많아진다.</text>
 </svg>

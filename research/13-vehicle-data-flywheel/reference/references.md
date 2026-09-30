@@ -177,3 +177,26 @@
 ## 미확인 항목
 
 보고서 본문 끝의 [미확인 항목 표](../vehicle-data-flywheel.md#미확인-항목)(15개)를 참고. 회사 발표 수치는 독립 검증이 없으므로 ⚠️ 또는 "공개 주장"으로 표기했다. 발표 슬라이드 화면(Tesla·Waymo·Momenta)의 발표 행사·연도는 수록 저장소에 기재가 없어 미확인이다.
+
+## 개조식 보고서 2판(2026-09-30) 추가 출처
+
+2판에서 2.3절(개인정보·데이터 주권), 3장(핵심 기술), 4장(기업별 구조), 5장(병목·해법·사례)을 고치며 새로 붙인 출처. 열람일 2026-09-30. 이 세션에서도 hyundaimotorgroup.com·aitimes.kr 등 원문 접근이 차단되어 전부 웹 검색 요약 기준(📰)이다.
+
+| # | 출처 | 등급 | 뒷받침하는 내용 | 쓰인 절 |
+|---|---|---|---|---|
+| 104 | [EDPB 가이드라인 1/2020](https://www.edpb.europa.eu/our-work-tools/documents/public-consultations/2020/guidelines-12020-processing-personal-data_en) `edpb.europa.eu` | 📰 | 차 밖의 보행자·다른 운전자·번호판 등 외부 환경 데이터도 개인정보로 취급, 차내 처리 권고 | 2.3절 |
+| 105 | [머니투데이 2026-08-25](https://www.mt.co.kr/tech/2026/08/25/2026082423164221461) `mt.co.kr` | 📰 | Waymo가 한국 사고·사건 주행 영상을 가명 처리해 국외 연구개발에 쓰는 절차를 개인정보위에 문의; 국내 특례는 원본 영상의 국내 활용을 연 것이지 해외 이전 허용이 아님 | 2.3·4.3·5.5절 |
+| 106 | [이투데이](https://www.etoday.co.kr/news/view/2355045) `etoday.co.kr` | 📰 | Tesla가 중국 당국 데이터 안전 요건 검사를 외자 기업 최초로 통과; 차량 외부 안면 익명화·운전석 데이터 차내 처리 등 요건 | 4.2절 |
+| 107 | [현대차그룹 뉴스룸(영문)](https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel) `hyundaimotorgroup.com` | 📰 | 데이터 플라이휠 가동, Atria AI, 2028·2029 목표(초판부터 인용, 접근 차단) | 3.1·4.4절 |
+| 108 | [오토일렉트로닉스](https://www.autoelectronics.co.kr/article/articleview.asp?idx=7053) `autoelectronics.co.kr` | 📰 | Hard Example Mining(오인식·판단 곤란 상황 자동 선별), Continuous Training 파이프라인, 3D 재구성 검증, 2026-09-11 미디어데이 | 3.1·4.4절 |
+| 109 | [네이트 뉴스 2026-09-13](https://m.news.nate.com/view/20260913n03598) `m.news.nate.com` | 📰 | "AI 학습 → 검증 → 차 적용, 돌발 상황 모아 고도화" 미디어데이 보도 | 4.4절 |
+| 110 | [한국경제TV](https://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202609110468) `wowtv.co.kr` | 📰 | Atria AI 탑재 SDV 테스트 차량의 서울 도심 비보호 좌회전 등 무개입 주행 시연 | 4.4절 |
+| 111 | [지피코리아](https://www.gpkorea.com/news/articleView.html?idxno=146619) `gpkorea.com` | 📰 | 연 700만 대 판매망을 데이터 확보 기반으로 삼겠다는 계획 | 4.4절 |
+| 112 | [Waymo 블로그 2025-12](https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/) `waymo.com` | 📰 | Waymo Foundation Model이 운전자·시뮬레이터·평가자(Critic)의 공통 바탕, 교사 모델을 학생 모델로 증류, 이를 "지속적 선순환"으로 표현 | 3.3·4.3절 |
+| 113 | [Forbes 2025-12-09](https://www.forbes.com/sites/bradtempleton/2025/12/09/waymo-offers-a-peak-under-their-ai-hood-and-keeps-growing/) `forbes.com` | 📰 | Gemini 기반 대형 교사 모델이 차에 실을 소형 모델을 학습시킴 | 3.3절 |
+| 114 | [Scale 블로그(Dolgov 인터뷰)](https://learn.scale.com/public/blogs/how-ml-waymo-building-scalable-autonomous-driver-dmitri-dolgov) `learn.scale.com` | 📰 | 초기의 사람 라벨링에서 자동 라벨링·데이터 관리로 이동 | 4.3절 |
+| 115 | [Not a Tesla App](https://www.notateslaapp.com/news/2455/how-tesla-will-automate-data-labeling-for-fsd) `notateslaapp.com` | 📰⚠️ | 다중 차량 데이터 융합 3D 지도로 자동 라벨링, "플릿 데이터 → 자동 라벨링 → 신경망 시뮬레이터 → 강화학습 → 새 모델 → 플릿 검증" 루프(팬 사이트 전언) | 4.2절 |
+| 116 | [Longbridge(Momenta 상장 서류 해설)](https://longbridge.com/en/news/290852250) `longbridge.com` | 📰 | 양산차가 데이터를 모으고 알고리즘이 좋아져 더 많은 양산차에 실리는 폐루프를 사업 모델로 명시 | 4.5절 |
+| 117 | [Momenta R6 발표](https://www.momenta.cn/en/article/304.html) `momenta.cn` | 📰 | R6 Flywheel Big Model, 고가치 클립 7,000만·30억 km, SAIC-GM Buick Electra L7 첫 탑재 | 4.5절 |
+| 118 | [Mobileye CES 2026 프레스 킷](https://www.mobileye.com/press-kit/mobileye-at-ces-2026/) `mobileye.com` | 📰 | 800만 대·18 브랜드·50 차종이 REM 데이터 수집, 누적 출하 EyeQ 1억 7,000만 개 | 4.5절 |
+

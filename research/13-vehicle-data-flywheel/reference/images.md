@@ -34,3 +34,21 @@
 - 도식 규약(자체 SVG): 실선 = 출처로 확인한 구조, 점선 = 추정. 그림 9(일반 vs 차량)에서 파란색 = 일반 AI 플라이휠에도 있는 마디, 주황색 = 차량에서만 생기는 마디. 그림 7은 색이 장소(주황 차 안, 파랑 클라우드, 초록 시험장·인증)를 뜻하고, 일반 AI에 없는 마디는 "차량 전용" 표로 따로 표시.
 - 가져오지 않은 후보: Cosmos Dataset Search 구조도(NVIDIA Software License Agreement, 재배포 조건 불명확), Bench2Drive 개요도(CC BY-NC-ND 4.0), 3D Gaussian Splatting 티저(Inria 비상업 라이선스), Cosmos·InstantNuRec 데모 GIF(4~9MB, 용량).
 - 접근이 차단된 사이트(nvidia.com·waymo.com·tesla.com·wayve.ai 등)의 그림은 내려받지 않았다.
+
+## 개조식 보고서 2판(2026-09-30)의 그림 번호
+
+개조식 판(`vehicle-data-flywheel-report.md/.html`)은 2판에서 2.4절을 5.1절로 옮기고 3~5장을 재구성했으므로 그림 번호가 위 표(줄글 판 기준)와 다르다. 파일과 출처는 같다.
+
+| 줄글 판 번호 | 개조식 2판 번호 | 파일 |
+|---|---|---|
+| 그림 1~10 | 그림 1~10 | 동일 |
+| 그림 11 (Tesla 데이터 엔진 슬라이드) | 그림 22 (5.1절) | `images/src-tesla-data-engine-slide.jpg` |
+| 그림 12 (2021 vs 2026 부품 비교) | 그림 23 (5.1절) | `images/fig5-old-vs-new-loop.svg` |
+| 그림 13~20 (3장) | 그림 11~18 (3장) | 동일 |
+| 그림 21 (기업 지도) | 그림 19 (4.1절) | `images/fig8-company-map.svg` |
+| 그림 22 (Baidu 폐쇄루프) | 그림 21 (4.6절) | `images/src-baidu-closed-loop.png` |
+| 그림 23 (Momenta 로드맵) | 그림 20 (4.5절) | `images/src-momenta-roadmap-slide.jpg` |
+| 그림 24 (병목 → 경쟁력) | 개조식 2판에서는 쓰지 않음(줄글 판 전용) | `images/fig9-bottleneck-to-competitiveness.svg` |
+| — | 그림 24 (5.1절, 새 그림) | `images/fig9-bottleneck-solutions.svg` — 네 가지 병목 → 지금의 해법 → 기업 사례. 자체 작성, 5.2~5.5절 요약 |
+
+- 2판에서 자체 SVG 3장(`fig3`·`fig4`·`fig5`)의 안내 문구 "마디"를 "단계"로 고쳤다(구조·내용 변경 없음). 줄글 판 본문은 "마디" 표기를 유지한다.
