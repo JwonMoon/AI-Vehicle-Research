@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="640" viewBox="0 0 1180 640" font-family="'Noto Sans KR','Apple SD Gothic Neo',Arial,sans-serif" font-size="13">
+  <defs>
+    <style>
+      .t{fill:#222}.g{fill:#666}.w{fill:#fff}
+      .bar{stroke:#333;stroke-width:1}
+      .req{stroke:#b00020;stroke-width:1.5;stroke-dasharray:6 4}
+      .reqt{fill:#b00020;font-weight:600}
+      .cap{font-size:12}
+    </style>
+  </defs>
+  <rect width="1180" height="640" fill="#fff"/>
+  <text x="24" y="30" font-size="18" font-weight="700" class="t">Alpamayo 실행에 필요한 GPU 메모리 사다리 vs 후보 하드웨어 메모리</text>
+  <text x="24" y="50" class="g">막대 = 하드웨어의 GPU 가용 메모리(통합 메모리는 전체 용량). 점선 = 공개 문서·실측이 말하는 요구치. 수치 근거는 보고서 2·3절.</text>
+
+  <!-- axis: x from 120 to 1140 maps 0..140 GB -->
+  <g id="axis">
+    <line x1="120" y1="560" x2="1140" y2="560" stroke="#333"/>
+    <g class="g">
+      <text x="116" y="580" text-anchor="middle">0</text>
+      <text x="265.7" y="580" text-anchor="middle">20</text>
+      <text x="411.4" y="580" text-anchor="middle">40</text>
+      <text x="557.1" y="580" text-anchor="middle">60</text>
+      <text x="702.9" y="580" text-anchor="middle">80</text>
+      <text x="848.6" y="580" text-anchor="middle">100</text>
+      <text x="994.3" y="580" text-anchor="middle">120</text>
+      <text x="1140" y="580" text-anchor="middle">140 GB</text>
+    </g>
+    <line x1="265.7" y1="70" x2="265.7" y2="560" stroke="#eee"/>
+    <line x1="411.4" y1="70" x2="411.4" y2="560" stroke="#eee"/>
+    <line x1="557.1" y1="70" x2="557.1" y2="560" stroke="#eee"/>
+    <line x1="702.9" y1="70" x2="702.9" y2="560" stroke="#eee"/>
+    <line x1="848.6" y1="70" x2="848.6" y2="560" stroke="#eee"/>
+    <line x1="994.3" y1="70" x2="994.3" y2="560" stroke="#eee"/>
+  </g>
+
+  <!-- bars: y positions, width = GB*7.2857 -->
+  <g class="cap">
+    <!-- 16 GB -->
+    <text x="112" y="92" text-anchor="end" class="t">Jetson Orin NX 16GB · RTX 5070 Ti / 5080 (16 GB)</text>
+    <rect x="120" y="80" width="116.6" height="16" fill="#cfd8dc" class="bar"/>
+    <!-- 24 GB -->
+    <text x="112" y="122" text-anchor="end" class="t">RTX 3090 / 4090 (24 GB)</text>
+    <rect x="120" y="110" width="174.9" height="16" fill="#b0bec5" class="bar"/>
+    <!-- 32 GB -->
+    <text x="112" y="152" text-anchor="end" class="t">RTX 5090 · RTX PRO 4500 (32 GB)</text>
+    <rect x="120" y="140" width="233.1" height="16" fill="#90a4ae" class="bar"/>
+    <!-- 48 GB -->
+    <text x="112" y="182" text-anchor="end" class="t">RTX 6000 Ada · RTX PRO 5000 · L40S (48 GB)</text>
+    <rect x="120" y="170" width="349.7" height="16" fill="#78909c" class="bar"/>
+    <!-- 64 GB Orin -->
+    <text x="112" y="212" text-anchor="end" class="t">Jetson AGX Orin 64GB (통합 64 GB, Ampere)</text>
+    <rect x="120" y="200" width="466.3" height="16" fill="#a5d6a7" class="bar"/>
+    <!-- 64 GB T4000 -->
+    <text x="112" y="242" text-anchor="end" class="t">Jetson T4000 (통합 64 GB, Blackwell)</text>
+    <rect x="120" y="230" width="466.3" height="16" fill="#81c784" class="bar"/>
+    <!-- 64 GB DRIVE Thor -->
+    <text x="112" y="272" text-anchor="end" class="t">DRIVE AGX Thor 개발킷 (통합 64 GB)</text>
+    <rect x="120" y="260" width="466.3" height="16" fill="#66bb6a" class="bar"/>
+    <rect x="120" y="260" width="109.3" height="16" fill="#ffcc80" class="bar"/>
+    <text x="596" y="272" class="g">주황 = 포럼 보고 CUDA 가용 6–15 GB (carveout, 미해결)</text>
+    <!-- 80 GB -->
+    <text x="112" y="302" text-anchor="end" class="t">H100 / A100 (80 GB)</text>
+    <rect x="120" y="290" width="582.9" height="16" fill="#64b5f6" class="bar"/>
+    <!-- 96 GB -->
+    <text x="112" y="332" text-anchor="end" class="t">RTX PRO 6000 Blackwell (96 GB)</text>
+    <rect x="120" y="320" width="699.4" height="16" fill="#42a5f5" class="bar"/>
+    <!-- 128 GB Thor -->
+    <text x="112" y="362" text-anchor="end" class="t">Jetson AGX Thor T5000 (통합 128 GB)</text>
+    <rect x="120" y="350" width="932.6" height="16" fill="#43a047" class="bar"/>
+    <!-- 128 GB Spark -->
+    <text x="112" y="392" text-anchor="end" class="t">DGX Spark GB10 (통합 128 GB)</text>
+    <rect x="120" y="380" width="932.6" height="16" fill="#1e88e5" class="bar"/>
+    <!-- 141 GB H200 -->
+    <text x="112" y="422" text-anchor="end" class="t">H200 (141 GB)</text>
+    <rect x="120" y="410" width="1020" height="16" fill="#1565c0" class="bar"/>
+  </g>
+
+  <!-- requirement lines -->
+  <g>
+    <!-- 11 GB: 1.5 FP8 weights -->
+    <line x1="200.1" y1="440" x2="200.1" y2="555" class="req"/>
+    <text x="200.1" y="452" text-anchor="middle" class="reqt">≈11</text>
+    <text x="200.1" y="466" text-anchor="middle" class="reqt" font-size="11">1.5 FP8 가중치</text>
+    <!-- 18.3: W4A8 runtime -->
+    <line x1="253.3" y1="470" x2="253.3" y2="555" class="req"/>
+    <text x="253.3" y="482" text-anchor="middle" class="reqt">18.3</text>
+    <text x="253.3" y="496" text-anchor="middle" class="reqt" font-size="11">FlashDrive W4A8 실행</text>
+    <!-- 24 -->
+    <line x1="294.9" y1="500" x2="294.9" y2="555" class="req"/>
+    <text x="294.9" y="512" text-anchor="middle" class="reqt">24</text>
+    <text x="294.9" y="526" text-anchor="middle" class="reqt" font-size="11">1/1.5 BF16 1샘플</text>
+    <!-- 31.6: FP16 runtime measured -->
+    <line x1="350.2" y1="440" x2="350.2" y2="555" class="req"/>
+    <text x="350.2" y="452" text-anchor="middle" class="reqt">31.6</text>
+    <text x="350.2" y="466" text-anchor="middle" class="reqt" font-size="11">1.5 FP16 실행(FlashDrive 측정)</text>
+    <!-- 40 -->
+    <line x1="411.4" y1="500" x2="411.4" y2="555" class="req"/>
+    <text x="411.4" y="512" text-anchor="middle" class="reqt">40</text>
+    <text x="411.4" y="526" text-anchor="middle" class="reqt" font-size="11">1.5 16샘플</text>
+    <!-- 60 -->
+    <line x1="557.1" y1="500" x2="557.1" y2="555" class="req"/>
+    <text x="557.1" y="512" text-anchor="middle" class="reqt">60</text>
+    <text x="557.1" y="526" text-anchor="middle" class="reqt" font-size="11">1.5 16샘플 + 내비 CFG</text>
+    <!-- 72 -->
+    <line x1="644.6" y1="440" x2="644.6" y2="555" class="req"/>
+    <text x="644.6" y="452" text-anchor="middle" class="reqt">≈72</text>
+    <text x="644.6" y="466" text-anchor="middle" class="reqt" font-size="11">2 Super BF16 피크 (80 GB+ 요구)</text>
+    <!-- 96 -->
+    <line x1="819.4" y1="500" x2="819.4" y2="555" class="req"/>
+    <text x="819.4" y="512" text-anchor="middle" class="reqt">96</text>
+    <text x="819.4" y="526" text-anchor="middle" class="reqt" font-size="11">AlpaSim 1.5 프리셋</text>
+    <!-- 138: 2 Super 2-GPU CFG -->
+    <line x1="1125.4" y1="440" x2="1125.4" y2="555" class="req"/>
+    <text x="1118" y="452" text-anchor="end" class="reqt">67+71=138</text>
+    <text x="1118" y="466" text-anchor="end" class="reqt" font-size="11">2 Super 내비 CFG 데모 (H100 ×2)</text>
+  </g>
+  <text x="24" y="615" class="g">회색 = 데스크톱 dGPU, 초록 = 임베디드·차량용 통합 메모리, 파랑 = 데이터센터·워크스테이션. 통합 메모리 보드는 OS·CPU 프로세스와 메모리를 나눠 쓰므로 실제 가용치는 막대보다 작다.</text>
+  <text x="24" y="632" class="g">요구치 출처: NVlabs/alpamayo·alpamayo1.5·alpamayo2·alpamayo-recipes·alpasim README, FlashDrive 논문(arXiv 2608.12932), NVIDIA 포럼(DRIVE Thor carveout). 자체 작성 도식.</text>
+</svg>
