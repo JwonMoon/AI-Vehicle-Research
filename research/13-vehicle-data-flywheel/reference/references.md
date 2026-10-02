@@ -139,6 +139,11 @@
 
 - https://raw.githubusercontent.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving/main/README.md
 - https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md
+- https://raw.githubusercontent.com/commaai/openpilot/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/loggerd/loggerd.h  (3.1절 두 단계 업로드 — 1분 세그먼트·영상 압축·저화질 카메라; 2026-10-02 경로 보정, 전체 SHA로 재확인)
+- https://raw.githubusercontent.com/commaai/openpilot/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/loggerd/uploader.py  (3.1절 두 단계 업로드 — 요약본 우선 업로드·용량 상한·종량제 처리; 2026-10-02 경로 보정, 전체 SHA로 재확인)
+- https://raw.githubusercontent.com/commaai/openpilot/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/athena/athenad.py  (3.1절 두 단계 업로드 — 서버 지목 시 원본 업로드·재시도; 2026-10-02 경로 보정, 전체 SHA로 재확인)
+- https://raw.githubusercontent.com/commaai/openpilot/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/loggerd/deleter.py  (3.1절 두 단계 업로드 — 저장 공간 부족 시 삭제·운전자 표시 구간 보존; 2026-10-02 경로 보정, 전체 SHA로 재확인)
+- https://raw.githubusercontent.com/commaai/openpilot/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/cereal/services.py  (3.1절 두 단계 업로드 — 요약 로그에 넣을 신호와 비율; 2026-10-02 경로 보정, 전체 SHA로 재확인)
 - https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving
 - https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving
 - https://raw.githubusercontent.com/NVIDIA-AI-Blueprints/data-flywheel/main/README.md

@@ -207,24 +207,24 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ## 3. 데이터 플라이휠의 작동 방식과 핵심 기술
 
-> **이 장의 질문.** 2장이 보여 준 9단계 안에서 실제로 어떤 기술이 돌아가고, 각 기술은 어떤 도구와 회사가 대표하는가.
+> **이 장의 질문.** 2장이 보여 준 9단계 안에서 실제로 어떤 기술이 돌아가고, 처음 보는 사람이 꼭 알아야 할 원리는 무엇인가.
 >
-> **세 줄 답.** ① 차 안에서는 "요약 로그를 먼저 올리고, 원본은 서버가 지목할 때만 올리는" 두 단계 업로드와 세 종류의 트리거(규칙·모델 점수·사람)가 돈다. ② 클라우드에서는 임베딩 검색으로 비슷한 장면을 수백~수천 개 모으고, 온보드보다 훨씬 큰 모델이 미래 프레임까지 보면서 정답을 소급해 붙인다. ③ 모은 것만으로 부족한 장면은 재생·재구성·생성 세 갈래의 합성 데이터로 늘리고, 시뮬레이터 안에서 정책이 직접 운전하며 배우는 폐루프 학습으로 넘어가는 중이다. 검증은 하나의 점수가 아니라 개루프 → 폐루프 → 사람 선호 → 회귀 세트 → HIL → 섀도 → 단계적 OTA로 올라가는 사다리이고, 마지막 단(OTA)은 규제 절차다.
+> **세 줄 답.** ① 차 안에서는 트리거(규칙·모델 점수·사람)로 "올릴 만한 순간"을 고르고, 요약본을 먼저 올린 뒤 원본은 서버가 지목할 때만 올린다. ② 클라우드에서는 임베딩 검색으로 비슷한 장면을 수백~수천 개 모으고, 차 안 모델보다 훨씬 큰 모델이 미래 프레임까지 보면서 정답을 소급해 붙인다. ③ 부족한 장면은 재생·재구성·생성 세 갈래의 합성 데이터로 늘리고, 시뮬레이터 안에서 모델이 직접 운전하며 배우는 폐루프 학습으로 넘어가는 중이다. 검증은 한 점수가 아니라 개루프 → 폐루프 → 사람 선호 → 회귀 세트 → 실차 → 섀도 → 단계적 OTA로 올라가는 사다리이고, 마지막 단(OTA)은 규제 절차다.
 
-이 장은 핵심 기술을 네 묶음으로 나눈다. 데이터 수집·선별(차 안, 단계 ①②), 검색·라벨링(클라우드, 단계 ③④), 학습·합성 데이터(클라우드, 단계 ⑤), 검증·배포(단계 ⑥⑦⑧). 묶음마다 원리 → 기술·도구 → 기업 사례 → 3.0절의 가상 사례에 적용 순서로 쓴다.
+이 장은 핵심 기술을 네 묶음으로 나눈다. 데이터 수집·선별(차 안, 단계 ①②), 검색·라벨링(클라우드, 단계 ③④), 학습·합성 데이터(클라우드, 단계 ⑤), 검증·배포(단계 ⑥⑦⑧). 묶음마다 "왜 필요한가 → 핵심 기술 → 대표 사례 → 3.0절 가상 사례에 적용" 순서로 쓰고, 도구의 세부 설정은 생략한다.
 
-| 묶음 | 2.2절 단계 | 어디서 | 핵심 기술 | 대표 도구·사례 |
+| 묶음 | 단계 | 하는 일 | 핵심 기술 | 대표 사례 |
 |---|---|---|---|---|
-| 3.1 데이터 수집·선별 | ①② | 차 안 → 클라우드 | 트리거(규칙·모델 점수·사람), 섀도 모드, 두 단계 업로드(요약 먼저·원본은 지목 시), 영상 압축 | Tesla 트리거 221개 📰; openpilot qlog/qcamera 🔍; 현대차그룹 Hard Example Mining 📰 |
-| 3.2 검색·라벨링 | ③④ | 클라우드 | 임베딩 검색, 시각언어모델(VLM) 캡션, 중복 제거, 오프라인 자동 라벨링(미래 프레임·다중 주행·큰 모델), 사람 검수 | NVIDIA Cosmos Curator·Dataset Search 🔍; Grounding DINO·SAM 2 🔍; Tesla·Waymo 자동 라벨링 📰 |
-| 3.3 학습·합성 데이터 | ⑤ | 클라우드 | 오버샘플링, 재생·재구성(3DGS)·생성(월드모델)의 합성 데이터, 조건부 변환, 폐루프 강화학습, 교사-학생 증류 | NVIDIA NuRec·Cosmos Transfer·AlpaGym 🔍; Wayve GAIA 📰; openpilot 학습된 시뮬레이터 🔍; Waymo Foundation Model 📰 |
-| 3.4 검증·배포 | ⑥⑦⑧ | 클라우드 → 시험장 → 차 | 검증 사다리(개루프·유사 폐루프·사람 선호·시뮬 폐루프·회귀 세트·HIL·섀도·단계적 OTA), 안전 케이스, UN R156 SUMS | NAVSIM·Bench2Drive 🔍; Waymo CAT 📰; dSPACE·현대모비스 HIL 📰; Tesla 단계적 OTA 📰⚠️ |
+| 3.1 수집·선별 | ①② | 차 안에서 올릴 순간을 고르고 압축해 올린다 | 트리거, 섀도 모드, 두 단계 업로드 | Tesla 트리거 221개 📰, openpilot 🔍, 현대차 Hard Example Mining 📰 |
+| 3.2 검색·라벨링 | ③④ | 비슷한 장면을 모으고 정답을 붙인다 | 임베딩 검색, 자동 라벨링, 사람 검수 | NVIDIA Cosmos 🔍, Tesla·Waymo 자동 라벨링 📰 |
+| 3.3 학습·합성 데이터 | ⑤ | 모자란 장면을 만들어 학습한다 | 재생·재구성·생성, 폐루프 강화학습, 교사-학생 증류 | NVIDIA NuRec·Cosmos 🔍, Wayve GAIA 📰, openpilot 0.11 🔍, Waymo 📰 |
+| 3.4 검증·배포 | ⑥⑦⑧ | 좋아졌는지 확인하고 차에 내보낸다 | 검증 사다리, 안전 케이스, UN R156 | Waymo 📰, Tesla 단계적 OTA 📰⚠️ |
 
 ### 3.0 따라갈 사례
 
 > **가상 사례.** 밤 10시, 비가 오는 편도 2차선 도로. 공사 구간이라 콘이 차선을 막고 있고, 콘 옆에 형광 조끼를 입은 작업자가 서 있다. 차의 모델은 콘은 일찍 봤지만 작업자를 늦게 인식했고, 운전자가 브레이크를 밟아 개입했다. 사고는 없었다.
 
-이 상황은 롱테일의 전형이다. 밤 + 비 + 공사 + 서 있는 사람이라는 네 조건이 겹쳤고, 각각은 흔하지만 조합은 드물다. 각 절 끝의 "사례에서는"에서 이 클립 하나가 어떤 기술을 거쳐 모델을 고치는지 확인한다. 기술 설명이 추상적으로 느껴지면 이 사례로 돌아오면 된다.
+이 상황은 롱테일의 전형이다. 밤 + 비 + 공사 + 서 있는 사람이라는 네 조건이 겹쳤고, 각각은 흔하지만 조합은 드물다. 각 절 끝의 "사례에서는"에서 이 클립 하나가 어떤 기술을 거쳐 모델을 고치는지 확인한다.
 
 ![가상 사례의 흐름](images/fig6-case-flow.svg)
 
@@ -232,80 +232,53 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ### 3.1 데이터 수집·선별 (차 안) — 단계 ①②
 
-**원리: 모든 것을 올릴 수 없으므로 차 안에서 고른다.** 자율주행 차 한 대가 만드는 원시 데이터는 크다. Intel은 2016년에 차량당 하루 약 4,000GB로 추정했고(카메라 초당 20~60MB, 라이다 초당 10~70MB) 📰 ([Intel 2016](https://download.intel.com/newsroom/2021/archive/2016-11-15-editorials-krzanich-the-future-of-automated-driving.pdf)), 최근 업계 추정은 시간당 1~5TB다 📰⚠️ ([Siemens 블로그](https://blogs.sw.siemens.com/polarion/the-data-deluge-what-do-we-do-with-the-data-generated-by-avs/)). 양산차 통신 요금으로는 감당할 수 없으므로 차 안에서 "올릴 만한 순간"을 고르고, 고른 것도 압축해 올려야 한다. 온보드 설계의 핵심 질문은 "무엇을 올릴지"보다 "무엇을 고화질로 남길지"다.
+**왜 필요한가.** 차 한 대가 만드는 원본 데이터는 하루 수 TB 수준이다(Intel 2016년 추정 약 4TB, 최근 업계 추정 시간당 1~5TB 📰⚠️). 통신 요금과 저장비 때문에 전부 올릴 수 없으므로, 차 안에서 "올릴 만한 순간"을 고르고 고른 것도 압축해 올려야 한다.
 
-**기술 ① 두 단계 업로드 — 오픈소스가 보여 주는 실제 설계.** comma.ai의 openpilot은 양산차에 붙어 매일 도는 오픈소스 스택이라 로깅 설계를 코드로 확인할 수 있다 🔍 (커밋 `521db4c`, 2026-09-20 기준).
+**기술 ① 트리거.** "이 순간을 저장·업로드하라"고 판단하는 조건이다. 세 종류가 있다.
 
-- 주행을 **1분 단위 세그먼트**로 자른다(`SEGMENT_LENGTH = 60`).
-- 메인 카메라는 HEVC로 5Mbps(폭 1,344픽셀 이하) 또는 10Mbps, 20fps로 압축한다. 따로 **저화질 카메라(qcamera)** 를 H.264 256kbps로 만든다 🔍 `system/loggerd/loggerd.h`.
-- 로그도 두 겹이다. 전체 로그(rlog)와, 서비스별로 솎아 낸 **요약 로그(qlog)**. 예를 들어 차량 상태(carState)는 100Hz 중 1/10만, CAN 메시지는 100Hz 중 1/2,053만 qlog에 들어간다 🔍 `cereal/services.py`.
-- 업로드 우선순위는 qlog(0) > qcamera(1) > 나머지(1,000)이고, 종량제 통신망에서는 사용자가 앱에서 본 주행만 저화질 영상을 올린다. qlog는 25MB, qcamera는 5MB 상한이다 🔍 `system/loggerd/uploader.py`.
-- 클라우드가 특정 세그먼트를 지목하면 그때 전체 로그와 풀 화질 영상을 **당겨온다**(`uploadFilesToUrls`, 셀룰러 허용 플래그, 31일 지나면 만료, 최대 30회 재시도) 🔍 `system/athena/athenad.py`.
-- 운전자가 버튼을 누르면(북마크) 그 세그먼트에 보존 속성이 붙고, 삭제기는 여유 공간이 5GiB 또는 10% 미만일 때만 가장 오래된 것부터 지우되 최근 북마크 5개와 그 앞 2개 세그먼트는 남긴다 🔍 `system/loggerd/deleter.py`.
-
-정리하면 **"요약을 먼저 올리고, 흥미로운 구간은 서버가 지목해 원본을 당긴다"** 는 두 단계 구조다. openpilot 설정으로 계산하면 카메라 3대 × 5Mbps ≈ 시간당 약 6.75GB(압축 후)인데, Intel의 비압축 추정과는 두 자릿수 배 차이가 난다.
-
-**기술 ② 트리거 — 세 종류.** 트리거는 "이 순간을 저장·업로드하라"고 판단하는 조건이다.
-
-| 종류 | 무엇이 걸리게 하나 | 사례 |
+| 종류 | 무엇이 걸리게 하나 | 예 |
 |---|---|---|
-| 규칙 | 운전자 개입, 급제동, 충돌, 시스템 오류 | openpilot의 `crash/` 폴더는 즉시 업로드 🔍; UN R157의 DSSAD는 시스템 켜짐·꺼짐, 전환 요구, 최소위험기동, 운전자 개입을 시각과 함께 기록하도록 요구 📰 ([해설](https://autocrypt.io/edr-dssad-vehicle-accident-analysis-tools/)) |
-| 모델 점수 | 온보드 소형 분류기가 "가치 있는 장면" 점수를 매기거나, **섀도 모드**의 새 모델과 현행 모델의 출력이 다를 때 | Tesla는 2021년 기준 221개 트리거를 플릿에서 돌렸고, 걸리면 약 10초 클립을 올렸다 📰 ([Karpathy CVPR'21 요약](https://dynamicallytyped.com/stories/2021/karpathy-autopilot-cvpr/)); NVIDIA는 모델 앙상블의 불일치로 고른 데이터가 수동 선별보다 야간 보행자 검출을 3배, 자전거를 4.4배 개선했다고 보고 📰 ([NVIDIA 블로그](https://medium.com/nvidia-ai/scalable-active-learning-for-autonomous-driving-a-practical-implementation-and-a-b-test-4d315ed04b5f)) |
-| 사람 | 운전자 북마크, 테스트 드라이버 태깅 | openpilot `userBookmark` 🔍 |
+| 규칙 | 운전자 개입, 급제동, 충돌, 시스템 오류 | 규제(UN R157)도 시스템 켜짐·꺼짐·개입을 기록하게 한다 📰 |
+| 모델 점수 | 차 안의 작은 모델이 "드문 장면" 점수를 매기거나, 두 모델의 판단이 갈릴 때 | Tesla 트리거 221개(2021) 📰; NVIDIA는 모델 여러 개의 불일치로 고른 데이터가 수동 선별보다 야간 보행자 검출을 3배 개선했다고 보고 📰 |
+| 사람 | 운전자가 버튼을 누르거나 테스트 드라이버가 표시 | openpilot 북마크 🔍 |
 
-**기술 ③ 섀도 모드.** 새 후보 모델을 차에 싣되 제어권은 주지 않고, 그 판단을 기록해 현행 모델·운전자와 비교하는 방식이다. 두 모델의 출력이 갈리는 순간이 곧 "가치 있는 데이터"의 신호가 되므로 트리거의 한 종류이자 검증(3.4절)의 한 단이기도 하다. Tesla는 FSD를 켜지 않은 차에서도 백그라운드에서 판단을 내려 실제 운전과 비교한다 📰.
+**기술 ② 섀도 모드.** 새 후보 모델을 차에 싣되 운전은 시키지 않고 판단만 기록해 현행 모델·운전자와 비교한다. 두 모델의 판단이 갈리는 순간이 곧 "가치 있는 데이터"의 신호이므로 트리거이자 검증(3.4절)이기도 하다. Tesla는 FSD를 켜지 않은 차에서도 이렇게 비교한다 📰.
 
-**기업 사례.** 회사마다 온보드 선별의 답이 다르다.
+**기술 ③ 두 단계 업로드.** 요약본(핵심 신호 + 저화질 영상)을 먼저 올리고, 서버가 "이 구간이 흥미롭다"고 지목하면 그때 원본(전체 로그 + 고화질 영상)을 올린다. 오픈소스 openpilot이 실제로 이렇게 설계돼 있다 🔍. 주행을 1분 단위로 자르고, 요약본을 우선 업로드하며, 서버가 요청할 때 원본을 올리고, 저장 공간이 부족할 때만 오래된 것부터 지우되 운전자가 표시한 구간은 보존한다(코드 위치는 출처 절 참고).
 
-| 기업 | 온보드 선별 방식 | 근거 |
-|---|---|---|
-| Tesla | 2021년 기준 플릿에서 221개 트리거 가동, 걸리면 약 10초 클립 업로드. 첫 데이터셋 약 100만 클립·1.5PB. 섀도 모드로 후보 모델 비교 | 📰⚠️ ([Karpathy CVPR'21 요약](https://dynamicallytyped.com/stories/2021/karpathy-autopilot-cvpr/)) |
-| comma.ai | 1분 세그먼트, 요약 로그·저화질 영상 우선 업로드, 서버 지목 시 원본, 운전자 북마크 | 🔍 |
-| 현대차그룹·42dot | "Hard Example Mining": AI 모델이 오인식하거나 판단하기 어려워하는 주행 상황(엣지 케이스)을 자동으로 선별해 우선 학습에 쓴다. 2026년 말부터 국내 양산차에 Atria AI를 실어 엣지 케이스를 수집 | 📰 ([현대차그룹](https://www.hyundaimotorgroup.com/en/news/hyundai-motor-group-accelerates-autonomous-driving-innovation-with-ai-powered-data-flywheel), [오토일렉트로닉스](https://www.autoelectronics.co.kr/article/articleview.asp?idx=7053)) |
-| Mobileye | 원본 영상을 올리지 않고 차 안에서 차선·표지판 같은 의미 정보만 뽑아 km당 약 10KB로 전송(REM). 선별이 아니라 "요약만 올리는" 극단 | 📰 ([Mobileye REM](https://www.mobileye.com/technology/rem/)) |
-| NVIDIA(연구) | 모델 앙상블의 불일치로 고른 데이터가 수동 선별보다 야간 보행자 검출을 3배, 자전거를 4.4배 개선 | 📰 ([NVIDIA 블로그](https://medium.com/nvidia-ai/scalable-active-learning-for-autonomous-driving-a-practical-implementation-and-a-b-test-4d315ed04b5f)) |
+**대표 사례 한 줄씩.** Tesla는 트리거 221개와 섀도 모드로 약 10초 클립을 모아 첫 데이터셋 100만 클립을 만들었다 📰⚠️. 현대차그룹은 "Hard Example Mining"으로 모델이 틀리거나 어려워한 상황을 자동 선별한다 📰. Mobileye는 원본 영상을 아예 올리지 않고 차 안에서 뽑은 차선·표지판 정보만 km당 약 10KB로 보낸다 📰.
 
-**사례에서는.** 운전자가 브레이크를 밟은 순간 개입 플래그가 찍힌다. 규제용 기록(DSSAD)과 개발용 로거 양쪽에 남는다. 동시에 "급감속 + 보행자 클래스의 신뢰도가 직전 프레임 대비 급등 + 야간 + 와이퍼 켜짐"이라는 복합 트리거가 걸리거나, 섀도 모드로 실려 있던 후보 모델이 작업자를 더 일찍 봤다면 두 모델의 출력 차이가 트리거가 된다. 요약 로그와 저화질 영상이 먼저 올라가고, 서버가 이 세그먼트를 지목해 풀 화질 영상과 전체 로그를 당겨온다. 온보드 선별은 가장 싼 비용 절감 수단이고(올리지 않은 데이터는 저장·반출·라벨링 비용이 0이다, 5.4절), 규제용 기록과 개발용 트리거가 같은 이벤트를 찍으므로 한 파이프라인으로 설계하는 것이 자연스럽다(5.6절).
+**사례에서는.** 운전자가 브레이크를 밟는 순간 개입 트리거가 걸리고, 섀도 모델이 작업자를 더 일찍 봤다면 불일치 트리거도 걸린다. 요약본이 먼저 올라가고, 서버가 지목하면 원본이 올라간다. 올리지 않은 데이터는 저장·라벨링 비용이 0이므로 온보드 선별이 가장 싼 비용 절감이고(5.4절), 규제용 기록과 개발용 트리거가 같은 순간(개입)을 찍으므로 한 파이프라인으로 설계하는 것이 자연스럽다(5.6절).
 
 ### 3.2 검색·라벨링 (클라우드) — 단계 ③④
 
-**원리 ① 하나를 찾았으면 비슷한 것을 모은다.** 클립 하나로는 모델을 못 고친다. 플릿 전체에서 "비 오는 밤 공사 구간의 서 있는 사람"과 비슷한 장면을 수백~수천 개 모아야 한다. 여기서 **임베딩 검색**이 쓰인다. 임베딩이란 영상(또는 글)의 내용을 요약한 숫자 목록이다. 뜻이 비슷한 영상은 숫자도 비슷하게 나오도록 모델을 학습시켜 두면, "worker standing next to traffic cone at night in rain" 같은 글을 같은 방식으로 숫자로 바꿔 숫자가 가까운 영상을 찾을 수 있다. 미리 조건을 코드로 써 둘 필요가 없다는 점이 트리거와 다르고, 트리거에 걸리지 않았던 "개입은 없었지만 아슬아슬했던" 장면까지 회수할 수 있다는 것이 핵심이다.
+**왜 필요한가.** 클립 하나로는 모델을 못 고친다. 플릿 전체에서 비슷한 장면을 수백~수천 개 모아야 하고, 각 장면에 정답(물체 위치·차선·궤적)을 붙여야 학습에 쓸 수 있다.
 
-**기술·도구.**
-
-- NVIDIA Cosmos Dataset Search는 오픈 블루프린트로, 영상·텍스트를 같은 공간에 놓는 임베딩 모델(Cosmos-Embed1)과 GPU 가속 벡터 DB(Milvus + cuVS), Ray 기반 배치 수집 파이프라인으로 구성된다 🔍 ([README](https://raw.githubusercontent.com/NVIDIA-Omniverse-blueprints/cosmos-dataset-search/main/README.md)). 임베딩 모델은 약 800만 영상으로 학습됐다 📰.
-- Voxel51 FiftyOne은 오픈소스 데이터셋 도구로 "데이터 문제·라벨 오류·엣지 케이스를 빠르게 찾고 고친다"고 README에 쓴다 🔍 ([README](https://raw.githubusercontent.com/voxel51/fiftyone/develop/README.md)).
-- NVIDIA Cosmos Curator는 분할 → 필터 → 캡션 → 임베딩 → 중복 제거 → 데이터셋 생성 파이프라인이다 🔍 ([README](https://raw.githubusercontent.com/nvidia-cosmos/cosmos-curate/main/README.md)). NVIDIA는 2,000만 시간 영상을 Blackwell GPU로 14일(Hopper 40일, CPU로는 3년 이상)에 처리한다고 발표했지만 README에는 처리량 수치가 없다 📰 ([NVIDIA 뉴스룸](https://nvidianews.nvidia.com/news/nvidia-launches-cosmos-world-foundation-model-platform-to-accelerate-physical-ai-development)).
-- 시각언어모델(VLM)로 영상에 글 설명을 붙여 검색 가능하게 만드는 방법도 있다. Cosmos Reason 2(2B/8B/32B)는 "영상 캡션, 시간 구간 찾기, 물리 추론"을 하는 모델이고 🔍 ([README](https://raw.githubusercontent.com/nvidia-cosmos/cosmos-reason2/main/README.md)), Uber가 자율주행 학습 데이터 캡션에 검토 중이라고 AWS 블로그가 전한다 📰.
+**기술 ① 임베딩 검색.** 임베딩이란 영상(또는 글)의 내용을 요약한 숫자 목록이다. 뜻이 비슷한 영상은 숫자도 비슷하게 나오도록 만들어 두면, "비 오는 밤 공사 구간의 작업자"라는 글을 숫자로 바꿔 가까운 영상을 찾을 수 있다. 미리 조건을 코드로 써 둘 필요가 없고, 트리거에 안 걸렸던 "아슬아슬했던" 장면까지 회수할 수 있다는 것이 핵심이다. 대표 도구는 NVIDIA Cosmos Dataset Search(글로 영상 검색), Cosmos Curator(영상을 쪼개고 설명을 붙이고 중복을 없애는 파이프라인; 2,000만 시간 영상을 14일에 처리한다고 발표 📰), Voxel51 FiftyOne 🔍이다.
 
 ![Cosmos Curator 파이프라인](images/src-nvidia-cosmos-curator-pipelines.png)
 
-*그림 12. Cosmos Curator의 공식 파이프라인 그림. 분할·주석 파이프라인(다운로드 → 디코드 → 샷 경계 분할 → 트랜스코드 → 움직임·품질 필터 → VLM 캡션 → 영상 임베딩 → 저장), 의미 기반 중복 제거, 데이터셋 샤딩의 세 단계가 Ray 위에서 돈다. 출처: [nvidia-cosmos/cosmos-curate](https://github.com/nvidia-cosmos/cosmos-curate) `docs/assets/cosmos-curator-pipelines.png`, Apache-2.0. 원본 크기.*
+*그림 12. Cosmos Curator의 공식 파이프라인 그림. 영상을 장면 단위로 쪼개고 → 품질을 걸러 → 글 설명을 붙이고 → 임베딩을 만들어 저장하며 → 중복을 없앤다. 출처: [nvidia-cosmos/cosmos-curate](https://github.com/nvidia-cosmos/cosmos-curate) `docs/assets/cosmos-curator-pipelines.png`, Apache-2.0. 원본 크기.*
 
-**원리 ② 정답은 소급해서 붙인다(자동 라벨링).** 온보드 모델은 현재 프레임까지만 보고 작은 모델로 빨리 답해야 한다. 클라우드의 자동 라벨러는 그 제약이 없다. **미래 프레임을 볼 수 있고, 여러 차의 주행을 합칠 수 있고, 훨씬 큰 모델을 쓸 수 있다.** 그래서 온보드 모델이 늦게 본 작업자를 "3초 뒤 프레임에서 확실히 보인 그 사람"으로 거슬러 올라가 첫 프레임부터 라벨링할 수 있다. 콘 작업자 사례가 딱 이 경우다.
-
-- Tesla는 2022년 AI Day에서 여러 주행을 합쳐 4D(3D + 시간)로 재구성한 뒤 차선·객체 라벨을 자동으로 만드는 파이프라인을 설명했고, 1만 주행 기준 "수작업 500만 시간 → 클러스터 12시간"을 주장했다(자동 라벨링용 GPU 4,000장) 📰⚠️ ([요약](https://www.nocode.ai/recap-tesla-ai-day-2022/)).
-- Waymo의 3D 자동 라벨링 논문(CVPR 2021)은 포인트클라우드 시퀀스 전체를 써서 만든 3D 박스가 사람 라벨과 대등하다고 보고했다 📰 ([arXiv 2103.05073](https://arxiv.org/abs/2103.05073)).
-- 오픈 도구로도 가능하다. Grounding DINO는 글 프롬프트("construction worker . traffic cone")로 박스를 만들고(COCO 제로샷 52.5 AP) 🔍 ([README](https://raw.githubusercontent.com/IDEA-Research/GroundingDINO/main/README.md)), SAM 2는 점·박스 프롬프트로 영상 전체의 마스크와 추적을 만든다(tiny 38.9M ~ large 224.4M 파라미터, A100에서 91.2~39.5 FPS) 🔍 ([README](https://raw.githubusercontent.com/facebookresearch/sam2/main/README.md)).
-- 라벨 형식은 ASAM OpenLABEL(2021-11, JSON으로 2D/3D 박스·폴리곤과 "객체·행동·사건·맥락" 태그를 통일)이 표준이다 📰 ([ASAM](https://www.asam.net/news-media/news/detail/news/asam-releases-asam-openlabel-v100/)).
+**기술 ② 자동 라벨링 — 정답은 소급해서 붙인다.** 차 안 모델은 현재 프레임까지만 보고 작은 모델로 빨리 답해야 하지만, 클라우드의 라벨러는 **미래 프레임을 볼 수 있고, 여러 차의 주행을 합칠 수 있고, 훨씬 큰 모델을 쓸 수 있다.** 그래서 "3초 뒤에 확실히 보인 그 사람"을 첫 프레임부터 거꾸로 라벨링할 수 있다. 콘 작업자 사례가 딱 이 경우다. Tesla는 여러 주행을 합쳐 3D + 시간으로 재구성한 뒤 자동 라벨링하며 1만 주행 기준 "수작업 500만 시간 → 12시간"을 주장하고 📰⚠️, Waymo는 라이다 시퀀스 전체로 만든 3D 박스가 사람 라벨과 대등하다고 보고했다(CVPR 2021) 📰. 오픈 도구로는 글로 지정한 물체의 박스를 그리는 Grounding DINO, 영상 전체의 물체 윤곽을 따라가는 SAM 2가 있다 🔍.
 
 ![라벨링 파이프라인 세 유형](images/src-li2024-labeling-pipelines.png)
 
-*그림 13. 라벨링 파이프라인의 세 유형. (a) 사람이 라벨링하고 사람이 검사, (b) 알고리즘이 라벨링하고 전문가가 개입, (c) 종단간 대형 모델·생성형 AI가 라벨링하고 자동 품질 검사. 완전 자동에서도 "통과/재작업" 루프는 남는다. 출처: [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/3-5-Mainstream-AD-Labeling-Pipelines.png`, Apache-2.0. 크기만 줄임.*
+*그림 13. 라벨링 파이프라인의 세 유형. (a) 사람이 라벨링하고 사람이 검사, (b) 알고리즘이 라벨링하고 전문가가 개입, (c) 대형 모델이 라벨링하고 자동 품질 검사. 완전 자동에서도 "통과/재작업" 루프는 남는다. 출처: [Li et al. 2024 서베이 저장소](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/3-5-Mainstream-AD-Labeling-Pipelines.png`, Apache-2.0. 크기만 줄임.*
 
 ![Waymo Open Dataset 보행자 3D 라벨 예](images/src-waymo-3d-label-example.jpg)
 
-*그림 14. 라이다 포인트클라우드 위에 붙은 보행자 3D 박스(주황)와 같은 순간의 카메라 영상(왼쪽 아래). 온보드 모델이 늦게 본 작업자도 클라우드의 자동 라벨러는 이런 3D 박스를 미래 프레임과 여러 주행을 합쳐 첫 프레임부터 만든다. 출처: [waymo-research/waymo-open-dataset](https://github.com/waymo-research/waymo-open-dataset) `docs/images/pedestrian-3D-labeling-example.png`(저장소 Apache-2.0, 데이터 자체는 Waymo Open Dataset 이용약관). JPEG로 변환.*
+*그림 14. 라이다 포인트클라우드 위에 붙은 보행자 3D 박스(주황)와 같은 순간의 카메라 영상(왼쪽 아래). 클라우드의 자동 라벨러는 이런 3D 박스를 미래 프레임과 여러 주행을 합쳐 첫 프레임부터 만든다. 출처: [waymo-research/waymo-open-dataset](https://github.com/waymo-research/waymo-open-dataset) `docs/images/pedestrian-3D-labeling-example.png`(저장소 Apache-2.0, 데이터 자체는 Waymo Open Dataset 이용약관). JPEG로 변환.*
 
-**사람은 사라지지 않고 검수로 옮겨간다.** 자동 라벨 뒤에 사람이 배치당 10% 정도를 무작위 검수해 정확도 98% 이상을 확인하는 것이 업계 관행이다 📰⚠️. 흔한 클래스가 99.8%여도 희귀 클래스는 85%인 "착시"가 있어서, 사례처럼 희귀한 클래스는 전수 검수로 격상한다. 외주 라벨 단가는 2D 박스 개당 $0.03~1.00, 세그멘테이션 마스크 $0.05~3.00 범위이고 Scale AI 같은 회사는 공개 단가표가 없다 📰⚠️ ([업계 가이드](https://www.basic.ai/blog-post/how-much-do-data-annotation-services-cost-complete-guide-2025)). 라벨 비용이 사람 수에서 GPU 시간으로 옮겨가되 검수 인력은 남는다는 뜻이다.
+**기술 ③ 사람은 검수로 옮겨간다.** 자동 라벨 뒤에 사람이 일부(업계 관행 약 10%)를 무작위 검수한다 📰⚠️. 흔한 물체는 정확도가 높아도 드문 물체는 낮은 "착시"가 있으므로, 사례처럼 드문 물체는 전수 검수한다. 라벨 비용이 사람 수에서 GPU 시간으로 옮겨가되 검수 인력은 남는다는 뜻이다.
 
-**사례에서는.** 클립을 임베딩해 플릿 전체에서 유사 장면을 검색하고, VLM으로 "roadwork, worker, night, rain" 태그를 붙여 걸러 낸다. 자동 라벨러가 미래 프레임과 여러 주행을 합쳐 작업자의 3D 박스를 첫 프레임부터 만들고, 희귀 클래스이므로 사람이 전수 검수한 뒤 OpenLABEL로 저장한다.
+**사례에서는.** 클립을 임베딩해 플릿 전체에서 비슷한 장면을 찾고, 자동 라벨러가 미래 프레임을 합쳐 작업자의 3D 박스를 첫 프레임부터 만들며, 드문 물체이므로 사람이 전수 검수한다.
 
 ### 3.3 학습·합성 데이터 (클라우드) — 단계 ⑤
 
-**원리: 모은 것만으로는 부족하다.** 첫 번째 방법은 오버샘플링이다. 회수한 수백 개 클립의 학습 비중을 높인다. Tesla FSD v14.3 릴리스 노트는 "강화학습 단계를 업그레이드해 어려운 예에 집중"했다고 적는다 📰⚠️ ([릴리스 노트 인용](https://www.notateslaapp.com/software-updates/version/2026.2.9.6/release-notes)). 하지만 "작업자가 콘 뒤에서 나오는" 변형이나 "비가 더 세게 오는" 변형은 플릿에 없다. 그래서 합성 데이터가 필요하고, 방법은 세 갈래다.
+**왜 필요한가.** 모은 장면을 학습에 더 많이 넣는 것(오버샘플링)이 첫 방법이지만, "작업자가 콘 뒤에서 나오는" 변형이나 "비가 더 세게 오는" 변형은 플릿에 없다. 그래서 합성 데이터가 필요하고, 방법은 세 갈래다.
 
-**기술 ① 합성 데이터의 세 갈래 — 재생·재구성·생성.**
+**기술 ① 합성 데이터의 세 갈래.**
 
 ![합성 데이터의 세 갈래](images/fig7-synthetic-three-routes.svg)
 
@@ -313,80 +286,60 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 | 갈래 | 무엇을 하나 | 장점·한계 | 대표 도구 |
 |---|---|---|---|
-| **재생(replay)** | 기록된 로그를 그대로 틀고 새 모델을 돌린다. 다른 차들은 기록대로 움직인다(비반응) | 가장 싸고 정확하지만, 내 차가 다르게 움직여도 남들이 반응하지 않아 인과가 끊긴다. "기록된 틈을 기다리는" 편법을 배울 위험 📰 ([분석](https://arxiv.org/pdf/2510.14677)) | nuPlan, NAVSIM 🔍 |
-| **재구성(reconstruction)** | 실제 로그를 3D 장면으로 복원해 다른 궤적·시점에서 다시 렌더링한다 | 실제 장면 기반이라 현실감이 높고 "그때 왼쪽으로 꺾었다면"을 볼 수 있다. 기록 범위 밖 시점은 품질이 떨어짐 | 3D 가우시안 스플래팅(1080p 30fps 이상, 학습에 24GB VRAM) 🔍 ([README](https://raw.githubusercontent.com/graphdeco-inria/gaussian-splatting/main/README.md)); NVIDIA 3DGRUT(어안·롤링셔터·반사까지 처리, USD/NuRec 내보내기) 🔍; **InstantNuRec**은 10~20초 다중 카메라 장면을 약 1.5초에 재구성하고 Waymo Open Dataset에서 기존 최고 대비 +2.01dB 🔍 ([README](https://raw.githubusercontent.com/NVIDIA/instant-nurec/main/README.md)); Waymo Block-NeRF는 사진 280만 장으로 샌프란시스코 한 구역을 35개 신경 모델로 복원 📰 |
-| **생성(generation)** | 조건(지도·라이다·세그멘테이션)을 주고 없던 영상을 만든다 | 밤·비·작업자 조합처럼 존재하지 않는 교차 조건을 만들 수 있는 유일한 길. 현실과의 격차 검증이 필수 | NVIDIA Cosmos Transfer1은 세그멘테이션·깊이·엣지, 자율주행용 라이다·HD맵 조건으로 영상을 만들고, 영상 1개를 다시점으로 늘리며, 2025-08 증류 모델은 36스텝을 1스텝으로 줄였다 🔍 ([README](https://raw.githubusercontent.com/nvidia-cosmos/cosmos-transfer1/main/README.md)); Wayve GAIA-3(150억 파라미터, 데이터 10배)는 안전 관련 희귀 장면을 만들어 평가하며 "합성 테스트 기각률 5배 감소"를 주장 📰⚠️; Waymo World Model 📰 |
-
-**재구성과 생성의 중간 다리**가 Cosmos Transfer 같은 "조건부 변환"이다. 지도와 라이다는 그대로 두고 외관만 밤·비로 바꾸므로, 장면의 기하는 실제이고 조명·날씨만 합성이다. 재구성의 현실감과 생성의 자유도를 절충한 셈이다.
+| **재생(replay)** | 기록된 로그를 그대로 틀고 새 모델을 돌린다. 다른 차들은 기록대로만 움직인다 | 가장 싸고 정확하지만, 내 차가 다르게 움직여도 남들이 반응하지 않는다 | nuPlan, NAVSIM 🔍 |
+| **재구성(reconstruction)** | 실제 로그를 3D 장면으로 복원해 다른 궤적·시점에서 다시 그린다 | 실제 장면 기반이라 현실감이 높고 "그때 왼쪽으로 꺾었다면"을 볼 수 있다. 기록 범위 밖은 품질이 떨어진다 | 3D 가우시안 스플래팅 🔍, NVIDIA NuRec(10~20초 장면을 약 1.5초에 재구성) 🔍, Waymo Block-NeRF 📰 |
+| **생성(generation)** | 조건(지도·라이다·날씨)을 주고 없던 영상을 만든다 | 존재하지 않는 조합을 만들 수 있는 유일한 길. 현실과의 격차 검증이 필수 | NVIDIA Cosmos Transfer(기하는 그대로 두고 날씨·조명만 바꾼다) 🔍, Wayve GAIA-3 📰, Waymo World Model 📰 |
 
 ![Cosmos Transfer1 구조](images/src-nvidia-cosmos-transfer1.png)
 
-*그림 16. Cosmos Transfer1의 공식 구조도. 깊이·엣지·세그멘테이션 영상이 각각의 제어 가지(DepthControl·EdgeControl·SegControl)로 들어가고, 시공간 가중치 영상으로 섞여 디퓨전 백본에 조건을 준다. 기하는 입력 조건이 정하고 외관은 생성된다. 출처: [nvidia-cosmos/cosmos-transfer1](https://github.com/nvidia-cosmos/cosmos-transfer1) `assets/transfer1_diagram.png`, Apache-2.0. 원본 크기.*
+*그림 16. Cosmos Transfer1의 공식 구조도. 깊이·윤곽·영역 구분 영상을 조건으로 넣으면 그 기하를 유지한 채 외관(날씨·조명)만 새로 그린다. 출처: [nvidia-cosmos/cosmos-transfer1](https://github.com/nvidia-cosmos/cosmos-transfer1) `assets/transfer1_diagram.png`, Apache-2.0. 원본 크기.*
 
-**기술 ② 폐루프 학습 — 모델이 자기 실수의 결과를 겪으며 배운다.** 기록을 흉내 내는 학습(모방학습)만 하면 모델은 자기 실수의 결과를 겪어 보지 못하고, 조금 어긋난 상태에서 어떻게 복귀하는지 배울 기회가 없다. 시뮬레이터 안에서 정책이 직접 운전하고 그 결과(충돌·이탈·승차감)로 배우는 것이 폐루프 강화학습이다. 시뮬레이터 자체를 학습된 월드모델로 만들면 "학습된 시뮬레이터"가 된다.
-
-- NVIDIA AlpaGym은 "시뮬레이터 안에서 정책을 폐루프로 돌리고, 주행을 채점하고, 그것으로 학습한다"는 오픈 프레임워크다. AlpaSim(시뮬레이터) + Cosmos-RL(학습기) 조합이고 현재 Alpamayo 1.5(10B) 정책을 GPU 2장 추론으로 지원하며 "초기 개발 단계"라고 밝힌다 🔍 ([README](https://raw.githubusercontent.com/NVlabs/alpagym/main/README.md)).
-- comma.ai는 2022년 11월 0.9.0에서 "재투영 시뮬레이터로 학습", 2025년 8월 0.10.0에서 "월드모델 기반 종단간 계획이 종방향 MPC 대체", 2026년 3월 0.11.0에서 "**학습된 시뮬레이터로 전량 학습한** 새 주행 모델"을 배포했다 🔍 ([RELEASES.md](https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md)). 블로그는 이 월드모델이 2B 파라미터, 주행 영상 250만 분으로 학습됐다고 설명한다 📰. 합성 환경에서 학습한 정책을 실제 사용자에게 배포한 드문 공개 사례다.
+**기술 ② 폐루프 학습.** 기록을 흉내 내는 학습(모방학습)만 하면 모델은 자기 실수의 결과를 겪어 보지 못한다. 시뮬레이터 안에서 모델이 직접 운전하고 그 결과(충돌·이탈)로 배우는 것이 폐루프 강화학습이고, 시뮬레이터 자체를 학습된 월드모델로 만들면 "학습된 시뮬레이터"가 된다. NVIDIA AlpaGym이 오픈 프레임워크로 공개됐고("초기 개발 단계") 🔍, comma.ai는 2026년 3월 "학습된 시뮬레이터로 전량 학습한" 모델을 실제 사용자에게 배포했다 🔍.
 
 ![Alpamayo 강화학습 프레임워크](images/src-nvidia-alpamayo-rl-framework.png)
 
-*그림 17. NVIDIA가 공개한 Alpamayo 강화학습 레시피의 구조도. 롤아웃 복제본(vLLM)이 주행을 생성해 보상과 함께 롤아웃 풀에 넣고, 정책 복제본이 이를 소비해 가중치를 갱신하며, 갱신된 가중치가 롤아웃 쪽으로 되돌아간다. 출처: [NVlabs/alpamayo-recipes](https://github.com/NVlabs/alpamayo-recipes) `recipes/alpamayo1_x_rl/assets/alpamayo_rl_framework.png`, Apache-2.0. 원본 크기.*
+*그림 17. NVIDIA가 공개한 Alpamayo 강화학습 레시피의 구조도. 한쪽에서 주행을 생성해 점수와 함께 모아 두고, 다른 쪽에서 그것으로 모델을 갱신하며, 갱신된 모델이 다시 주행을 생성한다. 출처: [NVlabs/alpamayo-recipes](https://github.com/NVlabs/alpamayo-recipes) `recipes/alpamayo1_x_rl/assets/alpamayo_rl_framework.png`, Apache-2.0. 원본 크기.*
 
 ![AlpaSim 구조](images/alpasim-architecture.png)
 
-*그림 18. NVIDIA AlpaSim의 마이크로서비스 구조. 센서 시뮬레이션(렌더러) → 정책 → 궤적 → 물리 → 런타임 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png`, Apache-2.0.*
+*그림 18. NVIDIA AlpaSim의 구조. 센서 시뮬레이션 → 정책 → 궤적 → 물리 → 평가가 분리되어 각각 다른 GPU에서 돈다. 출처: [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png`, Apache-2.0.*
 
-**기술 ③ 교사-학생 증류 — 큰 모델로 배우고 작은 모델을 싣는다.** 클라우드에서는 크기 제한 없는 "교사" 모델을 학습시키고, 차에는 실시간으로 돌 만큼 작은 "학생" 모델을 싣는다. 학생은 교사의 출력을 따라 배운다(증류). Waymo는 하나의 Waymo Foundation Model(Gemini 계열 기반)이 운전자(Driver)·시뮬레이터·평가자(Critic)의 교사 역할을 하고, 증류한 학생 모델이 차에 실린다고 설명한다 📰 ([Waymo 블로그 2025-12](https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/), [Forbes](https://www.forbes.com/sites/bradtempleton/2025/12/09/waymo-offers-a-peak-under-their-ai-hood-and-keeps-growing/)). NVIDIA는 Alpamayo(100억 파라미터 추론형 VLA)를 자동 라벨링과 증류의 교사로 쓰도록 공개했다 📰🔍.
+**기술 ③ 교사-학생 증류.** 클라우드에서는 크기 제한 없는 "교사" 모델을 학습시키고, 차에는 실시간으로 돌 만큼 작은 "학생" 모델을 싣는다. 학생은 교사의 출력을 따라 배운다. Waymo는 하나의 파운데이션 모델이 운전자·시뮬레이터·평가자의 교사 역할을 하고, 증류한 학생 모델이 차에 실린다고 설명한다 📰.
 
-**학습 컴퓨트.** Tesla는 자체 학습 클러스터 Cortex를 2024년 말 약 5만 H100에서 2026년 1분기 "10만 H100 상당 이상"으로 늘렸고 Cortex 2를 추가 가동했다고 공개했다 📰⚠️. 2022년 AI Day 기준 GPU 1만 4,000장(자동 라벨링 4,000 + 학습 1만) 📰⚠️, XPeng은 학습비 20억 위안 이상 📰⚠️을 밝혔다. 회사 발표 수치라 독립 검증은 없다.
-
-**사례에서는.** 회수한 클립을 오버샘플링하고, 원 클립을 InstantNuRec/3DGS로 재구성해 작업자 위치·자차 속도·조명을 바꾼 변형을 수십 개 만들며, Cosmos Transfer로 같은 지도·라이다 조건에서 강우 강도를 바꾸고, 월드모델로 "콘 뒤에서 작업자가 나오는" 존재하지 않는 조합을 만든다. 재구성 장면 안에서 정책을 굴려 "더 일찍 감속"에 보상을 주고, 그 결과를 온보드 학생 모델에 증류한다. 재생 → 재구성 → 생성으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차 검증 부담이 커진다(5.3절).
+**사례에서는.** 회수한 클립을 더 많이 학습에 넣고, 원 클립을 재구성해 작업자 위치·속도·조명을 바꾼 변형을 만들며, 생성 모델로 "콘 뒤에서 작업자가 나오는" 조합을 만든다. 재구성 장면 안에서 모델을 굴려 "더 일찍 감속"에 보상을 주고, 그 결과를 차에 실을 학생 모델에 증류한다. 재생 → 재구성 → 생성으로 갈수록 "없던 상황"을 만들 수 있지만 현실과의 격차 검증 부담이 커진다(5.3절).
 
 ### 3.4 검증·배포 — 단계 ⑥⑦⑧
 
-**원리: 개루프 점수는 이 사례를 못 잡는다.** 기록된 궤적과 예측 궤적의 거리(ADE/FDE)로 채점하는 방식을 개루프(open-loop) 평가라고 한다. 사례의 기록 궤적은 "늦게 본 운전자"의 궤적이므로, 그것과 가까울수록 좋은 점수를 받는다면 늦게 보는 모델이 이긴다. 그래서 검증은 한 지표가 아니라 사다리처럼 올라가고, 각 단은 이전 단이 못 보던 것을 본다.
+**왜 사다리인가.** 가장 단순한 평가는 "기록된 궤적과 얼마나 가까운가"(개루프)다. 그런데 사례의 기록 궤적은 "늦게 본 운전자"의 궤적이므로, 그것과 가까울수록 좋은 점수를 준다면 늦게 보는 모델이 이긴다. 그래서 검증은 한 점수가 아니라 사다리처럼 올라가고, 각 단은 이전 단이 못 보던 것을 본다.
 
-**기술 ① 검증 사다리.**
-
-| 단 | 무엇을 재나 | 대표 도구 | 이전 단에서 못 보던 것 |
-|---|---|---|---|
-| 개루프 | 기록과의 거리 | ADE/FDE | — |
-| 유사 폐루프 | 4초 비반응 시뮬에서 충돌·주행 가능 영역·충돌 시간(TTC)·진행·승차감을 곱하고 더한 점수 | NAVSIM PDMS = (충돌 없음 × 주행 영역 준수) × 가중 평균(TTC·진행·승차감) 🔍 ([metrics.md](https://raw.githubusercontent.com/autonomousvision/navsim/main/docs/metrics.md)); v2는 차선 유지·신호 준수를 더하고 "사람도 위반한 경우 페널티 해제" | 내 궤적이 물리적으로 안전한가 |
-| 사람 선호 | 희귀 장면에서 평가자가 고른 궤적 3개와의 정합을 0~10점 | Waymo WOD-E2E RFS 📰 | 기록과 달라도 사람이 보기에 좋은 선택 |
-| 시뮬 폐루프 | 시뮬레이터 안에서 끝까지 운전 | Bench2Drive(CARLA 220 루트·44 시나리오, 클립 13,638개) 🔍 ([README](https://raw.githubusercontent.com/Thinklab-SJTU/Bench2Drive/main/README.md)); 재구성·생성 시뮬 | 남들이 반응하는 상황에서의 누적 결과 |
-| 회귀 세트 | 예전 실패 사례를 모두 다시 통과하는가 | Waymo는 사고 재구성 시나리오에서 상대 차량 위치·속도를 바꿔 가며(fuzzing) 시험하고, 기준 모델(NIEON)이 62% 회피할 때 Waymo Driver는 75% 회피 📰 ([Waymo CAT](https://waymo.com/blog/2022/12/waymos-collision-avoidance-testing/)) | 새 모델이 예전 것을 잊지 않았는가 |
-| HIL 재생 | 실제 ECU에 원시 센서·버스 데이터를 시간 맞춰 주입 | dSPACE ESI + SCALEXIO(카메라·레이더·라이다·CAN·이더넷 동기 주입) 📰; 현대모비스는 시뮬레이터 60대를 연결하면 "1만 시간 검증을 1주일에" 끝낸다는 계획(2026-04) 📰⚠️ | 실제 하드웨어·센서 파이프라인에서의 동작 |
-| 섀도 배포 | 새 모델을 제어권 없이 플릿에 실어 개입·불일치 통계 | Tesla 컷인 네트워크는 여러 라운드 섀도 후 활성화 📰 | 실제 운전자·실제 환경 |
-| 단계적 OTA | 직원 → 얼리 액세스 → 소규모 → 광역 | Tesla v14 Lite는 플릿 0.1% 미만에서 시작해 약 10%로 확대 📰⚠️ | 대규모 분포 |
-
-**기술 ② 안전 케이스와 규제 절차 — 마지막 단은 관리 프로세스다.** UN R156은 소프트웨어 업데이트 관리체계(SUMS)를 형식승인 조건으로 요구한다. 모든 소프트웨어 버전의 고유 식별(RxSWIN), 무결성 검증, 대상 차량 구성과의 호환성 확인, 주행 중 안전한 실행, 사용자 고지, 기록이 요건이다. EU에서는 2024년 7월부터 모든 신차에 적용된다 📰 ([UL 해설](https://www.ul.com/sis/insights/software-update-management-systems-according-unece-r156)). UL 4600 안전 케이스 표준은 "분석 + 시뮬레이션 + 폐쇄 도로 + 공도 시험의 조합"으로 안전을 논증하고 소프트웨어 업데이트마다 논증을 갱신하라고 한다 📰. 배포가 곧 기록(DSSAD)으로 이어지므로, 플라이휠의 마지막 단계는 자동으로 첫 단계에 연결된다.
-
-**기업 사례.**
-
-| 기업 | 검증·배포 방식 | 근거 |
+| 단 | 무엇을 보나 | 예 |
 |---|---|---|
-| Waymo | 새 소프트웨어마다 테스트 트랙·실도로·합성 시나리오 전부를 시뮬레이션에서 재실행. 사고 재구성 시나리오의 상대 차량 위치·속도를 바꿔 가며(fuzzing) 시험. 기준 모델(NIEON) 62% 회피 vs Waymo Driver 75% 회피. 플릿 통계를 안전 허브로 공개 | 📰 ([Waymo CAT](https://waymo.com/blog/2022/12/waymos-collision-avoidance-testing/)) |
-| Tesla | 컷인 네트워크 등은 여러 라운드 섀도 후 활성화. v14 Lite는 플릿 0.1% 미만에서 시작해 약 10%로 확대, 포인트 릴리스 1~2주 | 📰⚠️ |
-| 현대차그룹·모비스 | 실제 주행 데이터를 3차원 환경으로 재구성해 위험·반복 불가 상황을 가상 재현 📰; 모비스는 실차 센서 데이터를 시뮬레이터에 통합, 60대 연결 시 "1만 시간 검증을 1주일에"(계획) | 📰⚠️ ([PR Newswire](https://www.prnewswire.com/news-releases/hyundai-mobis-develops-data-driven-validation-system-to-dramatically-cut-testing-time-for-sdvs-302745490.html)) |
-| Wayve | GAIA-3 월드모델을 검증용으로 외부에 제공, "합성 테스트 기각률 5배 감소" 주장 | 📰⚠️ |
-| Mercedes | L3 95km/h는 TÜV Rheinland 시험과 트랙·공도 동적 시험으로 KBA 승인 | 📰 |
+| 개루프 | 기록 궤적과의 거리 | ADE/FDE 같은 거리 지표 |
+| 유사 폐루프 | 몇 초간 시뮬에서 충돌·차선 이탈·승차감을 점수화 | NAVSIM 🔍 |
+| 사람 선호 | 드문 장면에서 사람 평가자가 고른 궤적과 얼마나 맞나 | Waymo WOD-E2E 📰 |
+| 시뮬 폐루프 | 시뮬레이터 안에서 끝까지 운전 | Bench2Drive 🔍, 재구성·생성 시뮬 |
+| 회귀 세트 | 예전 실패 사례를 전부 다시 통과하나 | Waymo는 사고 시나리오의 상대 차량 위치·속도를 조금씩 바꿔 가며 시험한다 📰 |
+| 실차(HIL) | 기록한 센서 데이터를 실제 제어기에 넣어 본다 | dSPACE 📰, 현대모비스 시뮬레이터 60대 계획 📰⚠️ |
+| 섀도 배포 | 새 모델을 운전시키지 않고 플릿에 실어 개입·불일치 통계를 본다 | Tesla 📰 |
+| 단계적 OTA | 직원 → 소규모 → 광역 | Tesla v14는 플릿 0.1% 미만에서 시작 📰⚠️ |
 
-**사례에서는.** 원 클립과 변형들을 EPDMS(충돌·TTC)와 사람 선호로 채점하고, 원 클립을 영구 회귀 세트에 넣는다. 원시 로그를 ECU에 재생해 새 모델의 검출 시점이 몇 프레임 앞당겨졌는지 비교한다. 섀도로 배포해 같은 조건에서 개입률이 떨어지는지 확인한 뒤 0.1% → 10% → 광역으로 내보내고, RxSWIN을 갱신한다. 배포된 새 모델이 다음 실패를 만들면 다시 3.1절이다.
+**마지막 단은 규제 절차다.** UN R156은 소프트웨어 업데이트 관리체계(SUMS)를 인증 조건으로 요구한다. 버전마다 식별 번호를 붙이고, 대상 차량과 맞는지 확인하고, 안전하게 설치하고, 기록을 남겨야 한다. EU는 2024년 7월부터 모든 신차에 적용한다 📰. 안전 케이스 표준(UL 4600)은 분석·시뮬레이션·시험장·공도 시험을 조합해 안전을 논증하고 업데이트마다 갱신하라고 한다 📰. 배포가 곧 기록(DSSAD)으로 이어지므로 플라이휠의 마지막 단계는 자동으로 첫 단계에 연결된다.
+
+**사례에서는.** 원 클립과 변형들을 폐루프 점수와 사람 선호로 채점하고, 원 클립을 영구 회귀 세트에 넣는다. 섀도로 배포해 같은 조건에서 개입률이 떨어지는지 확인한 뒤 0.1% → 10% → 광역으로 내보낸다. 새 모델이 다음 실패를 만들면 다시 3.1절이다. 검증은 사다리이고 마지막 단(OTA)은 규제 프로세스이므로, 개발 파이프라인과 인증 산출물을 함께 설계해야 한다.
 
 ### 3.5 단계별 처리량 — 공개된 숫자
 
 | 단계 | 수치 | 근거 |
 |---|---|---|
-| ①② 차 → 클라우드 | Tesla 트리거 221개, 약 10초 클립, 첫 데이터셋 약 100만 클립·1.5PB, 루프 7회 반복(2021) | 📰⚠️ |
+| ①② 차 → 클라우드 | Tesla 트리거 221개, 약 10초 클립, 첫 데이터셋 약 100만 클립·1.5PB(2021) | 📰⚠️ |
 | ③ 큐레이션 | Cosmos Curator 2,000만 시간을 14일(Blackwell) | 📰 |
 | ④ 자동 라벨링 | Tesla 1만 주행: 수작업 500만 시간 → 12시간(2022) | 📰⚠️ |
-| ⑤ 재구성 | InstantNuRec 10~20초 장면 → 약 1.5초 | 🔍 |
+| ⑤ 재구성 | NVIDIA InstantNuRec 10~20초 장면 → 약 1.5초 | 🔍 |
 | ⑥ 시뮬 검증 | Waymo 하루 1,000만 마일(2018), 누적 100억 마일(2019) | 📰 |
 | ⑦ HIL | 현대모비스 60대 연결 시 주당 1만 시간(계획) | 📰⚠️ |
-| ⑧ 배포 | Tesla v14.x 포인트 릴리스 1~2주 간격, 초기 롤아웃 0.1% 미만 | 📰 |
-| 오픈소스 | openpilot 2021년 "100만 분" 학습 → 2026년 월드모델 250만 분·2B | 🔍📰 |
+| ⑧ 배포 | Tesla 포인트 릴리스 1~2주 간격, 초기 롤아웃 0.1% 미만 | 📰 |
 
-"트리거에서 배포까지 몇 주"라는 명시적 수치는 어느 회사도 공개하지 않았다. 확인되는 것은 "수주 단위 OTA"라는 정성 표현뿐이다 ⚠️. 자사 플라이휠을 설계한다면 이 "한 바퀴 시간"을 핵심 지표로 직접 재야 한다.
+"트리거에서 배포까지 몇 주"라는 한 바퀴 소요 시간은 어느 회사도 공개하지 않았다 ⚠️. 자사 플라이휠을 설계한다면 이 "한 바퀴 시간"을 핵심 지표로 직접 재야 한다.
 
 ---
 
@@ -410,7 +363,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 | Wayve | 자체 시험 플릿 + 파트너(Nissan) | ● | ● | ? | ? | ● GAIA 안에서 | ● GAIA-3/4 | ◐ | ○ 파트너 단위 |
 | XPeng | 자기 양산차(1억 클립) | ● | ● | ● | ● | ● | ● X-World | ● | ● |
 | Baidu Apollo Go | 자기 로보택시(2,300만 회 탑승) | ● | ● 탈민감화 | ● | ● | ● ADFM | ● OpenX 시나리오 | ● | ● |
-| comma.ai | 사용자 양산차(3억 마일) | ● qlog/qcamera | ● 서버 지목 시 원본 | ? | ? | ● | ● 학습된 시뮬레이터 | ● 사용자 플릿 | ● 약 2개월 |
+| comma.ai | 사용자 양산차(3억 마일) | ● 요약본 우선 업로드 | ● 서버 지목 시 원본 | ? | ? | ● | ● 학습된 시뮬레이터 | ● 사용자 플릿 | ● 약 2개월 |
 | NVIDIA(플랫폼) | 자기 플릿 없음(Uber 10만 대 계획) | ○ DRIVE 칩·Hyperion 센서 세트 제공 | — | ● Cosmos Curator·Dataset Search | ● Cosmos Reason·Alpamayo | ● Alpamayo·Cosmos-RL | ● NuRec·Transfer·AlpaSim | — | — |
 
 각 칸의 근거는 4.2~4.7절의 회사별 서술에 적었다. Tesla·Waymo·Momenta·Mobileye·XPeng·Baidu는 📰(회사 발표·보도), comma.ai·NVIDIA는 🔍(저장소 원문), 현대차그룹은 📰(2026-09 미디어데이 보도)다.
@@ -459,7 +412,7 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 **Baidu Apollo Go**는 합규 데이터 수집(차량 개조·탈민감화) → 처리·관리 → 라벨링 → 학습·평가 → 시나리오 라이브러리(OpenX 표준)·시뮬 → 차량 배포·OTA의 폐쇄루프를 그림으로 공개했다(그림 21). 그림의 수집 단계에 "탈민감화(개인정보 제거)"가 명시된 것이 중국 규제의 반영이다. 6세대 RT6에 파운데이션 모델 ADFM을 싣고, 2026년 2분기 완전 무인 탑승 약 100만 회, 6월 누적 2,300만 회를 기록했으며 📰 ([Baidu 6-K](https://www.sec.gov/Archives/edgar/data/1329099/000119312526110843/d34060dex991.pdf)), 2026년부터 Lyft와 독일·영국에 진출한다 📰.
 
-**comma.ai openpilot**은 플릿형 플라이휠의 진화를 릴리스 노트와 코드로 확인할 수 있는 유일한 창이다. 사용자 2만 명·3억 마일에서 qlog/qcamera로 선별 업로드하고(검색·라벨링 방식은 비공개), 월드모델(2B, 250만 분)로 학습된 시뮬레이터를 만들어 그 안에서 전량 학습한 모델을 2026년 3월 0.11에 배포했으며, 약 2개월마다 릴리스하고 사용자 플릿이 검증한다. 흐름은 2025-08 "MPC → 월드모델 종단간" → 2025-09 "4배 세그먼트" → 2026-03 "학습된 시뮬레이터 전량 학습" → 2026-08 "880M 대형 모델"이다 🔍 ([RELEASES.md](https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md)); 2B·250만 분은 📰.
+**comma.ai openpilot**은 플릿형 플라이휠의 진화를 릴리스 노트와 코드로 확인할 수 있는 유일한 창이다. 사용자 2만 명·3억 마일에서 요약본을 먼저 올리고 원본은 서버가 지목할 때 올리며(검색·라벨링 방식은 비공개), 월드모델(2B, 250만 분)로 학습된 시뮬레이터를 만들어 그 안에서 전량 학습한 모델을 2026년 3월 0.11에 배포했으며, 약 2개월마다 릴리스하고 사용자 플릿이 검증한다. 흐름은 2025-08 "MPC → 월드모델 종단간" → 2025-09 "4배 세그먼트" → 2026-03 "학습된 시뮬레이터 전량 학습" → 2026-08 "880M 대형 모델"이다 🔍 ([RELEASES.md](https://raw.githubusercontent.com/commaai/openpilot/master/RELEASES.md)); 2B·250만 분은 📰.
 
 ![Baidu 폐쇄루프 데이터 시스템](images/src-baidu-closed-loop.png)
 
@@ -748,4 +701,6 @@ Waymo가 2025년 10월 공개한 WOD-E2E 데이터셋은 이 꼬리를 정면으
 
 ## 출처
 
-전체 출처 목록(URL·등급·확인한 사실·접근 실패 목록)은 [reference/references.md](reference/references.md)에 있다. 그림 출처는 [reference/images.md](reference/images.md)에 있다. 2판(2026-09-30)에서 추가한 출처는 references.md 끝의 "개조식 보고서 2판 추가 출처" 표에 있다(두 판 공통). 1차로 직접 읽은 저장소는 다음과 같다. NVIDIA-AI-Blueprints/data-flywheel, commaai/openpilot(RELEASES.md·README·loggerd·uploader·deleter·athenad·services), LincanLi-X/Awesome-Data-Centric-Autonomous-Driving, NVIDIA/Cosmos, nvidia-cosmos/cosmos-curate·cosmos-reason2·cosmos-transfer1·cosmos-predict2, NVIDIA-Omniverse-blueprints/cosmos-dataset-search, NVIDIA/instant-nurec, nv-tlabs/3dgrut, graphdeco-inria/gaussian-splatting, NVlabs/alpagym·alpasim, voxel51/fiftyone, IDEA-Research/GroundingDINO, facebookresearch/sam2, autonomousvision/navsim, Thinklab-SJTU/Bench2Drive, tier4/data_recording_system·scenario_simulator_v2, autowarefoundation/autoware-documentation.
+전체 출처 목록(URL·등급·확인한 사실·접근 실패 목록)은 [reference/references.md](reference/references.md)에 있다. 그림 출처는 [reference/images.md](reference/images.md)에 있다. 2판(2026-09-30)에서 추가한 출처는 references.md 끝의 "개조식 보고서 2판 추가 출처" 표에 있다(두 판 공통). 1차로 직접 읽은 저장소는 다음과 같다. NVIDIA-AI-Blueprints/data-flywheel, commaai/openpilot(RELEASES.md·README와 로깅 코드 5개 파일), LincanLi-X/Awesome-Data-Centric-Autonomous-Driving, NVIDIA/Cosmos, nvidia-cosmos/cosmos-curate·cosmos-reason2·cosmos-transfer1·cosmos-predict2, NVIDIA-Omniverse-blueprints/cosmos-dataset-search, NVIDIA/instant-nurec, nv-tlabs/3dgrut, graphdeco-inria/gaussian-splatting, NVlabs/alpagym·alpasim, voxel51/fiftyone, IDEA-Research/GroundingDINO, facebookresearch/sam2, autonomousvision/navsim, Thinklab-SJTU/Bench2Drive, tier4/data_recording_system·scenario_simulator_v2, autowarefoundation/autoware-documentation.
+
+openpilot 코드 인용(3.1절 두 단계 업로드)은 커밋 `521db4c`(2026-09-20, 전체 SHA 521db4c825d3…)의 다음 파일을 직접 읽은 것다: `openpilot/system/loggerd/loggerd.h`(1분 세그먼트·영상 압축·저화질 카메라), `openpilot/system/loggerd/uploader.py`(요약본 우선 업로드·용량 상한·종량제 처리), `openpilot/system/athena/athenad.py`(서버 지목 시 원본 업로드·재시도), `openpilot/system/loggerd/deleter.py`(저장 공간 부족 시 삭제·운전자 표시 구간 보존), `openpilot/cereal/services.py`(요약 로그에 넣을 신호와 비율). 저장소가 `openpilot/` 패키지 디렉터리 아래로 재구성돼 있어 경로에 이 접두사가 붙는다(초판 표기에서 누락, 2026-10-02 보정). 링크: [loggerd.h](https://github.com/commaai/openpilot/blob/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/loggerd/loggerd.h) · [uploader.py](https://github.com/commaai/openpilot/blob/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/loggerd/uploader.py) · [athenad.py](https://github.com/commaai/openpilot/blob/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/athena/athenad.py) · [deleter.py](https://github.com/commaai/openpilot/blob/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/system/loggerd/deleter.py) · [services.py](https://github.com/commaai/openpilot/blob/521db4c825d37eb5f29acf955daa88da003e4433/openpilot/cereal/services.py).
