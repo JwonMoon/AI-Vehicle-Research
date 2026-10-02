@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="470" viewBox="0 0 1240 470" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
 <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
-<title>검증 사다리</title>
+<title>단계적 검증</title>
 <rect width="1240" height="470" fill="#ffffff"/>
-<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">검증 사다리 — 위로 갈수록 현실에 가깝고, 비용과 시간이 커진다</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">단계 ⑥⑦⑧(2.2절). 각 단은 이전 단이 못 보던 것을 본다. 아래 네 단은 클라우드(파랑), 위 네 단은 시험장·실차·규제(초록). 자체 작성.</text>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">단계적 검증 — 위로 갈수록 현실에 가깝고, 비용과 시간이 커진다</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">단계 ⑥⑦⑧(2.2절). 각 단계는 이전 단계가 확인하지 못한 것을 확인한다. 아래 네 단계는 클라우드(파랑), 위 세 단계는 시험장·실차·규제(초록). 자체 작성.</text>
 
 <!-- rungs from bottom (y large) to top -->
 <g font-size="12">
@@ -11,32 +11,32 @@
 <rect x="60" y="400" width="300" height="44" rx="7" fill="#eff6ff" stroke="#2563eb"/>
 <text x="76" y="420" fill="#111827" font-weight="600">1 개루프</text>
 <text x="76" y="436" fill="#374151" font-size="11">기록 궤적과의 거리(ADE/FDE)</text>
-<text x="380" y="428" fill="#6b7280" font-size="11">못 보는 것: 기록이 틀렸을 때(늦게 본 운전자)</text>
+<text x="380" y="428" fill="#6b7280" font-size="11">확인 못 하는 것: 기록이 틀렸을 때(늦게 본 운전자)</text>
 <!-- 2 -->
 <rect x="90" y="348" width="300" height="44" rx="7" fill="#eff6ff" stroke="#2563eb"/>
 <text x="106" y="368" fill="#111827" font-weight="600">2 유사 폐루프</text>
 <text x="106" y="384" fill="#374151" font-size="11">몇 초간 충돌·이탈·승차감 점수 — NAVSIM</text>
-<text x="410" y="376" fill="#6b7280" font-size="11">못 보는 것: 남들이 내 차에 반응하는 결과</text>
+<text x="410" y="376" fill="#6b7280" font-size="11">확인 못 하는 것: 남들이 내 차에 반응하는 결과</text>
 <!-- 3 -->
 <rect x="120" y="296" width="300" height="44" rx="7" fill="#eff6ff" stroke="#2563eb"/>
 <text x="136" y="316" fill="#111827" font-weight="600">3 사람 선호</text>
 <text x="136" y="332" fill="#374151" font-size="11">드문 장면에서 평가자가 고른 궤적과의 정합 — Waymo RFS</text>
-<text x="440" y="324" fill="#6b7280" font-size="11">못 보는 것: 누적 결과, 긴 상호작용</text>
+<text x="440" y="324" fill="#6b7280" font-size="11">확인 못 하는 것: 누적 결과, 긴 상호작용</text>
 <!-- 4 -->
 <rect x="150" y="244" width="300" height="44" rx="7" fill="#eff6ff" stroke="#2563eb"/>
 <text x="166" y="264" fill="#111827" font-weight="600">4 시뮬 폐루프 + 회귀 세트</text>
 <text x="166" y="280" fill="#374151" font-size="11">끝까지 운전, 예전 실패 사례 전부 재통과 — Bench2Drive, Waymo CAT</text>
-<text x="470" y="272" fill="#6b7280" font-size="11">못 보는 것: 시뮬–실제 격차, 실제 하드웨어</text>
+<text x="470" y="272" fill="#6b7280" font-size="11">확인 못 하는 것: 시뮬–실제 격차, 실제 하드웨어</text>
 <!-- 5 -->
 <rect x="180" y="192" width="300" height="44" rx="7" fill="#ecfdf5" stroke="#059669"/>
 <text x="196" y="212" fill="#111827" font-weight="600">5 실차·HIL</text>
 <text x="196" y="228" fill="#374151" font-size="11">기록 센서 데이터를 실제 제어기에 주입 — dSPACE, 현대모비스</text>
-<text x="500" y="220" fill="#6b7280" font-size="11">못 보는 것: 실제 운전자·실제 도로의 분포</text>
+<text x="500" y="220" fill="#6b7280" font-size="11">확인 못 하는 것: 실제 운전자·실제 도로의 분포</text>
 <!-- 6 -->
 <rect x="210" y="140" width="300" height="44" rx="7" fill="#ecfdf5" stroke="#059669"/>
 <text x="226" y="160" fill="#111827" font-weight="600">6 섀도 배포</text>
 <text x="226" y="176" fill="#374151" font-size="11">플릿에 싣되 운전은 안 시킴, 개입·불일치 통계 — Tesla</text>
-<text x="530" y="168" fill="#6b7280" font-size="11">못 보는 것: 실제로 운전했을 때의 결과</text>
+<text x="530" y="168" fill="#6b7280" font-size="11">확인 못 하는 것: 실제로 운전했을 때의 결과</text>
 <!-- 7 -->
 <rect x="240" y="88" width="300" height="44" rx="7" fill="#ecfdf5" stroke="#059669"/>
 <text x="256" y="108" fill="#111827" font-weight="600">7 단계적 OTA</text>
@@ -49,18 +49,18 @@
 
 <!-- right note box -->
 <rect x="860" y="88" width="356" height="356" rx="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.2"/>
-<text x="876" y="112" font-size="12.5" fill="#111827" font-weight="700">왜 한 점수로 끝낼 수 없나</text>
+<text x="876" y="112" font-size="12.5" fill="#111827" font-weight="700">단일 지표로 끝낼 수 없는 이유</text>
 <text x="876" y="136" font-size="11.5" fill="#374151">가상 사례의 기록 궤적은 "작업자를 늦게 본</text>
 <text x="876" y="152" font-size="11.5" fill="#374151">운전자"의 궤적이다. 기록과 가까울수록 좋은</text>
-<text x="876" y="168" font-size="11.5" fill="#374151">점수를 주면(1단) 늦게 보는 모델이 이긴다.</text>
-<text x="876" y="196" font-size="12.5" fill="#111827" font-weight="700">각 단이 더해 주는 것</text>
-<text x="876" y="220" font-size="11.5" fill="#374151">2단: 내 궤적이 물리적으로 안전한가</text>
-<text x="876" y="236" font-size="11.5" fill="#374151">3단: 기록과 달라도 사람이 보기에 좋은가</text>
-<text x="876" y="252" font-size="11.5" fill="#374151">4단: 남들이 반응할 때의 누적 결과, 옛 실패 재발 여부</text>
-<text x="876" y="268" font-size="11.5" fill="#374151">5단: 실제 하드웨어·센서 경로에서의 동작</text>
-<text x="876" y="284" font-size="11.5" fill="#374151">6단: 실제 운전자·실제 환경의 분포</text>
-<text x="876" y="300" font-size="11.5" fill="#374151">7단: 대규모 분포, 그리고 규제 기록</text>
-<text x="876" y="328" font-size="12.5" fill="#111827" font-weight="700">마지막 단은 규제 절차</text>
+<text x="876" y="168" font-size="11.5" fill="#374151">점수를 주면(1단계) 늦게 인식하는 모델이 이긴다.</text>
+<text x="876" y="196" font-size="12.5" fill="#111827" font-weight="700">각 단계가 추가로 확인하는 것</text>
+<text x="876" y="220" font-size="11.5" fill="#374151">2단계: 내 궤적이 물리적으로 안전한가</text>
+<text x="876" y="236" font-size="11.5" fill="#374151">3단계: 기록과 달라도 사람이 보기에 좋은가</text>
+<text x="876" y="252" font-size="11.5" fill="#374151">4단계: 남들이 반응할 때의 누적 결과, 옛 실패 재발 여부</text>
+<text x="876" y="268" font-size="11.5" fill="#374151">5단계: 실제 하드웨어·센서 경로에서의 동작</text>
+<text x="876" y="284" font-size="11.5" fill="#374151">6단계: 실제 운전자·실제 환경의 분포</text>
+<text x="876" y="300" font-size="11.5" fill="#374151">7단계: 대규모 분포, 그리고 규제 기록</text>
+<text x="876" y="328" font-size="12.5" fill="#111827" font-weight="700">마지막 단계는 규제 절차</text>
 <text x="876" y="352" font-size="11.5" fill="#374151">UN R156: 업데이트 관리체계 인증, 버전 식별,</text>
 <text x="876" y="368" font-size="11.5" fill="#374151">호환성 확인, 안전 설치, 기록. EU 2024-07부터</text>
 <text x="876" y="384" font-size="11.5" fill="#374151">모든 신차. 배포가 곧 기록(DSSAD)으로 이어져</text>

@@ -36,7 +36,7 @@
 <text x="40" y="296" font-size="10.5" fill="#9ca3af">남는 문제: 격차의 정량 기준 부재</text>
 <line x1="256" y1="260" x2="330" y2="260" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
 <rect x="336" y="214" width="448" height="92" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
-<text x="352" y="238" font-size="13" fill="#1e40af" font-weight="700">검증 사다리 · 의사 시뮬 · 시뮬–실차 대조 · 도구 검증</text>
+<text x="352" y="238" font-size="13" fill="#1e40af" font-weight="700">단계적 검증 · 의사 시뮬 · 시뮬–실차 대조 · 도구 검증</text>
 <text x="352" y="258" font-size="11.5" fill="#374151">개루프 → 폐루프 → 사람 선호 → 회귀 세트 → HIL → 섀도 → 단계적 OTA</text>
 <text x="352" y="275" font-size="11.5" fill="#374151">비용: 단이 늘수록 한 바퀴가 길어짐, 실차·HIL 자원</text>
 <text x="352" y="296" font-size="10.5" fill="#9ca3af">규제: R157 부속서 4 — 시뮬레이터 자체의 유효성 입증 요구</text>

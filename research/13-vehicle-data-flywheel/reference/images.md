@@ -44,7 +44,7 @@
 | 그림 1~11 | (위 표의 그림 1~10, 11 = `fig6-case-flow.svg`) | 동일 | — | — |
 | 그림 12 | `images/fig10-onboard-selection.svg` | 온보드 선별과 두 단계 업로드(트리거 → 요약본 우선 → 서버 지목 시 원본) | 자체 작성 | 3.1절. openpilot 코드 [원문]·Tesla 발표 [보도] 기준 |
 | 그림 13~19 | (위 표의 그림 12~18에 해당) | Cosmos Curator, 라벨링 세 유형, Waymo 3D 라벨, 합성 세 갈래, Cosmos Transfer, Alpamayo RL, AlpaSim | 동일 | 3.2~3.3절 |
-| 그림 20 | `images/fig11-validation-ladder.svg` | 검증 사다리(개루프 → 단계적 OTA 7단, 각 단이 더해 주는 것, 규제 절차) | 자체 작성 | 3.4절 |
+| 그림 20 | `images/fig11-validation-ladder.svg` | 단계적 검증(개루프 → 단계적 OTA 7단, 각 단이 더해 주는 것, 규제 절차) | 자체 작성 | 3.4절 |
 | 그림 21~23 | `fig8-company-map.svg`, Momenta 로드맵, Baidu 폐쇄루프 | 동일 | — | 4.1·4.5·4.6절 |
 | 그림 24~26 | Tesla 데이터 엔진 슬라이드, `fig5-old-vs-new-loop.svg`, `fig9-bottleneck-solutions.svg` | 동일 | — | 5.1절 |
 
