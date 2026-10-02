@@ -50,5 +50,5 @@
 <rect x="660" y="374" width="530" height="52" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 3"/>
 <text x="670" y="394" font-size="11.5" fill="#374151">병목 = 데이터 파이프라인과 GPU. 사람이 규칙을 짜지 않으므로, 루프를 얼마나 자주·싸게</text>
 <text x="670" y="409.87" font-size="11.5" fill="#374151">돌리느냐가 성능을 결정한다.</text>
-<text x="24" y="452" font-size="11" fill="#6b7280">실선 = 공개 자료(Tesla AI Day 2021 데이터 엔진 📰, NVIDIA data-flywheel README 🔍)에서 확인한 구조. 자체 작성.</text>
+<text x="24" y="452" font-size="11" fill="#6b7280">실선 = 공개 자료(Tesla AI Day 2021 데이터 엔진 [보도], NVIDIA data-flywheel README [원문])에서 확인한 구조. 자체 작성.</text>
 </svg>
