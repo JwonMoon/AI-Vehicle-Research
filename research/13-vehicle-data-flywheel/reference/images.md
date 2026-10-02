@@ -1,22 +1,22 @@
 # 그림 출처 — 자율주행 데이터 플라이휠
 
-작성일 2026-09-22(원본 그림 추가 2026-09-22, AWS 다이어그램 추가 2026-09-23). 보고서의 그림 24장 중 10장은 자체 작성 SVG, 13장은 공개 GitHub 저장소에서 내려받은 원본 그림, 1장(그림 8)은 AWS 블로그 다이어그램이다. 이 세션에서는 GitHub 이외의 사이트(기업 블로그·논문 사이트)에 접근할 수 없어, 원본 그림은 **라이선스를 파일로 확인할 수 있는 GitHub 저장소**에서만 가져왔다. 기업 발표 슬라이드 화면(Tesla·Waymo·Momenta·Baidu)은 학술 서베이 저장소(Apache-2.0)에 수록된 것을 그대로 옮긴 것이며, 원 저작권은 각 회사에 있다. 그림 8은 접근 차단으로 내려받지 못한 것을 저장소 소유자가 별도로 확보해 넣은 것이다.
+작성일 2026-09-22(원본 그림 추가 2026-09-22, AWS 다이어그램 추가 2026-09-23). 보고서의 그림 26장(2판 보정 2026-10-02 기준) 중 12장은 자체 작성 SVG, 13장은 공개 GitHub 저장소에서 내려받은 원본 그림, 1장(그림 8)은 AWS 블로그 다이어그램이다. 이 세션에서는 GitHub 이외의 사이트(기업 블로그·논문 사이트)에 접근할 수 없어, 원본 그림은 **라이선스를 파일로 확인할 수 있는 GitHub 저장소**에서만 가져왔다. 기업 발표 슬라이드 화면(Tesla·Waymo·Momenta·Baidu)은 학술 서베이 저장소(Apache-2.0)에 수록된 것을 그대로 옮긴 것이며, 원 저작권은 각 회사에 있다. 그림 8은 접근 차단으로 내려받지 못한 것을 저장소 소유자가 별도로 확보해 넣은 것이다.
 
 자체 SVG는 폰트 폭 추정 기반 자동 줄바꿈으로 생성했고 Chromium에서 글자 넘침 0건을 확인했다. 원본 그림은 내용을 바꾸지 않고 크기만 줄이거나 JPEG로 변환했다(Chromium 렌더링으로 축소).
 
 | 본문 번호 | 파일 | 내용 | 출처·라이선스 | 비고 |
 |---|---|---|---|---|
-| 그림 1 | `images/fig1-rule-vs-learned-loop.svg` | 규칙 기반 개발 루프 vs 학습 기반 개발 루프 | 자체 작성 | Tesla AI Day 2021 데이터 엔진 📰, NVIDIA data-flywheel README 🔍 (1.2·2.1절) |
+| 그림 1 | `images/fig1-rule-vs-learned-loop.svg` | 규칙 기반 개발 루프 vs 학습 기반 개발 루프 | 자체 작성 | Tesla AI Day 2021 데이터 엔진 [보도], NVIDIA data-flywheel README [원문] (1.2·2.1절) |
 | 그림 2 | `images/src-chen2024-e2e-overview.jpg` | 고전 파이프라인 vs 종단간 패러다임(서베이 개요도) | [OpenDriveLab/End-to-end-Autonomous-Driving](https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving) `assets/overview.jpg` · MIT · Chen et al., TPAMI 2024(arXiv 2306.16927) | 원본 2966×1829 → 폭 1800 JPEG로 축소 |
 | 그림 3 | `images/src-li2024-long-tail.png` | 주행 시나리오 롱테일 분포 | [LincanLi-X/Awesome-Data-Centric-Autonomous-Driving](https://github.com/LincanLi-X/Awesome-Data-Centric-Autonomous-Driving) `img_resource/1-1_Long_Tail_Distribution.png` · Apache-2.0 · Li et al., arXiv 2401.12888 | 원본 5946×2452 → 폭 1600으로 축소 |
 | 그림 4 | `images/src-li2024-upper-bound.png` | 고정 데이터셋의 성능 상한(개념도) | 같은 저장소 `img_resource/1-2_Illustration-of-AD-Model-Performance-Upper-Bound.png` · Apache-2.0 | 원본 3728×2482 → 폭 1400으로 축소. 개념도이며 실측 아님 |
-| 그림 5 | `images/fig2-general-ai-flywheel.svg` | 일반 AI(LLM 에이전트) 데이터 플라이휠 6단계 | 자체 작성 | NVIDIA-AI-Blueprints/data-flywheel README 🔍 (2.1절) |
+| 그림 5 | `images/fig2-general-ai-flywheel.svg` | 일반 AI(LLM 에이전트) 데이터 플라이휠 6단계 | 자체 작성 | NVIDIA-AI-Blueprints/data-flywheel README [원문] (2.1절) |
 | 그림 6 | `images/src-nvidia-data-flywheel-blueprint-annotated.png` (원본 `images/src-nvidia-data-flywheel-blueprint.png`) | NVIDIA 데이터 플라이휠 블루프린트 구조도 + README 6단계 번호·범례(자체 표기) | [NVIDIA-AI-Blueprints/data-flywheel](https://github.com/NVIDIA-AI-Blueprints/data-flywheel) `docs/images/data-flywheel-blueprint.png` · Apache-2.0 | 원본 4008×2475 → 폭 1800으로 축소. 번호 배지·범례를 덧그린 파생본이며 원본 파일도 함께 둠 |
-| 그림 7 | `images/fig3-vehicle-flywheel.svg` | 차량 데이터 플라이휠 전체 구조(9 마디) | 자체 작성 | 2.2절 표의 근거(Tesla 데이터 엔진 📰, AWS·NVIDIA AV 3.0 파이프라인 📰 = 그림 8, Li et al. 2024 서베이 arXiv 2401.12888 README 3.1절의 7단계 🔍). 색 = 장소(차 안·클라우드·시험장), "차량 전용" 표 = 일반 AI 플라이휠에 없는 마디 |
-| 그림 8 | `images/src-aws-nvidia-av3-pipeline.png` | NVIDIA·AWS "AV 3.0 물리 AI 데이터 파이프라인" 참조 아키텍처(8단계) | [AWS 블로그(2026-03-16)](https://aws.amazon.com/blogs/industries/building-an-end-to-end-physical-ai-data-pipeline-for-autonomous-vehicle-3-0-on-aws-with-nvidia/) 본문 다이어그램. **원 저작권 AWS·NVIDIA**. 블로그가 이 세션에서 차단되어 저장소 소유자가 별도 제공한 캡처 | 원본 1650×492, 무수정. 블로그 본문은 요약만 확인 ⚠️ |
-| 그림 9 | `images/src-waymo-ml-factory-slide.jpg` | Waymo "ML Factory for Self Driving Models" 슬라이드 | Waymo 발표 슬라이드 화면. LincanLi-X 서베이 저장소 `img_resource/3-2-2_Waymo_close_loop.png`에 수록(저장소 Apache-2.0). **원 저작권 Waymo** | 원본 2184×1226 → 폭 1600 JPEG. 발표 행사·연도는 저장소에 기재 없음 ⚠️ |
+| 그림 7 | `images/fig3-vehicle-flywheel.svg` | 차량 데이터 플라이휠 전체 구조(9 마디) | 자체 작성 | 2.2절 표의 근거(Tesla 데이터 엔진 [보도], AWS·NVIDIA AV 3.0 파이프라인 [보도] = 그림 8, Li et al. 2024 서베이 arXiv 2401.12888 README 3.1절의 7단계 [원문]). 색 = 장소(차 안·클라우드·시험장), "차량 전용" 표 = 일반 AI 플라이휠에 없는 마디 |
+| 그림 8 | `images/src-aws-nvidia-av3-pipeline.png` | NVIDIA·AWS "AV 3.0 물리 AI 데이터 파이프라인" 참조 아키텍처(8단계) | [AWS 블로그(2026-03-16)](https://aws.amazon.com/blogs/industries/building-an-end-to-end-physical-ai-data-pipeline-for-autonomous-vehicle-3-0-on-aws-with-nvidia/) 본문 다이어그램. **원 저작권 AWS·NVIDIA**. 블로그가 이 세션에서 차단되어 저장소 소유자가 별도 제공한 캡처 | 원본 1650×492, 무수정. 블로그 본문은 요약만 확인 [미확인] |
+| 그림 9 | `images/src-waymo-ml-factory-slide.jpg` | Waymo "ML Factory for Self Driving Models" 슬라이드 | Waymo 발표 슬라이드 화면. LincanLi-X 서베이 저장소 `img_resource/3-2-2_Waymo_close_loop.png`에 수록(저장소 Apache-2.0). **원 저작권 Waymo** | 원본 2184×1226 → 폭 1600 JPEG. 발표 행사·연도는 저장소에 기재 없음 [미확인] |
 | 그림 10 | `images/fig4-general-vs-vehicle.svg` | 일반 AI 플라이휠(안쪽)과 차량 플라이휠(바깥쪽) 비교 | 자체 작성 | 2.3절 표 |
-| 그림 11 | `images/src-tesla-data-engine-slide.jpg` | Tesla 데이터 엔진 슬라이드 | Tesla 발표 화면(저장소는 "Tesla AutoPilot Data Platform" 강연으로 표기, [YouTube](https://www.youtube.com/watch?v=6x-Xb_uT7ts)). LincanLi-X 서베이 저장소 `img_resource/3-2-1_Tesla_close_loop.png`에 수록(저장소 Apache-2.0). **원 저작권 Tesla** | 원본 2556×1428 → 폭 1600 JPEG. 강연 연도 미확인 ⚠️ |
+| 그림 11 | `images/src-tesla-data-engine-slide.jpg` | Tesla 데이터 엔진 슬라이드 | Tesla 발표 화면(저장소는 "Tesla AutoPilot Data Platform" 강연으로 표기, [YouTube](https://www.youtube.com/watch?v=6x-Xb_uT7ts)). LincanLi-X 서베이 저장소 `img_resource/3-2-1_Tesla_close_loop.png`에 수록(저장소 Apache-2.0). **원 저작권 Tesla** | 원본 2556×1428 → 폭 1600 JPEG. 강연 연도 미확인 [미확인] |
 | 그림 12 | `images/fig5-old-vs-new-loop.svg` | 2021년 데이터 엔진 vs 2026년 플라이휠 부품 비교 | 자체 작성 | 2.4절 표 |
 | 그림 13 | `images/fig6-case-flow.svg` | 가상 사례(콘 옆 작업자) 네 단계 경로 | 자체 작성 | 3.1~3.4절 |
 | 그림 14 | `images/src-nvidia-cosmos-curator-pipelines.png` | Cosmos Curator 파이프라인 | [nvidia-cosmos/cosmos-curate](https://github.com/nvidia-cosmos/cosmos-curate) `docs/assets/cosmos-curator-pipelines.png` · Apache-2.0 | 원본 1900×918, 무수정 |
@@ -28,9 +28,40 @@
 | 그림 20 | `images/alpasim-architecture.png` | NVIDIA AlpaSim 마이크로서비스 구조 | [NVlabs/alpasim](https://github.com/NVlabs/alpasim) `docs/assets/images/alpasim-architecture.png` · Apache-2.0 | 원본 1414×569, 무수정 |
 | 그림 21 | `images/fig8-company-map.svg` | 기업별 플라이휠 유형 지도(데이터 원천 × 공개도) | 자체 작성 | 4.6절 비교표(수치는 각 사 공개 주장) |
 | 그림 22 | `images/src-baidu-closed-loop.png` | Baidu 폐쇄루프 데이터 시스템 | Baidu Apollo 공개 자료. LincanLi-X 서베이 저장소 `img_resource/3-2-4_Baidu_Close_Loop_Data_System.jpg`에 수록(저장소 Apache-2.0). **원 저작권 Baidu** | 원본 1024×376, 무수정(PNG 저장). 중국어 원문 |
-| 그림 23 | `images/src-momenta-roadmap-slide.jpg` | Momenta 데이터 기반 알고리즘 로드맵 슬라이드 | Momenta 발표 슬라이드 화면. LincanLi-X 서베이 저장소 `img_resource/3-1_momenta_data_driven_planning.png`에 수록(저장소 Apache-2.0). **원 저작권 Momenta** | 원본 2038×1172 → 폭 1600 JPEG. 발표 연도 미확인(내용상 2023년 전후) ⚠️ |
+| 그림 23 | `images/src-momenta-roadmap-slide.jpg` | Momenta 데이터 기반 알고리즘 로드맵 슬라이드 | Momenta 발표 슬라이드 화면. LincanLi-X 서베이 저장소 `img_resource/3-1_momenta_data_driven_planning.png`에 수록(저장소 Apache-2.0). **원 저작권 Momenta** | 원본 2038×1172 → 폭 1600 JPEG. 발표 연도 미확인(내용상 2023년 전후) [미확인] |
 | 그림 24 | `images/fig9-bottleneck-to-competitiveness.svg` | 네 가지 병목 → 푸는 기술 → 다섯 가지 경쟁력 | 자체 작성 | 5.1~5.5절 |
 
 - 도식 규약(자체 SVG): 실선 = 출처로 확인한 구조, 점선 = 추정. 그림 9(일반 vs 차량)에서 파란색 = 일반 AI 플라이휠에도 있는 마디, 주황색 = 차량에서만 생기는 마디. 그림 7은 색이 장소(주황 차 안, 파랑 클라우드, 초록 시험장·인증)를 뜻하고, 일반 AI에 없는 마디는 "차량 전용" 표로 따로 표시.
 - 가져오지 않은 후보: Cosmos Dataset Search 구조도(NVIDIA Software License Agreement, 재배포 조건 불명확), Bench2Drive 개요도(CC BY-NC-ND 4.0), 3D Gaussian Splatting 티저(Inria 비상업 라이선스), Cosmos·InstantNuRec 데모 GIF(4~9MB, 용량).
 - 접근이 차단된 사이트(nvidia.com·waymo.com·tesla.com·wayve.ai 등)의 그림은 내려받지 않았다.
+
+## 2판 보정(2026-10-02) 그림 번호 — 두 판 공통 최종
+
+3장에 자체 도식 2장을 추가해 그림이 26장이 됐다. 근거 표시는 이모지 대신 글자 태그([원문]·[교차]·[보도]·[미확인])를 쓴다.
+
+| 2판 보정 번호 | 파일 | 내용 | 출처·라이선스 | 비고 |
+|---|---|---|---|---|
+| 그림 1~11 | (위 표의 그림 1~10, 11 = `fig6-case-flow.svg`) | 동일 | — | — |
+| 그림 12 | `images/fig10-onboard-selection.svg` | 온보드 선별과 두 단계 업로드(트리거 → 요약본 우선 → 서버 지목 시 원본) | 자체 작성 | 3.1절. openpilot 코드 [원문]·Tesla 발표 [보도] 기준 |
+| 그림 13~19 | (위 표의 그림 12~18에 해당) | Cosmos Curator, 라벨링 세 유형, Waymo 3D 라벨, 합성 세 갈래, Cosmos Transfer, Alpamayo RL, AlpaSim | 동일 | 3.2~3.3절 |
+| 그림 20 | `images/fig11-validation-ladder.svg` | 검증 사다리(개루프 → 단계적 OTA 7단, 각 단이 더해 주는 것, 규제 절차) | 자체 작성 | 3.4절 |
+| 그림 21~23 | `fig8-company-map.svg`, Momenta 로드맵, Baidu 폐쇄루프 | 동일 | — | 4.1·4.5·4.6절 |
+| 그림 24~26 | Tesla 데이터 엔진 슬라이드, `fig5-old-vs-new-loop.svg`, `fig9-bottleneck-solutions.svg` | 동일 | — | 5.1절 |
+
+## 2판(2026-09-30) 그림 번호 변경 — 두 판 공통
+
+2판에서 2.4절을 5.1절로 옮기고 3~5장을 재구성하면서 그림 번호가 바뀌었다(줄글 판·개조식 판 동일). 파일과 출처는 같다.
+
+| 초판 번호 | 2판 번호 | 파일 |
+|---|---|---|
+| 그림 1~10 | 그림 1~10 | 동일 |
+| 그림 11 (Tesla 데이터 엔진 슬라이드) | 그림 22 (5.1절) | `images/src-tesla-data-engine-slide.jpg` |
+| 그림 12 (2021 vs 2026 부품 비교) | 그림 23 (5.1절) | `images/fig5-old-vs-new-loop.svg` |
+| 그림 13~20 (3장) | 그림 11~18 (3장) | 동일 |
+| 그림 21 (기업 지도) | 그림 19 (4.1절) | `images/fig8-company-map.svg` |
+| 그림 22 (Baidu 폐쇄루프) | 그림 21 (4.6절) | `images/src-baidu-closed-loop.png` |
+| 그림 23 (Momenta 로드맵) | 그림 20 (4.5절) | `images/src-momenta-roadmap-slide.jpg` |
+| 그림 24 (병목 → 경쟁력) | 2판에서는 쓰지 않음(파일은 보관) | `images/fig9-bottleneck-to-competitiveness.svg` |
+| — | 그림 24 (5.1절, 새 그림) | `images/fig9-bottleneck-solutions.svg` — 네 가지 병목 → 지금의 해법 → 기업 사례. 자체 작성, 5.2~5.5절 요약 |
+
+- 2판에서 자체 SVG 3장(`fig3`·`fig4`·`fig5`)의 안내 문구 "마디"를 "단계"로 고쳤다(구조·내용 변경 없음).

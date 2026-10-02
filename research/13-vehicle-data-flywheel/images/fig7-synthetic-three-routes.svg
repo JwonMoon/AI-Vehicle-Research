@@ -11,7 +11,7 @@
 <text x="34" y="177.13499999999993" font-size="11.5" fill="#374151">장점: 가장 싸고 정확</text>
 <text x="34" y="195.0049999999999" font-size="11.5" fill="#374151">한계: 내 차가 다르게 움직여도 남들이 반응하지 않아 인과가 끊김.</text>
 <text x="34" y="210.8749999999999" font-size="11.5" fill="#374151">&quot;기록된 틈을 기다리는&quot; 편법 학습 위험</text>
-<text x="34" y="228.74499999999986" font-size="11.5" fill="#374151">도구: nuPlan · NAVSIM 🔍</text>
+<text x="34" y="228.74499999999986" font-size="11.5" fill="#374151">도구: nuPlan · NAVSIM [원문]</text>
 <rect x="435" y="100" width="370" height="158.40999999999983" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.2"/>
 <text x="445" y="124.7" font-size="14" fill="#111827" font-weight="700">재구성 (reconstruction)</text>
 <text x="445" y="143.39499999999998" font-size="11.5" fill="#374151">무엇: 실제 로그를 3D 장면으로 복원해 다른 궤적·시점에서 다시</text>
@@ -20,7 +20,7 @@
 <text x="445" y="193.0049999999999" font-size="11.5" fill="#374151">꺾었다면&quot;을 볼 수 있음</text>
 <text x="445" y="210.8749999999999" font-size="11.5" fill="#374151">한계: 기록 범위 밖 시점은 품질 저하</text>
 <text x="445" y="228.74499999999986" font-size="11.5" fill="#374151">도구: 3D 가우시안 스플래팅 · 3DGRUT · NuRec / InstantNuRec</text>
-<text x="445" y="244.61499999999984" font-size="11.5" fill="#374151">(10~20초 장면 → 약 1.5초) · Block-NeRF 🔍📰</text>
+<text x="445" y="244.61499999999984" font-size="11.5" fill="#374151">(10~20초 장면 → 약 1.5초) · Block-NeRF [원문·보도]</text>
 <rect x="846" y="100" width="370" height="158.40999999999983" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.2"/>
 <text x="856" y="124.7" font-size="14" fill="#111827" font-weight="700">생성 (generation)</text>
 <text x="856" y="143.39499999999998" font-size="11.5" fill="#374151">무엇: 조건(지도·라이다·세그멘테이션·글)을 주고 없던 영상을</text>
@@ -29,7 +29,7 @@
 <text x="856" y="193.0049999999999" font-size="11.5" fill="#374151">유일한 길</text>
 <text x="856" y="210.8749999999999" font-size="11.5" fill="#374151">한계: 현실과의 격차 검증이 필수(물리·기하 오류 가능)</text>
 <text x="856" y="228.74499999999986" font-size="11.5" fill="#374151">도구: Cosmos Transfer1 · Cosmos Predict · GAIA-3/4 ·</text>
-<text x="856" y="244.61499999999984" font-size="11.5" fill="#374151">Waymo World Model 🔍📰</text>
+<text x="856" y="244.61499999999984" font-size="11.5" fill="#374151">Waymo World Model [원문·보도]</text>
 <rect x="434" y="274.40999999999985" width="701" height="44" rx="6" fill="#fff" stroke="#374151" stroke-width="1.2" stroke-dasharray="4 3"/>
 <text x="446" y="292.40999999999985" font-size="11.5" fill="#374151">중간 다리 = 조건부 변환 (Cosmos Transfer): 지도·라이다는 실제 그대로 두고 조명·날씨만 합성 → 기하는 실제, 외관만 생성</text>
 <line x1="24" y1="350.40999999999985" x2="1216" y2="350.40999999999985" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>

@@ -3,7 +3,7 @@
 <title>기업별 플라이휠 유형 지도</title>
 <rect width="1240" height="610" fill="#ffffff"/>
 <text x="24" y="32" font-size="17" fill="#111827" font-weight="700">기업별 플라이휠 유형 지도 — 데이터 원천(가로) × 공개도(세로)</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">각 칸의 수치는 각 사 공개 주장(📰⚠️, 본문 4.6절). 위치는 4장의 분류에 따른 자체 배치.</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">각 칸의 수치는 각 사 공개 주장([보도·미확인], 본문 4.6절). 위치는 4장의 분류에 따른 자체 배치.</text>
 <rect x="130" y="90.0" width="1086" height="146.66666666666666" rx="0" fill="#fafafa" stroke="#e5e7eb" stroke-width="1"/>
 <text x="122" y="160.33333333333331" font-size="11" fill="#6b7280" font-weight="700" text-anchor="end">오픈소스 · 공개</text>
 <text x="122" y="174.33333333333331" font-size="11" fill="#6b7280" font-weight="700" text-anchor="end">데이터</text>

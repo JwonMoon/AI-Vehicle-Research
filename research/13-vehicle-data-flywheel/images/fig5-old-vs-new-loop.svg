@@ -2,9 +2,9 @@
 <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
 <title>기존 데이터 엔진과 최근 플라이휠</title>
 <rect width="1240" height="524" fill="#ffffff"/>
-<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">2021년 데이터 엔진과 2026년 플라이휠 — 마디는 같고 부품이 바뀌었다</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">왼쪽 회색 = 기존 방식(2021년 전후, Tesla AI Day 데이터 엔진·전통 MLOps 📰). 오른쪽 파랑 = 최근 방식(2025~2026, 각 사 공개 자료 🔍📰). 자체 작성.</text>
-<text x="24" y="100" font-size="12.5" fill="#6b7280" font-weight="700">마디</text>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">2021년 데이터 엔진과 2026년 플라이휠 — 단계는 같고 부품이 바뀌었다</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">왼쪽 회색 = 기존 방식(2021년 전후, Tesla AI Day 데이터 엔진·전통 MLOps [보도]). 오른쪽 파랑 = 최근 방식(2025~2026, 각 사 공개 자료 [원문·보도]). 자체 작성.</text>
+<text x="24" y="100" font-size="12.5" fill="#6b7280" font-weight="700">단계</text>
 <text x="150" y="100" font-size="12.5" fill="#9ca3af" font-weight="700">기존 방식 (2021년 전후)</text>
 <text x="560" y="100" font-size="12.5" fill="#2563eb" font-weight="700">최근 방식 (2025~2026)</text>
 <text x="990" y="100" font-size="12.5" fill="#374151" font-weight="700">무엇이 달라졌나</text>
