@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="640" viewBox="0 0 1240 640" font-family="IBM Plex Sans KR, Pretendard, Noto Sans KR, Apple SD Gothic Neo, sans-serif">
 <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker></defs>
-<title>일반 AI 데이터 플라이휠</title>
+<title>LLM 서비스 데이터 플라이휠</title>
 <rect width="1240" height="640" fill="#ffffff"/>
-<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">일반 AI(LLM 에이전트) 데이터 플라이휠 — NVIDIA 블루프린트 README의 6단계</text>
+<text x="24" y="32" font-size="17" fill="#111827" font-weight="700">LLM 서비스(챗봇·에이전트) 데이터 플라이휠 — NVIDIA 블루프린트 README의 6단계</text>
 <text x="24" y="52" font-size="11.5" fill="#6b7280">서버 로그에서 시작해 작은 모델을 미세조정하고, 큰 모델이 채점한다. 승격은 사람이 결정한다. 출처: NVIDIA-AI-Blueprints/data-flywheel README·docs [원문]. 자체 작성.</text>
 <ellipse cx="400" cy="360" rx="300" ry="210" fill="none" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="6 5"/>
 <polygon points="558.3,181.5 542.1,180.8 546.2,170.8" fill="#2563eb"/>
@@ -34,7 +34,7 @@
 <text x="48.1923788646684" y="243.31999999999996" font-size="12.5" fill="#111827" font-weight="700">⑥ 평가 → 사람이 승격 결정</text>
 <text x="48.1923788646684" y="260.99499999999995" font-size="11" fill="#374151">NeMo Evaluator,</text>
 <text x="48.1923788646684" y="276.17499999999995" font-size="11" fill="#374151">LLM-as-judge로 원래 모델과 비교</text>
-<text x="400" y="352" font-size="15" fill="#111827" font-weight="700" text-anchor="middle">일반 AI</text>
+<text x="400" y="352" font-size="15" fill="#111827" font-weight="700" text-anchor="middle">LLM 서비스</text>
 <text x="400" y="372" font-size="15" fill="#111827" font-weight="700" text-anchor="middle">데이터 플라이휠</text>
 <text x="800" y="120" font-size="13.5" fill="#111827" font-weight="700">이 플라이휠의 세 가지 특징 (뒤의 비교 기준)</text>
 <rect x="800" y="134" width="416" height="55.119999999999976" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
@@ -46,7 +46,7 @@
 <text x="810" y="258.31499999999994" font-size="11.5" fill="#374151">않고, 사람은 결과 검토·승격만 맡는다.</text>
 <rect x="800" y="284.10999999999996" width="416" height="55.120000000000005" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
 <text x="810" y="307.23499999999996" font-size="12.5" fill="#111827" font-weight="700">배포</text>
-<text x="810" y="325.43499999999995" font-size="11.5" fill="#374151">서버의 모델을 바꾸면 끝. 하루에도 여러 번 가능하고 인증 절차가 없다.</text>
+<text x="810" y="325.43499999999995" font-size="11.5" fill="#374151">서버의 모델을 바꾸면 끝. 시점은 사업자 재량이고 외부 인증 절차가 없다.</text>
 <rect x="800" y="351.22999999999996" width="416" height="86.86000000000001" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
 <text x="810" y="374.35499999999996" font-size="12.5" fill="#111827" font-weight="700">효과의 예(공개 주장)</text>
 <text x="810" y="392.55499999999995" font-size="11.5" fill="#374151">인사 챗봇: 미세조정 1B 모델이 70B 정확도의 약 98% → 추론 비용 최대</text>

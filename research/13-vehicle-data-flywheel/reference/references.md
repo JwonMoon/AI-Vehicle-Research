@@ -204,4 +204,6 @@
 | 116 | [Longbridge(Momenta 상장 서류 해설)](https://longbridge.com/en/news/290852250) `longbridge.com` | [보도] | 양산차가 데이터를 모으고 알고리즘이 좋아져 더 많은 양산차에 실리는 폐루프를 사업 모델로 명시 | 4.5절 |
 | 117 | [Momenta R6 발표](https://www.momenta.cn/en/article/304.html) `momenta.cn` | [보도] | R6 Flywheel Big Model, 고가치 클립 7,000만·30억 km, SAIC-GM Buick Electra L7 첫 탑재 | 4.5절 |
 | 118 | [Mobileye CES 2026 프레스 킷](https://www.mobileye.com/press-kit/mobileye-at-ces-2026/) `mobileye.com` | [보도] | 800만 대·18 브랜드·50 차종이 REM 데이터 수집, 누적 출하 EyeQ 1억 7,000만 개 | 4.5절 |
+| 119 | [Alpamayo-R1 논문(arXiv 2511.00088)](https://arxiv.org/abs/2511.00088) `arxiv.org` | [보도] | Chain of Causation 데이터셋: 8만 시간 다중 카메라 영상, 300만 개 판단 근거, VLM 자동 라벨링 + 사람 주석 혼합 파이프라인 | 검색 요약으로만 확인(원문 미열람) |
+| 120 | [LLM 점진 배포 해설(tianpan.co, 2026-04)](https://tianpan.co/blog/2026-04-09-llm-gradual-rollout-shadow-canary-ab-testing) `tianpan.co` | [보도] | LLM 서비스 배포는 섀도 → 카나리(일부 트래픽) → 전체의 점진 배포와 롤백으로 수행 | 2.3절 표 4행 근거. 이전 판의 "하루에도 여러 번 교체" 표현을 대체 |
 
