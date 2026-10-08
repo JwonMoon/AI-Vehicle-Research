@@ -3,7 +3,7 @@
 <title>기업별 플라이휠 유형 지도</title>
 <rect width="1240" height="610" fill="#ffffff"/>
 <text x="24" y="32" font-size="17" fill="#111827" font-weight="700">기업별 플라이휠 유형 지도 — 데이터 원천(가로) × 공개도(세로)</text>
-<text x="24" y="52" font-size="11.5" fill="#6b7280">각 칸의 수치는 각 사 공개 주장([보도·미확인], 본문 4.6절). 위치는 4장의 분류에 따른 자체 배치.</text>
+<text x="24" y="52" font-size="11.5" fill="#6b7280">각 칸의 수치는 각 사 공개 주장([보도·미확인], 본문 4.1·4.2절). 위치는 4.1절 유형에 따른 자체 배치(Mobileye는 칩 공급을 겸하나 주된 플라이휠인 모델 공급형에 둠).</text>
 <rect x="130" y="90.0" width="1086" height="146.66666666666666" rx="0" fill="#fafafa" stroke="#e5e7eb" stroke-width="1"/>
 <text x="122" y="160.33333333333331" font-size="11" fill="#6b7280" font-weight="700" text-anchor="end">오픈소스 · 공개</text>
 <text x="122" y="174.33333333333331" font-size="11" fill="#6b7280" font-weight="700" text-anchor="end">데이터</text>
@@ -13,20 +13,20 @@
 <rect x="130" y="383.3333333333333" width="1086" height="146.66666666666666" rx="0" fill="#fafafa" stroke="#e5e7eb" stroke-width="1"/>
 <text x="122" y="460.66666666666663" font-size="11" fill="#6b7280" font-weight="700" text-anchor="end">폐쇄</text>
 <line x1="130.0" y1="90" x2="130.0" y2="530" stroke="#e5e7eb" stroke-width="1"/>
-<text x="238.6" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">플릿형</text>
-<text x="238.6" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">양산차가 데이터를 만든다</text>
+<text x="238.6" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">자사 양산 플릿 운영형</text>
+<text x="238.6" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">자사 양산차 · OEM 직접</text>
 <line x1="347.2" y1="90" x2="347.2" y2="530" stroke="#e5e7eb" stroke-width="1"/>
-<text x="455.79999999999995" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">로보택시형</text>
-<text x="455.79999999999995" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">적은 차·많은 센서·시뮬</text>
+<text x="455.79999999999995" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">자사 로보택시 플릿 운영형</text>
+<text x="455.79999999999995" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">자사 로보택시 · 다중 센서</text>
 <line x1="564.4" y1="90" x2="564.4" y2="530" stroke="#e5e7eb" stroke-width="1"/>
-<text x="673.0" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">공급자형</text>
-<text x="673.0" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">남의 차에서 데이터를 받는다</text>
+<text x="673.0" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">파트너 플릿 기반 모델 공급형</text>
+<text x="673.0" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">파트너 OEM 플릿 · 공급자</text>
 <line x1="781.5999999999999" y1="90" x2="781.5999999999999" y2="530" stroke="#e5e7eb" stroke-width="1"/>
-<text x="890.1999999999999" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">OEM 자체형</text>
-<text x="890.1999999999999" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">내 차·내 데이터·내 모델</text>
+<text x="890.1999999999999" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">자사 양산 플릿 운영형(계획)</text>
+<text x="890.1999999999999" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">OEM 자체 + 외부 플랫폼</text>
 <line x1="998.8" y1="90" x2="998.8" y2="530" stroke="#e5e7eb" stroke-width="1"/>
-<text x="1107.3999999999999" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">툴체인형</text>
-<text x="1107.3999999999999" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">플라이휠을 만들어 판다</text>
+<text x="1107.3999999999999" y="552" font-size="12.5" fill="#111827" font-weight="700" text-anchor="middle">도구·플랫폼 공급형</text>
+<text x="1107.3999999999999" y="568" font-size="10.5" fill="#6b7280" text-anchor="middle">칩·도구·지도를 공급</text>
 <line x1="1216" y1="90" x2="1216" y2="530" stroke="#e5e7eb" stroke-width="1"/>
 <text x="673.0" y="592" font-size="12" fill="#374151" font-weight="700" text-anchor="middle">데이터 원천 →</text>
 <text x="40" y="80" font-size="12" fill="#374151" font-weight="700">공개도 ↑</text>
