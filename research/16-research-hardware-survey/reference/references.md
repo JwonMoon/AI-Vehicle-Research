@@ -1,6 +1,6 @@
-# 출처 목록 — 차량용 AI 연구 유형별 실제 사용 하드웨어 조사
+# 출처 목록 — 차량용 AI 연구 유형별 실제 사용 하드웨어 조사 (1판·2판 공용)
 
-> **열람일**: 2026-10-14 · ID는 [보고서](../research-hardware-survey.md)의 인용 표기와 같다.
+> **열람일**: 2026-10-14 · ID는 [1판 장비 카탈로그](../research-hardware-survey.md)와 [2판 연구 후보→장비](../research-topics-and-hardware.md)의 인용 표기와 같다. M13–M19는 2판에서 추가.
 > **등급**: 🔍 공식(벤더 제품 페이지·README·모델카드·공시·보도자료) / 📄 논문·학위논문 / 📰 언론·시장조사·2차 / 💬 개발자 포럼·커뮤니티 / ✅ 조사 환경에서 페이지를 **직접 열람**(GitHub·PyPI만 가능했음). ✅가 없는 항목은 검색 엔진 본문 발췌로 확인했다.
 > **이 저장소의 기존 문서는 출처로 쓰지 않았다.**
 
@@ -70,7 +70,7 @@
 | X17 | SemiDrive X10(4 nm, 40 TOPS NPU, 154 GB/s, 7B 온디바이스; 상하이시 Auto Shanghai 2025 보도) | https://english.shanghai.gov.cn/en-AutoShanghai2025/20250425/81f820dcc0ec4fdfa35465853ca883ae.html | 2025-04-25 | 📰 |
 | X18 | Q1 2025 China ADAS SoC 점유율(Orin-X+N 51.8%) · GGII 2025(NVIDIA 49.36%, Huawei 23.07%; Horizon 47.66%, Mobileye 27.81%) | https://news.metal.com/newscontent/103359135/Q1-2025-ADAS-component-supplier-rankings%3A-China%E2%80%99s-local-suppliers-lead-new-trend-in-technology-integration/ ; https://carnewschina.com/2026/02/01/horizon-robotics-and-nvidia-are-key-players-in-chinas-advanced-driving-chip-market-share-rankings-in-2025/ | 2025 / 2026-02 | 📰 |
 
-## [M] 모델·벤치·논문 (12건)
+## [M] 모델·벤치·논문 (19건)
 
 | ID | 제목 | URL | 날짜 | 등급 |
 |---|---|---|---|---|
@@ -86,6 +86,13 @@
 | M10 | 엣지 LLM/VLA 논문: arXiv 2506.09554(Orin AGX 2.7B–32.8B 전력 모드) · AI-CDA4All arXiv 2505.06749(LLaMA 3.2 on AGX Orin 5.07 s) · arXiv 2509.11480(VLA 엣지-클라우드 스케일링) | https://www.arxiv.org/abs/2506.09554 ; https://arxiv.org/pdf/2505.06749 ; https://arxiv.org/html/2509.11480v2 | 2025 | 📄 |
 | M11 | LMSYS: NVIDIA DGX Spark In-Depth Review(GPT-OSS 20B 49.7 vs RTX PRO 6000 215 tok/s) | https://www.lmsys.org/blog/2025-10-13-nvidia-dgx-spark/ | 2025-10-13 | 📰 |
 | M12 | AWS Guidance for In-Vehicle AI Assistant(온보드 SLM + 클라우드 LLM 시맨틱 라우팅) · Venkatesha et al., TMLR 2025 엣지-클라우드 투기 디코딩(지연 −35%) | https://aws.amazon.com/solutions/guidance/in-vehicle-ai-assistant-on-aws/ ; https://mlanthology.org/tmlr/2025/venkatesha2025tmlr-fast | 2025 | 🔍📄 |
+| M13 | Bench2Drive: Towards Multi-Ability Benchmarking of Closed-Loop End-To-End Autonomous Driving(arXiv 2406.03877; CARLA 220 루트·44 시나리오, 2M 프레임) | https://arxiv.org/abs/2406.03877 | 2024 | 📄 |
+| M14 | 개루프(ADE/FDE·NAVSIM v2) 지표와 폐루프 주행 점수의 상관을 분석한 교차 벤치마크 연구(arXiv 2605.00066) | https://arxiv.org/abs/2605.00066 | 2026-05 | 📄 |
+| M15 | NVIDIA Launches Cosmos World Foundation Model Platform(보도자료, 2025-01) · Wayve GAIA-2 발표(Automotive World / AVI) · GAIA-2 8.4B·GAIA-3는 2차 위키(⚠️) | https://investor.nvidia.com/news/press-release-details/2025/NVIDIA-Launches-Cosmos-World-Foundation-Model-Platform-to-Accelerate-Physical-AI-Development/default.aspx ; https://www.automotiveworld.com/news/wayve-unveils-gaia-2-cutting-edge-scalable-video-generation-for-assisted-and-automated-driving/ ; https://www.aiwiki.ai/wiki/gaia_2_wayve/raw | 2025 | 🔍📰⚠️ |
+| M16 | FlashDrive: Flash Vision-Language-Action Inference for Autonomous Driving(arXiv 2608.12932; 4.7× 가속, 151.4 ms, 1.4→6.6 Hz, Jetson Thor 4.0×, W4A8) | https://arxiv.org/abs/2608.12932 | 2026-08 | 📄 |
+| M17 | Orin vs Thor VLA 추론 특성화(arXiv 2603.02271; MolmoAct-7B, 지연의 최대 75%가 메모리 바운드 액션 생성) · 양자화 인지 모방학습(arXiv 2412.01034; Orin W8A8 124.7 ms) | https://arxiv.org/abs/2603.02271 ; https://arxiv.org/abs/2412.01034 | 2026-03 / 2024-12 | 📄 |
+| M18 | 서베이: LLM4AD(arXiv 2410.15281, 온보드 LLM·차량 하드웨어 제약) · A Review on Edge Large Language Models(arXiv 2410.11845) · On-Device Language Models: A Comprehensive Review(arXiv 2409.00088, 자동차 응용 포함) | https://arxiv.org/abs/2410.15281 ; https://arxiv.org/abs/2410.11845 ; https://arxiv.org/abs/2409.00088 | 2024–25 | 📄 |
+| M19 | Think at 5 Hz, Act at 20 Hz: 비동기 fast-slow VLA(arXiv 2607.15621) · AutoMoT 비동기 Mixture-of-Transformers(arXiv 2603.14851) | https://arxiv.org/abs/2607.15621 ; https://arxiv.org/abs/2603.14851 | 2026 | 📄 |
 
 ## [S] 센서·카메라·인터페이스·연구차량 (27건)
 
