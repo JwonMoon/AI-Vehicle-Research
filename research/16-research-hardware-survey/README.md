@@ -7,6 +7,8 @@
 | 문서 | 내용 |
 |---|---|
 | [research-topics-and-hardware.md](research-topics-and-hardware.md) | **2판(주 문서)** — 연구 후보 6개와 장비 세트, Part A 자율주행(연구 사례·카테고리 A1–A5 → 시뮬/녹화·실차 두 갈래 장비 조합), Part B 온디바이스 AI(B1–B5 → 벤치/실차 장비 조합), 사례에 없는 제안(💡 퀄컴 NPU 등), 후보→장비 매핑 |
+| [mail-01-plan.md](mail-01-plan.md) | **메일용 ① 조사 계획 공유** — 1. 자율주행 연구별 하드웨어(E2E/VLA·인식·데이터 수집·엣지 배포) 2. 시뮬레이터/실차 상황별 3. 온디바이스 AI 연구별(콕핏·엣지 LLM·하이브리드·에이전트·AD 컴퓨트 공유) 구조와 각 항목에 들어갈 내용 예고 |
+| [mail-02-report.md](mail-02-report.md) | **메일용 ② 조사 결과** — 위 구조 그대로 사례 소개 + 하드웨어 소개(Thor/Orin 사양 비교, 서버급 연구차량, 실차 VLA 부자재, 퀄컴 ADP 제안 등), 핵심 출처 요약 |
 | [research-hardware-survey.md](research-hardware-survey.md) | **1판(장비 카탈로그)** — 칩 비교표 19종(연구용 입수 경로 포함), 주변 장비 표, 3단계 구매 조합, 미확인 사항 |
 | [reference/references.md](reference/references.md) | 출처 목록(ID 접두어 N·Q·X·M·S·V·O·P, 총 118건) — 제목·URL·날짜·등급. 1판·2판 공용 |
 
