@@ -24,8 +24,10 @@ EMOJI = "🔍📄📰💬🏷️⚠️✅💡"
 
 def link_id(i):
     r = refs.get(i)
-    if not r or not r["urls"]:
+    if not r:
         return f'<span class="cite missing" title="출처 목록에 없음">{i}</span>'
+    if not r["urls"]:
+        return f'<a class="cite" href="#ref-{i}" title="{html.escape(r["title"], quote=True)} (URL 없음, 목록 참조)">{i}</a>'
     t = html.escape(r["title"], quote=True)
     extra = ""
     if len(r["urls"]) > 1:

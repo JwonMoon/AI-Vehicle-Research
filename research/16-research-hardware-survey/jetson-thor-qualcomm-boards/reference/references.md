@@ -2,7 +2,7 @@
 
 > **열람일**: 2026-10-15 · ID는 [보고서](../jetson-thor-qualcomm-boards.md)의 인용 표기와 같다. 등급: 🔍 공식(벤더·NVIDIA·퀄컴 페이지, 공식 문서) / 📄 논문 / 📰 언론·2차 / 💬 포럼 / 🏷️ 리셀러·벤더 제품 페이지. 조사 환경 제약으로 GitHub·PyPI 외 페이지는 검색 발췌로 확인했다.
 
-## [J] Jetson AGX Thor (47건)
+## [J] Jetson AGX Thor (42건)
 
 | ID | 제목 | URL | 날짜 | 등급 |
 |---|---|---|---|---|
@@ -10,11 +10,8 @@
 | J3 | Characterizing VLA Models: Identifying the Action Generation Bottleneck for Edge AI Architectures (arXiv 2603.02271; Orin 64GB vs Thor 128GB) | https://arxiv.org/abs/2603.02271 | 2026-03 | 📄 |
 | J4 | Characterizing VLA Models across XPUs (arXiv 2604.24447; π0 on RTX 4090·Orin·Thor) | https://arxiv.org/pdf/2604.24447 | 2026-04 | 📄 |
 | J5 | How Fast Can I Run My VLA? VLA-Perf (NVlabs, arXiv 2602.18397) · 코드 | https://arxiv.org/abs/2602.18397v1 ; https://github.com/NVlabs/vla-perf | 2026-02 | 📄 |
-| J7 | Offload or Overload (arXiv 2603.18284; Thor/Orin/Nano vs 클라우드 A100, nvblox) | https://arxiv.org/pdf/2603.18284 | 2026-03 | 📄 |
-| J8 | Isaac GR00T N1.7 on Jetson Thor (Jetson AI Lab; 125→39.9 ms NVFP4) | https://www.jetson-ai-lab.com/tutorials/groot_n17_on_thor/ | 2026 | 🔍 |
 | J9 | RidgeRun Birds Eye View – Performance on NVIDIA Jetson (Thor vs Orin vs Orin NX) | https://developer.ridgerun.com/wiki/index.php/Birds_Eye_View/Performance/NVIDIA_Jetson | 2025–26 | 🏷️ |
 | J12 | NVIDIA 포럼: Jetson Thor AGX – Poor INT8 performance | https://forums.developer.nvidia.com/t/jetson-thor-agx-poor-int8-performance/363884 | 2026 | 💬 |
-| J14 | NVIDIA 블로그: Jetson Thor Unlocks Real-Time Reasoning (Stanford·CMU·취리히대 채택) | https://blogs.nvidia.com/blog/jetson-thor-physical-ai-edge | 2025-08-25 | 🔍 |
 | J15 | NVIDIA 포럼(공식): Isaac ROS 4.1 for Thor has arrived (nvblox·cuVSLAM, RealSense 리그) | https://forums.developer.nvidia.com/t/nvidia-isaac-ros-4-1-for-thor-has-arrived/362254 | 2026 | 🔍 |
 | J18 | Autoware Reference HW: AD Computers (MIIVII APEX THOR, T5000) | https://docs.autoware.org/main/reference-design/reference-hw/ad-computers/ | 2026 | 🔍 |
 | J19 | Advantech MIC-742-AT 데이터시트(8× GMSL2, 4× CAN FD) · Advantech×Sensing Tech GMSL 통합 뉴스 | https://coastipc.com/media/productattach/m/i/mic-742-at_data_sheet_081926.pdf ; https://www.advantech.com/ko-kr/resources/news/advantech-sensing-tech-tich-hop-camera-gmsl-nvidia-jetson-thor | 2025-12 | 🔍 |
@@ -28,8 +25,6 @@
 | J28 | Seeed reComputer J601 캐리어(8× GMSL2, CAN FD, M.2 B) · J601 히트싱크+팬 | https://openelab.io/pl/products/seeed-studio-recomputer-j601-carrier-board-for-jetson-agx-thor ; https://openelab.io/a/s/products/seeed-studio-recomputer-j601-heatsink-with-fan-for-jetson-agx-thor | 2026 | 🏷️ |
 | J29 | CNX: Auvidea X242 (T5000 산업용 캐리어) | https://www.cnx-software.com/news/jetson/page/4/?amp=1 | 2026 | 📰 |
 | J30 | Antmicro: Ruggedized Jetson AGX Thor baseboard setup | https://antmicro.com/blog/2026/01/ruggedized-jetson-agx-thor-baseboard-setup | 2026-01 | 📰 |
-| J32 | The Robot Report / 25News: Caterpillar × NVIDIA Jetson Thor (CES 2026) | https://www.therobotreport.com/caterpillar-partners-with-nvidia-to-lay-the-foundation-for-autonomous-systems/ ; https://www.25newsnow.com/2026/01/08/caterpillar-nvidia-announce-ai-powered-collaboration/ | 2026-01-08 | 📰 |
-| J33 | NVIDIA: Blackwell-Powered Jetson Thor Now Available (파트너·가격) | https://investor.nvidia.com/news/press-release-details/2025/NVIDIA-Blackwell-Powered-Jetson-Thor-Now-Available-Accelerating-the-Age-of-General-Robotics/ | 2025-08-25 | 🔍 |
 | J37 | Automotive World: TIER IV and Isuzu launch L4 autonomous buses on NVIDIA platform (DRIVE AGX Thor) | https://www.automotiveworld.com/news/tier-iv-and-isuzu-launch-l4-autonomous-buses-on-nvidia-platform/ | 2026-03-18 | 📰 |
 | J39 | Ouster: Brings Support for REV8 Digital Lidar to Robotics and Edge AI (Orin·Thor 드라이버) | https://investors.ouster.com/news-releases/news-release-details/ouster-brings-support-rev8-digital-lidar-robotics-and-edge-ai | 2026-05-05 | 🔍 |
 | J40 | NVIDIA Jetson Thor 제품 페이지 · AGX Thor Developer Kit User Guide – Hardware Layout (HSB 20대, CSI 6대) | https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/ ; https://docs.nvidia.com/jetson/agx-thor-devkit/user-guide/latest/hardware_layout.html | 2025–26 | 🔍 |

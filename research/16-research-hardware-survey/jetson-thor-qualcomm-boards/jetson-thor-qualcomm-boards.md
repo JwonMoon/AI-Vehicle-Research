@@ -2,14 +2,14 @@
 
 > **작성일**: 2026-10-15 · **상태**: 초판 · 16번 주제의 후속편(보드 특정)
 > **전제**: 자율주행은 **Jetson AGX Thor Developer Kit(T5000)** 을 구매한다. 온디바이스는 현재 **퀄컴 SA8155P·SA8255P·SA7255P 프로젝트 개발보드 + SA8255P ADP + SA8155P ADP + Dragonwing IQ-9075 EVK** 를 보유한다.
-> **목적**: ① Jetson AGX Thor를 쓴 연구·차량 산업 사례와, 그 사례가 함께 쓴 부자재(카메라·인터페이스·CAN·전원 등)를 정리한다. ② 퀄컴 보드 라인업이 어떻게 나뉘는지 설명하고, 보유 보드보다 상위인 보드와 그 사례를 정리한다.
+> **목적**: ① Jetson AGX Thor를 쓴 **차량 관련** 연구·산업 사례와, 그 사례가 함께 쓴 부자재(카메라·인터페이스·CAN·전원 등)를 정리한다(로봇·산업 장비 사례는 제외). ② 퀄컴 보드 라인업이 어떻게 나뉘는지 설명하고, 보유 보드보다 상위인 보드와 그 사례를 정리한다.
 > **표기**: 🔍 공식 / 📄 논문 / 📰 언론·2차 / 💬 포럼 / 🏷️ 리셀러·벤더 제품 페이지 / ⚠️ 미확인·충돌. 출처 ID는 [reference/references.md](reference/references.md). 저장소 기존 문서는 참고하지 않았고, 조사 환경 제약으로 GitHub·PyPI 외 페이지는 검색 발췌로 확인했다. 가격은 조사일 공개 표시가.
 
 ---
 
 ## 결론 먼저
 
-1. **Jetson AGX Thor를 "실제 도로 차량"에 올린 공개 논문은 아직 없다.** Thor 사례는 ① VLA 추론 특성화·가속 논문(FlashDrive, VLA-Perf, Orin vs Thor 특성화), ② 로보틱스(GR00T, π0, Isaac ROS), ③ 산업용 차량(Caterpillar 굴삭기)과 **Thor 기반 차량용 박스 PC(8~16× GMSL2 + CAN FD)** 로 나뉜다 [J1][J5][J8][J32][J19] 📄🔍📰. Autoware·TIER IV의 공식 차량 프로그램은 DRIVE AGX Thor 쪽이다 [J37] 📰.
+1. **Jetson AGX Thor를 "실제 도로 차량"에 올린 공개 논문은 아직 없다.** 차량 관련 Thor 사례는 ① 주행 VLA 추론 가속·특성화 논문(FlashDrive, VLA-Perf) ② 멀티카메라 BEV 벤치 ③ **Thor 모듈 기반 차량용 박스 PC·캐리어(8~16× GMSL2 + CAN FD; Advantech·Syslogic·Leopard·Seeed·MIIVII)** 다 [J1][J5][J9][J19][J18] 📄🏷️🔍. Autoware·TIER IV의 공식 차량 프로그램은 DRIVE AGX Thor 쪽이다 [J37] 📰.
 2. **Thor 데브킷에 양산급 카메라를 붙이는 정석은 HSB(Holoscan Sensor Bridge)와 16-lane MIPI CSI-2이고, GMSL2는 ① HSB용 GMSL2 디시리얼라이저(Leopard, US$388) ② Thor용 캐리어/박스(Connect Tech·Seeed·Advantech·Leopard US$8,500) 중 하나가 필요하다** [J40][J43][J21][J26] 🔍🏷️. CAN은 데브킷 헤더(J47)에 트랜시버만 달면 된다 [J50] 🔍.
 3. **퀄컴 보드는 크게 네 라인업이다.** 차량용(SA/QAM ADP, Lantronix·Thundercomm 판매, 승인 필요) / IoT·로보틱스 Dragonwing(IQ6·IQ8·IQ9 EVK, RB3·RB5, QCS8550 키트) / PC(Snapdragon X 계열, 데브킷은 2024-10 취소) / 모바일(HDK·QRD). 소프트웨어는 공통으로 AI Hub + QNN/QAIRT + Genie→GenieX [K38][K49][K50] 🔍📰.
 4. **보유 보드 대비 상위 후보는 세 축이다.** 차량용 같은 칩으로 가려면 **SA8295P ADP(US$6,300)·SA8775P Ride Flex ADP(US$4,999)**, 생성 AI 성능으로 가려면 **IQ-9075(QCS9075, NPU 최대 100 INT8 TOPS, 36 GB, EVK €825)** 가 이미 보유 중인 가장 강한 NPU이고, 그 위는 **Snapdragon 8 Elite HDK(US$1,499)** 와 Cockpit/Ride Elite(ADP 미출시)다 [K9][K4][K35][K36][K55][K24] 🏷️🔍.
@@ -28,46 +28,41 @@
 | 네트워크·확장 | RJ45 5 GbE, M.2 Key M(NVMe 1 TB 동봉) + Key E(Wi-Fi 6E) — Key B(LTE/5G)는 없음 | J58 🔍 |
 | CAN | 2×13 헤더(J47)에 CAN 컨트롤러 2채널, CAN FD 지원, **외부 트랜시버(SN65HVD230 등) 필요** | J50 🔍 |
 | 전원 | 240 W USB-C PD(Delta ADP-240LB) 동봉, 대체 PSU는 28 V 5 A 연속·7.5 A 피크; Micro-Fit DC 잭도 있으나 피크 보장 안 됨 | J51 💬 |
-| 소프트웨어 | JetPack 7.0(CUDA 13, TRT 10.13, HSB 통합) → 7.1(TensorRT-Edge-LLM) → 7.2(CUDA 13.2, TRT 10.16, MIG 프리뷰); Isaac ROS 4.x(ROS 2 Jazzy); Holoscan 3.9 | J56 J15 J57 🔍 |
+| 소프트웨어 | JetPack 7.0(CUDA 13, TRT 10.13, HSB 통합) → 7.1(TensorRT-Edge-LLM) → 7.2(CUDA 13.2, TRT 10.16, MIG 프리뷰); ROS 2 Jazzy(Isaac ROS 4.x); Holoscan 3.9 | J56 J15 J57 🔍 |
 | 가격 | US$3,499(2025-08) → **US$5,499(2026-07)**; T4000 모듈(64 GB, 1,200 TFLOPS) US$1,999, T3000/T2000은 2027 Q1 예고 | J59 J60 📰 |
 | 주의 | DRIVE AGX Thor(DriveOS, GMSL 내장)와 별개 제품; Thor는 INT8보다 FP8/FP4가 유리(포럼 INT8 성능 불만) | J61 J12 💬 |
 
-### 1-2. 연구 사례 — 무엇을 했고 무엇을 붙였나
+### 1-2. 연구 사례 — 무엇을 했고 무엇을 붙였나 (차량 관련만)
 
 | 사례 | 연구 내용 | Thor에서의 결과 | 함께 쓴 부자재 | 출처 |
 |---|---|---|---|---|
-| **FlashDrive**(Z Lab, 2026-08) | Alpamayo 1.5-10B VLA 추론 가속: KV 캐시 재사용, 투기 추론, W4A8 양자화, CUDA Graph | RTX PRO 6000 716.9→151.4 ms(4.7×, 1.4→6.6 Hz); **Jetson Thor 4.0× 가속**(절대값 미확인 ⚠️); 시뮬 폐루프만, 실차 없음 | 카메라 전용 VLA(Alpamayo 입력), 센서 HW 미기재 | J1 📄 |
-| **VLA-Perf**(NVlabs, 2026-02) | 루프라인 기반 VLA 성능 모델 | Thor LPDDR ~270 GB/s라 비전 인코더·VLM 백본까지 메모리 바운드; π0 최선 ~53 ms(~19 Hz, 2차 인용) | 없음(모델링) | J5 📄 |
-| **Orin vs Thor 특성화**(arXiv 2603.02271) | MolmoAct-7B를 Orin 64 GB vs Thor 128 GB에서 프로파일링 | 지연의 최대 75%가 메모리 바운드 액션 생성 | 없음 | J3 📄 |
-| **VLA across XPUs**(arXiv 2604.24447) | π0을 RTX 4090·Orin·Thor에서 Nsight·루프라인 분석 | Thor 수치 미확보 ⚠️ | 없음 | J4 📄 |
-| **Offload or Overload**(arXiv 2603.18284) | 모바일 매니퓰레이션 워크로드를 Thor/Orin/Nano vs 클라우드 A100 비교 | nvblox 내비게이션 Thor/Orin 100% 성공 | RGB-D 카메라(nvblox) | J7 📄 |
-| **GR00T N1.7 on Thor**(NVIDIA Jetson AI Lab) | 휴머노이드 VLA 추론 최적화 | 125→39.9 ms(TensorRT NVFP4, 3.1×), 25 Hz | 데브킷 단독 | J8 🔍 |
-| **Isaac ROS 4.1 for Thor** | ROS 2 Jazzy 인식·SLAM 스택 | nvblox LiDAR 동적 처리, cuVSLAM RGB-D | **Intel RealSense 다중 카메라 리그(3D 프린트 도면 제공)**, LiDAR | J15 🔍 |
-| RidgeRun BEV 벤치 | 멀티카메라 BEV 스티칭 성능 Thor vs Orin vs Orin NX | 수치 페이지 참조 | 멀티카메라(종류 미기재) | J9 🏷️ |
-| 학계 채택(NVIDIA 블로그) | Stanford·CMU AirLab·취리히대: 인식·계획·내비게이션(모바일 로봇) | — | 미기재 | J14 🔍 |
+| **FlashDrive**(Z Lab, 2026-08) | 주행 VLA **Alpamayo 1.5-10B** 추론 가속: KV 캐시 재사용, 투기 추론, W4A8 양자화, CUDA Graph | RTX PRO 6000 716.9→151.4 ms(4.7×, 1.4→6.6 Hz); **Jetson Thor 4.0× 가속**(절대값 미확인 ⚠️); 시뮬 폐루프만, 실차 없음 | 카메라 전용 VLA(Alpamayo 입력), 센서 HW 미기재 | J1 📄 |
+| **VLA-Perf**(NVlabs, 2026-02) | 루프라인 기반 VLA 성능 모델(주행·로봇 VLA 공통) | Thor LPDDR ~270 GB/s라 비전 인코더·VLM 백본까지 메모리 바운드 → 주행 VLA도 양자화·캐시보다 메모리 대역폭이 한계 | 없음(모델링) | J5 📄 |
+| Orin vs Thor 특성화(arXiv 2603.02271 / 2604.24447) | 7B급 VLA를 Orin 64 GB vs Thor 128 GB에서 프로파일링(일반 VLA) | 지연의 최대 75%가 메모리 바운드 액션 생성; Thor 절대값 미확보 ⚠️ | 없음 | J3 J4 📄 |
+| RidgeRun **멀티카메라 BEV** 벤치 | 차량형 멀티카메라 BEV 스티칭 성능 Thor vs Orin vs Orin NX | 수치 페이지 참조 | 멀티카메라(종류 미기재) | J9 🏷️ |
+| 포럼: Thor INT8 성능 | Blackwell은 INT8보다 FP8/FP4 유리 — 기존 INT8 인식 모델 이식 시 주의 | — | — | J12 💬 |
 
-`분석` — Thor 논문은 "VLA가 Thor에서 얼마나 빠른가"를 재는 단계이고, 카메라·차량 통합은 아직 로보틱스(RealSense·nvblox) 쪽에서만 구체적이다. 자율주행 연구로 가져오려면 FlashDrive 식의 Alpamayo 가속을 Thor에서 재현하고(절대 지연값이 공개되지 않아 측정 자체가 기여), 카메라는 아래 1-4의 HSB/GMSL2 경로로 붙여야 한다.
+`분석` — Thor 논문은 아직 "주행 VLA가 Thor에서 얼마나 빠른가"를 재는 단계이고, 카메라·차량 통합이 구체적인 공개 연구는 없다. 자율주행 연구로 가져오려면 FlashDrive 식 Alpamayo 가속을 Thor에서 재현하고(절대 지연값이 공개되지 않아 측정 자체가 기여), 카메라는 아래 1-4의 HSB/GMSL2 경로로 붙여야 한다.
 
-### 1-3. 차량·산업 사례와 Thor 기반 차량용 컴퓨터
+### 1-3. 차량 산업 사례 — Thor 기반 차량용 컴퓨터·캐리어
 
-| 사례 / 제품 | 내용 | 카메라·CAN 등 | 가격 | 출처 |
+| 제품 / 사례 | 내용 | 카메라·CAN 등 | 가격 | 출처 |
 |---|---|---|---|---|
-| **Caterpillar × NVIDIA**(CES 2026) | 건설·광산 장비에 Jetson Thor로 실시간 추론, Cat 306 CR 굴삭기 음성 명령 데모(Riva), 자율화 기반 | 센서 미공개 | — | J32 📰 |
-| NVIDIA 출시 파트너 | 조기 도입 Agility·Amazon Robotics·Boston Dynamics·Caterpillar·Figure·Hexagon·Medtronic·Meta; 평가 중 John Deere·OpenAI·Physical Intelligence·1X | — | — | J33 🔍 |
-| Ouster REV8 LiDAR | Orin·Thor용 드라이버·Isaac ROS 플러그인 튜닝(JetPack 7 명시 없음 ⚠️) | 이더넷 LiDAR | — | J39 🔍 |
-| **MIIVII APEX THOR**(Autoware 레퍼런스 HW) | T5000 차량용 AD 컴퓨터: 128 GB, GMSL, CAN, SIM, 9–36 V, −25~70 °C | GMSL·CAN 채널 수 미확인 ⚠️ | 미공개 | J18 🔍 |
-| **Advantech MIC-742-AT** | T5000 박스: **8× GMSL2(mini-FAKRA) + 4× CAN FD**; Sensing Tech GMSL 카메라 통합 발표 | 8 GMSL2, 4 CAN FD | 미공개 | J19 🔍 |
-| Advantech MIC-743-AT7A1 | QSFP28 + 5 GbE + M.2 B-key(LTE) | HSB·LTE | 미공개 | J20 🏷️ |
-| **Connect Tech Gauntlet AGX301 / Anvil-T5** | 캐리어: 16-lane MIPI 확장 → GMSL3/GMSL2/FPD-Link III 브레이크아웃(별매), 2×10 GbE, 2× NVMe | GMSL2/3 via CTI 보드 | 캐리어 US$2,054, 번들 US$9,939–12,914 | J21 📰🏷️ |
-| Syslogic RML A5AGX | 러기드 차량 PC: 8× GMSL2(PoC), CAN/CAN FD, IP67/69 | 8 GMSL2 | 미공개 | J22 📰 |
+| **MIIVII APEX THOR**(Autoware 레퍼런스 HW 등재) | T5000 차량용 AD 컴퓨터: 128 GB, GMSL, CAN, SIM, 9–36 V, −25~70 °C | GMSL·CAN 채널 수 미확인 ⚠️ | 미공개 | J18 🔍 |
+| **Advantech MIC-742-AT** | T5000 차량용 박스: **8× GMSL2(mini-FAKRA) + 4× CAN FD**; Sensing Tech 차량용 GMSL 카메라 통합 발표(2025-12) | 8 GMSL2, 4 CAN FD | 미공개 | J19 🔍 |
+| Advantech MIC-743-AT7A1 | QSFP28(HSB) + 5 GbE + M.2 B-key(LTE) | HSB·LTE | 미공개 | J20 🏷️ |
+| **Syslogic RML A5AGX** | 러기드 차량 PC(T4000/T5000): 8× GMSL2(PoC), CAN/CAN FD, IP67/69, −25~60 °C | 8 GMSL2 | 미공개 | J22 📰 |
 | Firefly EC-ThorT5000 | 8× GMSL2, 4×10 GbE + 4× GbE, CAN/RS485 | 8 GMSL2 | 미공개 | J23 📰 |
 | ASUS IoT PE3000N | 최대 16× GMSL, 2× CAN, 12–60 V, MIL-STD-810H, 2026 Q1 | 16 GMSL | 미공개 | J24 🔍 |
 | EverFocus EAR-100T | 12× GMSL2, 2× CAN FD, 2× 5 GbE | 12 GMSL2 | €7,498(예비) | J25 🏷️ |
-| **Leopard LI-THOR-BOX-GM2B** | MAX96712 디시리얼라이저 내장 Thor AI 박스, 최대 8× GMSL2 | 8 GMSL2 | **US$8,500** | J26 🏷️ |
+| **Leopard LI-THOR-BOX-GM2B** | MAX96712 디시리얼라이저 내장 Thor 박스, 최대 8× GMSL2 | 8 GMSL2 | **US$8,500** | J26 🏷️ |
 | **Seeed reComputer J601 캐리어** | 8× GMSL2, 4×10 GbE, M.2 E/M/**B**, CAN FD, 19–48 V; 전용 히트싱크+팬 | 8 GMSL2, CAN FD, 5G B-key | 견적 | J28 🏷️ |
-| Auvidea X242 / Antmicro 오픈 베이스보드 | 산업용 캐리어(16-lane CSI, PCIe x16) / 오픈하드웨어 24 V 러기드 베이스보드 | MIPI CSI | 미공개 | J29 J30 📰 |
+| **Connect Tech Gauntlet AGX301 / Anvil-T5** | 캐리어: 16-lane MIPI 확장 → GMSL3/GMSL2/FPD-Link III 브레이크아웃(별매), 2×10 GbE, 2× NVMe | GMSL2/3 via CTI 보드 | 캐리어 US$2,054, 번들 US$9,939–12,914 | J21 📰🏷️ |
+| Auvidea X242 / Antmicro 오픈 베이스보드 | 산업용 캐리어(16-lane CSI, PCIe x16) / 오픈하드웨어 24 V 베이스보드 | MIPI CSI | 미공개 | J29 J30 📰 |
+| TIER IV × Isuzu L4 버스(참고) | 완성차·버스 프로그램은 **DRIVE AGX Thor**(DriveOS, 별개 제품) + DRIVE Hyperion 센서 세트 | — | — | J37 📰 |
+| Ouster REV8 LiDAR | Orin·Thor용 드라이버·Isaac ROS 플러그인 튜닝 발표(JetPack 7 명시 없음 ⚠️) | 이더넷 LiDAR | — | J39 🔍 |
 
-`분석` — 차량 산업은 Thor를 **"데브킷"이 아니라 "T5000 모듈 + 8~16 GMSL2 + CAN FD 박스"** 로 쓴다. 데브킷으로 시작해도 실차 단계에서는 캐리어(Seeed J601, Connect Tech)나 박스(Leopard, Advantech)로 옮기는 그림이 현실적이다.
+`분석` — 차량 산업은 Thor를 **"데브킷"이 아니라 "T5000 모듈 + 8~16 GMSL2 + CAN FD 박스"** 로 쓴다. 데브킷으로 시작해도 실차 단계에서는 캐리어(Seeed J601, Connect Tech)나 박스(Leopard, Advantech)로 옮기는 그림이 현실적이다. 완성차 양산·L4 프로그램은 Jetson이 아니라 DRIVE AGX Thor를 쓴다.
 
 ### 1-4. 데브킷에 붙일 부자재 — 카메라 경로 3가지와 기타
 

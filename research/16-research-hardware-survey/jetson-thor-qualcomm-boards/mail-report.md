@@ -1,28 +1,26 @@
 # [메일용] Jetson AGX Thor 활용 사례·부자재 / 퀄컴 보유 보드 대비 상위 보드 조사 — 결과
 
-> 작성일 2026-10-15. 외부 공개 자료만으로 조사(저장소 기존 문서 미참고). 등급: 🔍 공식 / 📄 논문 / 📰 언론·2차 / 💬 포럼 / 🏷️ 리셀러·벤더 / ⚠️ 미확인·충돌. 괄호 ID는 [전체 출처 93건](reference/references.md)에 대응. 가격은 조사일 공개 표시가.
+> 작성일 2026-10-15. 외부 공개 자료만으로 조사(저장소 기존 문서 미참고). 등급: 🔍 공식 / 📄 논문 / 📰 언론·2차 / 💬 포럼 / 🏷️ 리셀러·벤더 / ⚠️ 미확인·충돌. 괄호 ID는 [전체 출처 88건](reference/references.md)에 대응. 가격은 조사일 공개 표시가.
 
 ## 0. 한 줄 결론
 
-- **Jetson AGX Thor**: 실제 도로 차량에 올린 공개 논문은 아직 없고, 사례는 ① VLA 추론 특성화·가속 논문 ② 로보틱스 ③ 산업 장비(Caterpillar)와 **Thor 모듈 기반 차량용 박스 PC(8~16× GMSL2 + CAN FD)** 다. 데브킷에 양산급 카메라를 붙이려면 **HSB(QSFP) 경로 + GMSL2 디시리얼라이저** 또는 **GMSL2 캐리어/박스**가 필요하다 [J1][J19][J43] 📄🔍🏷️.
+- **Jetson AGX Thor**: 실제 도로 차량에 올린 공개 논문은 아직 없고, 차량 관련 사례는 ① 주행 VLA 추론 가속·특성화 논문 ② 멀티카메라 BEV 벤치 ③ **Thor 모듈 기반 차량용 박스 PC·캐리어(8~16× GMSL2 + CAN FD)** 다. 데브킷에 양산급 카메라를 붙이려면 **HSB(QSFP) 경로 + GMSL2 디시리얼라이저** 또는 **GMSL2 캐리어/박스**가 필요하다 [J1][J19][J43] 📄🔍🏷️.
 - **퀄컴**: 보드는 차량용 ADP / Dragonwing IQ·QCS EVK / Snapdragon X / 모바일 HDK 네 갈래이고, 보유 중인 **IQ-9075(QCS9075, NPU 최대 100 INT8 TOPS, 36 GB)** 가 이미 LLM에 가장 강하다. 차량과 같은 칩으로 올라가려면 **SA8775P Ride Flex ADP(US$4,999)**, LLM 공개 수치가 많은 쪽은 **Snapdragon 8 Elite HDK(US$1,499)** 다 [K35][K4][K55] 🔍🏷️.
 
 ## 1. Jetson AGX Thor — 활용 사례
 
-### 1-1. 연구 사례 (무엇을 했고, 무엇을 붙였나)
-- **FlashDrive**(Z Lab, 2026-08): Alpamayo 1.5-10B VLA 추론 가속(KV 캐시 재사용·투기 추론·W4A8). RTX PRO 6000 716.9→151.4 ms(4.7×), **Jetson Thor 4.0× 가속**(절대값 미공개 ⚠️). 시뮬 폐루프만, 실차 없음. 카메라 전용 VLA라 센서 HW 기재 없음 [J1] 📄.
-- **VLA-Perf**(NVlabs, 2026-02): Thor LPDDR ~270 GB/s라 비전 인코더·VLM 백본까지 메모리 바운드; π0 최선 ~53 ms(~19 Hz) [J5] 📄. **Orin vs Thor 특성화**: 지연의 최대 75%가 메모리 바운드 액션 생성 [J3] 📄.
-- **GR00T N1.7 on Thor**(NVIDIA): 125→39.9 ms(TensorRT NVFP4, 3.1×), 25 Hz [J8] 🔍. **Isaac ROS 4.1 for Thor**: ROS 2 Jazzy, nvblox·cuVSLAM, **Intel RealSense 다중 카메라 리그(3D 프린트 도면)** 제공 [J15] 🔍.
-- 학계 채택: Stanford·CMU AirLab·취리히대(모바일 로봇 인식·계획) [J14] 🔍. RidgeRun 멀티카메라 BEV 벤치 Thor vs Orin [J9] 🏷️.
+### 1-1. 연구 사례 (차량 관련만)
+- **FlashDrive**(Z Lab, 2026-08): 주행 VLA Alpamayo 1.5-10B 추론 가속(KV 캐시 재사용·투기 추론·W4A8). RTX PRO 6000 716.9→151.4 ms(4.7×), **Jetson Thor 4.0× 가속**(절대값 미공개 ⚠️). 시뮬 폐루프만, 실차 없음. 카메라 전용 VLA라 센서 HW 기재 없음 [J1] 📄.
+- **VLA-Perf**(NVlabs, 2026-02): Thor LPDDR ~270 GB/s라 비전 인코더·VLM 백본까지 메모리 바운드 → 주행 VLA도 메모리 대역폭이 한계 [J5] 📄. Orin vs Thor 특성화: 지연의 최대 75%가 메모리 바운드 액션 생성 [J3] 📄.
+- RidgeRun **멀티카메라 BEV** 스티칭 벤치 Thor vs Orin [J9] 🏷️. 포럼: Thor는 INT8보다 FP8/FP4 유리 — 기존 INT8 인식 모델 이식 시 주의 [J12] 💬.
 
-### 1-2. 차량·산업 사례와 Thor 기반 차량용 컴퓨터
-- **Caterpillar × NVIDIA**(CES 2026): 건설·광산 장비 실시간 추론, 굴삭기 음성 명령 데모, 자율화 기반 [J32] 📰. 출시 파트너: Agility·Boston Dynamics·Figure·Hexagon·Caterpillar 등, John Deere는 평가 중 [J33] 🔍.
-- **Thor 기반 차량용 박스·캐리어**(업계는 데브킷이 아니라 이 형태로 씀):
-  - Advantech MIC-742-AT: **8× GMSL2 + 4× CAN FD** [J19] 🔍 · Syslogic RML A5AGX: 8× GMSL2(PoC), CAN FD, IP67 [J22] 📰 · Firefly EC-ThorT5000: 8× GMSL2, 4×10 GbE [J23] 📰
+### 1-2. 차량 산업 사례 — Thor 기반 차량용 컴퓨터·캐리어
+- 업계는 Thor를 데브킷이 아니라 **"T5000 모듈 + 8~16 GMSL2 + CAN FD 박스"** 로 쓴다:
+  - **MIIVII APEX THOR**(Autoware 레퍼런스 HW 등재): 128 GB, GMSL, CAN, SIM, 9–36 V [J18] 🔍 · **Advantech MIC-742-AT**: **8× GMSL2 + 4× CAN FD**, Sensing Tech 차량용 GMSL 카메라 통합 [J19] 🔍
+  - **Syslogic RML A5AGX**(러기드 차량 PC): 8× GMSL2(PoC), CAN FD, IP67 [J22] 📰 · Firefly EC-ThorT5000: 8× GMSL2, 4×10 GbE [J23] 📰
   - ASUS PE3000N: 최대 16× GMSL, 2× CAN, 12–60 V [J24] 🔍 · EverFocus EAR-100T: 12× GMSL2, €7,498(예비) [J25] 🏷️
   - **Leopard LI-THOR-BOX-GM2B**: MAX96712 내장, 8× GMSL2, **US$8,500** [J26] 🏷️ · **Seeed reComputer J601 캐리어**: 8× GMSL2, CAN FD, M.2 B-key(5G), 19–48 V [J28] 🏷️ · Connect Tech AGX301: GMSL2/3 브레이크아웃, 캐리어 US$2,054 [J21] 📰
-  - MIIVII APEX THOR(Autoware 레퍼런스 HW 등재): 128 GB, GMSL, CAN, SIM, 9–36 V [J18] 🔍
-- TIER IV·Isuzu L4 버스 등 완성차 프로그램은 **DRIVE AGX Thor**(별개 제품) [J37] 📰. Ouster REV8 LiDAR는 Orin·Thor 드라이버 튜닝 발표 [J39] 🔍.
+- 완성차·L4 프로그램(TIER IV·Isuzu 버스 등)은 **DRIVE AGX Thor**(별개 제품) [J37] 📰. Ouster REV8 LiDAR는 Orin·Thor 드라이버 튜닝 발표 [J39] 🔍.
 
 ### 1-3. 데브킷 사양과 붙일 부자재
 - 데브킷(T5000): 128 GB LPDDR5X(~270 GB/s), 2,070 FP4 TFLOPS, 40–130 W; **QSFP28 → HSB 카메라 최대 20대, 16-lane MIPI CSI-2 → 6대**; RJ45 5 GbE; M.2 M(NVMe 1 TB)+E(Wi-Fi), **B-key 없음**; CAN 헤더(J47) 2채널 [J58][J40][J50] 🔍. 가격 US$3,499 → **US$5,499(2026-07)** [J59] 📰. INT8보다 FP8/FP4 유리 [J12] 💬.
