@@ -11,7 +11,7 @@ title_override = sys.argv[4] if len(sys.argv) > 4 else None
 # --- parse references.md: | ID | title | URL(s) | date | grade |
 refs = {}
 for line in ref_path.read_text(encoding="utf-8").splitlines():
-    m = re.match(r"^\|\s*([JKNQXMSVOP]\d{1,2})\s*\|(.*)$", line)
+    m = re.match(r"^\|\s*([JKNQXMSVOPT]\d{1,2})\s*\|(.*)$", line)
     if not m: continue
     cells = [c.strip() for c in m.group(2).strip().strip("|").split("|")]
     if len(cells) < 3: continue
@@ -19,7 +19,7 @@ for line in ref_path.read_text(encoding="utf-8").splitlines():
     urls = re.findall(r"https?://[^\s;)]+", urls_raw)
     refs[m.group(1)] = {"title": title, "urls": urls, "date": cells[2] if len(cells) > 2 else "", "grade": cells[3] if len(cells) > 3 else ""}
 
-ID_RE = re.compile(r"\b([JKNQXMSVOP]\d{1,2})\b")
+ID_RE = re.compile(r"\b([JKNQXMSVOPT]\d{1,2})\b")
 EMOJI = "🔍📄📰💬🏷️⚠️✅💡"
 
 def link_id(i):
@@ -37,14 +37,14 @@ def link_id(i):
 def cell_is_citation(cell):
     s = cell.strip()
     if not s: return False
-    stripped = re.sub(r"[JKNQXMSVOP]\d{1,2}", "", s)
+    stripped = re.sub(r"[JKNQXMSVOPT]\d{1,2}", "", s)
     stripped = re.sub(r"[\s·,/]", "", stripped)
     stripped = "".join(ch for ch in stripped if ch not in EMOJI and ch not in "️")
     return stripped == "" and ID_RE.search(s) is not None
 
 def process_line(line):
     # bracketed citations anywhere
-    line = re.sub(r"\[([JKNQXMSVOP]\d{1,2})\]", lambda m: "[" + link_id(m.group(1)) + "]", line)
+    line = re.sub(r"\[([JKNQXMSVOPT]\d{1,2})\]", lambda m: "[" + link_id(m.group(1)) + "]", line)
     # table rows: citation-only cells
     if line.startswith("|") and not re.match(r"^\|\s*-{3,}", line):
         cells = line.split("|")
@@ -85,7 +85,7 @@ code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.92em}a{
 a.cite{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em;font-weight:600;background:var(--accent-bg);border:1px solid var(--line);border-radius:4px;padding:0 5px;text-decoration:none;margin:0 1px}a.cite:hover{border-color:var(--accent)}
 a.cite-more{font-size:.75em;text-decoration:none;margin-right:2px;color:var(--muted)}span.cite.missing{color:var(--warn);font-family:ui-monospace,monospace;font-size:.85em}
 table.refs td.refid{font-family:ui-monospace,monospace;font-weight:600;white-space:nowrap}table.refs td.refurl a{display:block;word-break:break-all;font-size:.9em}
-.muted{color:var(--muted);font-size:.9em}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.85em;color:var(--muted);margin-bottom:8px}button.theme{background:none;border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:4px 10px;cursor:pointer}
+.muted{color:var(--muted);font-size:.9em}main img{max-width:min(100%,760px);height:auto;display:block;margin:14px auto 6px;border:1px solid var(--line);border-radius:8px;background:#fff}main p>em:only-child{display:block;text-align:center;color:var(--muted);font-size:.85em;font-style:normal;margin:0 auto 18px;max-width:760px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.85em;color:var(--muted);margin-bottom:8px}button.theme{background:none;border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:4px 10px;cursor:pointer}
 @media (max-width:900px){.wrap{grid-template-columns:1fr;padding:16px}nav.toc{position:static;border-right:0;max-height:none;border-bottom:1px solid var(--line);padding-bottom:12px}}
 """
 JS = """
