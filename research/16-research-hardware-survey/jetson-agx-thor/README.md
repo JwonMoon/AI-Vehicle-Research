@@ -6,7 +6,7 @@
 |---|---|
 | [jetson-agx-thor-guide.md](jetson-agx-thor-guide.md) · [웹 버전](jetson-agx-thor-guide.html) | 본 보고서(글머리 형식). 웹 버전은 출처 ID 클릭 시 원문으로 연결 |
 | [mail-report.md](mail-report.md) · [웹 버전](mail-report.html) | 보고용 메일 정리본(같은 구조, 그림 없음) |
-| [reference/references.md](reference/references.md) | 출처 35건(ID 접두어 T) |
+| [reference/references.md](reference/references.md) | 출처 38건(ID 접두어 T) |
 | `images/` | `hsb-*`: NVIDIA Holoscan Sensor Bridge 공식 문서(GitHub nvidia-holoscan/holoscan-sensor-bridge, Apache-2.0)에서 가져온 사진·도면. `path-01-camera-routes.svg`: 자체 작성 경로 도식 |
 
 작성 규약: 저장소 기존 문서 미참고, 사실 문장마다 출처 ID와 등급(🔍 공식 / 📄 논문 / 📰 언론 / 💬 포럼 / 🏷️ 벤더 / ⚠️ 미확인), 가격은 조사일 공개 표시가.

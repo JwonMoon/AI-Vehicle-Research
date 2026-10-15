@@ -1,10 +1,10 @@
 # [메일용] Jetson AGX Thor로 자율주행 연구하기 — 사양 · 연구 사례와 부자재 · 카메라 연결 방법
 
-> 작성일 2026-10-15. 외부 공개 자료만으로 조사(저장소 기존 문서 미참고). 등급: 🔍 공식 / 📄 논문 / 📰 언론 / 💬 포럼 / 🏷️ 벤더 / ⚠️ 미확인. 괄호 ID는 [출처 35건](reference/references.md). 그림과 상세 표는 [본 보고서](jetson-agx-thor-guide.md) 참조.
+> 작성일 2026-10-15. 외부 공개 자료만으로 조사(저장소 기존 문서 미참고). 등급: 🔍 공식 / 📄 논문 / 📰 언론 / 💬 포럼 / 🏷️ 벤더 / ⚠️ 미확인. 괄호 ID는 [출처 38건](reference/references.md). 그림과 상세 표는 [본 보고서](jetson-agx-thor-guide.md) 참조.
 
 ## 0. 한 줄 요약
 - 데브킷은 **128 GB·FP4/FP8이 강점, 메모리 대역폭(~270 GB/s)이 병목**. VLA·LLM은 Thor에서도 메모리 바운드, INT8은 FP16보다 느릴 수 있음 [T9][T7].
-- 주행 VLA(Alpamayo 10B)는 **Thor에서 최적화 후에도 약 1 Hz**(3,770→944 ms). 소형 VLA(π0 2.7B)는 52.6 ms/19 Hz(분석 모델) [T8][T9].
+- 주행 VLA(Alpamayo 10B)는 **Thor에서 최적화 후에도 약 1 Hz**(3,770→944 ms). 소형 VLA(π0 2.7B)는 52.6 ms/19 Hz(분석 모델) [T8][T9]. Qwen-Drive(4B)는 Thor 수치 없음 [T37].
 - 데브킷에는 **GMSL2 커넥터도 CSI 커넥터도 없음** → 카메라는 QSFP28로 들어오는 **Holoscan Sensor Bridge(HSB)** 가 공식 경로. GMSL2 카메라는 HSB 앞단에 디시리얼라이저(TauroTech DA326 / Leopard 키트)를 두면 됨 [T23][T26][T19].
 - 차량 산업의 Thor는 **DRIVE AGX Thor**(GMSL2 16ch 내장). Jetson Thor 실차 논문은 아직 없고, "GMSL2 8ch + CAN FD" 캐리어/박스가 차량용 진입점 [T33][T18][T21].
 
@@ -21,6 +21,7 @@
 ## 2. 연구 사례와 부자재
 ### 2-1. 주행 VLA 추론
 - **FlashDrive**(Z Lab, 2026-08) [T8] 📄: Alpamayo 10B를 KV 캐시 재사용·투기 추론·W4A8로 가속. RTX PRO 6000 717→151 ms(4.7×), **Thor 3,770→944 ms(4.0×)** → Thor에서는 아직 ~1 Hz. 부자재 없음(클립 재생)
+- **Qwen-Drive-1.0**(Alibaba×HUST, 2026-09) [T37] 📄: Qwen3.5-4B + BEV 헤드 + 플래닝 전문가, NAVSIM PDMS 90.7. 24 GB+ GPU 권장(bf16 ≈12 GB). **Thor·Jetson·양자화 수치 없음** ⚠️ → Thor 측정이 첫 공개 결과. 논문 논리는 "콕핏+주행 한 컴퓨트 공유"; Alibaba는 인캐빈 Qwen-Omni를 DRIVE AGX Thor에 적응 중 [T38] 📰
 - **TensorRT-Edge-LLM Alpamayo 예제**(NVIDIA) [T13] 🔍: FP16만 지원, Thor 지연 수치 미공개, FP16 엔진 OOM 포럼 보고 💬
 ### 2-2. Thor 하드웨어 특성
 - **VLA-Perf**(NVlabs) [T9] 📄: 루프라인 예측 — π0 Thor 52.6 ms(19 Hz), Orin 93.8 ms. Thor는 **세 단계 모두 메모리 바운드** → 바이트 수(양자화·캐시)를 줄여야 빨라짐

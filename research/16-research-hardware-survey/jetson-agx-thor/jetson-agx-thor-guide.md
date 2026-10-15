@@ -9,7 +9,7 @@
 ## 요약
 
 - **데브킷은 128 GB 메모리와 FP4/FP8이 강점이지만 메모리 대역폭(~270 GB/s)이 병목**이다. VLA·LLM류는 Thor에서도 메모리 바운드이며, INT8은 FP16보다 느릴 수 있다 [T9][T7].
-- **주행 VLA(Alpamayo 10B)는 Thor에서 아직 실시간이 아니다.** FlashDrive 최적화 후에도 약 0.94 s/윈도우(≈1 Hz)로, 워크스테이션 GPU(151 ms)보다 6배 느리다 [T8]. 소형 VLA(π0 2.7B)는 분석 모델 기준 52.6 ms(19 Hz)로 실시간 가능 [T9].
+- **주행 VLA(Alpamayo 10B)는 Thor에서 아직 실시간이 아니다.** FlashDrive 최적화 후에도 약 0.94 s/윈도우(≈1 Hz)로, 워크스테이션 GPU(151 ms)보다 6배 느리다 [T8]. 소형 VLA(π0 2.7B)는 분석 모델 기준 52.6 ms(19 Hz)로 실시간 가능 [T9]. **Qwen-Drive-1.0(4B)은 Thor 수치가 아직 없어 측정 자체가 기여**다 [T37].
 - **데브킷에는 GMSL2 커넥터도, 카메라용 CSI 커넥터도 없다.** 카메라는 QSFP28 포트로 들어오는 **Holoscan Sensor Bridge(HSB)** 가 NVIDIA의 공식 경로이고, GMSL2 카메라를 쓰려면 HSB 앞단에 디시리얼라이저(TauroTech DA326, Leopard 키트)를 두면 된다. GMSL2를 바로 꽂는 보드(8채널)는 서드파티 캐리어·박스다 [T23][T26][T19][T18].
 - **차량 산업의 Thor는 Jetson이 아니라 DRIVE AGX Thor**(GMSL2 16채널 내장, DriveOS)다. Jetson AGX Thor를 실제 도로 차량에 올린 공개 논문은 아직 없고, Thor 기반 "GMSL2 8채널 + CAN FD 박스" 제품군이 차량용 진입점이다 [T33][T18][T21].
 
@@ -61,6 +61,14 @@
 - 결과: RTX PRO 6000 717→151 ms(4.7×) · **Jetson Thor 3,770→944 ms(4.0×)** ⚠️발췌
 - 시사점: 10B 추론형 VLA는 Thor에서 **최적화 후에도 약 1 Hz**. 실차 10 Hz에는 더 작은 모델이 필요
 - 부자재: 없음(오프라인 클립 재생)
+
+**Qwen-Drive-1.0** (Alibaba Qwen × HUST, arXiv 2609.00111, 2026-08/09) [T37][T38] 📄 ✅
+- 구조: **Qwen3.5-4B** VLM을 그대로 두고 **BEV 인식 헤드**(3D 검출·점유·맵 분할) + **플래닝 전문가**(궤적 5 s @10 Hz, 6샘플) 부착. 멀티뷰 카메라 링 입력
+- 수치(README): NAVSIM PDMS **90.7**(RL) · Waymo E2E RFS 7.91 · NVIDIA PhysicalAI minADE 0.34 m · 같은 프로토콜에서 Alpamayo-1.5-10B보다 우위 주장
+- 배포 상태: **24 GB+ GPU 권장**, bf16 + FlashAttention-2, 가중치 9.1 + 2.1 + 0.5 GB. **Thor·Jetson·양자화 수치는 공식·논문·후속 연구 어디에도 없음** ⚠️
+- 논문의 배포 논리: "콕핏과 주행이 한 컴퓨트를 공유하는 추세 → 범용 VLM 능력을 유지한 한 모델로 두 도메인 커버". Alibaba는 인캐빈용 Qwen-Omni를 **DRIVE AGX Thor**에 적응 중(2026 베이징 모터쇼, Qwen-Drive 자체는 아님) [T38] 📰
+- 시사점: 4B(bf16 ≈12 GB)라 Thor 128 GB에 넉넉히 들어가고 TensorRT-Edge-LLM이 Qwen 계열을 지원하므로, **Thor 지연 측정 자체가 공개된 적 없는 첫 결과**가 된다. 참고로 Jetson Orin에서 Qwen2.5-7B를 Q5_K_M 양자화하면 FP16 대비 처리량 ~10.5× [T39] 📄
+- 부자재: 없음(데이터셋 클립). 주의: 실사용 리뷰에서 추론 결과의 일관성 문제 보고 ⚠️
 
 **TensorRT-Edge-LLM Alpamayo 예제** (NVIDIA) [T13] 🔍
 - NVIDIA 공식 엣지 런타임의 VLA 예제. **FP16 내보내기만 지원**, Thor에서 엔진 빌드
