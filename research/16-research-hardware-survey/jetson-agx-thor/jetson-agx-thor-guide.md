@@ -55,44 +55,50 @@
 
 ### 2-1. 주행 VLA 추론 — Thor에서 얼마나 빠른가
 
-**FlashDrive: Flash VLA Inference for Autonomous Driving** (Z Lab, arXiv 2608.12932, 2026-08) [T8] 📄
-- **연구 질문**: 주행 VLA(Alpamayo 10B)의 추론은 비전 인코딩 → LM 프리필 → 추론 토큰 디코드 → 플로우 매칭 액션 디노이징의 4단 병목이다. 이를 동시에 줄일 수 있는가.
-- **방법**: 프레임 KV 캐시를 윈도우 간 재사용(스트리밍), 블록 디퓨전 드래프터로 8토큰씩 투기 추론(DFlash), W4A8 양자화(ParoQuant, 액션 전문가는 bf16 유지), 디노이징 스텝 간 속도장 재사용, CUDA Graph·커널 융합.
-- **실험**: Alpamayo 1.5-10B·Alpamayo 1-10B, PhysicalAI-AV 100클립, 5종 GPU(Jetson Thor, RTX 3090/4090/5090, RTX PRO 6000). 실차 없음.
-- **결과**: RTX PRO 6000에서 717→151 ms(4.7×, 1.4→6.6 Hz). 단계별 Encode 87→12, Prefill 165→47, Decode 272→45, Action 193→47 ms. **Jetson Thor는 3,770→944 ms(4.0×)**, 궤적 6개 샘플 시 14,597→1,523 ms(9.6×) ⚠️(프로젝트 페이지 발췌).
-- **시사점**: 10B 추론형 VLA는 Thor에서 최적화 후에도 **약 1 Hz**. 실차 10 Hz 제어에는 더 작은 모델·추가 압축이 필요하다. 입력은 카메라 4대 × 4프레임이라 카메라 수 자체는 적다.
-- 부자재: 오프라인 클립 재생. 센서 하드웨어 없음.
+**FlashDrive** (Z Lab, arXiv 2608.12932, 2026-08) [T8] 📄
+- 대상: 주행 VLA **Alpamayo 1.5-10B / 1-10B** (카메라 4대 × 4프레임 입력)
+- 방법: KV 캐시 윈도우 재사용 · 블록 디퓨전 투기 추론(DFlash) · W4A8 양자화 · 디노이징 스텝 재사용 · CUDA Graph
+- 결과: RTX PRO 6000 717→151 ms(4.7×) · **Jetson Thor 3,770→944 ms(4.0×)** ⚠️발췌
+- 시사점: 10B 추론형 VLA는 Thor에서 **최적화 후에도 약 1 Hz**. 실차 10 Hz에는 더 작은 모델이 필요
+- 부자재: 없음(오프라인 클립 재생)
 
 **TensorRT-Edge-LLM Alpamayo 예제** (NVIDIA) [T13] 🔍
-- NVIDIA 공식 엣지 런타임의 VLA 예제. Alpamayo를 FP16으로만 내보내고 "Thor 디바이스"에서 엔진을 빌드한다(KV 4096, 배치 6, 입력 16프레임 + 자차 이동 이력).
-- **Thor 지연 수치는 공식 문서에 없다** ⚠️. 포럼에는 DRIVE AGX Thor에서 FP16 엔진 직렬화 시 15.17 GB 할당 실패(OOM) 보고가 있다 💬.
-- 관련 후속 논문(미열람): Alpamayo 1 지연 분석(arXiv 2605.08975), CPU-GPU 메모리 스와핑으로 OOM 회피(arXiv 2605.11678) [T16] 📄.
+- NVIDIA 공식 엣지 런타임의 VLA 예제. **FP16 내보내기만 지원**, Thor에서 엔진 빌드
+- Thor 지연 수치는 문서에 없음 ⚠️. 포럼에 FP16 엔진 15.17 GB 할당 실패(OOM) 보고 💬
+- 후속 논문(미열람): Alpamayo 지연 분석(arXiv 2605.08975), 메모리 스와핑 OOM 회피(arXiv 2605.11678) [T16]
 
 ### 2-2. Thor 하드웨어 특성 — 왜 메모리가 병목인가
 
-**VLA-Perf: How Fast Can I Run My VLA?** (NVlabs, arXiv 2602.18397, 2026-02) [T9] 📄 ✅
-- **연구 질문**: 모델×하드웨어×네트워크 조합의 추론 지연을 측정 없이 예측할 수 있는가.
-- **방법**: 연산량과 메모리 접근량을 함께 보는 **루프라인 분석 모델**(GenZ 확장). 하드웨어 DB에 Jetson 전 제품군(Thor·Orin·Xavier) 포함. 7개 실험(E2E, 모델 크기, 긴 컨텍스트, 디노이징 스텝×청크, AR vs 디퓨전, 온디바이스 vs 서버, 분할 추론).
-- **결과(논문 표 원본)**: π0(2.7B) E2E — **Thor 52.6 ms(19.0 Hz)**, Orin 64 GB 93.8 ms(10.7 Hz), RTX 4090 31.1 ms, B100 3.2 ms. Thor는 비전 인코더·VLM 백본·액션 전문가 **세 단계 모두 메모리 바운드**(균형점 1,481 FLOP/byte; 다른 GPU는 비전·VLM이 연산 바운드). 디퓨전 액션 헤드는 청크 길이가 늘어도 자기회귀보다 훨씬 유리. 검증: RTX 4090 실측 대비 예측 정확도 73–83%(실제가 더 느림).
-- **시사점**: Thor에서 VLA 속도를 올리려면 연산량보다 **가중치·KV 캐시 바이트 수(양자화, 캐시 재사용)** 를 줄여야 한다. FlashDrive의 선택과 일치한다.
+**VLA-Perf** (NVlabs, arXiv 2602.18397, 2026-02) [T9] 📄 ✅
+- 방법: 연산량 + 메모리 접근량을 함께 보는 **루프라인 분석 모델**(측정이 아닌 예측)
+- 결과(논문 표 원본): π0(2.7B) E2E **Thor 52.6 ms(19 Hz)** · Orin 64 GB 93.8 ms(10.7 Hz) · RTX 4090 31.1 ms
+- Thor는 비전 인코더·VLM·액션 전문가 **세 단계 모두 메모리 바운드**(다른 GPU는 비전·VLM이 연산 바운드)
+- 검증: RTX 4090 실측 대비 예측 정확도 73–83%(실제가 더 느림)
+- 시사점: Thor에서는 연산량보다 **바이트 수(양자화·KV 캐시 재사용)** 를 줄여야 빨라진다
 
-**Characterizing VLA Models: Action Generation Bottleneck** (Google/Purdue, arXiv 2603.02271, 2026-03) [T10] 📄
-- 7B급 VLA를 **Jetson AGX Orin 64 GB vs Thor 128 GB**에서 단계별 프로파일링. E2E 지연의 **최대 75%가 메모리 바운드 액션 생성 단계**. Thor는 Orin 대비 연산 5배지만 **E2E는 1.4배만 개선**. HBM·메모리 내 연산(PIM)을 100B급 모델의 해법으로 제시(절대 ms 미공개 ⚠️).
+**Characterizing VLA: Action Generation Bottleneck** (Google/Purdue, arXiv 2603.02271) [T10] 📄
+- 7B급 VLA를 **Orin 64 GB vs Thor 128 GB**에서 단계별 프로파일링
+- E2E 지연의 **최대 75%가 메모리 바운드 액션 생성** 단계
+- Thor는 Orin 대비 연산 5배지만 **E2E는 1.4배**만 개선(절대 ms 미공개 ⚠️)
 
-**Characterizing VLA Models across XPUs** (SJTU, arXiv 2604.24447, ICML 2026) [T11] 📄
-- π0을 RTX 4090·Orin·Thor·NPU에서 Nsight 트레이스 + 루프라인으로 분석. 일관된 2단 패턴: **연산 바운드 VLM 백본(SM 사용률 >90%) → 메모리 바운드 액션 전문가(20–40%)**. Thor 273 GB/s 명시. DP-Cache(디퓨전 중복 제거)로 4090에서 102→79 ms(1.29×, 성공률 유지). "적정 크기 엣지 디바이스가 플래그십 GPU보다 비용·에너지 효율적".
+**Characterizing VLA across XPUs** (SJTU, arXiv 2604.24447, ICML 2026) [T11] 📄
+- π0을 RTX 4090·Orin·Thor·NPU에서 Nsight 트레이스 + 루프라인 분석
+- 공통 패턴: **연산 바운드 VLM 백본(SM >90%) → 메모리 바운드 액션 전문가(SM 20–40%)**
+- DP-Cache(디퓨전 중복 제거)로 102→79 ms(1.29×), 성공률 유지
 
-**GTR: 밀집 예측 백본의 DRIVE AGX Thor 루프라인** (arXiv 2609.26590, 2026-09) [T14] 📄
-- 세그멘테이션·깊이 같은 밀집 예측 백본을 DRIVE AGX Thor(같은 Thor SoC, 273 GB/s)에서 루프라인 분석. 릿지 포인트 1,032 FLOP/byte 좌측의 **대역폭 지붕 근처**에서 동작해 메모리 바운드이며, 그래프 변환·커널 융합으로 중간 메모리 트래픽을 없애 DRAM 지붕의 89–141% 효율을 냈다(태스크별 ms 미확인 ⚠️). 인식 모델도 Thor에서는 같은 결론이다.
+**GTR 밀집 예측 백본** (arXiv 2609.26590, DRIVE AGX Thor) [T14] 📄
+- 세그멘테이션·깊이 백본을 같은 Thor SoC에서 루프라인 분석 → **대역폭 지붕 근처(메모리 바운드)**
+- 커널 융합으로 중간 메모리 트래픽 제거, DRAM 지붕 대비 89–141% 효율(태스크별 ms 미확인 ⚠️)
 
-**참고: 양산 ADAS 지각 모델의 Thor 양자화** [T7] 💬
-- Thor에서 INT8이 FP16보다 느린 사례가 여러 건(MiDaS DPT, RT-DETR). Orin용 INT8 엔진을 그대로 가져오면 손해이고 FP8/FP4로 다시 양자화해야 한다.
+**Thor 양자화 주의** [T7] 💬
+- Thor에서 **INT8이 FP16보다 느린** 사례 다수(MiDaS FP16 5.8 ms vs INT8 10.3 ms, RT-DETR)
+- Orin용 INT8 엔진을 그대로 옮기면 손해. FP8/FP4로 다시 양자화
 
 ### 2-3. 멀티카메라 BEV 처리 — RidgeRun 벤치 [T12] 🏷️
-
-- **내용**: GStreamer 기반 서라운드 뷰(BEV) 스티칭 제품의 처리 성능을 Thor·Orin·Orin NX에서 측정. 입력 4·6 스트림, HD~4K.
-- **Thor 결과**: 출력 FPS — HD 4입력 ≈328, HD 6입력 ≈212, 4K 4입력 ≈91.5, 4K 6입력 ≈65.6. 처리 지연(jetson_clocks on/off) — 720p 4입력 3.1/5.1 ms, 1080p 4입력 5.9/10.4 ms, 4K 4입력 18.9/24.0 ms, 4K 6입력 28.1/37.2 ms. Orin 수치·카메라 모델은 발췌에서 확인 불가 ⚠️.
-- **시사점**: 차량 서라운드 뷰급(6카메라 1080p)은 Thor에서 10 ms 안쪽으로 처리되어 BEV 인식 모델 앞단으로 여유가 있다.
+- 내용: GStreamer 서라운드 뷰(BEV) 스티칭을 Thor·Orin·Orin NX에서 측정(4·6 입력, HD~4K)
+- Thor 출력 FPS: HD 4입력 ≈328 · HD 6입력 ≈212 · 4K 4입력 ≈91.5 · 4K 6입력 ≈65.6
+- Thor 처리 지연(jetson_clocks on/off): 1080p 4입력 5.9/10.4 ms · 4K 6입력 28.1/37.2 ms
+- 시사점: 차량 서라운드 뷰급(6카메라 1080p)은 **10 ms 안쪽**이라 BEV 인식 앞단에 여유. Orin 수치·카메라 모델은 미확인 ⚠️
 
 ### 2-4. 부자재가 드러난 사례 (차량·플랫폼)
 
@@ -107,8 +113,8 @@
 | **Ouster** | 2026-05 | REV8 LiDAR 드라이버를 Orin·Thor에 최적화 | 이더넷 LiDAR(REV8) | T25 🔍 |
 | **Stereolabs** | 2025–26 | ZED 카메라 Thor 지원 | **데브킷은 USB3 ZED만**(CSI 포트 없음), GMSL2(ZED Link)는 파트너 캐리어 필요 | T23 🏷️ |
 
-- Jetson AGX Thor를 **실제 도로 차량에 올려 카메라·LiDAR·CAN·전원을 모두 공개한 사례는 찾지 못했다** ⚠️. Autoware·TIER IV·대학 레이싱팀의 Jetson Thor 언급도 없다(TIER IV는 DRIVE AGX Thor).
-- 부자재 패턴은 일관된다: **GMSL2 카메라 8채널 + CAN FD + 넓은 DC 입력**을 가진 캐리어/박스가 차량용이고, 데브킷은 HSB로 카메라를 받는 벤치·검증 단계용이다.
+- 실제 도로 차량에 Jetson AGX Thor를 올려 카메라·LiDAR·CAN·전원을 모두 공개한 사례: **없음** ⚠️ (Autoware·TIER IV·대학 레이싱팀도 언급 없음)
+- 부자재 패턴: 차량용은 **GMSL2 8채널 + CAN FD + 넓은 DC 입력 캐리어/박스**, 데브킷은 **HSB로 카메라를 받는 벤치·검증 단계용**
 
 ---
 
@@ -116,10 +122,19 @@
 
 ### 3-1. Holoscan Sensor Bridge(HSB)란
 
-- **NVIDIA가 만든 오픈소스(Apache-2.0) "센서→GPU 이더넷 브리지"** 다. FPGA가 센서(MIPI 카메라 등) 데이터를 받아 UDP/이더넷 패킷으로 보내고, 호스트는 그 패킷을 GPU 메모리에 바로 쓴다. FPGA IP 소스와 호스트 소프트웨어(Holoscan 오퍼레이터)를 NVIDIA가 공개한다 [T26] 🔍 ✅.
-- **왜 이더넷인가**: MIPI/GMSL은 보드 위 짧은 배선과 전용 디시리얼라이저가 필요하지만, 이더넷은 긴 케이블·스위치·PTP 시간동기를 쓸 수 있고 NIC가 CPU를 거치지 않고 GPU로 DMA 한다. NVIDIA 공식 수치: 4K60 카메라 glass-to-glass 17 ms, Thor에서 CoE 사용 시 CPU 점유 ≈1%, PTP 동기 1 µs 이내 [T27] 🔍.
-- **Thor에서의 동작**: 데브킷 QSFP28(MGBE)에 연결하면 JetPack 7.1 이후 **CoE(Camera over Ethernet) 하드웨어 가속**으로 받는다(SIPL 또는 FuSa API). JetPack 7.0은 CoE 카메라만, 7.2에서 정식 지원·ISP 경로 추가 [T31][T26] 🔍.
-- **보드는 누가 만드나**: 레퍼런스는 **Lattice CertusPro-NX**(IMX274, SFP+ 2포트)와 **Microchip PolarFire MPF200**(IMX477). 그 위에 e-con·Advantech·SENSING·TauroTech·Leopard가 자체 HSB 제품을 낸다 [T26][T28][T29] 🔍🏷️.
+- **무엇**: NVIDIA가 만든 오픈소스(Apache-2.0) **"센서 → GPU 이더넷 브리지"** [T26] 🔍 ✅
+  - FPGA가 센서(MIPI 카메라 등) 데이터를 받아 UDP/이더넷 패킷으로 전송
+  - 호스트 NIC가 CPU를 거치지 않고 GPU 메모리에 직접 기록
+  - FPGA IP 소스 + 호스트 소프트웨어(Holoscan 오퍼레이터)를 NVIDIA가 공개
+- **왜 이더넷인가**
+  - MIPI/GMSL은 짧은 배선·전용 디시리얼라이저가 필요, 이더넷은 긴 케이블·스위치·PTP 시간동기 가능
+  - NVIDIA 공식 수치: 4K60 glass-to-glass **17 ms**, Thor CoE 사용 시 CPU 점유 **≈1%**, PTP 동기 1 µs 이내 [T27] 🔍
+- **Thor에서의 동작**
+  - 데브킷 QSFP28(MGBE)에 연결 → JetPack 7.1부터 **CoE(Camera over Ethernet) 하드웨어 가속**(SIPL/FuSa API)
+  - JetPack 7.0은 CoE 카메라만, 7.2에서 정식 지원 + ISP 경로 [T31] 🔍
+- **보드 제조사**
+  - 레퍼런스: **Lattice CertusPro-NX**(IMX274, SFP+ ×2), **Microchip PolarFire MPF200**(IMX477)
+  - 상용: e-con·Advantech·SENSING·TauroTech·Leopard [T26][T28][T29] 🔍🏷️
 
 ![HSB IP 블록도](images/hsb-07-ip-block-diagram.png)
 *그림 2. HSB IP 구조 — 센서 인터페이스(MIPI)에서 받은 스트림을 FPGA가 UDP로 캡슐화해 이더넷으로 송출. 출처: NVIDIA HSB 문서 [T26].*
@@ -156,8 +171,13 @@
 | 지연 | 짧음(보드 내부) | NVIDIA 17 ms glass-to-glass; Lattice 블로그 실측 Thor ≈40 ms vs Orin ≈60 ms(1080p@142fps) |
 | 출처 | T24 T23 | T26 T27 T30 T19 T29 |
 
-- **추세 요약**: Orin까지는 "캐리어 + GMSL2"가 표준이었고, Thor부터 NVIDIA가 **데브킷의 카메라 입력을 HSB로 통일**했다. 양산 카메라 생태계는 여전히 GMSL2이므로, 벤더들은 **GMSL2 → HSB 변환 보드**(DA326, Leopard 키트, Advantech MIC-FG-HSB)와 **GMSL2 내장 Thor 캐리어** 두 갈래로 대응하고 있다 [T19][T30][T18] 🏷️.
-- **연구용 권장**: 벤치 단계는 **A-2**(DA326 또는 Lattice + Leopard 키트)로 양산급 GMSL2 카메라 2~4대를 데브킷에 붙여 시작하고, 카메라가 6대 이상이거나 차량 탑재가 필요하면 GMSL2 8채널 캐리어(Seeed J601·Connect Tech·Advantech)로 옮긴다.
+- **추세**
+  - Orin까지: "캐리어 + GMSL2"가 표준
+  - Thor부터: NVIDIA가 **데브킷 카메라 입력을 HSB로 통일**
+  - 양산 카메라는 여전히 GMSL2 → 벤더는 **GMSL2→HSB 변환 보드**(DA326·Leopard 키트·Advantech MIC-FG-HSB)와 **GMSL2 내장 Thor 캐리어** 두 갈래로 대응 [T19][T30][T18] 🏷️
+- **연구용 권장**
+  - 벤치: **A-2**(DA326 또는 Lattice + Leopard 키트)로 GMSL2 카메라 2~4대
+  - 카메라 6대 이상·차량 탑재: GMSL2 8채널 캐리어(Seeed J601·Connect Tech·Advantech)로 이전
 
 ### 3-4. 카메라 외 부자재 체크리스트 (데브킷 기준)
 
@@ -173,12 +193,18 @@
 
 ## 4. 참고 — 차량 산업의 Thor: DRIVE AGX Thor
 
-- **완성차·L4 프로그램은 Jetson이 아니라 DRIVE AGX Thor를 쓴다.** TIER IV×Isuzu L4 버스(DRIVE AGX Thor + Hyperion 센서), Li Auto i8(Thor-U 700 TOPS로 VLA), Zeekr 9X(Thor-U), NVIDIA Hyperion 10(DRIVE AGX Thor 2개, 카메라 14·레이더 9·LiDAR 1) [T33][T34] 📰🔍.
-- **DRIVE AGX Thor DevKit**: 64 GB, **16× GMSL2 + 2× GMSL3 내장**, 100M/1G/10G 자동차 이더넷, 350 W, SKU 10(벤치)/SKU 12(차량 탑재), DriveOS 7, ASIL-D. 가격 비공개·NVIDIA DRIVE 개발자 프로그램 승인 필요 [T33] 🔍.
-- **Jetson AGX Thor와의 차이**: 메모리(128 vs 64 GB), 카메라(HSB vs GMSL 내장), SW(JetPack/CUDA 13 vs DriveOS), 구매 경로. 같은 Thor 실리콘이라 **연구 결과(모델·양자화·지연)는 옮겨 쓸 수 있지만 카메라 배선은 다시 설계**해야 한다 [T36] 💬.
-- Autoware 레퍼런스 HW 목록에는 Jetson T5000 기반 MIIVII APEX THOR(128 GB, GMSL, CAN, 9–36 V)가 등재되어 있어, Jetson Thor로도 Autoware 차량 컴퓨터를 꾸미는 경로는 열려 있다 [T35] 🔍.
-
----
+- **완성차·L4는 DRIVE AGX Thor를 쓴다** [T33][T34] 📰🔍
+  - TIER IV × Isuzu L4 버스(DRIVE AGX Thor + Hyperion 센서)
+  - Li Auto i8(Thor-U 700 TOPS로 VLA), Zeekr 9X(Thor-U)
+  - NVIDIA Hyperion 10: DRIVE AGX Thor 2개, 카메라 14·레이더 9·LiDAR 1
+- **DRIVE AGX Thor DevKit** [T33] 🔍
+  - 64 GB, **16× GMSL2 + 2× GMSL3 내장**, 자동차 이더넷(100M/1G/10G), 350 W
+  - SKU 10(벤치) / SKU 12(차량 탑재), DriveOS 7, ASIL-D
+  - 가격 비공개, NVIDIA DRIVE 개발자 프로그램 승인 필요
+- **Jetson AGX Thor와의 차이** [T36] 💬
+  - 메모리 128 vs 64 GB · 카메라 HSB vs GMSL 내장 · SW JetPack/CUDA 13 vs DriveOS · 구매 경로
+  - 같은 Thor 실리콘 → 모델·양자화·지연 결과는 이전 가능, **카메라 배선은 재설계**
+- Autoware 레퍼런스 HW에 Jetson T5000 기반 MIIVII APEX THOR(128 GB, GMSL, CAN, 9–36 V) 등재 → Jetson Thor로 Autoware 차량 컴퓨터를 꾸미는 길도 열려 있음 [T35] 🔍
 
 ## 미확인·주의
 
