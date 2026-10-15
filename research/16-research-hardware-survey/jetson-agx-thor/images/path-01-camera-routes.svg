@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="710" viewBox="0 0 1400 710" font-family="Apple SD Gothic Neo, Noto Sans KR, Segoe UI, sans-serif">
+<defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5b6474"/></marker></defs>
+<rect width="1400" height="710" fill="#ffffff"/>
+<text x="24" y="38" font-size="22" font-weight="700" fill="#1d2330">Jetson AGX Thor 데브킷에 카메라를 붙이는 경로 — 카메라 → 중간 부자재 → 데브킷 입력</text>
+<text x="24" y="60" font-size="13" fill="#5b6474">A 계열은 모두 Holoscan Sensor Bridge(HSB) 프로토콜로 이더넷(QSFP28)으로 들어오고, B 계열은 MIPI CSI-2로 들어온다. ⑥·② 번호는 데브킷 포트 그림 기준.</text>
+<text x="24" y="88" font-size="15" font-weight="700" fill="#1d2330">A-1  Holoscan · MIPI 카메라</text>
+<rect x="24" y="98" width="300" height="78" rx="10" fill="#eef4ff" stroke="#1f5fbf" stroke-width="1.5"/>
+<text x="174.0" y="122" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">MIPI CSI-2 카메라</text>
+<text x="174.0" y="140" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">(IMX274 등)</text>
+<path d="M328,137 L360,137" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="366" y="98" width="560" height="78" rx="10" fill="#fff4e5" stroke="#c77d00" stroke-width="1.5"/>
+<text x="646.0" y="122" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">HSB 보드</text>
+<text x="646.0" y="140" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">Lattice CPNX100 / Microchip MPF200</text>
+<text x="646.0" y="158" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">(FPGA, SFP+ 10 GbE ×2)</text>
+<path d="M930,137 L962,137" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="968" y="98" width="300" height="78" rx="10" fill="#eaf7ee" stroke="#2f8f4e" stroke-width="1.5"/>
+<text x="1118.0" y="122" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">QSFP28 포트 ⑥</text>
+<text x="1118.0" y="140" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">(QSFP↔SFP+ 어댑터)</text>
+<text x="24" y="196" font-size="12.5" fill="#5b6474">↳ 데브킷 공식 지원. 케이블 짧아 실내·벤치용</text>
+<text x="24" y="238" font-size="15" font-weight="700" fill="#1d2330">A-2  Holoscan · GMSL 카메라</text>
+<rect x="24" y="248" width="300" height="78" rx="10" fill="#eef4ff" stroke="#1f5fbf" stroke-width="1.5"/>
+<text x="174.0" y="272" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">GMSL2 카메라</text>
+<text x="174.0" y="290" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">(Hawk AR0234 등, 시리얼라이저 내장)</text>
+<path d="M328,287 L360,287" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="366" y="248" width="560" height="78" rx="10" fill="#fff4e5" stroke="#c77d00" stroke-width="1.5"/>
+<text x="646.0" y="272" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">GMSL→HSB 보드</text>
+<text x="646.0" y="290" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">TauroTech DA326 (MAX96716A 디시리얼라이저 + FPGA)</text>
+<text x="646.0" y="308" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">또는 Lattice HSB + Leopard GMSL2 DESER 키트</text>
+<path d="M930,287 L962,287" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="968" y="248" width="300" height="78" rx="10" fill="#eaf7ee" stroke="#2f8f4e" stroke-width="1.5"/>
+<text x="1118.0" y="272" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">QSFP28 포트 ⑥</text>
+<text x="24" y="346" font-size="12.5" fill="#5b6474">↳ 데브킷을 유지하며 양산급 GMSL2 카메라 사용. NVIDIA 문서에 Thor 절차 있음</text>
+<text x="24" y="388" font-size="15" font-weight="700" fill="#1d2330">A-3  Holoscan · 이더넷 일체형 카메라</text>
+<rect x="24" y="398" width="300" height="78" rx="10" fill="#eef4ff" stroke="#1f5fbf" stroke-width="1.5"/>
+<text x="174.0" y="422" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">카메라+HSB 일체형</text>
+<text x="174.0" y="440" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">Leopard VB1940 Eagle(PoE) / e-con CUHSB(10 GbE)</text>
+<path d="M328,437 L360,437" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="366" y="398" width="560" height="78" rx="10" fill="#fff4e5" stroke="#c77d00" stroke-width="1.5"/>
+<text x="646.0" y="422" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">(브리지가 카메라 안에 있음)</text>
+<text x="646.0" y="440" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">CAT-6 또는 10 GbE 케이블</text>
+<path d="M930,437 L962,437" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="968" y="398" width="300" height="78" rx="10" fill="#eaf7ee" stroke="#2f8f4e" stroke-width="1.5"/>
+<text x="1118.0" y="422" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">QSFP28 포트 ⑥ (어댑터)</text>
+<text x="1118.0" y="440" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">또는 RJ45 5 GbE ②</text>
+<text x="24" y="496" font-size="12.5" fill="#5b6474">↳ 부품 수 최소. 카메라 선택지가 벤더별 모델로 한정</text>
+<text x="24" y="538" font-size="15" font-weight="700" fill="#1d2330">B    MIPI CSI 직결 · GMSL 디시리얼라이저 보드</text>
+<rect x="24" y="548" width="300" height="78" rx="10" fill="#eef4ff" stroke="#1f5fbf" stroke-width="1.5"/>
+<text x="174.0" y="572" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">GMSL2 카메라</text>
+<path d="M328,587 L360,587" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="366" y="548" width="560" height="78" rx="10" fill="#fff4e5" stroke="#c77d00" stroke-width="1.5"/>
+<text x="646.0" y="572" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">GMSL2 디시리얼라이저 보드</text>
+<text x="646.0" y="590" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">(MAX9296/96712 → 16-lane MIPI CSI-2)</text>
+<text x="646.0" y="608" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">예: Connect Tech JCB022 (T5000 지원)</text>
+<path d="M930,587 L962,587" stroke="#5b6474" stroke-width="2.5" marker-end="url(#arr)"/>
+<rect x="968" y="548" width="300" height="78" rx="10" fill="#eaf7ee" stroke="#2f8f4e" stroke-width="1.5"/>
+<text x="1118.0" y="572" font-size="14" font-weight="700" fill="#1d2330" text-anchor="middle">16-lane MIPI CSI-2 커넥터</text>
+<text x="1118.0" y="590" font-size="12" font-weight="400" fill="#1d2330" text-anchor="middle">(데브킷 상판 내부)</text>
+<text x="24" y="646" font-size="12.5" fill="#5b6474">↳ Orin 시절 정석. Thor 데브킷 커넥터에 바로 꽂히는 제품은 미확인 ⚠️</text>
+<text x="1376" y="696" font-size="11" fill="#9aa4b5" text-anchor="end">출처: NVIDIA Holoscan Sensor Bridge 문서(GitHub nvidia-holoscan/holoscan-sensor-bridge), 벤더 제품 페이지; 도식은 본 보고서 작성</text>
+</svg>
