@@ -2,7 +2,7 @@
 
 > **열람일**: 2026-10-15 · ID는 [보고서](../jetson-thor-qualcomm-boards.md)의 인용 표기와 같다. 등급: 🔍 공식(벤더·NVIDIA·퀄컴 페이지, 공식 문서) / 📄 논문 / 📰 언론·2차 / 💬 포럼 / 🏷️ 리셀러·벤더 제품 페이지. 조사 환경 제약으로 GitHub·PyPI 외 페이지는 검색 발췌로 확인했다.
 
-## [J] Jetson AGX Thor (42건)
+## [J] Jetson AGX Thor (44건)
 
 | ID | 제목 | URL | 날짜 | 등급 |
 |---|---|---|---|---|
@@ -48,6 +48,9 @@
 | J59 | CNX: NVIDIA increases the price of Jetson modules and devkits by up to 101% · JetsonHacks 2026-08 | https://www.cnx-software.com/2026/07/22/nvidia-increases-the-price-of-jetson-modules-and-devkits-by-up-to-101/ ; https://jetsonhacks.com/2026/08/26/jetsonhacks-august-2026-newsletter/amp/ | 2026-07 | 📰 |
 | J60 | Lanner: T4000 vs T5000 · ServeTheHome: T3000/T2000 발표 | https://lannerinc.com/news-and-events/eagle-lanner-tech-blog/nvidia-jetson-t4000-vs-t5000-a-technical-comparison-for-next-gen-robotic-ai ; https://www.servethehome.com/nvidia-announces-expanded-jetson-thor-lineup-with-mid-range-t3000-and-t2000-modules/ | 2025–26 | 📰 |
 | J61 | NVIDIA 포럼: CUDA 13 needed for TensorRT-Edge LLM on DRIVE AGX Thor? · DRIVE AGX Thor Power Supply Specification | https://forums.developer.nvidia.com/t/cuda-13-needed-for-tensorrt-edge-llm-on-drive-agx-thor/367321 ; https://forums.developer.nvidia.com/t/drive-agx-thor-power-supply-specification/368616 | 2026 | 💬 |
+
+| J62 | Connect Tech JCB022 GMSL2 Plus Camera Platform for Jetson AGX Orin & Jetson Thor T5000 (MAX9296A ×4, 8× GMSL2, 16 CSI lanes) · 데이터시트 · GMSL3 Camera Platform(Gauntlet 전용) | https://connecttech.com/?p=27738 ; https://connecttech.com/ftp/pdf/JCB022_GMSL2-Plus-Camera-Platform.pdf ; https://connecttech.com/product/gmsl3-camera-platform-nvidia-jetson-agx-orin-jetson-thor/ | 2025–26 | 🏷️ |
+| J63 | e-con: e-CAM85_CUHSB 10G Holoscan 카메라(자체 HSB 보드, Lattice FPGA + TintE ISP, 샘플가 US$469) · e-con Cameras with Lattice Holoscan Sensor Bridge Board · Electronic Specifier: Understanding Holoscan Sensor Bridge | https://www.e-consystems.com/nvidia-holoscan/4k-sony-imx715-low-light-10g-holoscan-camera.asp ; https://www.e-consystems.com/nvidia-holoscan/cameras-nvidia-thor-orin-lattice-holoscan-sensor-bridge-board.asp ; https://www.electronicspecifier.com/?p=162937 | 2025–26 | 🏷️📰 |
 
 ## [K] Qualcomm (46건)
 

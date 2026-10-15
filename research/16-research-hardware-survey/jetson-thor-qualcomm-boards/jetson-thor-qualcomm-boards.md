@@ -10,7 +10,7 @@
 ## 결론 먼저
 
 1. **Jetson AGX Thor를 "실제 도로 차량"에 올린 공개 논문은 아직 없다.** 차량 관련 Thor 사례는 ① 주행 VLA 추론 가속·특성화 논문(FlashDrive, VLA-Perf) ② 멀티카메라 BEV 벤치 ③ **Thor 모듈 기반 차량용 박스 PC·캐리어(8~16× GMSL2 + CAN FD; Advantech·Syslogic·Leopard·Seeed·MIIVII)** 다 [J1][J5][J9][J19][J18] 📄🏷️🔍. Autoware·TIER IV의 공식 차량 프로그램은 DRIVE AGX Thor 쪽이다 [J37] 📰.
-2. **Thor 데브킷에 양산급 카메라를 붙이는 정석은 HSB(Holoscan Sensor Bridge)와 16-lane MIPI CSI-2이고, GMSL2는 ① HSB용 GMSL2 디시리얼라이저(Leopard, US$388) ② Thor용 캐리어/박스(Connect Tech·Seeed·Advantech·Leopard US$8,500) 중 하나가 필요하다** [J40][J43][J21][J26] 🔍🏷️. CAN은 데브킷 헤더(J47)에 트랜시버만 달면 된다 [J50] 🔍.
+2. **Thor 데브킷에는 GMSL2 커넥터가 없다.** 입력은 QSFP(Holoscan Sensor Bridge)와 16-lane MIPI CSI-2뿐이라 차량 카메라를 쓰려면 ① HSB + GMSL2 디시리얼라이저(Leopard, US$388, 데브킷 유지) ② GMSL 디시리얼라이저 보드 → CSI(Orin 정석; Thor는 Connect Tech JCB022가 T5000 지원하나 데브킷 직결 미확인 ⚠️) ③ 디시리얼라이저 내장 캐리어/박스(Seeed·Connect Tech·Leopard US$8,500·Advantech) 중 하나다 [J40][J43][J62][J26] 🔍🏷️. CAN은 데브킷 헤더(J47)에 트랜시버만 달면 된다 [J50] 🔍.
 3. **퀄컴 보드는 크게 네 라인업이다.** 차량용(SA/QAM ADP, Lantronix·Thundercomm 판매, 승인 필요) / IoT·로보틱스 Dragonwing(IQ6·IQ8·IQ9 EVK, RB3·RB5, QCS8550 키트) / PC(Snapdragon X 계열, 데브킷은 2024-10 취소) / 모바일(HDK·QRD). 소프트웨어는 공통으로 AI Hub + QNN/QAIRT + Genie→GenieX [K38][K49][K50] 🔍📰.
 4. **보유 보드 대비 상위 후보는 세 축이다.** 차량용 같은 칩으로 가려면 **SA8295P ADP(US$6,300)·SA8775P Ride Flex ADP(US$4,999)**, 생성 AI 성능으로 가려면 **IQ-9075(QCS9075, NPU 최대 100 INT8 TOPS, 36 GB, EVK €825)** 가 이미 보유 중인 가장 강한 NPU이고, 그 위는 **Snapdragon 8 Elite HDK(US$1,499)** 와 Cockpit/Ride Elite(ADP 미출시)다 [K9][K4][K35][K36][K55][K24] 🏷️🔍.
 5. **퀄컴 NPU 위 LLM 공개 수치는 적다.** 확인된 것은 SA8295P ADP Llama 3.2 1B 11 tok/s, QCS9075 Llama 3.2 3B ≈19.4 tok/s, IQ-9075 브리프 "13B 모델 12 tok/s", 8 Elite Llama 3.2 3B ≈10 tok/s뿐이다 [K10][K37][K36][K56] 🔍🏷️📰. SA8775P에는 Qwen3-8B·Qwen3-VL-8B w4a16 빌드가 AI Hub에 올라와 있다 [K19] 🔍.
@@ -64,19 +64,38 @@
 
 `분석` — 차량 산업은 Thor를 **"데브킷"이 아니라 "T5000 모듈 + 8~16 GMSL2 + CAN FD 박스"** 로 쓴다. 데브킷으로 시작해도 실차 단계에서는 캐리어(Seeed J601, Connect Tech)나 박스(Leopard, Advantech)로 옮기는 그림이 현실적이다. 완성차 양산·L4 프로그램은 Jetson이 아니라 DRIVE AGX Thor를 쓴다.
 
-### 1-4. 데브킷에 붙일 부자재 — 카메라 경로 3가지와 기타
+### 1-4. 데브킷에 카메라를 붙이는 방법 — 두 계열, 네 경로 + 캐리어
+
+데브킷에는 GMSL2 커넥터가 없고 **QSFP28(→ Holoscan Sensor Bridge)** 과 **16-lane MIPI CSI-2 커넥터** 두 입력만 있다 [J40] 🔍. 차량용 카메라(GMSL2)는 어딘가에 디시리얼라이저가 있어야 하므로, "그 중간 장치를 어디에 두느냐"로 경로가 갈린다.
+
+**A. Holoscan(HSB) 계열 — QSFP/이더넷으로 받는다.** 세 경로 모두 HSB 프로토콜(FPGA 브리지 + GPU RDMA)이고, 브리지와 디시리얼라이저의 위치만 다르다 [J63] 🏷️.
 
 | 경로 | 구성 | 확인된 제품·가격 | 비고 | 출처 |
 |---|---|---|---|---|
-| **① HSB(QSFP) 카메라** | QSFP28 브레이크아웃 → Lattice CertusPro-NX HSB 보드(2× 10 GbE) → MIPI 카메라 | Lattice LF-SNSR-ETH-EVN US$350; Leopard 듀얼 IMX274 US$329–355(Thor 호환 표기 "N/A", 벤더 확인 필요 ⚠️) | NVIDIA가 데브킷 공식 지원 경로로 확인; JetPack 7.0 초기엔 CoE 카메라만 | J41 J42 💬🏷️ |
-| **② HSB + GMSL2 디시리얼라이저** | Lattice HSB에 Leopard GMSL2 디시리얼라이저 키트 결합 → 양산급 GMSL2 카메라(IMX728 등) | **LI-GMSL2-DESER-HOLOSCAN US$388**(HSB·카메라 별매); LI-IMX728-9295 키트 견적 | 데브킷을 바꾸지 않고 GMSL2를 쓰는 유일한 경로 | J43 🏷️ |
-| **③ 10 GbE Holoscan 카메라** | e-con e-CAM31_CUHSB(ISX031 3 MP 120 dB HDR) / e-CAM37_CUHSB(IMX900 GS): RJ45 10 GbE → Thor | 샘플가 요청 | 데브킷 RJ45는 5 GbE라 QSFP 브레이크아웃 또는 10 GbE 경로 필요 ⚠️ | J44 J45 🏷️ |
-| MIPI CSI-2 직결 | 16-lane 커넥터에 MIPI 모듈(IMX477 등) | RidgeRun IMX477 드라이버(커스텀 보드); 데브킷 레퍼런스 카메라 미확인 ⚠️ | 저가(Waveshare ISX031 US$88) 모듈의 Thor 호환은 미확인 | J47 J48 J49 🏷️ |
-| CAN | J47 헤더 + SN65HVD230 트랜시버 보드 | 수천 원대 모듈 | CAN FD 지원, 종단 점퍼 | J50 🔍 |
-| 5G/LTE | 데브킷은 Key B 없음 → Seeed J601·Advantech MIC-743 캐리어의 B-key에 Quectel RM520N-GL | Seeed 위키는 JetPack 6.2 기준(Thor 확인 없음 ⚠️) | — | J52 J28 🏷️ |
-| GNSS/INS·LiDAR | USB/시리얼 ROS 2 드라이버(Septentrio·u-blox·Xsens), Nebula(Hesai·Velodyne·RoboSense) | Thor/JetPack 7 테스트 보고 없음 ⚠️ | 이더넷 LiDAR는 5 GbE RJ45 또는 QSFP 브레이크아웃 | J53 J54 🏷️ |
-| 전원(차량) | 12 V → 28 V/5 A USB-C PD-EPR 어댑터 솔루션 미확인 ⚠️; 캐리어는 19–48 V(J601), 9–36 V(MIIVII) 직입력 | — | 차량 탑재는 캐리어 전원이 현실적 | J51 J28 J18 |
-| 마운트·냉각 | 데브킷 마운트 홀 없음(포럼); 커뮤니티 STL 인클로저; Seeed J601 히트싱크+팬(60 °C까지 풀성능) | — | — | J55 🏷️💬 |
+| ① HSB + MIPI 카메라 | QSFP 브레이크아웃 → Lattice CertusPro-NX HSB 보드(2× 10 GbE) → MIPI 카메라 | Lattice LF-SNSR-ETH-EVN US$350; Leopard 듀얼 IMX274 US$329–355(Thor 호환 표기 "N/A" ⚠️) | NVIDIA가 데브킷 공식 지원으로 확인; MIPI 카메라라 케이블이 짧아 차량용은 아님 | J41 J42 💬🏷️ |
+| ② HSB + GMSL2 디시리얼라이저 | Lattice HSB에 Leopard GMSL2 디시리얼라이저 키트(MAX9296, FAKRA 1ch) 결합 → 양산급 GMSL2 카메라 | **LI-GMSL2-DESER-HOLOSCAN US$388**(HSB·카메라 별매); LI-IMX728-9295 키트 견적 | 데브킷을 바꾸지 않고 GMSL2를 쓰는 길. 키트당 카메라 1대라 다채널은 HSB·키트가 늘어남 ⚠️ | J43 🏷️ |
+| ③ 10 GbE Holoscan 카메라 | 카메라 모듈 + e-con 자체 HSB 보드(Lattice FPGA, TintE ISP; 2× MIPI 입력, 1× 10 GbE 출력) → 데브킷 | e-CAM85_CUHSB(IMX715 8 MP) 샘플가 **US$469**; e-CAM31_CUHSB(ISX031 120 dB HDR)·e-CAM37_CUHSB(IMX900) 견적 | 브리지가 카메라 쪽에 통합. 데브킷 RJ45는 5 GbE라 QSFP 브레이크아웃 등 10 G 경로 필요 ⚠️; Thor는 "설계상 호환" 표기 | J44 J45 J63 🏷️ |
+
+**B. MIPI CSI 계열 — 디시리얼라이저 보드를 거쳐 CSI-2로 받는다(Orin 시절의 정석).**
+
+| 경로 | 구성 | 확인된 제품 | 비고 | 출처 |
+|---|---|---|---|---|
+| ④ GMSL2 카메라 → GMSL 디시리얼라이저 보드 → MIPI CSI-2 | 카메라(시리얼라이저 내장) → 동축 → 디시리얼라이저(MAX9296/MAX96712) → 16-lane CSI → Jetson | **Connect Tech JCB022 GMSL2 Plus**: MAX9296A ×4, 8× GMSL2, 16 CSI lanes, AGX Orin·**Thor T5000 지원** — 단 Connect Tech 고밀도 업링크로 연결(캐리어 조합), 데브킷 CSI 커넥터 직결 여부 미확인 ⚠️. Connect Tech GMSL3 플랫폼(MAX96792A)은 Gauntlet 캐리어 전용. Stereolabs ZED X 캡처카드(MAX96712)는 Orin 데브킷까지만 명시 | 데브킷 16-lane CSI 커넥터와 JetPack 7.2의 SIPL(GMSL 카메라 프레임워크)은 있으나 **데브킷에 바로 꽂히는 GMSL→CSI 보드는 확인하지 못함** ⚠️ | J62 J56 J40 🏷️🔍 |
+| MIPI 직결(참고) | 16-lane 커넥터에 MIPI 모듈(IMX477 등) | RidgeRun IMX477 드라이버(커스텀 보드); 데브킷 레퍼런스 카메라 미확인 ⚠️ | 랩 테스트용. 저가 모듈의 Thor 호환 미확인 | J47 J48 J49 🏷️ |
+
+**C. 보드를 바꾼다 — 디시리얼라이저 내장 캐리어/박스.** Seeed J601(8× GMSL2), Connect Tech Gauntlet + 브레이크아웃, Leopard Thor 박스(8× GMSL2, US$8,500), Advantech MIC-742(8× GMSL2)로 옮기면 GMSL2를 바로 꽂는다(1-3 표). 차량 산업 사례는 전부 이 형태다.
+
+`분석` — 데브킷만으로 차량 카메라를 쓰려면 ②(HSB + GMSL2 디시리얼라이저)가 확인된 유일한 길이고, 채널이 많아지면 ④(JCB022 등)나 C(캐리어/박스)가 비용·배선 면에서 낫다. ④가 Orin에서는 정석이었지만 Thor 데브킷 직결 제품은 아직 확인되지 않아, 실차 단계에서는 C로 가는 그림이 현실적이다.
+
+**기타 부자재**
+
+| 항목 | 구성 | 비고 | 출처 |
+|---|---|---|---|
+| CAN | J47 헤더 + SN65HVD230 트랜시버 보드 | CAN FD 지원, 종단 점퍼 | J50 🔍 |
+| 5G/LTE | 데브킷은 Key B 없음 → Seeed J601·Advantech MIC-743 캐리어의 B-key에 Quectel RM520N-GL | Seeed 위키는 JetPack 6.2 기준(Thor 확인 없음 ⚠️) | J52 J28 🏷️ |
+| GNSS/INS·LiDAR | USB/시리얼 ROS 2 드라이버(Septentrio·u-blox·Xsens), Nebula(Hesai·Velodyne·RoboSense) | Thor/JetPack 7 테스트 보고 없음 ⚠️; 이더넷 LiDAR는 5 GbE RJ45 또는 QSFP 브레이크아웃 | J53 J54 🏷️ |
+| 전원(차량) | 12 V → 28 V/5 A USB-C PD-EPR 어댑터 솔루션 미확인 ⚠️; 캐리어는 19–48 V(J601), 9–36 V(MIIVII) 직입력 | 차량 탑재는 캐리어 전원이 현실적 | J51 J28 J18 💬🏷️ |
+| 마운트·냉각 | 데브킷 마운트 홀 없음(포럼); 커뮤니티 STL 인클로저; Seeed J601 히트싱크+팬 | — | J55 🏷️💬 |
 
 ---
 
