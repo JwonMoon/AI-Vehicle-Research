@@ -1,6 +1,6 @@
 # [메일용] Jetson AGX Thor로 자율주행 연구하기 — 사양 · 연구 사례와 부자재 · 카메라 연결 방법
 
-> 작성일 2026-10-15. 외부 공개 자료만으로 조사(저장소 기존 문서 미참고). 등급: 🔍 공식 / 📄 논문 / 📰 언론 / 💬 포럼 / 🏷️ 벤더 / ⚠️ 미확인. 괄호 ID는 [출처 38건](reference/references.md). 그림과 상세 표는 [본 보고서](jetson-agx-thor-guide.md) 참조.
+> 작성일 2026-10-15. 외부 공개 자료만으로 조사(저장소 기존 문서 미참고). 등급: 🔍 공식 / 📄 논문 / 📰 언론 / 💬 포럼 / 🏷️ 벤더 / ⚠️ 미확인. 괄호 ID는 [출처 44건](reference/references.md). 그림과 상세 표는 [본 보고서](jetson-agx-thor-guide.md) 참조.
 
 ## 0. 한 줄 요약
 - 데브킷은 **128 GB·FP4/FP8이 강점, 메모리 대역폭(~270 GB/s)이 병목**. VLA·LLM은 Thor에서도 메모리 바운드, INT8은 FP16보다 느릴 수 있음 [T9][T7].
@@ -21,6 +21,7 @@
 ## 2. 연구 사례와 부자재
 ### 2-1. 주행 VLA 추론
 - **FlashDrive**(Z Lab, 2026-08) [T8] 📄: Alpamayo 10B를 KV 캐시 재사용·투기 추론·W4A8로 가속. RTX PRO 6000 717→151 ms(4.7×), **Thor 3,770→944 ms(4.0×)** → Thor에서는 아직 ~1 Hz. 부자재 없음(클립 재생)
+- **Alpamayo 연구들의 하드웨어** [T45][T42][T40][T41][T44] 📄🔍: 공식 요구 ≥24 GB(테스트 RTX 3090/A100/H100; 1.5는 BF16 20.65 GB·FP8 9.94 GB·W4A16 6.9 GB, 2 Super 34B는 H100만). 연구별 — FlashDrive: Thor+3090/4090/5090/PRO 6000 · 지연 분석(RTCSA 2026): **DGX Spark 128 GB**, −69% · OOM-Free(국민대): **RTX 5070 Ti 16 GB** 스와핑 3.55× · Stanford PiDrive: **Jetson Thor 0.5 Hz** ⚠️ · TIER IV: Autoware 통합, 실차는 DRIVE AGX Thor ×2 [T43]. 세 층(24 GB+ 워크스테이션 / 128 GB 통합메모리 엣지 / 16 GB 스와핑), Jetson Thor 실차 사례 없음
 - **Qwen-Drive-1.0**(Alibaba×HUST, 2026-09) [T37] 📄: Qwen3.5-4B + BEV 헤드 + 플래닝 전문가, NAVSIM PDMS 90.7. 24 GB+ GPU 권장(bf16 ≈12 GB). **Thor·Jetson·양자화 수치 없음** ⚠️ → Thor 측정이 첫 공개 결과. 논문 논리는 "콕핏+주행 한 컴퓨트 공유"; Alibaba는 인캐빈 Qwen-Omni를 DRIVE AGX Thor에 적응 중 [T38] 📰
 - **TensorRT-Edge-LLM Alpamayo 예제**(NVIDIA) [T13] 🔍: FP16만 지원, Thor 지연 수치 미공개, FP16 엔진 OOM 포럼 보고 💬
 ### 2-2. Thor 하드웨어 특성

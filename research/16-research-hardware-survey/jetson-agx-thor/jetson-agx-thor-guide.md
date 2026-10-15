@@ -62,6 +62,23 @@
 - 시사점: 10B 추론형 VLA는 Thor에서 **최적화 후에도 약 1 Hz**. 실차 10 Hz에는 더 작은 모델이 필요
 - 부자재: 없음(오프라인 클립 재생)
 
+**Alpamayo 연구 계보 — 어떤 하드웨어를 썼나** [T45][T42][T40][T41][T43][T44]
+- 공식 요구: Alpamayo 1·1.5 모두 **≥24 GB VRAM**. 테스트 GPU는 RTX 3090 / A100 / H100. 패키지는 BF16 20.65 GB, FP8 9.94 GB, W4A16 6.9 GB(NIM: 양자화 ≥20 GB, BF16 ≥30 GB, FP8는 Ada 이상) [T45][T42] 🔍 ✅
+- Alpamayo 2 Super(34B, 2026-05): **1× H100 80 GB만 검증** [T42] 🔍
+- 논문(NVIDIA, 2025-11): "실차 도로 테스트 99 ms" 주장, 차량 컴퓨트는 미기재 ⚠️; 2차 보도는 RTX PRO 6000 [T45] 📄📰
+
+| 연구 | 무엇을 했나 | 사용 하드웨어 | 결과 | 출처 |
+|---|---|---|---|---|
+| FlashDrive(Z Lab) | 추론 가속(캐시·투기 추론·W4A8) | **Jetson Thor** + RTX 3090/4090/5090 + RTX PRO 6000 | Thor 3,770→944 ms, PRO 6000 717→151 ms | T8 📄 |
+| 지연 분석·궤적 생성 최적화(Jeon et al., RTCSA 2026) | 다중 추론→단일 추론, 디퓨전 메모리 복사 제거 | **DGX Spark**(GB10, 128 GB 통합 메모리) | 지연 **−69.2%**, 궤적 다양성 유지; 카메라 4대×4프레임 | T40 📄 |
+| OOM-Free Alpamayo(국민대) | 레이어 단위 CPU↔GPU 스와핑 + 전송·연산 중첩 | **RTX 5070 Ti 16 GB**(모델은 ~21.5 GB 필요) | Accelerate 오프로딩 대비 **3.55×**, BF16 유지 | T41 📄 |
+| TensorRT-Edge-LLM VLA 예제 + 포럼 | FP16 엔진 빌드·추론 | **DRIVE AGX Thor / Jetson Thor** | 지연 미공개, DRIVE Thor FP16 엔진 OOM(15.17 GB) | T13 🔍💬 |
+| Stanford CS224R PiDrive(학생 보고서) | 전방 카메라 1대 변형으로 경량화 | **Jetson AGX Thor** | 원본 4카메라 구성 **0.5 Hz** ⚠️발췌 | T44 📄 |
+| TIER IV(GTC 2026) | Alpamayo 1을 Autoware에 조기 통합, Co-MLOps 데이터 플랫폼 | 실차는 **DRIVE AGX Thor ×2(Hyperion)** 버스; Alpamayo가 그 차량에서 도는지는 미확인 ⚠️ | — | T43 📰 |
+
+- 정리: Alpamayo 연구 하드웨어는 세 층이다. ① **24 GB+ 워크스테이션 GPU**(3090/4090/A100/H100/PRO 6000) — 공식 요구이자 대부분의 연구, ② **128 GB 통합 메모리 엣지급**(DGX Spark, Jetson Thor) — 지연 분석·엣지 배포, ③ **16 GB 소비자 GPU** — 메모리 스와핑 연구. 실차 사례는 DRIVE AGX Thor(TIER IV)뿐이고 Jetson Thor 실차는 없다
+- Thor 시사점: 128 GB라 메모리는 넉넉하지만 대역폭 때문에 **FlashDrive 최적화 후 ~1 Hz, 학생 측정 0.5 Hz**. DGX Spark(같은 273 GB/s급)에서 나온 −69% 기법은 Thor에 그대로 적용해 볼 가치가 있다
+
 **Qwen-Drive-1.0** (Alibaba Qwen × HUST, arXiv 2609.00111, 2026-08/09) [T37][T38] 📄 ✅
 - 구조: **Qwen3.5-4B** VLM을 그대로 두고 **BEV 인식 헤드**(3D 검출·점유·맵 분할) + **플래닝 전문가**(궤적 5 s @10 Hz, 6샘플) 부착. 멀티뷰 카메라 링 입력
 - 수치(README): NAVSIM PDMS **90.7**(RL) · Waymo E2E RFS 7.91 · NVIDIA PhysicalAI minADE 0.34 m · 같은 프로토콜에서 Alpamayo-1.5-10B보다 우위 주장
