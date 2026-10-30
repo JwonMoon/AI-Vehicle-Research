@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autoware 재단 스택 지도</title>
+<meta name="description" content="Autoware 2.0 시대의 autowarefoundation 저장소 157개를 전수 분류하고, 로보택시·L4 트랙과 ADAS·POV 트랙(Vision Pilot)으로 나눠 각 스택의 정체와 로드맵 위치를 정리한 보고서">
+<meta name="author" content="AI-Vehicle-Research">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f6f2; --bg-2:#ffffff; --bg-3:#efede6; --fg:#1d1f22; --fg-2:#4a4e55; --fg-3:#767b84;
+  --line:#dcd9d0; --line-2:#e9e6de;
+  --accent:#0f6f8e; --accent-2:#0a5a74; --accent-bg:#e5f1f5;
+  --adas:#9a5a00; --adas-bg:#fbf1df; --adas-line:#e7c98f;
+  --meta-bg:#eeede8;
+  --code-bg:#f0efea; --pre-bg:#1e2126; --pre-fg:#e6e8ec;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px -12px rgba(0,0,0,.18);
+  --radius:12px; --w:900px; --toc-w:280px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131518; --bg-2:#1b1e23; --bg-3:#22262c; --fg:#e7e9ec; --fg-2:#b7bcc5; --fg-3:#858c97;
+    --line:#2f343c; --line-2:#272c33;
+    --accent:#5cc0e0; --accent-2:#8ad4ec; --accent-bg:#152a33;
+    --adas:#f0b458; --adas-bg:#2a2115; --adas-line:#5a4520;
+    --meta-bg:#1e2126;
+    --code-bg:#262a31; --pre-bg:#0e1013; --pre-fg:#dfe3e8;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131518; --bg-2:#1b1e23; --bg-3:#22262c; --fg:#e7e9ec; --fg-2:#b7bcc5; --fg-3:#858c97;
+  --line:#2f343c; --line-2:#272c33;
+  --accent:#5cc0e0; --accent-2:#8ad4ec; --accent-bg:#152a33;
+  --adas:#f0b458; --adas-bg:#2a2115; --adas-line:#5a4520;
+  --meta-bg:#1e2126;
+  --code-bg:#262a31; --pre-bg:#0e1013; --pre-fg:#dfe3e8;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans KR","Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;font-size:16px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}
+code,pre,kbd{font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;height:auto}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-2)}
+.topbar .in{max-width:calc(var(--w) + var(--toc-w) + 64px);margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.topbar .brand{font-weight:600;color:var(--fg-2);font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{border:1px solid var(--line);background:var(--bg-2);color:var(--fg-2);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.layout{max-width:calc(var(--w) + var(--toc-w) + 64px);margin:0 auto;padding:24px 16px 80px;display:grid;grid-template-columns:var(--toc-w) minmax(0,1fr);gap:32px}
+nav.toc{position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);overflow:auto;font-size:13px;padding-right:8px}
+nav.toc .ttl{font-weight:700;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;margin:0 0 8px}
+nav.toc ul{list-style:none;margin:0;padding:0}
+nav.toc li{margin:0}
+nav.toc a{display:block;color:var(--fg-2);padding:3px 8px;border-left:2px solid transparent;border-radius:0 6px 6px 0;line-height:1.4}
+nav.toc a:hover{background:var(--bg-3);text-decoration:none}
+nav.toc ul ul a{padding-left:20px;font-size:12px;color:var(--fg-3)}
+nav.toc a.active{border-left-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+main{min-width:0}
+header.hero h1{font-size:30px;line-height:1.3;margin:0 0 12px;letter-spacing:-.01em}
+blockquote.meta{margin:0 0 28px;padding:16px 20px;background:var(--meta-bg);border-left:4px solid var(--accent);border-radius:var(--radius);font-size:14px;color:var(--fg-2)}
+blockquote.meta p{margin:6px 0}
+blockquote{margin:16px 0;padding:8px 16px;border-left:3px solid var(--line);color:var(--fg-2)}
+h2{font-size:24px;margin:52px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--line);letter-spacing:-.01em}
+h3{font-size:19px;margin:36px 0 12px;color:var(--fg)}
+h4{font-size:16px;margin:28px 0 8px;color:var(--accent-2)}
+p{margin:0 0 14px}
+ul,ol{padding-left:1.4em;margin:0 0 14px}
+li{margin:4px 0}
+hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+code{background:var(--code-bg);padding:1px 6px;border-radius:5px;font-size:.86em}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:14px 16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.55}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:10px;background:var(--bg-2);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.55}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:top;text-align:left}
+th{background:var(--bg-3);font-weight:600;color:var(--fg-2);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td code,th code{white-space:nowrap}
+figure{margin:22px 0 28px;padding:12px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+figure img{display:block;margin:0 auto;border-radius:6px}
+figcaption{margin-top:10px;font-size:13px;color:var(--fg-3);line-height:1.5}
+strong{font-weight:600}
+.foot{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--fg-3)}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}nav.toc{position:static;max-height:none;border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:var(--bg-2);margin-bottom:8px}header.hero h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="in"><span class="brand">AI-Vehicle-Research · research/17 · Autoware 재단 스택 지도</span><button class="btn" id="themeBtn" type="button">테마</button><a class="btn" href="autoware-foundation-stack-map.md">MD 원본</a></div></div>
+<div class="layout">
+<nav class="toc" aria-label="목차"><p class="ttl">목차</p><div class="toc">
+<ul>
+<li><a href="#0">0. 세 줄 요약</a></li>
+<li><a href="#1">1. 한눈에 보는 지도</a></li>
+<li><a href="#2-2026">2. 2026년에 무엇이 바뀌었나</a><ul>
+<li><a href="#21">2.1 릴리스 타임라인</a></li>
+<li><a href="#22">2.2 바뀐 것 일곱 가지</a></li>
+<li><a href="#23-autoware-1x">2.3 Autoware 1.x와 무엇이 다른가 — 구조 그림으로</a></li>
+</ul>
+</li>
+<li><a href="#3">3. "두 트랙" 가설 검증 — 공식 자료가 말하는 구조</a><ul>
+<li><a href="#31-e2e-3-odd-trl">3.1 다년 로드맵: E2E 3년 계단과 ODD별 TRL 계단</a></li>
+<li><a href="#32-architecture-20-e2e-4">3.2 Architecture 2.0 로드맵의 E2E 4단계</a></li>
+<li><a href="#33-e2e-odd">3.3 트랙을 가르는 것은 "E2E 로드맵"이 아니라 "워킹그룹과 ODD"다</a></li>
+<li><a href="#34">3.4 가설 채점</a></li>
+</ul>
+</li>
+<li><a href="#4-157">4. 저장소 157개 분류 지도</a></li>
+<li><a href="#5">5. 핵심 스택 상세</a><ul>
+<li><a href="#51-autoware-20-core-universe-launch">5.1 Autoware 2.0 본체 — Core · Universe · Launch</a></li>
+<li><a href="#52-autoware-index-reference-design-universe">5.2 Autoware Index와 Reference Design — Universe를 쪼개는 새 유통 구조</a></li>
+<li><a href="#53-autoe2e-auto_e2e-awf-e2e">5.3 AutoE2E (auto_e2e) — AWF 자체 E2E 주행 모델</a></li>
+<li><a href="#54-latentdrive-oneplanner-alpamayo">5.4 LatentDrive · OnePlanner · Alpamayo 노드 — 로보택시 트랙의 다른 생성기 후보</a></li>
+<li><a href="#55-vision-pilot-l2-adas">5.5 Vision Pilot — 오픈소스 L2 ADAS 스택</a></li>
+<li><a href="#56-autoseg-lite-adas">5.6 AutoSeg 계열·Lite 모델·보조 모델 — ADAS 트랙의 부품 창고</a></li>
+<li><a href="#57-open-ad-kit-safety-island">5.7 Open AD Kit와 Safety Island — 배포·안전 층</a></li>
+<li><a href="#58-agnocast-cie-cuda_blackboard-system-designer">5.8 미들웨어·실행 기반 — Agnocast · CIE · cuda_blackboard · System Designer</a></li>
+<li><a href="#59-odd">5.9 ODD별 프로젝트 — 트럭 · 오프로드 · 저속 · 버스</a></li>
+</ul>
+</li>
+<li><a href="#6">6. 두 트랙 특징 비교</a></li>
+<li><a href="#7">7. 로드맵 위에 올려본 각 스택</a></li>
+<li><a href="#8-hpc">8. 차량 HPC 관점의 시사점</a></li>
+<li><a href="#9">9. 불확실·미확인 항목</a></li>
+<li><a href="#a-autoware-projects-2026-10">부록 A. 워킹그룹 목록 (autoware-projects 위키, 2026-10 열람)</a></li>
+<li><a href="#b">부록 B. 용어</a></li>
+<li><a href="#c">부록 C. 관련 보고서</a></li>
+</ul>
+</div>
+</nav>
+<main>
+<header class="hero"><h1>Autoware 재단 스택 지도 — Autoware 2.0 시대의 저장소 157개, 무엇이 무엇이고 로드맵 어디에 있나</h1></header>
+<blockquote class="meta">
+<p><strong>작성일</strong>: 2026-10-30 · <strong>상태</strong>: 초판
+<strong>배경</strong>: Autoware 재단(AWF) GitHub 조직에 <code>vision_pilot</code>, <code>auto_steer</code>, <code>auto_e2e</code>, <code>autoware_latent_drive</code>, <code>autoware-safety-island</code>, <code>autoware-index</code> 같은 낯선 저장소가 급증했고, 2026-10-29에는 <strong>Autoware 2.0.0</strong>이 공개됐다. 이 보고서는 ① 조직의 저장소 157개를 전수 조사해 10개 묶음으로 분류하고, ② 각 스택이 무엇인지 설명하며, ③ AWF가 공개한 로드맵(다년 로드맵·Architecture 2.0 4단계·POV 4단계·Open AD Kit 사다리) 위에 각 스택을 올려 "지금 어디에 있는지"를 정리한다. "E2E 전환 로드맵이 자율주행 트랙과 ADAS 트랙으로 나뉘고 Vision Pilot은 ADAS 쪽"이라는 질문자의 가설도 공식 자료로 검증한다(§3).
+<strong>대상 독자</strong>: Autoware 1.x 구조(Sensing→Perception→Localization→Planning→Control, Core/Universe)를 아는 엔지니어.
+<strong>출처 표기 원칙</strong>: 모든 사실 문장에 출처 ID를 붙인다. 등급은 💻 <strong>저장소 원본</strong>(raw 파일·shallow clone으로 직접 확인) · 🔍 <strong>1차 페이지</strong>(GitHub 릴리스·이슈·토론을 직접 열람) · 📚 <strong>이 저장소의 앞선 보고서</strong>가 직접 확인한 기록 · 📰 <strong>웹 검색 요약</strong> · ⚠️ <strong>추정·미확인</strong>. 전체 목록은 <a href="reference/references.md">출처 기록</a>.
+<strong>조사 환경 제약</strong>: 세션 네트워크 정책으로 <code>autoware.org</code>, <code>docs.autoware.org</code>(=<code>autowarefoundation.github.io</code>), <code>medium.com</code>을 열 수 없었다. 공식 문서는 렌더링 사이트 대신 <strong>문서 저장소(<code>autoware-documentation</code>)의 Markdown 원본</strong>을 clone해 읽었고(내용은 동일), 재단 홈페이지·블로그 정보는 GitHub와 검색 결과로 대체했다. GitHub 조직 API는 세션 정책으로 막혀 있어 저장소 목록은 조직 페이지를 직접 열람해 받아 적었다.</p>
+</blockquote>
+<hr />
+<h2 id="0">0. 세 줄 요약</h2>
+<ol>
+<li><strong>AWF의 스택은 "로보택시·L4 트랙"과 "ADAS·개인차량(POV) 트랙" 두 줄기로 읽으면 대부분 정리된다.</strong> 전자는 <code>autoware</code>(Core/Universe/Launch)와 그 위의 학습 플래너·E2E 모델(<code>Diffusion Planner</code>, <code>auto_e2e</code>, <code>autoware_latent_drive</code>, <code>autoware_oneplanner</code>)이고, 후자는 <code>vision_pilot</code>과 그 부품 모델(<code>auto_steer</code>·<code>auto_speed</code>·<code>auto_drive</code>, AutoSeg 계열, <code>lite_models</code>)이다. 두 트랙은 같은 E2E 진화 철학(학습 플래너→컴포넌트형 E2E→단일 신경망→하이브리드)을 공유하지만, <strong>주체(Software/Robotaxi WG vs ADAS WG)·센서·하드웨어·릴리스 주기가 다른 별개의 코드베이스</strong>다. 질문자의 가설은 큰 틀에서 맞고, 세부는 §3.4에 채점했다. (💻 D3·D10·R6·R10 · 🔍 G8·G13)</li>
+<li><strong>Autoware 2.0.0(2026-10-29 공개)은 "E2E 완성판"이 아니라 "Generator-Selector 구조를 공식화하고 생성기 하나를 바꿔 끼울 수 있게 한 첫 릴리스"다.</strong> 런치 인자 <code>planning_setting</code>으로 규칙 기반 플래너와 Diffusion Planner 중 하나를 고르며, Selector(안전 게이트·랭킹)는 패키지는 있으나 아직 기동하지 않는다. 같이 공개된 것은 모델의 Hugging Face 이관, 커뮤니티 패키지 레지스트리 <strong>Autoware Index</strong>, 그리고 Vision Pilot을 첫 사례로 하는 <strong>Reference Design</strong> 개념이다. 버전 체계도 바뀌어 Autoware 2.0.0이 <code>autoware_core</code> 1.10.0을 쓴다. (💻 D1·D9·R1 · 🔍 G2)</li>
+<li><strong>배포·안전 층이 별도 스택으로 자라고 있다.</strong> <code>openadkit</code>은 Autoware·Vision Pilot·Safety Island를 "digest로 고정하고 증거(evidence)를 서명해 내보내는" 배포 계층으로 재편 중이며(v2.0 2026-10 말 목표, v2.1에서 Vision Pilot + Euro NCAP 파생 시나리오, Renesas R-Car X5H), <code>autoware-safety-island</code>는 Arm 안전 코어에서 궤적 추종기를 돌리는 구현체다. 로드맵 상 가장 가까운 양산 지향 결합은 "Vision Pilot + Safety Island + Open AD Kit"이고, 로보택시 트랙은 다년 로드맵에서 TRL-6 목표가 3년 차에 놓여 있다. (🔍 G4·G17 · 💻 D10·R13)</li>
+</ol>
+<hr />
+<h2 id="1">1. 한눈에 보는 지도</h2>
+<figure><img alt="AWF 스택 지도(자체 작성)" src="images/01-awf-stack-map.svg" /><figcaption>그림 1. AWF 스택 지도. 자체 작성. 두 트랙(열) × 다섯 층(행)으로 157개 저장소 중 핵심을 배치했고, 아래에 Architecture 2.0의 E2E 4단계에 각 스택을 대응시켰다. Step 대응은 자체 해석이다.</figcaption></figure>
+
+<p><strong>읽는 법.</strong> 위 두 행(AI 모델·주행 스택)은 트랙별로 갈리고, 아래 세 행(공통 기반·배포·안전·ODD 프로젝트)은 두 트랙이 공유한다. 표로 압축하면 다음과 같다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>층</th>
+<th>① 로보택시·L4 트랙</th>
+<th>② ADAS·POV 트랙</th>
+<th>공통</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주체(WG)</td>
+<td>Software WG(아키텍처·릴리스), Robotaxi WG(<code>auto_e2e</code>)</td>
+<td>ADAS WG(옛 Privately Owned Vehicle WG), Reference Design WG</td>
+<td>Open AD Kit WG, Safety Assurance WG, ODD WG</td>
+</tr>
+<tr>
+<td>주행 스택</td>
+<td><strong>Autoware 2.0.0</strong> = <code>autoware_core</code> 1.10.0 + <code>autoware_universe</code> 0.53.1 + <code>autoware_launch</code> 0.53.0 (ROS 2 Humble/Jazzy)</td>
+<td><strong>Vision Pilot 1.2</strong> (C++ · ONNX Runtime · 미들웨어 없이 실행, ROS 2 인터페이스 옵션)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>AI 모델</td>
+<td>Diffusion Planner(Universe), AutoE2E, LatentDrive, OnePlanner, Alpamayo 노드(포크)</td>
+<td>AutoSteer·AutoSpeed·AutoDrive, AutoSeg 계열(SceneSeg·Scene3D·DomainSeg·EgoLanes), Lite models</td>
+<td>가중치는 Hugging Face <code>AutowareFoundation</code></td>
+</tr>
+<tr>
+<td>센서·맵</td>
+<td>LiDAR+카메라(+레이더), HD맵(Lanelet2) 또는 2D맵 옵션</td>
+<td>단안 카메라 1대, <strong>HD맵 없음</strong>(mapless)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>하드웨어</td>
+<td>NVIDIA GPU(TensorRT), amd64/arm64</td>
+<td>3–5 INT8 TOPS급 양산 SoC 목표, Jetson Orin·x86 GPU에서 벤치</td>
+<td>Arm 안전 코어(S32Z·R-Car X5H)=Safety Island</td>
+</tr>
+<tr>
+<td>배포</td>
+<td>Open AD Kit v2.0 (Autoware 컨테이너·증거)</td>
+<td>Open AD Kit v2.1 (Vision Pilot·X5H)</td>
+<td><code>autoware-index</code>(패키지 레지스트리), Reference Design</td>
+</tr>
+<tr>
+<td>로드맵 위치</td>
+<td>Arch 2.0 Step 1(학습 플래너) 공식 진입, Step 2~3 연구</td>
+<td>POV Phase 1(Vision Pilot L2) 출시, Phase 2(Plus: 레이더 융합) 착수</td>
+<td>다년 로드맵 Y1: LSA·POV TRL-6, Y3: Robotaxi TRL-6</td>
+</tr>
+</tbody>
+</table></div>
+<p>(출처: 💻 R1·D1·D10·R6·P1 · 🔍 G2·G4·G13. 각 항목의 근거는 §4~§7에서 반복한다.)</p>
+<hr />
+<h2 id="2-2026">2. 2026년에 무엇이 바뀌었나</h2>
+<h3 id="21">2.1 릴리스 타임라인</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>릴리스</th>
+<th>날짜</th>
+<th>핵심 변화</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.45.0 / 0.45.1</td>
+<td>2025-06-23 / 2025-07-19</td>
+<td>0.x 체계의 마지막</td>
+<td>🔍 G3·G21</td>
+</tr>
+<tr>
+<td><strong>1.5.0</strong></td>
+<td>2025-11-20</td>
+<td><code>autoware_core</code> 버전과 동일한 1.x 체계 시작(1.0~1.4는 태그 없음)</td>
+<td>🔍 G21·💻 D9</td>
+</tr>
+<tr>
+<td>1.6.0 / 1.7.0 / 1.7.1</td>
+<td>2026-01-27 / 02-17 / 02-18</td>
+<td>월간 릴리스</td>
+<td>🔍 G21</td>
+</tr>
+<tr>
+<td>1.8.0</td>
+<td>2026-05-04</td>
+<td>12번 보고서의 로컬 코드 기준(universe 0.51.0)</td>
+<td>🔍 G3 · 📚 12번</td>
+</tr>
+<tr>
+<td>1.9.0</td>
+<td>2026-07-16</td>
+<td>core 1.9.0 · universe 0.52.0 · agnocast 2.3.5 · system_designer v0.4.1</td>
+<td>🔍 G3 · 💻 R1</td>
+</tr>
+<tr>
+<td><strong>2.0.0</strong></td>
+<td><strong>2026-10-29</strong> (태그 커밋 10-21)</td>
+<td>Generator-Selector 공식화, <code>planning_setting</code> 런치 인자, 모델 Hugging Face 이관, Autoware Index, Reference Design. core 1.10.0 · universe 0.53.1 · launch 0.53.0 · agnocast 2.4.1</td>
+<td>🔍 G2 · 💻 R1·G21</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>분석.</strong> 버전 번호의 의미가 바뀐 점을 먼저 알아야 한다. 2.0.0 이전에는 Autoware 버전이 곧 <code>autoware_core</code> 버전이었고, 2.0.0부터 Autoware는 자기 번호를 갖는다("Autoware 2.0.0 uses autoware_core 1.10.0"). 각 릴리스 태그의 <code>repositories/autoware.repos</code>가 하위 저장소 버전을 기록하므로, "Autoware X.Y.Z"는 사실상 <strong>고정된 하위 저장소 버전의 묶음 이름</strong>이다. (💻 D9·R1) 릴리스는 "대략 월간"이 원칙이다. (💻 D9)</p>
+<h3 id="22">2.2 바뀐 것 일곱 가지</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>변화</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Architecture 2.0 공식 진입</strong></td>
+<td>문서에서 "Under Construction" 표시가 사라지고 "What Autoware 2.0.0 does today" 절이 생겼다. 규칙 기반 플래너와 Diffusion Planner를 런치 시점에 선택. Selector는 미기동</td>
+<td>💻 D1·D17</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>AI 모델 허브가 Hugging Face로</strong></td>
+<td>Diffusion Planner v3.0~v5.0(2.0.0은 v5.0), lidar_centerpoint v4.1, PTv3, tensorrt_vad 등을 <code>artifacts</code> Ansible 역할이 <code>hf</code> CLI로 고정 버전 다운로드. 1.9.0 이전 모델 폴더와 호환되지 않음</td>
+<td>🔍 G2 · 💻 D1</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Autoware Index·aw-index-cli</strong></td>
+<td>Universe 밖 커뮤니티 패키지를 등록·검증·조합하는 레지스트리. <code>autoware_livox_tag_filter</code>가 Universe를 떠나 Index로 간 첫 사례. Universe를 "레거시·축소 중"으로 규정한 2026-05 제안의 결과</td>
+<td>🔍 G2·G19 · 💻 R15·D12</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Reference Design 개념</strong></td>
+<td>"배포 프로파일 + 레퍼런스 SW 스택"으로 정의하고 Vision Pilot을 첫 사례로 등록. <code>aw-index-cli compose --reference-design</code></td>
+<td>💻 D11 · 🔍 G2</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>AWF 자체 AI 모델 저장소 군</strong></td>
+<td><code>auto_e2e</code>(로보택시 WG), <code>auto_steer</code>·<code>auto_speed</code>·<code>auto_drive</code>(Vision Pilot), <code>autoware_latent_drive</code>, <code>autoware_oneplanner</code>, AutoSeg 계열 분리 저장소</td>
+<td>💻 R7~R12 · 🔍 G1</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>배포·안전 계층 재편</strong></td>
+<td>Open AD Kit 2026–2027 로드맵(v2.0→v3.0), Safety Island(Arm 구현 + L4 설계 RFC), CES 2027 X5H 트랙</td>
+<td>🔍 G4·G17 · 💻 R13·R14</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>조직 재편</strong></td>
+<td>POV WG 회의가 2026-09부터 "ADAS Work Group Meeting"으로 게시, <code>auto_e2e</code>는 "Robotaxi working group"에서 개발, Off-road/Racing WG 일시 중단(2026-05), Autoware Architecture WG는 "일시 정지"</td>
+<td>🔍 G9·G10·G13 · 💻 R10·R31 · 📰 W3</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="23-autoware-1x">2.3 Autoware 1.x와 무엇이 다른가 — 구조 그림으로</h3>
+<figure><img alt="Architecture 1.0 개요" src="images/03-architecture-1-0-overview.svg" /><figcaption>그림 2. Autoware Architecture 1.0 개요. 출처: autoware-documentation <code>design/autoware-architecture-v1/image/autoware-architecture-overview.drawio.svg</code> (💻 D14)</figcaption></figure>
+
+<figure><img alt="Generator-Selector 개념도" src="images/04-generator-selector-simple.svg" /><figcaption>그림 3. Architecture 2.0의 Generator-Selector 개념도. 출처: autoware-documentation <code>design/autoware-architecture-v2/images/generator-selector-simple.svg</code> (💻 D1)</figcaption></figure>
+
+<p>1.0은 "Sensing→Map/Localization→Perception→Planning→Control→Vehicle Interface"의 7개 스택을 고정 파이프라인으로 잇는 계층 구조였다(그림 2). 2.0은 파이프라인의 앞부분을 추상화해 <strong>"궤적을 내는 무엇이든 Generator, 그것을 검사·선택하는 것이 Selector"</strong> 로 바꿨다(그림 3). 공식 문서의 표현은 "우리는 파이프라인의 앞 절반을 추상화했다(abstracted away the front half of the pipeline)"이다. Generator는 규칙 기반·최적화 플래너, 원시 센서를 쓰는 E2E 모델, 학습·샘플링 플래너 어느 것이든 될 수 있고, 여러 개가 병렬로 돌 수 있다. Selector는 안전 검사(규칙 준수·주행가능영역)와 랭킹·선택을 맡는다. (💻 D1·D4)</p>
+<hr />
+<h2 id="3">3. "두 트랙" 가설 검증 — 공식 자료가 말하는 구조</h2>
+<h3 id="31-e2e-3-odd-trl">3.1 다년 로드맵: E2E 3년 계단과 ODD별 TRL 계단</h3>
+<p>AWF 공식 문서의 "Multi-Year Roadmap"은 8개 목표를 3년(Y1~Y3)으로 나눈다. 기술 목표 두 개가 이 보고서의 축이다. (💻 D10. 문서에 기준 연도는 적혀 있지 않다 ⚠️)</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>목표</th>
+<th>Y1</th>
+<th>Y2</th>
+<th>Y3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Objective 1: AI-first 기술 도입</strong></td>
+<td>LiDAR·비전·레이더 <strong>컴포넌트형 AI 인식</strong> 스택 도입. <strong>AI 기반 플래너 초판</strong>으로 "완전한 E2E 컴포넌트 기반 스택" 달성(자체 개발 + 회원사 기술 통합)</td>
+<td><strong>단일 신경망 E2E 스택 초판</strong>(센서→궤적 직접 계산)</td>
+<td><strong>완전한 하이브리드 AI 스택</strong>: E2E가 주 모드, 컴포넌트형 AI 스택이 병렬 안전층·기반 기술층</td>
+</tr>
+<tr>
+<td><strong>Objective 2: 양산 가능(Production-Capable) Autoware</strong></td>
+<td>Open AD Kit와 결합한 <strong>저속 자율주행(LSA)·개인차량(POV, 고속도로 파일럿)</strong> 초판, <strong>TRL-6</strong></td>
+<td>LSA·POV TRL-7. <strong>Robobus·오프로드</strong> 초판 TRL-6</td>
+<td>LSA·POV TRL-8, Robobus·오프로드 TRL-7, <strong>Robotaxi 초판 TRL-6</strong></td>
+</tr>
+<tr>
+<td>Objective 3: 실차 배치</td>
+<td>LSA·POV 앵커 기업 1곳(후보: Eve Autonomy·Whale Dynamic·Robeff / AMD·DeepenAI·AutoCore.ai) 단일 차량</td>
+<td>소규모 다차량 + Robobus(ADASTEC)·오프로드(DriveBlocks) 단일 차량</td>
+<td>플릿 + <strong>Robotaxi 단일 차량(후보: TIER IV)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Objective 4(커뮤니티)의 Y2 항목 "ROS Index 스타일의 Autoware 패키지 목록"과 "GUI 설정 대시보드"는 각각 <strong>Autoware Index</strong>와 <strong>System Designer/launch GUI</strong>로 실체화됐다. (💻 D10·R15·R17)</p>
+<p><strong>분석.</strong> 이 표가 "두 트랙" 가설의 공식 근거다. 기술 축(Objective 1)은 하나의 E2E 계단이고, 제품 축(Objective 2·3)은 <strong>ODD별로 계단이 다르다.</strong> POV(개인차량)가 LSA와 함께 가장 먼저 TRL-6을 노리고, Robotaxi는 가장 늦다. 즉 "E2E 로드맵이 두 트랙으로 갈린다"기보다 <strong>"하나의 E2E 기술 계단을 ODD별 제품 트랙이 각자의 속도로 오른다"</strong> 가 정확한 표현이다.</p>
+<h3 id="32-architecture-20-e2e-4">3.2 Architecture 2.0 로드맵의 E2E 4단계</h3>
+<p>Architecture 2.0 문서의 로드맵 절(<code>roadmap/autonomous-driving-stack-architecture.md</code>)은 Autoware 1.0(전통 로보틱스 스택)에서 Autoware 2.0(데이터 중심 AI 스택)으로의 진화를 4단계로 정의한다. 목표는 "SAE Level 4+"다. (💻 D2·D3)</p>
+<figure><img alt="단계적 기술 진화" src="images/05-e2e-stepwise-evolution.png" /><figcaption>그림 4. 단계적 기술 진화(Stepwise technology evolution). 출처: autoware-documentation <code>design/autoware-architecture-v2/roadmap/media/detailed_architecture_figure1.png</code> (💻 D4)</figcaption></figure>
+
+<div class="tw"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>정의(공식 문서)</th>
+<th>맵 옵션</th>
+<th>2026-10 현재 대응 스택(자체 해석)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Step 1 <strong>Learned Planner</strong></td>
+<td>HD맵 기준 자차 위치 + 3D 박스·신호등 등 "로컬 월드 표현"을 받아 궤적을 내는 학습 플래너. 병합·끼어들기·양보를 데이터로 배움</td>
+<td>HD맵</td>
+<td><strong>Diffusion Planner</strong>(2.0.0에서 <code>planning_setting:=diffusion_planner</code>), OnePlanner(LiDAR BEV + 벡터맵)</td>
+</tr>
+<tr>
+<td>Step 2 <strong>Component-based E2E</strong></td>
+<td>학습 인식 + 학습 플래너. 둘 사이 인터페이스가 남아 "내성 가능한(introspectable)" E2E</td>
+<td>A: HD맵 / B: 2D맵</td>
+<td>AutoE2E Reactive 모델(카메라→BEV→GRU 플래너, 맵 래스터 옵션), Vision Pilot의 인식축(AutoSeg→AutoSteer)</td>
+</tr>
+<tr>
+<td>Step 3 <strong>Learned Driving</strong></td>
+<td>명시적 인식·계획 모듈 없는 단일 모놀리식 신경망. CNN형(엣지 배포 가능) 또는 VLA형(ViT+LLM+디퓨전 디코더)</td>
+<td>A/B</td>
+<td>LatentDrive(V-JEPA 잠재 공간에서 계획), AutoDrive(프레임 2장→거리·곡률), Alpamayo(외부, VLA)</td>
+</tr>
+<tr>
+<td>Step 4 <strong>Learned Hybrid</strong></td>
+<td>E2E 주행 모델 + 별도 <strong>Safety Perception</strong>(LiDAR·레이더·규칙 기반 가능) + <strong>Safety Guardian</strong>(교차 검증, V2X 활용 가능). "업계가 개발 중"</td>
+<td>A/B</td>
+<td>Vision Pilot 1.x의 "하이브리드 E2E"(인식 모델 ∥ E2E 모델 → Safety Guardian), Safety Island</td>
+</tr>
+</tbody>
+</table></div>
+<figure><img alt="전통 스택" src="images/07-e2e-fig01-traditional-stack.png" /><figcaption>그림 5. 전통 로보틱스 스택(Figure 1). 출처: autoware-documentation roadmap media <code>architecture_figure01.png</code> (💻 D3)</figcaption></figure>
+
+<figure><img alt="학습 플래너" src="images/08-e2e-fig03-learned-planner.png" /><figcaption>그림 6. Step 1 학습 플래너(Figure 3). 출처: 상동 <code>architecture_figure03.png</code> (💻 D3)</figcaption></figure>
+
+<figure><img alt="컴포넌트형 E2E, 2D맵" src="images/09-e2e-fig05-component-e2e-2dmap.png" /><figcaption>그림 7. Step 2 컴포넌트형 E2E, 2D맵 옵션(Figure 5). 출처: 상동 <code>architecture_figure05.png</code> (💻 D3)</figcaption></figure>
+
+<figure><img alt="모놀리식 학습 주행, 2D맵" src="images/10-e2e-fig07-monolithic-2dmap.png" /><figcaption>그림 8. Step 3 단일 신경망 학습 주행, 2D맵 옵션(Figure 7). 출처: 상동 <code>architecture_figure07.png</code> (💻 D3)</figcaption></figure>
+
+<figure><img alt="학습 하이브리드, 2D맵" src="images/11-e2e-fig09-hybrid-2dmap.png" /><figcaption>그림 9. Step 4 학습 하이브리드, 2D맵 옵션(Figure 9). 출처: 상동 <code>architecture_figure09.png</code> (💻 D3)</figcaption></figure>
+
+<p>문서가 각 단계마다 "옵션 A(HD맵)"와 "옵션 B(2D 내비 맵)"를 두는 점이 중요하다. 옵션 B의 장점은 "HD맵 구축·유지 없이 2D맵이 있는 곳 어디서나 동작"이고, 옵션 A의 장점은 "HD맵이 비가시선 센서처럼 정적 환경을 알려주는 강건성"이다. (💻 D3) <strong>분석</strong>: 옵션 B가 사실상 ADAS·POV 트랙의 전제이고(Vision Pilot은 mapless), 옵션 A가 로보택시 트랙의 전제다. 같은 4단계 그림을 두 트랙이 다른 옵션으로 오르고 있다.</p>
+<p>로드맵 폴더의 <code>development-roadmap.md</code>는 본문이 "TBD"뿐이다. 2.0 문서 PR은 "TBD인 로드맵 페이지 4개를 숨긴다"고 적었다. 즉 <strong>날짜 박힌 공식 개발 일정표는 아직 없다.</strong> (💻 D5·D17)</p>
+<h3 id="33-e2e-odd">3.3 트랙을 가르는 것은 "E2E 로드맵"이 아니라 "워킹그룹과 ODD"다</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>근거</th>
+<th>내용</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auto_e2e</code> README·온보딩</td>
+<td>"AutoE2E is developed in the <strong>Autoware Robotaxi working group</strong>". Discord의 'robotaxi' 채널에서 매주 수요일 2슬롯 회의</td>
+<td>💻 R10</td>
+</tr>
+<tr>
+<td><code>auto_e2e</code> README</td>
+<td>출력은 "LiDAR·레이더 안전층과 융합해 <strong>무인 로보택시</strong>로, 또는 카메라만으로 <strong>L2++ 핸즈프리 ADAS</strong>로" 쓸 수 있다고 명시</td>
+<td>💻 R10</td>
+</tr>
+<tr>
+<td>GitHub 토론 제목</td>
+<td>2026-09-28부터 "<strong>ADAS Work Group Meeting</strong> - Slot 1&amp;2"(라벨 <code>meeting:adas-wg</code>, 푸터 라벨은 아직 "Privately Owned Vehicle Working Group"). 2026-06까지는 "Privately Owned Vehicle Work Group Meeting"</td>
+<td>🔍 G8·G10·G13</td>
+</tr>
+<tr>
+<td>POV WG 위키</td>
+<td>범위: "개인 소유 차량의 자율주행, 핸즈오프·아이즈오프(L3+), 주로 고속도로. 비전 우선 + 4D 레이더, <strong>LiDAR·HD맵 의존 없음</strong>". 리더 Muhammad Zain Khawaja(AWF Senior Tech Lead)</td>
+<td>💻 R31</td>
+</tr>
+<tr>
+<td>POV WG 2026-06-08 회의록</td>
+<td>"VisionPilot의 빠른 개발과 Safety Assurance 준수의 간극", "<strong>로보택시의 E2E 연구 성과를 VisionPilot에 재사용하고 그 역도</strong>" 논의. 두 WG 사이 주간 릴레이 담당자 지정</td>
+<td>🔍 G8</td>
+</tr>
+<tr>
+<td>Open AD Kit 로드맵</td>
+<td>Autoware·Vision Pilot·Safety Island를 <strong>각각 digest 고정된 별개 워크로드</strong>로 취급. Autoware 증거는 v2.0.x, Vision Pilot은 v2.1</td>
+<td>🔍 G4</td>
+</tr>
+<tr>
+<td>Vision Pilot README</td>
+<td>"OEM·Tier-1의 양산 승용차에 통합되도록 설계", "미들웨어 없는 배포 지원 + ROS 2 통합 인터페이스 제공" — Autoware 본체와 <strong>코드·런타임을 공유하지 않음</strong></td>
+<td>💻 R6 · 🔍 G20</td>
+</tr>
+<tr>
+<td>문서 홈 "Validated use cases"</td>
+<td>Robo-taxi · Cargo delivery · Robo-bus · <strong>Privately-owned vehicles(POV)</strong> 네 가지를 나란히 열거</td>
+<td>💻 D13</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="34">3.4 가설 채점</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>질문자의 가설</th>
+<th>판정</th>
+<th>근거 요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"E2E로 전환하는 로드맵이 있다"</td>
+<td><strong>맞음</strong></td>
+<td>Architecture 2.0 로드맵 4단계 + 다년 로드맵 Objective 1의 3년 계단 (💻 D3·D10)</td>
+</tr>
+<tr>
+<td>"자율주행 트랙과 ADAS 트랙으로 나뉜다"</td>
+<td><strong>대체로 맞음, 표현 수정 필요</strong></td>
+<td>갈라지는 기준은 E2E 로드맵이 아니라 ODD·WG(Robotaxi/Software WG vs ADAS WG). E2E 4단계는 두 트랙이 공유하고, 맵 옵션(A/B)과 센서가 다르다 (💻 D3·R10 · 🔍 G13)</td>
+</tr>
+<tr>
+<td>"ADAS 트랙 안에 vision_pilot이 들어간다"</td>
+<td><strong>맞음</strong></td>
+<td>Vision Pilot = 옛 POV WG(현 ADAS WG)의 산출물. Reference Design의 POV 가이드가 Vision Pilot→Plus→Pro→Vision Drive 4단계를 정의 (💻 R6·P1·R31)</td>
+</tr>
+<tr>
+<td>(보완) "두 트랙은 완전히 분리돼 있다"</td>
+<td><strong>아님</strong></td>
+<td><code>auto_e2e</code>는 두 용도를 모두 표방, 6/8 회의록의 상호 재사용 논의, Open AD Kit·Safety Island·Hugging Face·Index가 공통 기반 (💻 R10 · 🔍 G8·G4)</td>
+</tr>
+<tr>
+<td>(보완) "autoware 본체도 ADAS를 한다"</td>
+<td><strong>부분적</strong></td>
+<td>Autoware 2.0 문서는 L4+ 로보택시·버스가 주 대상이지만, 다년 로드맵의 "Production-Capable Autoware for POV"는 Open AD Kit와 결합한 Vision Pilot 패키징을 뜻하는 것으로 읽힌다 ⚠️ (💻 D10 · 🔍 G4)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="4-157">4. 저장소 157개 분류 지도</h2>
+<p>조직 페이지가 표기하는 저장소 수는 157개다(2026-10-30, 아카이브 27·포크 24 포함). (🔍 G1) 아래는 이 보고서의 자체 분류 A~J다. 전체 열(언어·별·포크·상태)은 <a href="reference/repo-inventory.md">전수 목록</a>에 있다. "활성"은 2026년에 갱신된 저장소, "휴면"은 2025년 이전이 마지막 갱신이다.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>분류</th>
+<th>개수</th>
+<th>한 줄</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 메타·핵심</td>
+<td>17</td>
+<td>Autoware 2.0.0 워크스페이스를 이루는 저장소(<code>autoware.repos</code>에 고정된 AWF 소유 저장소 + 문서)</td>
+</tr>
+<tr>
+<td>B. 로보택시·L4 트랙 E2E</td>
+<td>6</td>
+<td>AWF가 직접 만드는 E2E 모델·런타임과 외부 VLA 포크</td>
+</tr>
+<tr>
+<td>C. ADAS·POV 트랙</td>
+<td>13</td>
+<td>Vision Pilot과 부품 모델, POV 레퍼런스 디자인 문서</td>
+</tr>
+<tr>
+<td>D. 미들웨어·실행 기반·GPU</td>
+<td>14</td>
+<td>제로카피 IPC, Executor, GPU 공유, 센서 전송층, TensorRT 벤더</td>
+</tr>
+<tr>
+<td>E. 배포·안전</td>
+<td>6</td>
+<td>Open AD Kit, Safety Island</td>
+</tr>
+<tr>
+<td>F. 레지스트리·개발 인프라·도구</td>
+<td>19</td>
+<td>Autoware Index, CI, 에이전트 하네스, 시각화, GUI</td>
+</tr>
+<tr>
+<td>G. 시뮬레이션·평가·데이터</td>
+<td>19</td>
+<td>AWSIM, CARLA 계열, Isaac Sim 오프로드, 시나리오, 맵 변환, rosbag 도구</td>
+</tr>
+<tr>
+<td>H. ODD 프로젝트·레퍼런스 디자인·WG 운영</td>
+<td>22</td>
+<td>트럭·오프로드·LSA·버스, 레퍼런스 차량·센서킷(대부분 아카이브), 챌린지</td>
+</tr>
+<tr>
+<td>I. 드라이버·Index 이동 패키지</td>
+<td>10</td>
+<td>센서·DBW 드라이버, Universe에서 Index로 옮겨간 소형 패키지 5개</td>
+</tr>
+<tr>
+<td>J. 레거시·아카이브·포크·벤더</td>
+<td>31</td>
+<td>Autoware.AI 9개, Core/Universe 프로토타입, 벤더 패키지, 무관 포크</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="a-autoware-200-17">A. 메타·핵심 — Autoware 2.0.0 워크스페이스를 이루는 저장소 (17개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware"><code>autoware</code></a></td>
+<td>메타 저장소. 소스 코드는 없고 repositories/*.repos 로 하위 저장소 버전을 고정, Docker·Ansible 설치 스크립트 보유</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>2.0.0 (2026-10-29 공개)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_core"><code>autoware_core</code></a></td>
+<td>AWF가 직접 유지하는 고품질·안정 패키지(sensing·perception·localization·planning·control·map·API)</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>1.10.0이 Autoware 2.0.0에 고정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_universe"><code>autoware_universe</code></a></td>
+<td>커뮤니티 확장 패키지 모음(241개 패키지). Diffusion Planner·trajectory selector·VAD 등 E2E 부품도 여기</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>0.53.1이 2.0.0에 고정. Index로 분산 중</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_lanelet2_extension"><code>autoware_lanelet2_extension</code></a></td>
+<td>Lanelet2 HD맵 확장 라이브러리</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>1.3.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_rviz_plugins"><code>autoware_rviz_plugins</code></a></td>
+<td>RViz 플러그인</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>0.6.0. 추가 플러그인은 Index의 autoware_extra_rviz_plugins로 분리 제안 중</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_tools"><code>autoware_tools</code></a></td>
+<td>개발·평가 도구(주행 중 실행하지 않는 것들). tools.repos로 별도 체크아웃</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>0.8.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_system_designer"><code>autoware_system_designer</code></a></td>
+<td>YAML로 노드·모듈·시스템을 기술하면 ROS 2 런치·다이어그램·파라미터 템플릿을 생성하는 툴체인</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>v0.4.2, core 그룹에 포함</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-documentation"><code>autoware-documentation</code></a></td>
+<td>공식 문서 원본(MkDocs). Architecture 2.0·Index·Reference Design 문서가 여기</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>2.0 반영 PR #839 2026-10-29 머지</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_simple_planning_simulator"><code>autoware_simple_planning_simulator</code></a></td>
+<td>Universe에서 떼어낸 단독 planning simulator(+dummy perception, learning-based vehicle model)</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>1.1.0, core 그룹으로 빌드</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_launch"><code>autoware_launch</code></a></td>
+<td>런치 파일·파라미터. planning_setting 인자(rule_based/diffusion_planner)가 여기 정의</td>
+<td>2026-10-26</td>
+<td>활성</td>
+<td>0.53.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_cmake"><code>autoware_cmake</code></a></td>
+<td>공통 CMake 매크로</td>
+<td>2026-10-21</td>
+<td>활성</td>
+<td>1.4.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_utils"><code>autoware_utils</code></a></td>
+<td>C++ 공통 유틸(math·geometry·system 등 서브패키지)</td>
+<td>2026-10-21</td>
+<td>활성</td>
+<td>1.11.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_msgs"><code>autoware_msgs</code></a></td>
+<td>컴포넌트 간(inter-component) 메시지 정의(perception→planning 등). 시뮬레이터 연동에도 사용</td>
+<td>2026-10-12</td>
+<td>활성</td>
+<td>1.13.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_internal_msgs"><code>autoware_internal_msgs</code></a></td>
+<td>컴포넌트 내부(intra-component) 메시지. CandidateTrajectories 등 Generator-Selector 메시지 포함</td>
+<td>2026-10-12</td>
+<td>활성</td>
+<td>1.16.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_adapi_msgs"><code>autoware_adapi_msgs</code></a></td>
+<td>외부 시스템(HMI·원격·플릿) 용 AD API 메시지</td>
+<td>2026-10-12</td>
+<td>활성</td>
+<td>1.9.2</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_cuda"><code>autoware_cuda</code></a></td>
+<td>Universe의 CUDA/TensorRT 공통 패키지(cuda_utils·tensorrt_common·cuda_dependency_meta)를 모을 신설 저장소</td>
+<td>2026-10-05</td>
+<td>활성</td>
+<td>2026-10 이전 작업 중, 아직 비어 있음</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_launch_v2"><code>autoware_launch_v2</code></a></td>
+<td>README 제목만 있는 빈 저장소. 차세대 런치(System Designer 기반 추정) 자리로 보임</td>
+<td>2026-03-31</td>
+<td>활성</td>
+<td>⚠️ 내용 없음, 용도 미확인</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="b-l4-e2e-6">B. 로보택시·L4 트랙 — E2E 모델과 런타임 (6개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/auto_e2e"><code>auto_e2e</code></a></td>
+<td>AWF 자체 E2E 주행 모델(AutoE2E). 서라운드 6카메라→BEV→GRU 플래너, 79.9M 파라미터, 10 Hz, 6.4 s 궤적. 로보택시 WG 개발</td>
+<td>2026-10-30</td>
+<td>활성</td>
+<td>HF에 v1.0 체크포인트. 2026 최신 활동</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_latent_drive"><code>autoware_latent_drive</code></a></td>
+<td>LatentDrive: V-JEPA 잠재 월드모델 위의 카메라 전용 E2E 플래너 TensorRT C++ 런타임 + ROS 2 재생 노드</td>
+<td>2026-10-30</td>
+<td>활성</td>
+<td>연구용, 공도 제어 금지 명시</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_oneplanner"><code>autoware_oneplanner</code></a></td>
+<td>OnePlanner: LiDAR BEV(BEVFusion-L 백본)+벡터맵+신호등 → 궤적. Autoware Core 위에서 TensorRT로 LiDAR 주기 실행</td>
+<td>2026-10-28</td>
+<td>활성</td>
+<td>RTX PRO 6000에서 p50 12.7 ms</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/3dgs_io"><code>3dgs_io</code></a></td>
+<td>3D Gaussian Splatting 장면(glTF·3D Tiles·SPZ)+Autoware 맵 번들 I/O 라이브러리. 신경 재구성 시뮬(alpasim ENU 프레임) 연동</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>Architecture 2.0 로드맵의 'Neural World Simulation' 축</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/alpamayo-autoware"><code>alpamayo-autoware</code></a></td>
+<td>NVIDIA Alpamayo 1.5·2 Super VLA를 Autoware ROS 2 노드로 돌리는 포크(TIER IV 기원)</td>
+<td>2026-08-06</td>
+<td>포크</td>
+<td>본 저장소 07·09·14번 보고서 참조</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/modelzoo"><code>modelzoo</code></a></td>
+<td>과거 ML 모델 모음(TVM 시절). 현재는 Hugging Face AutowareFoundation 조직으로 대체</td>
+<td>2023-02-06</td>
+<td>휴면</td>
+<td>비활성</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="c-adaspov-vision-pilot-13">C. ADAS·POV 트랙 — Vision Pilot 계열 (13개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/auto_steer"><code>auto_steer</code></a></td>
+<td>AutoSteer 2.0: 카메라 프레임→자차 미래 경로 웨이포인트(차선 검출 없이 E2E). Vision Pilot 횡방향 모델</td>
+<td>2026-10-30</td>
+<td>활성</td>
+<td>mAP@50 0.969, INT8 ONNX 제공</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/vision_pilot"><code>vision_pilot</code></a></td>
+<td>오픈소스 L2 ADAS 스택(ACC·FCW·AEB·LKAS·LDW·ISA·단일차로 오토파일럿). 단안 카메라 1대, 맵 불필요, 하이브리드 E2E</td>
+<td>2026-10-19</td>
+<td>활성</td>
+<td>v1.2(2026-08-10). 옛 이름 autoware.privately-owned-vehicles → autoware_vision_pilot</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/auto_speed_limit"><code>auto_speed_limit</code></a></td>
+<td>속도제한 표지 검출·인식 모델(ISA용)</td>
+<td>2026-10-08</td>
+<td>활성</td>
+<td>README 한 줄</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/blindspot_detector"><code>blindspot_detector</code></a></td>
+<td>측면 어안 카메라 사각지대 점유 검출 모델</td>
+<td>2026-10-06</td>
+<td>활성</td>
+<td>Vision Pilot Plus 단계용으로 추정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/ego_lanes"><code>ego_lanes</code></a></td>
+<td>EgoLanes: 차선·도로 경계 분할·분류(AutoSeg 계열). Vision Pilot 0.5의 조향 입력</td>
+<td>2026-09-10</td>
+<td>활성</td>
+<td>설명 잘림</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/domain_seg"><code>domain_seg</code></a></td>
+<td>DomainSeg: 공사구간·로드워크 객체 분할(AutoSeg 계열). ROADWork 데이터셋 mIoU 46.6</td>
+<td>2026-09-09</td>
+<td>활성</td>
+<td>RTX3060 FP16 23.9 FPS</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/auto_drive"><code>auto_drive</code></a></td>
+<td>AutoDrive: 연속 2프레임→CIPO 거리·도로 곡률·CIPO 존재 확률을 내는 소형 E2E 모델</td>
+<td>2026-07-28</td>
+<td>활성</td>
+<td>Vision Pilot 1.0의 'E2E' 축</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/auto_speed"><code>auto_speed</code></a></td>
+<td>AutoSpeed: YOLOv11 변형의 경로 내 객체(CIPO) 검출기. ACC·FCW·AEB용 종방향 모델</td>
+<td>2026-07-08</td>
+<td>활성</td>
+<td>AutoSpeed 2.0 권장</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/vision_pilot_model_recipes"><code>vision_pilot_model_recipes</code></a></td>
+<td>Vision Pilot 모델의 추론·컨테이너·미들웨어 레시피</td>
+<td>2026-06-15</td>
+<td>활성</td>
+<td>README 한 줄</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/scene_seg"><code>scene_seg</code></a></td>
+<td>SceneSeg: 전경 객체 시맨틱 분할(AutoSeg 계열)</td>
+<td>2026-06-09</td>
+<td>활성</td>
+<td>vision_pilot 모노레포에서 분리된 빈 껍데기 README</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/scene_3d"><code>scene_3d</code></a></td>
+<td>Scene3D: 단안 깊이 추정(AutoSeg 계열)</td>
+<td>2026-06-09</td>
+<td>활성</td>
+<td>상동</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/lite_models"><code>lite_models</code></a></td>
+<td>제약 장치용 경량 모델 패밀리(SceneSeg·Scene3D·EgoLanes Lite)</td>
+<td>2026-06-09</td>
+<td>활성</td>
+<td>README 한 줄. 12번 보고서의 20–28× 가속 모델</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs"><code>autoware.pov-reference-design-docs</code></a></td>
+<td>개인차량(PoV) 레퍼런스 디자인 가이드(MkDocs): Vision Pilot→Plus→Pro→Vision Drive 4단계, ODD·센서·ECU·벤치마크</td>
+<td>2025-12-23</td>
+<td>휴면</td>
+<td>2025-09 기준 작성</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="d-gpu-14">D. 미들웨어·실행 기반·GPU 가속 (14개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/agnocast"><code>agnocast</code></a></td>
+<td>rclcpp 호환 진정한 제로카피 IPC(모든 ROS 메시지 타입). Autoware 2.0.0에 소스 빌드로 포함</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>2.4.1 고정. TIER IV→AWF 이관</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/callback_isolated_executor"><code>callback_isolated_executor</code></a></td>
+<td>콜백 그룹마다 전용 스레드를 주는 컴포넌트 컨테이너·Executor. Agnocast에 통합</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>RTAS 2025 논문</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/cuda_blackboard"><code>cuda_blackboard</code></a></td>
+<td>REP-2007/2009 타입 적응·협상으로 GPU 메모리를 노드 간 복사 없이 공유</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>0.4.0. universe/external→core/cuda로 이동 예정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/negotiated"><code>negotiated</code></a></td>
+<td>ROS 2 타입 협상(REP-2009) 포크(osrf)</td>
+<td>2026-10-21</td>
+<td>포크</td>
+<td>autoware.repos는 osrf 원본 커밋을 고정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/agnocast_doc"><code>agnocast_doc</code></a></td>
+<td>Agnocast 문서 사이트</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/callback_isolated_executor_doc"><code>callback_isolated_executor_doc</code></a></td>
+<td>위 문서 사이트</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/managed_transform_buffer"><code>managed_transform_buffer</code></a></td>
+<td>TF 버퍼 관리 라이브러리</td>
+<td>2026-09-22</td>
+<td>활성</td>
+<td>0.3.0</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/ros2_socketcan"><code>ros2_socketcan</code></a></td>
+<td>Linux SocketCAN ROS 2 래퍼(Continental 호환 버전)</td>
+<td>2026-09-07</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/bevdet_vendor"><code>bevdet_vendor</code></a></td>
+<td>BEVDet TensorRT C++ 구현 벤더 패키지(Orin 실시간)</td>
+<td>2026-09-01</td>
+<td>포크</td>
+<td>0.2.1</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/transport_drivers"><code>transport_drivers</code></a></td>
+<td>전송 계층 드라이버 포크(복사 감소 버전)</td>
+<td>2026-06-10</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/cyclonedds"><code>cyclonedds</code></a></td>
+<td>Eclipse Cyclone DDS 포크. Safety Island용 0.11.0 AWF 포크</td>
+<td>2026-06-01</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/spconv_cpp"><code>spconv_cpp</code></a></td>
+<td>희소 컨볼루션(spconv/cumm) C++ 라이브러리. OnePlanner·BEVFusion 의존</td>
+<td>2026-05-26</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/trt_batched_nms"><code>trt_batched_nms</code></a></td>
+<td>TensorRT batched NMS 플러그인 ROS 2 패키지</td>
+<td>2026-01-22</td>
+<td>활성</td>
+<td>CUDA 재구조화에서 제외</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/agnocast_ci_test"><code>agnocast_ci_test</code></a></td>
+<td>이관 전 CI 테스트용 복사본</td>
+<td>2026-02-18</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="e-open-ad-kitsafety-island-6">E. 배포·안전 — Open AD Kit·Safety Island (6개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/open-ad-kit-docs"><code>open-ad-kit-docs</code></a></td>
+<td>Open AD Kit 문서(MkDocs)</td>
+<td>2026-10-26</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/RFC_L4_SafetyIslandDesign"><code>RFC_L4_SafetyIslandDesign</code></a></td>
+<td>L4 Safety Island 설계 RFC·설계 문서·슬라이드(NTU Reference Design WG)</td>
+<td>2026-10-24</td>
+<td>활성</td>
+<td>HPC/안전섬 노드 분할 논의 중</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-safety-island"><code>autoware-safety-island</code></a></td>
+<td>Arm 안전 코어(Cortex-R52 등)에서 Autoware 궤적 추종기(MPC+PID)를 Zephyr/FreeRTOS로 돌리고 DDS로 교환. S32Z·R-Car X5H 타깃</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td>Arm 주도. L2 Safety Island(Vision Pilot 감독) 실험 중</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/openadkit"><code>openadkit</code></a></td>
+<td>Open AD Kit: Autoware·Vision Pilot·Safety Island를 컨테이너·증거(evidence) 기반으로 배포하는 SOAFEE 블루프린트 CLI·이미지·번들</td>
+<td>2026-10-19</td>
+<td>활성</td>
+<td>v2.0.0 2026-10 말 목표(리스크), v2.1에 Vision Pilot</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/open_ad_kit"><code>open_ad_kit</code></a></td>
+<td>초기 Open AD Kit 포크</td>
+<td>2023-12-21</td>
+<td>포크</td>
+<td>비활성</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/openadkit_demo"><code>openadkit_demo</code></a></td>
+<td>옛 Open AD Kit 데모 아카이브</td>
+<td>2025-11-14</td>
+<td>아카이브·포크</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="f-19">F. 패키지 레지스트리·개발 인프라·도구 (19개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-index"><code>autoware-index</code></a></td>
+<td>Autoware Index: 커뮤니티 패키지 레지스트리(distribution.yaml)+최신 릴리스 대상 빌드·테스트 이력. index.autoware.org</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td>2.0.0 공개 항목. Universe 슬림화 수단</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-repos-visualizer"><code>autoware-repos-visualizer</code></a></td>
+<td>릴리스별 autoware.repos 핀 이력을 스윔레인으로 보여주는 웹 시각화</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-ci-metrics"><code>autoware-ci-metrics</code></a></td>
+<td>CI 빌드 시간·이미지 크기 대시보드</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-spell-check-dict"><code>autoware-spell-check-dict</code></a></td>
+<td>스펠체크 사전</td>
+<td>2026-10-29</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-harness"><code>autoware-harness</code></a></td>
+<td>코딩 에이전트용 Autoware 스킬·에이전트·MCP 묶음(Claude Code·Codex·Cursor 플러그인)</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>2026 신규</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-github-actions"><code>autoware-github-actions</code></a></td>
+<td>공용 GitHub Actions</td>
+<td>2026-10-26</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/.github"><code>.github</code></a></td>
+<td>조직 프로필·공용 템플릿</td>
+<td>2026-10-26</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/aw-index-cli"><code>aw-index-cli</code></a></td>
+<td>Index 소비 CLI: compose(.repos 생성)·check·list. --reference-design 옵션</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td>pipx 배포</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-contributor-metrics"><code>autoware-contributor-metrics</code></a></td>
+<td>기여자 통계</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/colcon-dashboard"><code>colcon-dashboard</code></a></td>
+<td>colcon 빌드 실시간 웹 대시보드</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td>2026 신규</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/sync-file-templates"><code>sync-file-templates</code></a></td>
+<td>저장소 공통 파일 템플릿 동기화</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-github-runner-ansible"><code>autoware-github-runner-ansible</code></a></td>
+<td>셀프호스트 러너 Ansible</td>
+<td>2026-10-05</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-index-github-actions"><code>autoware-index-github-actions</code></a></td>
+<td>Index 등록 패키지가 호출하는 재사용 워크플로(validate-package 등)</td>
+<td>2026-09-30</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autowarefoundation.github.io"><code>autowarefoundation.github.io</code></a></td>
+<td>autoware.universe→autoware_universe 문서 리다이렉트</td>
+<td>2026-07-08</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-guideline-check"><code>autoware-guideline-check</code></a></td>
+<td>가이드라인 검사기</td>
+<td>2026-03-27</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_dummy_repository"><code>autoware_dummy_repository</code></a></td>
+<td>릴리스 프로세스 테스트용 더미</td>
+<td>2025-06-18</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-launch-gui"><code>autoware-launch-gui</code></a></td>
+<td>Tauri/Next.js 런치 GUI</td>
+<td>2024-08-12</td>
+<td>휴면</td>
+<td>비활성</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-build-gui"><code>autoware-build-gui</code></a></td>
+<td>빌드 GUI</td>
+<td>2024-06-11</td>
+<td>휴면</td>
+<td>비활성</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-deb-packages"><code>autoware-deb-packages</code></a></td>
+<td>Debian 패키징(아카이브). Core는 ROS 빌드팜 배포로 전환</td>
+<td>2026-08-06</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="g-19">G. 시뮬레이션·평가·데이터 (19개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_carla_scenario"><code>autoware_carla_scenario</code></a></td>
+<td>CARLA 시나리오(신설, 설명 없음)</td>
+<td>2026-10-30</td>
+<td>활성</td>
+<td>2026-10 활동</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/odd-usecase-scenario"><code>odd-usecase-scenario</code></a></td>
+<td>ODD 유스케이스·시나리오 자연어 기술(ODD WG)</td>
+<td>2026-10-27</td>
+<td>활성</td>
+<td>Open AD Kit 증거 시나리오 출처</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/AWSIM"><code>AWSIM</code></a></td>
+<td>Unity 기반 디지털 트윈 시뮬레이터(공식)</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_lanelet2_to_opendrive"><code>autoware_lanelet2_to_opendrive</code></a></td>
+<td>Lanelet2 맵→OpenDRIVE 변환(CARLA 등 시뮬 연동용)</td>
+<td>2026-10-20</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/lanelet2_to_sumo"><code>lanelet2_to_sumo</code></a></td>
+<td>Lanelet2 맵→SUMO 변환</td>
+<td>2026-09-17</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/TeraSim"><code>TeraSim</code></a></td>
+<td>생성형 시뮬로 미지의 위험 이벤트 탐색(포크)</td>
+<td>2026-09-16</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_msg_bag_converter"><code>autoware_msg_bag_converter</code></a></td>
+<td>rosbag 메시지 변환기</td>
+<td>2026-07-10</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_off-road_sim"><code>autoware_off-road_sim</code></a></td>
+<td>NVIDIA Isaac Sim 기반 오프로드·RoboRacer 다차량 시뮬레이터(UPenn CoE)</td>
+<td>2026-06-25</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_sample_scenarios"><code>autoware_sample_scenarios</code></a></td>
+<td>샘플 시나리오</td>
+<td>2026-05-03</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/carla-agent-controller"><code>carla-agent-controller</code></a></td>
+<td>Autoware planning simulator의 더미 객체·신호등을 CARLA 에이전트와 동기화하는 ROS 2 브리지(TIER IV 기원)</td>
+<td>2026-04-03</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/carla-scenario-database"><code>carla-scenario-database</code></a></td>
+<td>CARLA 시나리오 DB(설명 없음)</td>
+<td>2026-03-18</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/carla"><code>carla</code></a></td>
+<td>CARLA 시뮬레이터 포크</td>
+<td>2026-03-10</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/2025-Autoware-scenario-running-on-CARLA"><code>2025-Autoware-scenario-running-on-CARLA</code></a></td>
+<td>scenario_simulator_v2 시나리오를 CARLA에서 돌리는 TIER IV 프로젝트</td>
+<td>2025-08-04</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_rosbag2_anonymizer"><code>autoware_rosbag2_anonymizer</code></a></td>
+<td>rosbag 익명화 도구</td>
+<td>2025-01-09</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/scenario-simulator-failure-evaluation-tool"><code>scenario-simulator-failure-evaluation-tool</code></a></td>
+<td>시나리오 실패를 일으킨 커밋 탐색 도구</td>
+<td>2023-11-30</td>
+<td>휴면</td>
+<td>비활성</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/perception_benchmark_tool"><code>perception_benchmark_tool</code></a></td>
+<td>인식 벤치마크 도구</td>
+<td>2023-03-21</td>
+<td>휴면</td>
+<td>비활성</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/carla-autoware-extension"><code>carla-autoware-extension</code></a></td>
+<td>CARLA 확장(아카이브)</td>
+<td>2026-09-05</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/custom_dataset_composer"><code>custom_dataset_composer</code></a></td>
+<td>데이터셋 구성 도구(아카이브)</td>
+<td>2026-04-06</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/AWSIM-Labs"><code>AWSIM-Labs</code></a></td>
+<td>AWSIM 커뮤니티 포크(아카이브)</td>
+<td>2026-01-11</td>
+<td>아카이브·포크</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="h-odd-wg-22">H. ODD별 프로젝트·레퍼런스 디자인·WG 운영 (22개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware.off-road"><code>autoware.off-road</code></a></td>
+<td>오프로드 자율주행 파일럿(광산 트럭·RoboRacer·행성 로버). EfficientNet-B0 기반 주행가능영역·고도 네트워크, CARLA 광산 데모</td>
+<td>2026-04-15</td>
+<td>활성</td>
+<td>Off-road/Racing WG(2026-05 일시 중단)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware.orv-reference-design-docs"><code>autoware.orv-reference-design-docs</code></a></td>
+<td>오프로드 차량(OrV) 레퍼런스 디자인 가이드</td>
+<td>2026-03-20</td>
+<td>활성</td>
+<td>2026 Q1/Q2 예정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/LSA-reference-design-docs"><code>LSA-reference-design-docs</code></a></td>
+<td>저속 자율주행(LSA) 레퍼런스 디자인 가이드(RoboRacer·GoKart 포함)</td>
+<td>2026-02-27</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware.trucks"><code>autoware.trucks</code></a></td>
+<td>고속도로 자율 트럭(L4) 프로젝트. 현재 Vision Pilot 트럭 모델·J1939 인터페이스 작업</td>
+<td>2025-12-07</td>
+<td>휴면</td>
+<td>Trucks WG</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware.low-speed-autonomy-vehicles"><code>autoware.low-speed-autonomy-vehicles</code></a></td>
+<td>LSA 차량 목표·유스케이스·설계</td>
+<td>2025-08-14</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_launch.gdwbus"><code>autoware_launch.gdwbus</code></a></td>
+<td>특정 버스용 launch 포크</td>
+<td>2025-01-18</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/RefDesignWG"><code>RefDesignWG</code></a></td>
+<td>Reference Design WG 문서 저장소</td>
+<td>2025-01-03</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_tier4_robot"><code>autoware_tier4_robot</code></a></td>
+<td>TIER IV 로봇용 autoware 포크</td>
+<td>2024-09-10</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_challenge_2024"><code>autoware_challenge_2024</code></a></td>
+<td>Autoware Challenge 2024</td>
+<td>2024-08-02</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-coe"><code>autoware-coe</code></a></td>
+<td>Autoware Center of Excellence 웹사이트</td>
+<td>2024-05-28</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/awf_reference_sensor_kit_launch"><code>awf_reference_sensor_kit_launch</code></a></td>
+<td>AWF 레퍼런스 센서킷 launch</td>
+<td>2024-01-24</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-projects"><code>autoware-projects</code></a></td>
+<td>비코드 과제·WG 위키(워킹그룹 목록·거버넌스)</td>
+<td>2023-09-11</td>
+<td>휴면</td>
+<td>위키가 WG 목록의 공식 출처</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/awf_reference_vehicle_launch"><code>awf_reference_vehicle_launch</code></a></td>
+<td>AWF 레퍼런스 차량 description·launch</td>
+<td>2023-09-04</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/itri_bus_sensor_kit"><code>itri_bus_sensor_kit</code></a></td>
+<td>ITRI 버스 센서킷</td>
+<td>2023-09-04</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_challenge_2023"><code>autoware_challenge_2023</code></a></td>
+<td>Autoware Challenge 2023</td>
+<td>2023-04-10</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/cbus_vehicle_launch"><code>cbus_vehicle_launch</code></a></td>
+<td>ITRI 프로젝트 차량 launch</td>
+<td>2023-02-01</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_individual_params"><code>autoware_individual_params</code></a></td>
+<td>개별 차량 파라미터(아카이브)</td>
+<td>2025-04-14</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/sample_vehicle_launch"><code>sample_vehicle_launch</code></a></td>
+<td>샘플 차량 launch(아카이브, Universe/Launch로 흡수)</td>
+<td>2025-04-01</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/single_lidar_sensor_kit_launch"><code>single_lidar_sensor_kit_launch</code></a></td>
+<td>단일 LiDAR 센서킷(아카이브)</td>
+<td>2025-04-01</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/awsim_labs_vehicle_launch"><code>awsim_labs_vehicle_launch</code></a></td>
+<td>AWSIM Labs 차량 launch(아카이브)</td>
+<td>2025-04-01</td>
+<td>아카이브·포크</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/awsim_labs_sensor_kit_launch"><code>awsim_labs_sensor_kit_launch</code></a></td>
+<td>AWSIM Labs 센서킷(아카이브)</td>
+<td>2025-04-01</td>
+<td>아카이브·포크</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/sample_sensor_kit_launch"><code>sample_sensor_kit_launch</code></a></td>
+<td>샘플 센서킷 launch(아카이브)</td>
+<td>2025-03-28</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="i-index-10">I. 센서·차량 드라이버와 Index로 옮겨간 소형 패키지 (10개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>최근 갱신</th>
+<th>상태</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_component_monitor"><code>autoware_component_monitor</code></a></td>
+<td>컴포넌트 컨테이너 CPU·메모리 모니터. Index 등록</td>
+<td>2026-10-28</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_image_diagnostics"><code>autoware_image_diagnostics</code></a></td>
+<td>카메라 이미지 진단. Index로 이동</td>
+<td>2026-10-19</td>
+<td>활성</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_pose2twist"><code>autoware_pose2twist</code></a></td>
+<td>pose→twist 계산. Index 등록</td>
+<td>2026-10-13</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_livox_tag_filter"><code>autoware_livox_tag_filter</code></a></td>
+<td>Livox 포인트 필터. Universe에서 빠져 Autoware Index로 이동한 첫 패키지</td>
+<td>2026-10-12</td>
+<td>활성</td>
+<td>2.0.0 업그레이드 노트</td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware_bluetooth_monitor"><code>autoware_bluetooth_monitor</code></a></td>
+<td>블루투스 연결 모니터. Index 등록</td>
+<td>2026-10-12</td>
+<td>활성</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/applanix"><code>applanix</code></a></td>
+<td>Applanix POS-LVX GNSS/INS 드라이버</td>
+<td>2024-09-18</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/lucid_vision_driver"><code>lucid_vision_driver</code></a></td>
+<td>Lucid Vision 카메라 ROS 2 드라이버</td>
+<td>2024-02-14</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/awf_velodyne"><code>awf_velodyne</code></a></td>
+<td>Velodyne VLS 드라이버 포크</td>
+<td>2023-06-06</td>
+<td>포크</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/autoware-mih-dbw-interface"><code>autoware-mih-dbw-interface</code></a></td>
+<td>MIH DBW 인터페이스</td>
+<td>2022-11-03</td>
+<td>휴면</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/autowarefoundation/ros2_socketcan-release"><code>ros2_socketcan-release</code></a></td>
+<td>릴리스 저장소(아카이브)</td>
+<td>2024-07-16</td>
+<td>아카이브</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="j-31">J. 레거시·아카이브·포크·벤더 패키지 (31개)</h4>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇인가</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zmqpp_vendor</code></td>
+<td>zmqpp 벤더(scenario simulator 의존)</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>ament_cmake</code></td>
+<td>ament_cmake 포크</td>
+<td>포크</td>
+</tr>
+<tr>
+<td><code>mmdetection3d</code></td>
+<td>OpenMMLab mmdetection3d 포크</td>
+<td>포크</td>
+</tr>
+<tr>
+<td><code>autoware_auto_msgs_adapter</code></td>
+<td>Autoware.Auto 메시지 어댑터</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>aw-universe</code></td>
+<td>Universe 포크</td>
+<td>포크</td>
+</tr>
+<tr>
+<td><code>autodistill</code></td>
+<td>autodistill 포크(파운데이션 모델로 라벨링)</td>
+<td>포크</td>
+</tr>
+<tr>
+<td><code>autoware.universe_planning</code></td>
+<td>Universe planning 포크</td>
+<td>포크</td>
+</tr>
+<tr>
+<td><code>tvm_vendor</code></td>
+<td>Apache TVM 벤더 패키지(Autoware.Auto 시절)</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>qpoases_vendor</code></td>
+<td>qpOASES 벤더</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>rancher-cows-demo</code></td>
+<td>Rancher 데모 포크(무관)</td>
+<td>포크</td>
+</tr>
+<tr>
+<td><code>qpoases_vendor-release</code></td>
+<td>릴리스 저장소</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>tvm_vendor-release</code></td>
+<td>릴리스 저장소</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>acado_vendor</code></td>
+<td>ACADO 벤더</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>ansys-vrxperience-ros2</code></td>
+<td>ANSYS VRXPERIENCE 인터페이스</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>ansys-vrxperience-ros2-release</code></td>
+<td>위 릴리스 저장소</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>autocore_sim</code></td>
+<td>ROS1/ROS2 다중 로봇 시뮬레이터(AutoCore)</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>autoware_ai_messages-release</code></td>
+<td>릴리스 저장소</td>
+<td>휴면</td>
+</tr>
+<tr>
+<td><code>autoware-backup</code></td>
+<td>수명 종료 태그 보관(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_common</code></td>
+<td>옛 공통 패키지(아카이브, autoware_utils 등으로 분리)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai</code></td>
+<td>Autoware.AI(ROS 1, 1세대) 메타(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_perception</code></td>
+<td>Autoware.AI 인식(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_planning</code></td>
+<td>Autoware.AI 계획(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_messages</code></td>
+<td>Autoware.AI 메시지(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_simulation</code></td>
+<td>Autoware.AI 시뮬(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_visualization</code></td>
+<td>Autoware.AI 시각화(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_drivers</code></td>
+<td>Autoware.AI 드라이버(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_utilities</code></td>
+<td>Autoware.AI 유틸(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_common</code></td>
+<td>Autoware.AI 공통(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_documentation</code></td>
+<td>Autoware.AI 문서(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_core_universe_prototype</code></td>
+<td>Core/Universe 초기 프로토타입(아카이브)</td>
+<td>아카이브</td>
+</tr>
+<tr>
+<td><code>autoware_ai_docker</code></td>
+<td>Autoware.AI Docker(아카이브)</td>
+<td>아카이브</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>분석 — 숫자가 말하는 것.</strong> 157개 중 2026년에 갱신된 저장소는 약 90개이고, 그중 2026년에 <strong>새로 생긴</strong> 것으로 보이는 저장소(갱신일과 README 내용으로 판단 ⚠️)는 B·C·E·F 묶음에 집중된다: <code>auto_e2e</code>, <code>autoware_latent_drive</code>, <code>autoware_oneplanner</code>, <code>autoware_cuda</code>, <code>autoware-index</code>·<code>aw-index-cli</code>·<code>autoware-index-github-actions</code>, <code>autoware-harness</code>, <code>colcon-dashboard</code>, <code>autoware-repos-visualizer</code>, <code>autoware_carla_scenario</code>, <code>blindspot_detector</code>, <code>auto_speed_limit</code>, <code>vision_pilot_model_recipes</code>, 그리고 <code>scene_seg</code>·<code>scene_3d</code>·<code>lite_models</code> 같은 "모노레포에서 떼어낸 빈 껍데기" 저장소들이다. 즉 2026년의 증가분은 <strong>(1) AWF 자체 AI 모델, (2) Universe를 쪼개는 레지스트리 인프라, (3) Vision Pilot 모노레포의 분해</strong> 세 흐름으로 설명된다. (🔍 G1 · 💻 R30)</p>
+<hr />
+<h2 id="5">5. 핵심 스택 상세</h2>
+<h3 id="51-autoware-20-core-universe-launch">5.1 Autoware 2.0 본체 — Core · Universe · Launch</h3>
+<figure><img alt="Core/Universe 생태계" src="images/02-autoware-ecosystem-core-universe.png" /><figcaption>그림 10. Autoware Core/Universe 생태계. 출처: autoware-documentation <code>design/autoware-concepts/images/autoware_ecosystem.png</code> (💻 D6)</figcaption></figure>
+
+<p><strong>무엇인가.</strong> <code>autoware</code>는 소스가 없는 메타 저장소이고, <code>repositories/autoware.repos</code>가 하위 저장소의 태그를 고정한다. 2.0.0의 고정판은 core 그룹 11개(agnocast 2.4.1, autoware_msgs 1.13.0, adapi_msgs 1.9.2, internal_msgs 1.16.0, cmake 1.4.0, utils 1.11.0, lanelet2_extension 1.3.0, <strong>autoware_core 1.10.0</strong>, rviz_plugins 0.6.0, simple_planning_simulator 1.1.0, system_designer v0.4.2), universe 그룹(<strong>autoware_universe 0.53.1</strong> + tier4_autoware_msgs 1.0.0-alpha, bevdet_vendor 0.2.1, cuda_blackboard 0.4.0, managed_transform_buffer 0.3.0, MapIV eagleye 등 외부 커밋), launcher(<strong>autoware_launch 0.53.0</strong>), sensor_component(tier4 nebula v1.2.0, transport_drivers, ros2_socketcan)다. 도구는 <code>tools.repos</code>(autoware_tools 0.8.0), 시뮬레이터는 <code>simulator.repos</code>(tier4 scenario_simulator_v2 22.0.0)로 따로 받는다. (💻 R1·D8)</p>
+<p><strong>Core와 Universe의 역할 분담</strong>은 변하지 않았다. Core는 "AWF가 유지하는 엄격한 기준(단위·통합·성능·실차 테스트)의 안정 기반", Universe는 "원저자가 품질 기준을 정하는 커뮤니티 샌드박스"이고, 성숙한 Universe 패키지가 Core로 승격된다. (💻 D6) 다만 2026년에는 <strong>Universe를 줄이는 방향</strong>이 명시됐다: 2026-05 제안은 "autoware_universe = 레거시, 축소 중"이라 적었고(🔍 G19), 2026-06 재구조화 안내는 Universe 241개 패키지 중 CUDA/TensorRT 관련 약 27개를 <code>autoware_cuda</code>로 모으고 나머지 CUDA 패키지는 Index의 개별 패키지로 보내는 "Universe 슬림화의 기초"라고 설명한다(🔍 G14). 이 재구조화는 TIER IV 측 반대("강한 이유를 모르겠다")와 포크 동기화 사정으로 2026-09 말까지 연기됐다가 10-05 재개됐고, 10-15 전환 목표의 완료 여부는 확인하지 못했다. (🔍 G14 ⚠️)</p>
+<p><strong>2.0.0에서 실제로 도는 것</strong>은 다음 표가 정확하다. (💻 D1)</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>역할</th>
+<th>패키지(모두 <code>autoware_universe</code> 0.53.1)</th>
+<th>2.0.0 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generator</td>
+<td><code>autoware_diffusion_planner</code></td>
+<td><code>planning_setting:=diffusion_planner</code>일 때 실행. TensorRT, NVIDIA GPU 필요, 첫 기동 시 엔진 빌드</td>
+</tr>
+<tr>
+<td>후처리</td>
+<td><code>autoware_trajectory_modifier</code></td>
+<td>상동. 후보 중 <strong>첫 번째</strong>를 <code>/planning/trajectory_generator/trajectory</code>로 내보냄</td>
+</tr>
+<tr>
+<td>Selector 노드</td>
+<td><code>autoware_trajectory_selector</code></td>
+<td><strong>미기동</strong>(런치 파일에 자리만 있음)</td>
+</tr>
+<tr>
+<td>Safety gate</td>
+<td><code>autoware_trajectory_validator</code></td>
+<td>미기동, selector 내부 라이브러리</td>
+</tr>
+<tr>
+<td>Ranking</td>
+<td><code>autoware_trajectory_ranker</code></td>
+<td>미기동, selector가 쓸 수 있는 라이브러리</td>
+</tr>
+<tr>
+<td>메시지</td>
+<td><code>autoware_internal_planning_msgs</code> 1.16.0</td>
+<td><code>CandidateTrajectories</code>·<code>CandidateTrajectory</code>·<code>GeneratorInfo</code></td>
+</tr>
+</tbody>
+</table></div>
+<figure><img alt="Generator-Selector 프레임워크" src="images/06-generator-selector-framework.png" /><figcaption>그림 11. Generator-Selector 프레임워크(Figure 2). 출처: autoware-documentation roadmap media <code>detailed_architecture_figure2.png</code> (💻 D4)</figcaption></figure>
+
+<p><strong>분석.</strong> 12번 보고서(2026-06, Autoware 1.8.0 기준)가 "구조는 정해졌고 부품은 머지됐으나 기본 경로로 배선·검증되지 않은 실험 단계"라고 적었던 상태에서, 2.0.0은 <strong>"런치 인자 하나로 생성기를 바꿀 수 있다"</strong> 까지 전진했고 <strong>Selector 기동은 아직</strong>이다. (📚 12번 · 💻 D1) Generator-Selector 문서가 Generator의 예로 "전통 로보틱스 스택(기존 Autoware 그대로)", "<strong>회원사의 사내 독점 AI 모델</strong>", "오픈소스 Autoware E2E 모델"을 나란히 적은 점(💻 D4)은 이 구조의 사업적 의도를 보여준다. 즉 회원사가 자기 모델을 Generator로 꽂고, AWF의 Selector로 안전 게이트를 거치는 그림이다.</p>
+<p><strong>문서 체계.</strong> <code>design/</code> 네비게이션은 Concepts → System capabilities → Architecture 1.0 → Architecture 2.0 → Repository structure → Repos files → Versioning 순이고, Architecture 2.0 아래에 roadmap(개요·스택 아키텍처·상세 인터페이스)이 있다. 숨겨진 TBD 페이지는 <code>assessment-safety-and-benchmarks</code>, <code>data-mlops-and-training</code>, <code>neural-world-simulation</code>, <code>development-roadmap</code>이다. (💻 D-nav·D17)</p>
+<h3 id="52-autoware-index-reference-design-universe">5.2 Autoware Index와 Reference Design — Universe를 쪼개는 새 유통 구조</h3>
+<figure><img alt="Autoware Index 브라우즈 사이트" src="images/22-autoware-index-browse-site.png" /><figcaption>그림 12. Autoware Index 브라우즈 사이트(index.autoware.org). 출처: autoware-documentation <code>installation/autoware/images/autoware-index/browse-site.png</code> (💻 D12)</figcaption></figure>
+
+<p><strong>Autoware Index</strong>는 "Autoware를 확장하는 커뮤니티 ROS 2 패키지의 레지스트리"다. 어떤 패키지가 있고, 소스가 어디 있고, <strong>최신 Autoware 릴리스에 대해 빌드·테스트를 통과하는지</strong>를 기록한다. 등록은 <code>distributions/&lt;distro&gt;.yaml</code>에 저장소 하나·ref 하나·패키지 목록을 적는 PR로 하고, 머지되면 CI가 최신 릴리스에 대해 빌드·테스트해 결과를 <code>data</code> 브랜치에 append-only로 쌓는다. <code>branch</code> ref는 매일 재검증, <code>tag</code>/<code>sha</code>는 고정이다. 소비자는 브라우즈 사이트의 Repos builder나 <code>aw-index-cli compose --rosdistro jazzy --packages …</code>로 <code>repositories/autoware-index.repos</code>를 생성해 <code>vcs import</code>한다. (💻 R15·R16·D12)</p>
+<p>3층 구조 제안(2026-05, 열린 상태)은 Core(AWF 큐레이션·하드 핀) / Universe(연합 커뮤니티 패키지, "레거시·축소") / Index(레지스트리·CI·사이트·CLI)다. 2.0.0 시점에 Index로 간 패키지는 <code>autoware_livox_tag_filter</code>(Universe에서 제거), <code>autoware_image_diagnostics</code>(2026-10 이동), <code>autoware_pose2twist</code>·<code>autoware_bluetooth_monitor</code>·<code>autoware_component_monitor</code>(등록됐으나 0.53.1에는 아직 포함; 2.0.0 워크스페이스에 중복 추가 금지)이고, RViz 플러그인을 <code>autoware_extra_rviz_plugins</code>로 떼는 제안이 열려 있다. (🔍 G2·G15·G19)</p>
+<p><strong>Reference Design</strong>은 "배포 프로파일(차량·운행 조건·용도) + 레퍼런스 SW 스택(모듈·모델 버전·파라미터)"의 조합으로, Index 항목에 <code>reference_design: true</code> 마커(리뷰어 승인)를 달아 표시한다. 첫 사례가 <strong>Vision Pilot</strong>이고, <code>aw-index-cli compose --reference-design</code>이 <code>vision_pilot</code>을 돌려준다. 문서는 POV·LSA(RoboRacer·GoKart 포함)·오프로드(예정)·ITRI 버스 가이드를 나열한다. (💻 D11·R15·D17)</p>
+<p><strong>분석.</strong> Index는 다년 로드맵 Objective 4-Y2의 "ROS Index 스타일 패키지 목록"의 구현이자, Universe 모노리스를 "한 리뷰 큐에 묶이지 않는" 연합 구조로 바꾸는 장치다. Vision Pilot이 Reference Design의 첫 사례로 등록된 것은 <strong>ADAS 트랙이 Autoware 본체와 코드를 공유하지 않으면서도 Autoware 유통 체계 안에 들어오는 접점</strong>이다.</p>
+<h3 id="53-autoe2e-auto_e2e-awf-e2e">5.3 AutoE2E (<code>auto_e2e</code>) — AWF 자체 E2E 주행 모델</h3>
+<figure><img alt="AutoE2E 아키텍처" src="images/17-auto-e2e-architecture.svg" /><figcaption>그림 13. AutoE2E 아키텍처(World Action · Reasoning · Reactive 세 모델). 출처: auto_e2e <code>Media/readme/architecture.svg</code> (💻 R10)</figcaption></figure>
+
+<figure><img alt="AutoE2E 원 설계도" src="images/18-auto-e2e-original-design.jpg" /><figcaption>그림 14. AutoE2E 원 설계도. 출처: auto_e2e <code>Media/auto_e2e_architecture.jpg</code> (💻 R10)</figcaption></figure>
+
+<p><strong>무엇인가.</strong> "고속도로·간선·도심을 위한 오픈소스 카메라 우선 E2E 주행 모델". 서라운드 6카메라를 BEV 격자로 올리고(맵 래스터 융합 옵션), GRU 플래너가 장면+자차 운동 이력으로 <strong>다음 6.4 s의 가속도·곡률</strong>을 낸다. 79.9M 파라미터, 10 Hz. 세 모델 중 <strong>Reactive</strong>만 완성이고 1 Hz의 World Action·Reasoning 모델은 개발 중이다. 체크포인트는 Hugging Face <code>AutowareFoundation/auto_e2e</code>(nuPlan v1.1 학습 <code>nuplan-epoch-5</code>, KITScenes 파인튜닝 <code>kitscenes-epoch-5</code>). 추론은 RTX 5080에서 최대 약 76 FPS(SwinV2-Tiny). 학습 플랫폼은 Flyte·MLflow·k8s(AWS)이고 읽기 전용 대시보드를 공개한다. (💻 R10)</p>
+<figure><img alt="KITScenes 벤치마크" src="images/19-auto-e2e-benchmark-kitscenes.svg" /><figcaption>그림 15. KITScenes-Multimodal 검증 3 s ADE/FDE, 오픈 가중치 8종 비교. 출처: auto_e2e <code>Media/readme/benchmark-kitscenes-3s.svg</code> (💻 R10)</figcaption></figure>
+
+<div class="tw"><table>
+<thead>
+<tr>
+<th>모델</th>
+<th>설정</th>
+<th>ADE@3s (m)</th>
+<th>FDE@3s (m)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen Drive 1.0</td>
+<td>6궤적 중 첫 번째</td>
+<td>0.565</td>
+<td>1.397</td>
+</tr>
+<tr>
+<td><strong>AutoE2E fine-tuned</strong></td>
+<td>kitscenes-epoch-5</td>
+<td><strong>0.744</strong></td>
+<td><strong>1.980</strong></td>
+</tr>
+<tr>
+<td>SimForge D1.5</td>
+<td>7카메라 슬롯</td>
+<td>0.831</td>
+<td>2.209</td>
+</tr>
+<tr>
+<td><strong>AutoE2E</strong> zero-shot</td>
+<td>nuplan-epoch-5</td>
+<td>0.915</td>
+<td>2.423</td>
+</tr>
+<tr>
+<td>Alpamayo 1.5</td>
+<td>6궤적 중 첫 번째</td>
+<td>1.020</td>
+<td>2.820</td>
+</tr>
+<tr>
+<td>VAD</td>
+<td>Base stage-2</td>
+<td>1.242</td>
+<td>2.821</td>
+</tr>
+<tr>
+<td>METEOR</td>
+<td>top-1/3</td>
+<td>1.240</td>
+<td>3.282</td>
+</tr>
+<tr>
+<td>Drive-JEPA</td>
+<td>perception v2</td>
+<td>2.266</td>
+<td>4.774</td>
+</tr>
+</tbody>
+</table></div>
+<p>(README 표 전재. 입력 조건이 모델마다 다르다는 단서가 붙어 있다: AutoE2E는 HD맵·경로를 추가로 받고 VAD·Drive-JEPA는 주행 명령을 받는다. 💻 R10)</p>
+<p><strong>로드맵 위치.</strong> README는 "LiDAR·레이더 안전층과 융합해 <strong>무인 로보택시</strong>로, 또는 카메라만으로 <strong>L2++ 핸즈프리 ADAS</strong>로"라고 두 용도를 모두 적는다. Reactive 모델(학습 인식 BEV + 학습 플래너)은 Architecture 2.0의 <strong>Step 2(컴포넌트형 E2E, 옵션 B 2D맵/맵 없음)</strong> 에, 안전층 융합 구상은 <strong>Step 4</strong>에 해당한다(자체 해석). Autoware 본체 런치에 통합된 흔적은 2.0.0 문서에 없다. ⚠️ (💻 R10·D1)</p>
+<h3 id="54-latentdrive-oneplanner-alpamayo">5.4 LatentDrive · OnePlanner · Alpamayo 노드 — 로보택시 트랙의 다른 생성기 후보</h3>
+<figure><img alt="LatentDrive 장면" src="images/20-latent-drive-scenes.png" /><figcaption>그림 16. LatentDrive 개루프 재생 6장면(리본이 계획, 녹색→적색 = 지금→+4 s). 출처: autoware_latent_drive <code>docs/latent_drive_scenes.png</code> (💻 R11)</figcaption></figure>
+
+<figure><img alt="OnePlanner 장면" src="images/21-oneplanner-scenes.png" /><figcaption>그림 17. OnePlanner 개루프 재생 6장면. 출처: autoware_oneplanner <code>media/oneplanner_scenes.png</code> (💻 R12)</figcaption></figure>
+
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>LatentDrive</strong> (<code>autoware_latent_drive</code>)</th>
+<th><strong>OnePlanner</strong> (<code>autoware_oneplanner</code>)</th>
+<th><strong>Alpamayo 노드</strong> (<code>alpamayo-autoware</code>, 포크)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>입력</td>
+<td>전방(또는 전방 3개) 카메라 최근 2 s 영상(0.5 s 간격 4프레임, 256×512), 경로점 6개, 자차 속도·가속도</td>
+<td>LiDAR 포인트클라우드 → BEVFusion-L 고정 백본의 BEV 특징 시계열(SE(2) 워프), 벡터맵·경로·신호등, 자차 상태</td>
+<td>카메라 4대(압축 이미지) + 자차 오도메트리</td>
+</tr>
+<tr>
+<td>모델</td>
+<td><strong>V-JEPA ViT-L</strong> 잠재 월드모델 + 소형 계획 헤드(객체 검출·추적 없음)</td>
+<td>학습 플래너(BEV 특징 + 맵 컨텍스트)</td>
+<td>NVIDIA Alpamayo 1.5(10B)·2 Super VLA</td>
+</tr>
+<tr>
+<td>출력</td>
+<td>4 s 자차 궤적 40점(0.1 s), 10 Hz</td>
+<td>6 s 궤적, LiDAR 주기</td>
+<td>예측 궤적 + 추론 텍스트(CoT)</td>
+</tr>
+<tr>
+<td>런타임</td>
+<td>ROS 의존 없는 C++ 라이브러리 + TensorRT + rosbag 재생 ROS 2 노드. Autoware universe-devel-cuda 컨테이너</td>
+<td>Autoware <strong>Core 1.x</strong> 위 ROS 2 노드(Jazzy/Humble), TensorRT 10, spconv_cpp, universe의 tensorrt_plugins 필요</td>
+<td>Python ROS 2 노드, 24 GB+ VRAM</td>
+</tr>
+<tr>
+<td>성능</td>
+<td>미기재</td>
+<td>RTX PRO 6000 Blackwell에서 전체 패스 p50 12.7 ms / p99 26.1 ms</td>
+<td>📚 07·14번 보고서 참조</td>
+</tr>
+<tr>
+<td>모델 배포</td>
+<td>HF <code>AutowareFoundation/latent_drive</code> v1.0 (1·3카메라 ONNX)</td>
+<td>HF <code>AutowareFoundation/oneplanner</code> v1.0</td>
+<td>HF nvidia(접근 승인 필요)</td>
+</tr>
+<tr>
+<td>상태</td>
+<td>"연구 모델, 인증된 주행 시스템 아님, 공도 제어 금지"</td>
+<td>"차에 쓰려면 Autoware 궤적 검증 뒤에 배선"</td>
+<td>데모</td>
+</tr>
+<tr>
+<td>Arch 2.0 단계(자체 해석)</td>
+<td>Step 3(단일 신경망, 카메라 전용)</td>
+<td>Step 1(학습 플래너, LiDAR 입력)</td>
+<td>Step 3(VLA)</td>
+</tr>
+</tbody>
+</table></div>
+<p>(💻 R11·R12·R26)</p>
+<p><strong>분석.</strong> 세 저장소는 모두 <strong>"Generator 후보"</strong> 다. OnePlanner README가 "드라이브하려면 Autoware의 궤적 검증(trajectory validation) 뒤에 꽂아라"라고 쓴 것, LatentDrive가 "ROS 의존 없는 라이브러리 + 재생 노드"로만 제공되는 것은, 2.0.0의 Selector가 아직 기동하지 않는 상태에서 각 모델이 <strong>독립 런타임 + 기존 planning validator</strong> 경로로 실험되고 있음을 보여준다. Diffusion Planner만이 공식 런치 인자에 들어갔다.</p>
+<h3 id="55-vision-pilot-l2-adas">5.5 Vision Pilot — 오픈소스 L2 ADAS 스택</h3>
+<figure><img alt="Vision Pilot 1.0 개요" src="images/12-visionpilot-1-0-overview.png" /><figcaption>그림 18. Vision Pilot 1.0 개요. 출처: vision_pilot <code>Media/VisionPilot_1.0.png</code> (💻 R6)</figcaption></figure>
+
+<p><strong>무엇인가.</strong> README의 자기 정의는 "<strong>양산 가능하고(productionizable) 안전 인증 가능한(safety certifiable)</strong> 오픈소스 L2 ADAS 시스템". OEM·Tier-1의 양산 승용차 통합을 겨냥하며 버스·트럭에도 쓸 수 있고, 모델 가중치까지 Apache 2.0으로 공개한다. 기능은 ACC·FCW·AEB·LKAS·LDW·ISA·단일차로 핸즈프리 오토파일럿이고, 센서는 <strong>단안 전방 카메라 1대(52–55° HFOV, 1–2MP)</strong>, <strong>HD맵 불필요(mapless)</strong> 다. 1.0 릴리스 노트는 "3–5 INT8 TOPS급 저가 양산 칩에서 전체 파이프라인 10 FPS 이상", "미들웨어 없는 배포 + ROS 2 통합 인터페이스"를 적었다. (💻 R6 · 🔍 G20)</p>
+<figure><img alt="Vision Pilot 하이브리드 E2E 아키텍처" src="images/13-visionpilot-hybrid-e2e-architecture.png" /><figcaption>그림 19. Vision Pilot의 "Hybrid End-to-End AI Architecture". 출처: vision_pilot <code>Media/VisionPilot_architecture.png</code> (💻 R6)</figcaption></figure>
+
+<p><strong>구조.</strong> "인식 AI 모델(안전)과 E2E AI 모델(성능)이 <strong>병렬로</strong> 데이터를 처리하는 하이브리드 E2E"다. 세 모델이 축이다. (💻 R6~R9)</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>모델</th>
+<th>저장소</th>
+<th>역할</th>
+<th>구조·성능</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AutoSteer 2.0</strong></td>
+<td><code>auto_steer</code></td>
+<td>자차 미래 경로 웨이포인트(횡방향). 차선 검출 없이 전체 프레임을 E2E로 처리해 차선이 지워진 도로에서도 동작</td>
+<td>1024×512(2:1) 입력, TUSimple+OpenLane+CurveLanes 학습, 검증 mAP@50 0.969(INT8 0.966). 구판은 EgoLanes 마스크 2장→조향각 확률 벡터</td>
+</tr>
+<tr>
+<td><strong>AutoSpeed 2.0</strong></td>
+<td><code>auto_speed</code></td>
+<td>경로 내 객체(CIPO) 검출(종방향: ACC·FCW·AEB)</td>
+<td>YOLOv11 백본의 c3k2를 자체 "context" 블록으로 치환. 클래스는 "경로 안/끼어듦·이탈/경로 밖". OpenLane CIPO 학습, mAP@50 0.74(INT8 0.73)</td>
+</tr>
+<tr>
+<td><strong>AutoDrive</strong></td>
+<td><code>auto_drive</code></td>
+<td>연속 2프레임(t-1, t)→CIPO 거리·도로 곡률·CIPO 존재 확률</td>
+<td>곡률 평균 오차 핸들각 4°, 존재 정확도 88%, 거리 5–40 m 90%·100–150 m 72%. AutoSpeed 백본 워밍업 지원</td>
+</tr>
+</tbody>
+</table></div>
+<p>런타임 모듈은 <code>VisionPilot/modules/</code> 아래 <code>engine</code>(ONNX Runtime GPU/CPU), <code>models</code>, <code>sensing</code>(camera_interface·image_preprocessing·vehicle_interface), <strong><code>safety_guardian</code>(fusion·planning)</strong>, <code>middleware_interfaces/ros2_interface</code>, <code>visualization</code>, <code>logging</code>, <code>config</code>로 나뉜다. 0.9 노트 기준으로 호모그래피로 픽셀→도로 좌표 변환, 칼만 필터로 CIPO 추적, <strong>RSS(Responsibility-Sensitive Safety) 영감의 속도 계획</strong>, PID 종방향·MPC 횡방향(1.1부터 공간 영역 MPC) 제어를 쓴다. (💻 R6 · 🔍 G20)</p>
+<p><strong>릴리스 이력.</strong> (🔍 G20 · 🔍 G5·G7·G8·G18)</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>버전</th>
+<th>날짜</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.5</td>
+<td>2026-01-22</td>
+<td>EgoLanes+AutoSteer 조향만. OEM 사설 트랙에서 정속 실차 테스트, 고곡률(20°+)·뱅크에서 인간 조향 대비 90%+ 일치</td>
+</tr>
+<tr>
+<td>0.9</td>
+<td>2026-03-02</td>
+<td>AutoSpeed+ObjectFinder 종방향 인식·추적, CIPO 선택, RSS 영감 속도 계획, PID, 횡·종 병렬 파이프라인, POSIX 공유메모리 IPC</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>2026-07-06</td>
+<td>AutoSpeed·AutoSteer·AutoDrive 3모델, 교차 모달 융합 + 궤적 계획, "production-ready" 기능 7종. 당초 6월 말 목표(5월 중순 앞당기기 시도)</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>2026-07-27</td>
+<td>공간 영역 MPC, 융합·추적 개선, Docker, CARLA 0.9.16</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>2026-08-10</td>
+<td>CARLA 통합·횡방향 추적 개선, 3D 점유 시각화, Rerun 로깅. Ubuntu 22.04/ROS 2 Humble 테스트</td>
+</tr>
+<tr>
+<td>1.3 (예정)</td>
+<td>—</td>
+<td>CARLA Ackermann·1V1R 브리지, 점유 BEV 창, 융합·추적 개선, "Code Compliance". 카메라+레이더 융합은 "(현재 중단)", 8MP·120° 카메라는 다음 릴리스</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>안전 문서.</strong> 저장소 <code>Functional_Safety/</code>에 SAFETY_PLAN·SAFETY_ELEMENT_OUT_OF_CONTEXT·SAFETY_METRICS·SOFTWARE_REQUIREMENTS가 있다. SEooC 문서(초안)는 "선택된 Autoware Vision Pilot 컴포넌트로 <strong>ISO 26262 Part 6(+Part 8 지원 프로세스) 준수 소프트웨어 SEooC</strong>를 제공하고, 차량 수준 안전 활동은 OEM·Tier-1에 남긴다"고 범위를 정한다. README 로드맵은 "ISO 26262, ISO 8800 안전 검증·표준 준수"를 적고, 2026-10 ADAS WG 회의록은 "<strong>안전 인증 마무리에 집중</strong>"이라고 적었다. (💻 R6 · 🔍 G13)</p>
+<p><strong>POV 레퍼런스 디자인의 4단계.</strong> Reference Design WG의 POV 가이드(2025-09 기준 작성)는 Vision Pilot을 Phase 1로 두고 4단계를 정의한다. (💻 P1~P4)</p>
+<figure><img alt="POV 로드맵 4단계" src="images/14-pov-roadmap-4-phases.jpg" /><figcaption>그림 20. POV 레퍼런스 디자인 로드맵 4단계와 센서 배치. 출처: autoware.pov-reference-design-docs <code>docs/system-configuration/images/Roadmap.jpg</code> (💻 P2)</figcaption></figure>
+
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>이름</th>
+<th>목표 레벨·ODD</th>
+<th>센서(가이드)</th>
+<th>요구 연산(가이드)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Vision Pilot</strong></td>
+<td>L2+/2++, 단일차로 고속도로(0–70 mph, 맑은 날, 공사구간 없음), 운전자 상시 감독</td>
+<td>전방 카메라(가이드: 8MP 120° + 8MP 30° 장거리) + 전방 4D 레이더 1</td>
+<td>50–80 TOPS</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Vision Pilot <strong>Plus</strong></td>
+<td>L3, 다차로 고속도로, 자율 차선 변경, 감독 불필요(조건 내), 합류·출구 미지원</td>
+<td>+ 전·후 4D 레이더 2, 사각 레이더 4</td>
+<td>150 TOPS</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Vision Pilot <strong>Pro</strong></td>
+<td>L3, 상동</td>
+<td>+ 측면 카메라 4(8MP 100°), 2D 내비 맵</td>
+<td>500 TOPS</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Vision Drive</strong></td>
+<td>L4, 상동</td>
+<td>+ LWIR·SWIR 카메라</td>
+<td>1000 TOPS</td>
+</tr>
+</tbody>
+</table></div>
+<p>가이드는 "NVIDIA GPU는 잘 지원되며 AMD·Qualcomm·Hailo-8 NPU는 로드맵"이라 적고, 미들웨어로 ROS 2(기존 Autoware와 브리지)와 Zenoh(고성능) 두 파이프라인을 둔다. (💻 P2) <strong>주의</strong>: 가이드의 센서 사양(8MP 120°+30°, 4D 레이더)과 현재 코드의 사양(1–2MP 52–55° 단안)이 다르다. 가이드가 목표 사양, 코드가 현재 구현이라고 읽힌다 ⚠️. 12번 보고서가 기록한 옛 모노레포의 4단계 명칭("Vision Pilot/Plus/PRO/Drive", L2→L4)과도 레벨 표기가 조금 다르다. (📚 12번 · 💻 P3)</p>
+<figure><img alt="Vision Pilot 프레임워크" src="images/15-visionpilot-framework-middleware.png" /><figcaption>그림 21. VisionPilot 프레임워크(공통 층 + ROS 2/Zenoh 미들웨어 층). 출처: autoware.pov-reference-design-docs <code>docs/system-configuration/images/VisionPilotFramework.png</code> (💻 P2)</figcaption></figure>
+
+<p><strong>벤치마크(POV 가이드).</strong> ADLINK ADM-AL30(RTX 4000 SFF Ada)에서 SceneSeg·DomainSeg·Scene3D가 Zenoh 50–56 FPS, ROS 2 47–54 FPS. Jetson AGX Orin 64GB에서 TensorRT FP16 약 29–30 FPS, FP32 약 17 FPS(ONNX Runtime은 8 FPS). (💻 P6)</p>
+<p><strong>업계 접점.</strong> TIER IV는 Automotive World 2026에서 <strong>Renesas R-Car X5H</strong>와 짝지은 Vision Pilot(L2)을 전시했고, 레퍼런스 모델은 Jetson Orin에서 카메라 전용 BEV 인식·궤적 생성을 수행했다(📰 W1). Open AD Kit 로드맵은 v2.1을 "X5H, Vision Pilot"의 릴리스로 정의하고, Reference Design WG는 2026-10 "최대 안전" 분기를 "카메라+레이더 4+초음파+IMU/GNSS를 R-Car X5H에"로 적었다. (🔍 G4·G16)</p>
+<h3 id="56-autoseg-lite-adas">5.6 AutoSeg 계열·Lite 모델·보조 모델 — ADAS 트랙의 부품 창고</h3>
+<figure><img alt="AutoSeg 파운데이션 모델" src="images/16-autoseg-foundation-model.jpg" /><figcaption>그림 22. AutoSeg 파운데이션 모델(Depth·Scene·Path 3분기, 6개 전문가 모델). 출처: autoware.pov-reference-design-docs <code>docs/software-configuration/images/AutoSeg.jpg</code> (💻 P5)</figcaption></figure>
+
+<p>AutoSeg는 "단일 백본 + 컨텍스트 블록 + 특징 넥 + 다중 분할·검출 헤드"의 실시간 시각 인식 파운데이션 모델이고, Depth 분기(Scene3D), Scene 분기(SceneSeg·DomainSeg·EgoSpace), Path 분기(EgoPath·EgoLanes)로 나뉜다. (💻 P5) 2026-06에 각 모델이 별도 저장소로 떼어졌지만, <code>scene_seg</code>·<code>scene_3d</code>·<code>lite_models</code>·<code>ego_lanes</code>는 README 한 줄뿐인 빈 저장소이고 코드는 아직 <code>vision_pilot</code>(옛 모노레포 경로 <code>autoseg</code>가 같은 페이지로 연결)에 있다. <code>domain_seg</code>만 실체가 있다(ROADWork 데이터셋 mIoU 46.6, RTX 3060 Mobile FP16 23.9 FPS). (💻 R27·R30 · 🔍 G1) Lite 모델은 12번 보고서가 기록한 "SceneSeg/Scene3D/EgoLanes 20–28× 가속(10→87–104 FPS)" 계열이고, 2026-02 회의록은 AEI(Alternative Embedded Innovation)가 "정확도 유지하며 3× 속도"의 경량판을 만들었다고 적었다. (📚 12번 · 🔍 G6) <code>blindspot_detector</code>(측면 어안 사각지대)와 <code>auto_speed_limit</code>(속도제한 표지)은 Phase 2 기능 후보다. (💻 R30 ⚠️ 용도는 추정)</p>
+<h3 id="57-open-ad-kit-safety-island">5.7 Open AD Kit와 Safety Island — 배포·안전 층</h3>
+<p><strong>Open AD Kit(<code>openadkit</code>)</strong> 는 "Autoware를 컨테이너화된 클라우드/엣지 SDV 컴포넌트로 배포하는 <strong>첫 SOAFEE 블루프린트</strong>"다. 컴포넌트 이미지(GHCR), 배포 구성(planning/logging/scenario/carla-simulation, zenoh-bridge), 버전 고정 런타임 번들, CI 메타데이터를 제공하고 <code>openadkit setup --verify &amp;&amp; openadkit run planning-simulation</code> 한 줄로 기동한다. (💻 R5)</p>
+<p>2026–2027 로드맵(이슈 #91, 2026-10 갱신)은 자기 역할을 "AWF의 오픈 자율주행 SW(Autoware·Vision Pilot·Safety Island)를 <strong>고정되고(pinned) 증거가 붙은(evidenced) 배포 가능한 릴리스</strong>로 내보내는 것"으로 정의한다. (🔍 G4)</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>릴리스</th>
+<th>주 소비자</th>
+<th>테마</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v2.0 (2026-10 목표, "CES 2027(1/6–9) 전까지는 반드시")</td>
+<td>AWF 유지자</td>
+<td>첫 증거 기반·계층화 릴리스: 증거 게이트, 통합자 층, <code>nodes</code></td>
+</tr>
+<tr>
+<td>v2.0.x</td>
+<td>Autoware 릴리스 팀</td>
+<td>RC 증거, 업그레이드 리포트, SBOM, <strong>Safety Island 증거</strong></td>
+</tr>
+<tr>
+<td>v2.1 (CES 후)</td>
+<td>X5H, Vision Pilot</td>
+<td><strong>Vision Pilot + Euro NCAP 파생 시나리오 증거</strong>(등급 주장 없음), Quadlet+BlueChi, OCI 배달</td>
+</tr>
+<tr>
+<td>v2.2</td>
+<td>외부 통합자·차량 파트너</td>
+<td>랩 증거, 가상 차량 네트워크, 첫 차량 프로파일, 호환성 카탈로그</td>
+</tr>
+<tr>
+<td>v2.3</td>
+<td>차량 파트너</td>
+<td>차량 측 단계적 업데이트·롤백</td>
+</tr>
+<tr>
+<td>2027 H1</td>
+<td>Eclipse SDV</td>
+<td><strong>Vision Pilot on S-CORE</strong> 쇼케이스 제안 또는 차단 목록</td>
+</tr>
+<tr>
+<td>v3.0</td>
+<td>모두</td>
+<td>빌드→배포→테스트→관측→업데이트→롤백 폐루프</td>
+</tr>
+</tbody>
+</table></div>
+<p>핵심 결정: 워크로드는 digest로 고정, 모든 후보는 실행 후 결과를 서명(L0 렌더 → L1 프로세스·토픽 생존 → L2 골든 패스·시나리오 통과 → L3+ HIL·필드), in-toto 증명과 <code>gh attestation verify</code>, OCI 패키지로 AutoSD·eSync 플릿에 배달, 차량 내 CycloneDDS·경계 Zenoh·"쿠버네티스 없음", Humble/Jazzy 동등 증거(Autoware는 2027-05 Humble 중단). 비목표는 S-CORE 모듈, 자체 OTA/MLOps, 인증 주장(ISO 26262·21434·ASPICE)이다. 2026-10-15 WG 회의는 v2.0.0의 "10월 말" 목표를 "리스크 있음"으로 적었다. (🔍 G4·G17 · "Dates are intent, not contracts")</p>
+<p><strong>Safety Island</strong>는 두 저장소로 나뉜다. <code>autoware-safety-island</code>(Arm 저작권)는 Autoware의 궤적 추종기(MPC 횡·PID 종)를 <strong>Arm 안전급 프로세서</strong>에서 Zephyr/FreeRTOS로 돌리고 DDS(CycloneDDS AWF 포크)로 제어 명령을 교환하는 단독 애플리케이션이다. 타깃은 로컬 검증용 <code>zephyr-fvp</code>·<code>freertos-posix</code>, 하드웨어 NXP S32Z/S32Z2, <strong>Renesas R-Car X5H CR52(Core1)</strong>. 고정 버전은 Autoware 2025.02·Universe 0.40.0으로 오래됐다. (💻 R13) <code>RFC_L4_SafetyIslandDesign</code>은 NTU 주도 Reference Design WG의 L4 안전섬 설계 RFC·슬라이드이며, 2026-10 회의는 "HPC와 안전섬 사이 ROS 노드 분할", 비상정지 "B4" 추가, 최소비용(S32Z2/AURIX TC4x/Stellar MCU, 레이더 없음)과 최대안전(X5H, 레이더 4) 두 분기를 논의했다. (💻 R14 · 🔍 G16) Open AD Kit WG는 2026-10-15 "<strong>L2 Safety Island</strong>: Vision Pilot이 계획하고 안전섬이 승인·정지하며 액추에이터 하나가 차를 움직이는" CARLA 폐루프 실험을 보고했다(fault-to-brake 4–14 ms, 9 m/s로 약 2.5 km 차선 유지). (🔍 G17)</p>
+<p><strong>분석.</strong> Architecture 2.0 Step 4의 "Safety Guardian"이 소프트웨어 안에서 E2E 출력을 교차 검증하는 것이라면, Safety Island는 그것을 <strong>별도 안전 코어로 물리적으로 분리</strong>한 것이다. 둘 다 ADAS 트랙(Vision Pilot)에서 먼저 실험되고 있다.</p>
+<h3 id="58-agnocast-cie-cuda_blackboard-system-designer">5.8 미들웨어·실행 기반 — Agnocast · CIE · cuda_blackboard · System Designer</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>무엇</th>
+<th>Autoware 2.0.0에서의 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agnocast</code></td>
+<td>rclcpp 호환 <strong>진정한 제로카피 IPC</strong>. rosidl이 생성한 메시지 구조체 그대로 지원. RTAS 2025·ISORC 2025/2026 논문 기반, CallbackIsolatedExecutor 통합</td>
+<td>core 그룹에 <strong>소스 빌드 2.4.1</strong>로 포함("이행 기간 동안 소스 제공, 안정되면 ROS 배포 패키지 사용" 주석)</td>
+</tr>
+<tr>
+<td><code>callback_isolated_executor</code></td>
+<td>콜백 그룹마다 전용 스레드를 배정하는 컴포넌트 컨테이너·Executor</td>
+<td>Agnocast에 통합</td>
+</tr>
+<tr>
+<td><code>cuda_blackboard</code></td>
+<td>REP-2007 타입 적응·REP-2009 타입 협상으로 <strong>GPU 메모리를 노드 간 복사 없이 공유</strong>(프로세스당 싱글턴 블랙보드, 티켓 기반 수명)</td>
+<td>universe/external 0.4.0 → <code>core/cuda</code>로 이동 예정</td>
+</tr>
+<tr>
+<td><code>autoware_system_designer</code></td>
+<td>Node/Module/System/Parameter Set YAML에서 ROS 2 런치·노드 그래프·트리거 체인·지연 뷰·파라미터 템플릿을 생성</td>
+<td>core 그룹 v0.4.2</td>
+</tr>
+<tr>
+<td><code>autoware_cuda</code></td>
+<td>cuda_utils·tensorrt_common·cuda_dependency_meta를 모을 신설 저장소</td>
+<td>2026-10 전환 작업 중, 비어 있음</td>
+</tr>
+</tbody>
+</table></div>
+<p>(💻 R1·R17·R19·R20·R21 · 🔍 G14)</p>
+<figure><img alt="System Designer 노드 다이어그램" src="images/23-system-designer-node-diagram.png" /><figcaption>그림 23. Autoware System Designer가 생성한 노드 다이어그램 예. 출처: autoware_system_designer <code>autoware_system_designer/doc/images/node_diagram.png</code> (💻 R17)</figcaption></figure>
+
+<p><strong>분석.</strong> 09번 보고서가 Agnocast·cuda_blackboard를 "데이터 흐름의 제로카피 경로"로 다뤘는데, 2.0.0에서는 둘 다 <strong>core 그룹의 정식 구성원</strong>이 됐다(cuda_blackboard는 이동 중). System Designer는 다년 로드맵 Y2의 "GUI 설정 대시보드"의 백엔드 격이며, 빈 저장소 <code>autoware_launch_v2</code>가 이것과 연결된 차세대 런치 자리라는 추정은 확인하지 못했다. ⚠️</p>
+<h3 id="59-odd">5.9 ODD별 프로젝트 — 트럭 · 오프로드 · 저속 · 버스</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>프로젝트</th>
+<th>저장소</th>
+<th>내용</th>
+<th>WG·상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>고속도로 자율 트럭</td>
+<td><code>autoware.trucks</code></td>
+<td>"안전한 SAE L4 고속도로 자율 트럭 오픈소스 시스템". 단기 목표: 레퍼런스 디자인, 차량 인터페이스(J1939), 트럭용 계획·제어, <strong>비전 전용 경량 NN 벤치마크</strong>. 2026-10 회의: Vision Pilot v1.2 트럭 모델 작업, Inceptio가 CARLA 0.9.16+Vision Pilot 시뮬</td>
+<td>Truck WG(Inceptio·TIER IV). 11월부터 의장 교체</td>
+</tr>
+<tr>
+<td>오프로드</td>
+<td><code>autoware.off-road</code>, <code>autoware_off-road_sim</code>, <code>autoware.orv-reference-design-docs</code></td>
+<td>광산 트럭·RoboRacer 오프로드·행성 로버. EfficientNet-B0 백본의 주행가능영역 분할·윤곽·고도 네트워크, CARLA <code>Mine_01</code> 데모, Isaac Sim 기반 1/5 스케일 다차량 시뮬(UPenn CoE)</td>
+<td>Off-road/Racing WG. 2026-05 "추후 통지까지 일시 중단"</td>
+</tr>
+<tr>
+<td>저속 자율(LSA)</td>
+<td><code>LSA-reference-design-docs</code>, <code>autoware.low-speed-autonomy-vehicles</code></td>
+<td>주차장 로봇·셔틀·소형 차량 TRL-6 가이드, RoboRacer·GoKart 포함</td>
+<td>Reference Design WG(NTU)</td>
+</tr>
+<tr>
+<td>버스</td>
+<td>docs <code>reference-design/itri-bus</code>, <code>itri_bus_sensor_kit</code>, <code>cbus_vehicle_launch</code></td>
+<td>ITRI 버스 레퍼런스(대부분 "To-be-added")</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>(💻 R22·R23·R24·R31·D11 · 🔍 G18 · 📰 W3)</p>
+<hr />
+<h2 id="6">6. 두 트랙 특징 비교</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>① 로보택시·L4 트랙 (Autoware 2.0)</th>
+<th>② ADAS·POV 트랙 (Vision Pilot)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>목표</td>
+<td>SAE L4+ 무인(로보택시·로보버스·물류)</td>
+<td>양산 승용차 L2 → Plus L3 → Drive L4 (고속도로)</td>
+</tr>
+<tr>
+<td>코드베이스</td>
+<td>ROS 2(Humble/Jazzy) 메타 저장소 + 하위 20여 개, 패키지 수백 개</td>
+<td>단일 C++ 애플리케이션(<code>VisionPilot/</code>), ONNX Runtime, 미들웨어 선택(없음/ROS 2/Zenoh)</td>
+</tr>
+<tr>
+<td>센서·맵</td>
+<td>LiDAR+카메라(+레이더), Lanelet2 HD맵 기본(2D맵 옵션은 로드맵)</td>
+<td>단안 카메라 1대, HD맵 없음. Phase 2부터 4D 레이더</td>
+</tr>
+<tr>
+<td>인식</td>
+<td>점군·BEV·융합 인식 파이프라인(centerpoint·BEVFusion·PTv3·traffic light 등)</td>
+<td>AutoSeg 계열 분할·깊이 + AutoSpeed 검출</td>
+</tr>
+<tr>
+<td>계획</td>
+<td>규칙 기반 시나리오 플래너 ↔ Diffusion Planner(런치 선택). 후보: AutoE2E·LatentDrive·OnePlanner</td>
+<td>AutoSteer(경로) + RSS 영감 속도 계획 + Safety Guardian</td>
+</tr>
+<tr>
+<td>제어</td>
+<td>MPC 횡·PID 종(autoware_core)</td>
+<td>MPC 횡·PID 종(자체 구현)</td>
+</tr>
+<tr>
+<td>하드웨어</td>
+<td>NVIDIA GPU(TensorRT) 전제, 8코어·16GB 권장</td>
+<td>3–5 INT8 TOPS 양산 SoC 목표. 벤치는 Jetson Orin·RTX 4000 SFF. 가이드: Phase 1 50–80 TOPS</td>
+</tr>
+<tr>
+<td>모델 배포</td>
+<td>Hugging Face + Ansible <code>artifacts</code> 역할</td>
+<td>Google Drive(모델 저장소) + Hugging Face(일부)</td>
+</tr>
+<tr>
+<td>릴리스</td>
+<td>월간(2.0.0 2026-10-29)</td>
+<td>0.5→0.9→1.0→1.1→1.2(2026-01~08), 1.3 준비</td>
+</tr>
+<tr>
+<td>안전 접근</td>
+<td>Selector(safety gate·ranking, 미기동), planning validator, Safety Island(L4 RFC)</td>
+<td>Safety Guardian 모듈, SEooC(ISO 26262 Part 6) 문서, ISO 8800 목표, L2 Safety Island 실험, Euro NCAP 파생 시나리오(Open AD Kit v2.1)</td>
+</tr>
+<tr>
+<td>배포</td>
+<td>Open AD Kit v2.0</td>
+<td>Open AD Kit v2.1 (R-Car X5H)</td>
+</tr>
+<tr>
+<td>주체</td>
+<td>AWF Software WG(TSC 의장 mitsudome-r, 아키텍트 xmfcx), TIER IV, Robotaxi WG</td>
+<td>AWF Senior Tech Lead(m-zain-khawaja), ADAS WG 기여자(atanasko·pranavdoma 등), AEI, NTU</td>
+</tr>
+<tr>
+<td>라이선스</td>
+<td>Apache 2.0</td>
+<td>Apache 2.0(가중치 포함)</td>
+</tr>
+</tbody>
+</table></div>
+<p>(💻 R1·R6·R10·D15·P2 · 🔍 G2·G4·G20)</p>
+<hr />
+<h2 id="7">7. 로드맵 위에 올려본 각 스택</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>스택(저장소)</th>
+<th>다년 로드맵</th>
+<th>Arch 2.0 단계(자체 해석)</th>
+<th>POV Phase</th>
+<th>Open AD Kit</th>
+<th>2026-10 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Autoware 2.0 본체(<code>autoware</code>·core·universe·launch)</td>
+<td>Obj.1 Y1 "컴포넌트형 AI 인식 + AI 플래너 초판" ↔ 2.0.0이 Diffusion Planner 선택 가능</td>
+<td>Step 1 진입</td>
+<td>—</td>
+<td>v2.0(2026-10 목표)</td>
+<td>공개(2026-10-29)</td>
+</tr>
+<tr>
+<td>Diffusion Planner(universe)</td>
+<td>Obj.1 Y1</td>
+<td>Step 1</td>
+<td>—</td>
+<td>v2.0</td>
+<td>런치 인자로 선택</td>
+</tr>
+<tr>
+<td>Selector(validator·ranker·selector)</td>
+<td>Obj.1 Y3 "하이브리드"의 전제</td>
+<td>Step 4의 Safety Guardian에 해당</td>
+<td>—</td>
+<td>—</td>
+<td>패키지 존재, 미기동</td>
+</tr>
+<tr>
+<td><code>auto_e2e</code></td>
+<td>Obj.1 Y1~Y2</td>
+<td>Step 2(Reactive) → Step 4 구상</td>
+<td>—</td>
+<td>—</td>
+<td>HF v1.0, 로보택시 WG</td>
+</tr>
+<tr>
+<td><code>autoware_latent_drive</code></td>
+<td>Obj.1 Y2 "단일 신경망 E2E 초판" 후보</td>
+<td>Step 3</td>
+<td>—</td>
+<td>—</td>
+<td>연구용 v1.0</td>
+</tr>
+<tr>
+<td><code>autoware_oneplanner</code></td>
+<td>Obj.1 Y1</td>
+<td>Step 1</td>
+<td>—</td>
+<td>—</td>
+<td>v1.0, Core 위 노드</td>
+</tr>
+<tr>
+<td><code>alpamayo-autoware</code></td>
+<td>회원사 모델 통합 사례</td>
+<td>Step 3(VLA)</td>
+<td>—</td>
+<td>—</td>
+<td>데모</td>
+</tr>
+<tr>
+<td><code>vision_pilot</code> + 모델 3종</td>
+<td>Obj.2 Y1 "POV 고속도로 파일럿 TRL-6", Obj.3 Y1 앵커 기업</td>
+<td>Step 4 구조(하이브리드)로 Step 2·3 요소 포함</td>
+<td><strong>Phase 1</strong></td>
+<td>v2.1</td>
+<td>1.2 공개, 1.3 준비, 안전 인증 집중</td>
+</tr>
+<tr>
+<td>AutoSeg 계열·<code>lite_models</code></td>
+<td>Obj.1 Y1 "비전 컴포넌트형 AI 인식"</td>
+<td>Step 2의 학습 인식</td>
+<td>Phase 1~</td>
+<td>—</td>
+<td>분리 저장소 대부분 빈 상태</td>
+</tr>
+<tr>
+<td><code>blindspot_detector</code>·<code>auto_speed_limit</code></td>
+<td>—</td>
+<td>—</td>
+<td>Phase 2 후보 ⚠️</td>
+<td>—</td>
+<td>초기</td>
+</tr>
+<tr>
+<td><code>openadkit</code></td>
+<td>Obj.2 "Open AD Kit와 결합한 Production-Capable Autoware"</td>
+<td>—</td>
+<td>—</td>
+<td>자체 사다리 v2.0→v3.0</td>
+<td>v2.0.0 리스크</td>
+</tr>
+<tr>
+<td><code>autoware-safety-island</code>·RFC</td>
+<td>Obj.1 Y3 "병렬 안전층"</td>
+<td>Step 4 Safety Perception/Guardian의 HW 분리</td>
+<td>Plus~</td>
+<td>v2.0.x 증거</td>
+<td>v0.2.0 범위 미정, L2 실험</td>
+</tr>
+<tr>
+<td><code>autoware-index</code>·Reference Design</td>
+<td>Obj.4 Y2 "패키지 목록"</td>
+<td>—</td>
+<td>Vision Pilot=첫 RD</td>
+<td>—</td>
+<td>공개</td>
+</tr>
+<tr>
+<td><code>autoware_system_designer</code></td>
+<td>Obj.4 Y2 "GUI 대시보드" 기반 ⚠️</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>v0.4.2 core</td>
+</tr>
+<tr>
+<td><code>autoware.trucks</code></td>
+<td>Obj.2(명시 없음)</td>
+<td>—</td>
+<td>Vision Pilot 재사용</td>
+<td>—</td>
+<td>활동 중</td>
+</tr>
+<tr>
+<td><code>autoware.off-road</code></td>
+<td>Obj.2 Y2 "오프로드 TRL-6"</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>WG 일시 중단</td>
+</tr>
+<tr>
+<td>LSA 가이드</td>
+<td>Obj.2 Y1 "LSA TRL-6"</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>문서 공개</td>
+</tr>
+</tbody>
+</table></div>
+<p>(💻 D1·D3·D10·D11·P1 · 🔍 G4·G13·G17)</p>
+<hr />
+<h2 id="8-hpc">8. 차량 HPC 관점의 시사점</h2>
+<ol>
+<li><strong>두 가지 연산 프로파일이 공존한다.</strong> 로보택시 트랙은 TensorRT·GPU 전제이고(Diffusion Planner, OnePlanner RTX PRO 6000 기준 12.7 ms), ADAS 트랙은 3–5 INT8 TOPS 양산 SoC에서 10 FPS를 목표로 한다. 같은 재단의 두 스택이 <strong>요구 연산량에서 두 자릿수 차이</strong>를 내므로, HPC 설계에서는 "어느 트랙을 올리는가"가 SoC 등급을 결정한다. (💻 R6·R12 · 🔍 G20)</li>
+<li><strong>안전 코어 분리가 구체적 하드웨어 이름으로 내려왔다.</strong> Safety Island의 타깃이 NXP S32Z/S32Z2와 Renesas R-Car X5H CR52이고, Reference Design WG가 최소비용(S32Z2/AURIX TC4x/Stellar)과 최대안전(X5H) 분기를 논의한다. 15번 보고서의 ETAS×Elektrobit(ASIL-B 리눅스+미들웨어)과 달리 AWF는 <strong>Zephyr/FreeRTOS 안전 코어 + DDS 경계</strong>라는 다른 층에서 접근한다. (💻 R13 · 🔍 G16 · 📚 15번)</li>
+<li><strong>배포 단위가 "증거 붙은 OCI 이미지"로 바뀐다.</strong> Open AD Kit의 L0~L3 증거 등급, SBOM, in-toto 증명, AutoSD·eSync 배달은 HPC 소프트웨어 플랫폼이 받아들여야 할 <strong>입력 포맷</strong>이 된다. 쿠버네티스 비채택·Quadlet+BlueChi 채택도 차량 측 컨테이너 런타임 선택에 참고가 된다. (🔍 G4)</li>
+<li><strong>제로카피·GPU 공유가 표준 구성원이 됐다.</strong> Agnocast(소스 빌드 포함)와 cuda_blackboard(core/cuda 이동)는 09번 보고서가 예측한 "zero-copy 경로 분화"의 공식화다. HPC 미들웨어 평가 시 이 둘이 기준선이다. (💻 R1 · 📚 09번)</li>
+<li><strong>모델 유통이 Hugging Face로 표준화됐다.</strong> <code>artifacts</code> Ansible 역할이 버전 태그로 모델을 받으므로, 차량 측 모델 관리(버전 고정·무결성)도 같은 체계를 전제로 설계할 수 있다. (🔍 G2)</li>
+</ol>
+<hr />
+<h2 id="9">9. 불확실·미확인 항목</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>항목</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>다년 로드맵의 <strong>기준 연도</strong>(Y1이 몇 년인지)</td>
+<td>문서에 없음. 2.0.0 내용과 대조하면 Y1≈2025–2026으로 보이나 ⚠️ 추정</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>autoware_launch_v2</code>의 용도</td>
+<td>README 제목만 있음. System Designer 기반 차세대 런치로 추정 ⚠️</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CUDA 재구조화(<code>autoware_cuda</code>)의 2026-10-15 전환 완료 여부</td>
+<td>저장소가 비어 있고 안내 페이지에 완료 기록 없음</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Open AD Kit v2.0.0의 실제 공개 여부</td>
+<td>2026-10-15 회의록 "리스크 있음". 이슈 #91 스냅샷에 rc.1 기록 없음</td>
+</tr>
+<tr>
+<td>5</td>
+<td>POV WG → ADAS WG 개명의 공식 일자</td>
+<td>회의 제목만 바뀜(2026-09-28부터). 위키·푸터 라벨은 옛 이름</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Robotaxi WG의 공식 지위</td>
+<td><code>auto_e2e</code> README·온보딩과 Discord 채널에만 등장, <code>autoware-projects</code> 위키 WG 목록에는 없음</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Vision Pilot의 센서 사양 불일치(가이드 8MP 120°+30°·4D 레이더 vs 코드 1–2MP 52–55° 단안)</td>
+<td>가이드=목표, 코드=현재로 읽힘 ⚠️</td>
+</tr>
+<tr>
+<td>8</td>
+<td>AutoE2E·LatentDrive·OnePlanner의 Autoware 런치 통합</td>
+<td>2.0.0 문서에 없음. 독립 런타임 단계</td>
+</tr>
+<tr>
+<td>9</td>
+<td>"New VisionPilot Architecture" 그림(2026-05·06 회의록 첨부)</td>
+<td>이미지 접근 불가로 내용 미확인</td>
+</tr>
+<tr>
+<td>10</td>
+<td>재단 홈페이지·블로그의 공식 표현("두 트랙" 등)</td>
+<td>autoware.org 차단으로 미열람. 본 보고서의 트랙 구분은 GitHub·문서 원본 근거</td>
+</tr>
+<tr>
+<td>11</td>
+<td>별·포크 수</td>
+<td>목록 페이지 표기(k 단위 반올림), 정확 값 아님</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="a-autoware-projects-2026-10">부록 A. 워킹그룹 목록 (autoware-projects 위키, 2026-10 열람)</h2>
+<p>활성: Software WG(아키텍처·릴리스·코드 품질, 리더 mitsudome-r·xmfcx) · Operational Design Domain WG · Simulation WG · Off-road(Racing) WG(2026-05 일시 중단) · Open AD Kit WG · Reference Design WG(NTU·ADLink, LSA·POV·안전섬 RFC) · Safety Assurance WG(Deepen AI·ASU, ISO 8800 영향, 안전 메트릭 프레임워크) · Privately Owned Vehicles WG(=ADAS WG, 리더 Muhammad Zain Khawaja) · Low Speed Autonomy WG · Truck WG(Inceptio·TIER IV). 아카이브·병합: Hardware WG(→Open AD Kit), Maps and routing, Vehicle interfaces, Planning &amp; Control·Sensing &amp; Perception·Localisation &amp; Mapping·API WG(→Software WG), <strong>Autoware Architecture WG(일시 정지)</strong>. 위키 목록에 없는 Robotaxi WG는 <code>auto_e2e</code>에서 확인된다. (💻 R31·R10 · 📰 W3)</p>
+<h2 id="b">부록 B. 용어</h2>
+<ul>
+<li><strong>Generator / Selector</strong>: Architecture 2.0의 두 구성 요소. 궤적 후보를 내는 모든 모듈이 Generator, 후보를 안전 검사·랭킹해 하나를 고르는 것이 Selector. (💻 D4)</li>
+<li><strong>Autoware Index</strong>: 커뮤니티 패키지 레지스트리. <code>.repos</code> 파일이 락파일 역할. (💻 R15)</li>
+<li><strong>Reference Design</strong>: 배포 프로파일 + 레퍼런스 SW 스택. Index 항목의 <code>reference_design: true</code>. (💻 D11)</li>
+<li><strong>Open AD Kit</strong>: Autoware 생태계의 배포 계층(SOAFEE 블루프린트). (💻 R5)</li>
+<li><strong>Safety Island</strong>: 안전급 프로세서에서 돌리는 궤적 추종·감독 애플리케이션. (💻 R13)</li>
+<li><strong>SEooC</strong>: Safety Element out of Context, ISO 26262에서 특정 차량 맥락 없이 개발하는 안전 요소. Vision Pilot이 표방. (💻 R6)</li>
+<li><strong>TRL</strong>: Technology Readiness Level. 다년 로드맵의 양산 성숙도 척도(6→7→8). (💻 D10)</li>
+<li><strong>CIPO</strong>: Closest In-Path Object. AutoSpeed·AutoDrive의 대상. (💻 R8)</li>
+<li><strong>POV</strong>: Privately Owned Vehicle, 개인 소유 차량. (💻 R31)</li>
+</ul>
+<h2 id="c">부록 C. 관련 보고서</h2>
+<ul>
+<li><a href="../12-autoware-e2e-architecture/autoware-e2e-architecture-transition.md">12-autoware-e2e-architecture</a> — 2026-06, Autoware 1.8.0 기준 E2E 전환 2트랙 해부. 본 보고서는 그 후속 상황(2.0.0, Vision Pilot 1.x, 신규 저장소)을 다룬다.</li>
+<li><a href="../09-ad-sw-stack-deep-dive/ad-sw-stack-deep-dive.md">09-ad-sw-stack-deep-dive</a> — Autoware 컴포넌트·데이터 흐름(Agnocast·cuda_blackboard).</li>
+<li><a href="../07-tier4-alpamayo-autoware/tier4_alpamayo_autoware_보고서.md">07-tier4-alpamayo-autoware</a>, <a href="../14-alpamayo-hardware-alternatives/alpamayo-hardware-alternatives.md">14-alpamayo-hardware-alternatives</a> — <code>alpamayo-autoware</code> 포크의 상세.</li>
+<li><a href="../15-etas-elektrobit-partnership/etas-elektrobit-partnership.md">15-etas-elektrobit-partnership</a> — 안전 OS·미들웨어 층의 다른 접근.</li>
+</ul>
+<div class="foot">이 페이지는 같은 폴더의 Markdown 원본에서 생성했다. 그림은 각 캡션에 적은 원본 저장소 파일을 그대로 복사한 것이며, 그림 1만 자체 작성이다. 출처 목록: <a href="reference/references.md">reference/references.md</a> · 저장소 전수 목록: <a href="reference/repo-inventory.md">reference/repo-inventory.md</a></div>
+</main>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('themeBtn');
+  try{var s=localStorage.getItem('awf-theme');if(s)root.setAttribute('data-theme',s);}catch(e){}
+  function cur(){var t=root.getAttribute('data-theme');if(t)return t;return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+  function label(){btn.textContent=cur()==='dark'?'☀️ 라이트':'🌙 다크';}
+  btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('awf-theme',n);}catch(e){}label();});
+  label();
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var heads=links.map(function(a){return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));});
+  function onScroll(){var y=window.scrollY+90,idx=0;for(var i=0;i<heads.length;i++){if(heads[i]&&heads[i].offsetTop<=y)idx=i;}links.forEach(function(a,i){a.classList.toggle('active',i===idx);});}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+</body>
+</html>
