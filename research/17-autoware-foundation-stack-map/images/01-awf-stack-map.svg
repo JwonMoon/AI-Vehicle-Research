@@ -1,126 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="860" viewBox="0 0 1240 860" font-family="'IBM Plex Sans KR','Pretendard','Noto Sans KR','Apple SD Gothic Neo',system-ui,sans-serif" font-size="14">
-  <defs>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
-  </defs>
-  <rect width="1240" height="860" fill="#fbfaf7"/>
-  <text x="620" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1d1f22">Autoware 재단(AWF) 스택 지도 — 2026-10-30 기준, Autoware 2.0.0 공개 직후</text>
-  <text x="620" y="56" text-anchor="middle" font-size="12" fill="#6b7078">자체 작성. 저장소명은 github.com/autowarefoundation/&lt;이름&gt;. 버전은 autoware 2.0.0의 autoware.repos·각 저장소 릴리스 기준</text>
-
-  <!-- column headers -->
-  <rect x="150" y="72" width="500" height="40" rx="8" fill="#0f6f8e"/>
-  <text x="400" y="97" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">① 로보택시·L4 트랙 — Software WG · Robotaxi WG</text>
-  <rect x="690" y="72" width="500" height="40" rx="8" fill="#9a5a00"/>
-  <text x="940" y="97" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">② ADAS·개인차량(POV) 트랙 — ADAS WG(옛 POV WG)</text>
-
-  <!-- row labels -->
-  <g font-size="13" font-weight="700" fill="#4a4e55">
-    <text x="20" y="150">AI 모델</text>
-    <text x="20" y="168" font-weight="400" font-size="11">(가중치는 HF</text>
-    <text x="20" y="182" font-weight="400" font-size="11">AutowareFoundation)</text>
-    <text x="20" y="300">주행 스택</text>
-    <text x="20" y="318" font-weight="400" font-size="11">(차를 움직이는 SW)</text>
-    <text x="20" y="455">공통 기반</text>
-    <text x="20" y="473" font-weight="400" font-size="11">(두 트랙이 같이 씀)</text>
-    <text x="20" y="585">배포·안전</text>
-    <text x="20" y="690">ODD 프로젝트</text>
-    <text x="20" y="708" font-weight="400" font-size="11">(차종별 레퍼런스)</text>
-  </g>
-
-  <!-- Row 1: AI models -->
-  <rect x="150" y="125" width="500" height="120" rx="8" fill="#e5f1f5" stroke="#9cc7d6"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="165" y="146" font-weight="700">Diffusion Planner (autoware_universe 안, 2.0.0 기본 선택지)</text>
-    <text x="165" y="166">auto_e2e — AutoE2E: 6카메라→BEV→GRU 플래너, 79.9M, 10 Hz, HD맵 불필요</text>
-    <text x="165" y="186">autoware_latent_drive — V-JEPA 잠재 월드모델 기반 카메라 전용 플래너</text>
-    <text x="165" y="206">autoware_oneplanner — LiDAR BEV(BEVFusion-L)+벡터맵 → 궤적, Core 위 런타임</text>
-    <text x="165" y="226">alpamayo-autoware — Alpamayo VLA ROS 2 노드(포크) · 3dgs_io — 신경 재구성 시뮬 I/O</text>
-  </g>
-  <rect x="690" y="125" width="500" height="120" rx="8" fill="#fbf1df" stroke="#e7c98f"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="705" y="146" font-weight="700">auto_steer · auto_speed · auto_drive — Vision Pilot 1.x의 모델 3종</text>
-    <text x="705" y="166">(횡방향 경로 / 경로 내 객체 CIPO / E2E 거리·곡률·존재 확률)</text>
-    <text x="705" y="186">AutoSeg 계열: scene_seg · scene_3d · domain_seg · ego_lanes (+EgoSpace·EgoPath)</text>
-    <text x="705" y="206">lite_models — 엣지용 경량판 · blindspot_detector · auto_speed_limit</text>
-    <text x="705" y="226">vision_pilot_model_recipes — 추론·컨테이너·미들웨어 레시피</text>
-  </g>
-
-  <!-- Row 2: driving stacks -->
-  <rect x="150" y="262" width="500" height="150" rx="8" fill="#e5f1f5" stroke="#9cc7d6"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="165" y="284" font-weight="700" font-size="14">Autoware 2.0.0 (2026-10-29) = 메타 저장소 autoware + .repos 고정판</text>
-    <text x="165" y="305">autoware_core 1.10.0 (AWF 품질보증 층) + autoware_universe 0.53.1 (커뮤니티 층)</text>
-    <text x="165" y="325">+ autoware_launch 0.53.0 (planning_setting:=rule_based | diffusion_planner)</text>
-    <text x="165" y="345">+ msgs 3종 · utils · cmake · lanelet2_extension · rviz_plugins · simple_planning_sim</text>
-    <text x="165" y="365">+ autoware_system_designer v0.4.2 · agnocast 2.4.1 · (예정) autoware_cuda</text>
-    <text x="165" y="390" fill="#0a5a74" font-weight="700">Arch 2.0 Generator-Selector: 생성기만 전환 가능, Selector는 아직 미기동</text>
-  </g>
-  <rect x="690" y="262" width="500" height="150" rx="8" fill="#fbf1df" stroke="#e7c98f"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="705" y="284" font-weight="700" font-size="14">Vision Pilot 1.2 (2026-08-10) — 오픈소스 L2 ADAS, Apache 2.0</text>
-    <text x="705" y="305">단안 카메라 1대(52–55° HFOV, 1–2MP) · HD맵 없음 · ONNX Runtime C++</text>
-    <text x="705" y="325">ACC·FCW·AEB·LKAS·LDW·ISA·단일차로 오토파일럿 · 3–5 INT8 TOPS에서 10 FPS+</text>
-    <text x="705" y="345">미들웨어 없이 실행 가능 + ROS 2 인터페이스(옵션) · Zenoh 파이프라인(POV 문서)</text>
-    <text x="705" y="365">하이브리드 E2E: 인식 모델(안전) ∥ E2E 모델(성능) → Safety Guardian → MPC/PID</text>
-    <text x="705" y="390" fill="#7a4700" font-weight="700">옛 이름 autoware.privately-owned-vehicles → autoware_vision_pilot → vision_pilot</text>
-  </g>
-
-  <!-- Row 3: shared foundation -->
-  <rect x="150" y="428" width="1040" height="110" rx="8" fill="#eeede8" stroke="#cfcbc0"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="165" y="450" font-weight="700">실행 기반</text>
-    <text x="165" y="470">agnocast(제로카피 IPC) · callback_isolated_executor</text>
-    <text x="165" y="490">cuda_blackboard(GPU 공유) · managed_transform_buffer</text>
-    <text x="165" y="510">spconv_cpp · bevdet_vendor · ros2_socketcan</text>
-    <text x="520" y="450" font-weight="700">패키지 생태계</text>
-    <text x="520" y="470">autoware-index + aw-index-cli (패키지 레지스트리)</text>
-    <text x="520" y="490">Reference Design = 배포 프로파일 + 레퍼런스 SW 스택</text>
-    <text x="520" y="510">autoware-harness(에이전트 스킬) · repos-visualizer</text>
-    <text x="880" y="450" font-weight="700">시뮬·평가·데이터</text>
-    <text x="880" y="470">AWSIM · CARLA(포크·브리지·시나리오) · scenario_simulator_v2</text>
-    <text x="880" y="490">off-road_sim(Isaac Sim) · TeraSim · odd-usecase-scenario</text>
-    <text x="880" y="510">lanelet2→OpenDRIVE/SUMO 변환 · rosbag 익명화·변환</text>
-  </g>
-
-  <!-- Row 4: deploy & safety -->
-  <rect x="150" y="552" width="1040" height="90" rx="8" fill="#e9efe6" stroke="#b9cbb2"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="165" y="574" font-weight="700">openadkit — Open AD Kit: SOAFEE 블루프린트, 컨테이너·증거(evidence)·OCI 번들로 배포</text>
-    <text x="165" y="594">v2.0(2026-10 말 목표, Autoware) → v2.0.x(Safety Island 증거) → v2.1(CES 2027 후, Vision Pilot+Euro NCAP 파생 시나리오, X5H) → v3.0(폐루프)</text>
-    <text x="165" y="614" font-weight="700">autoware-safety-island — Arm 안전 코어(S32Z·R-Car X5H CR52)에서 MPC/PID 추종기를 Zephyr/FreeRTOS로 · RFC_L4_SafetyIslandDesign — L4 설계 RFC</text>
-    <text x="165" y="634" fill="#4a4e55">L2 Safety Island 실험: Vision Pilot이 계획, 안전섬이 승인·정지 (Open AD Kit WG 2026-10-15)</text>
-  </g>
-
-  <!-- Row 5: ODD projects -->
-  <rect x="150" y="658" width="1040" height="80" rx="8" fill="#f2ecf5" stroke="#cdb9d6"/>
-  <g font-size="11.5" fill="#1d1f22">
-    <text x="165" y="680" font-weight="700">LSA-reference-design-docs(저속·RoboRacer·GoKart) · autoware.pov-reference-design-docs(Vision Pilot→Plus→Pro→Vision Drive) · orv-reference-design-docs(오프로드)</text>
-    <text x="165" y="700">autoware.trucks(고속도로 트럭, Vision Pilot 트럭 모델·J1939) · autoware.off-road(광산·행성 로버, 주행가능영역 NN) · ITRI 버스 · RefDesignWG</text>
-    <text x="165" y="722" fill="#4a4e55">다년 로드맵 TRL 계단: Y1 LSA·POV TRL-6 → Y2 Robobus·Off-road TRL-6 → Y3 Robotaxi TRL-6 (Open AD Kit와 결합한 'Production-Capable Autoware')</text>
-  </g>
-
-  <!-- Bottom: Architecture 2.0 step ladder -->
-  <text x="20" y="775" font-size="13" font-weight="700" fill="#4a4e55">Architecture 2.0</text>
-  <text x="20" y="793" font-size="11" fill="#4a4e55">E2E 진화 4단계</text>
-  <g font-size="11" fill="#1d1f22">
-    <rect x="150" y="760" width="235" height="60" rx="6" fill="#fff" stroke="#0f6f8e"/>
-    <text x="267" y="780" text-anchor="middle" font-weight="700">Step 1 학습 플래너</text>
-    <text x="267" y="798" text-anchor="middle">Diffusion Planner — 2.0.0에서 선택 가능</text>
-    <text x="267" y="813" text-anchor="middle" fill="#6b7078">OnePlanner(LiDAR BEV)도 이 층</text>
-    <rect x="415" y="760" width="235" height="60" rx="6" fill="#fff" stroke="#0f6f8e"/>
-    <text x="532" y="780" text-anchor="middle" font-weight="700">Step 2 컴포넌트형 E2E</text>
-    <text x="532" y="798" text-anchor="middle">학습 인식 + 학습 플래너 (HD맵 or 2D맵)</text>
-    <text x="532" y="813" text-anchor="middle" fill="#6b7078">AutoE2E Reactive · Vision Pilot 인식축</text>
-    <rect x="680" y="760" width="235" height="60" rx="6" fill="#fff" stroke="#9a5a00"/>
-    <text x="797" y="780" text-anchor="middle" font-weight="700">Step 3 단일 신경망 주행</text>
-    <text x="797" y="798" text-anchor="middle">CNN 또는 VLA 모놀리식</text>
-    <text x="797" y="813" text-anchor="middle" fill="#6b7078">LatentDrive · AutoDrive · Alpamayo(외부)</text>
-    <rect x="945" y="760" width="245" height="60" rx="6" fill="#fff" stroke="#9a5a00"/>
-    <text x="1067" y="780" text-anchor="middle" font-weight="700">Step 4 학습 하이브리드</text>
-    <text x="1067" y="798" text-anchor="middle">E2E ∥ 안전 인식 + Safety Guardian</text>
-    <text x="1067" y="813" text-anchor="middle" fill="#6b7078">Vision Pilot 1.x 구조 · Safety Island</text>
-    <line x1="385" y1="790" x2="413" y2="790" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
-    <line x1="650" y1="790" x2="678" y2="790" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
-    <line x1="915" y1="790" x2="943" y2="790" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
-  </g>
-  <text x="620" y="848" text-anchor="middle" font-size="11" fill="#6b7078">Step 매핑은 공식 문서의 정의(autoware-architecture-v2/roadmap)에 각 저장소 README의 자기 설명을 대응시킨 자체 해석이며, AWF가 공식적으로 붙인 라벨이 아니다.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif" role="img" aria-label="AWF 스택 지도">
+<title>AWF 스택 지도</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker></defs>
+<rect width="1100" height="560" fill="#ffffff"/>
+<text x="550.0" y="34.0" font-size="18" fill="#1f2328" font-weight="bold" text-anchor="middle">AWF 스택 지도 — 두 트랙과 공통 기반 (2026-10)</text>
+<rect x="30.0" y="54.0" width="510.0" height="46.0" rx="10" fill="#2563eb" stroke="#2563eb" stroke-width="1.2"/>
+<text x="285.0" y="76.0" font-size="17" fill="#fff" font-weight="bold" text-anchor="middle">① 로보택시 · L4</text>
+<text x="285.0" y="94.0" font-size="12.5" fill="#fff" font-weight="normal" text-anchor="middle">Software WG · Robotaxi WG</text>
+<rect x="560.0" y="54.0" width="510.0" height="46.0" rx="10" fill="#d97706" stroke="#d97706" stroke-width="1.2"/>
+<text x="815.0" y="76.0" font-size="17" fill="#fff" font-weight="bold" text-anchor="middle">② ADAS · 개인차량(POV)</text>
+<text x="815.0" y="94.0" font-size="12.5" fill="#fff" font-weight="normal" text-anchor="middle">ADAS WG (옛 POV WG)</text>
+<rect x="30.0" y="114.0" width="510.0" height="120.0" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="44.0" y="140.0" font-size="14.5" fill="#2563eb" font-weight="bold" text-anchor="start">주행 스택: Autoware 2.0.0 (2026-10-29)</text>
+<text x="44.0" y="164.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">core 1.10.0 + universe 0.53.1 + launch 0.53.0</text>
+<text x="44.0" y="186.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">planning_setting = rule_based | diffusion_planner</text>
+<text x="44.0" y="208.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">Selector(안전 게이트·순위화)는 아직 미기동</text>
+<rect x="560.0" y="114.0" width="510.0" height="120.0" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.6"/>
+<text x="574.0" y="140.0" font-size="14.5" fill="#d97706" font-weight="bold" text-anchor="start">주행 스택: Vision Pilot 1.2 (2026-08-10)</text>
+<text x="574.0" y="164.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">오픈소스 L2 ADAS · Apache 2.0(가중치 포함)</text>
+<text x="574.0" y="186.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">단안 카메라 1대 · HD맵 없음 · ONNX Runtime</text>
+<text x="574.0" y="208.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">목표: 3–5 INT8 TOPS 칩에서 10 FPS 이상</text>
+<rect x="30.0" y="248.0" width="510.0" height="120.0" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="44.0" y="274.0" font-size="14.5" fill="#2563eb" font-weight="bold" text-anchor="start">학습 모델</text>
+<text x="44.0" y="298.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">Diffusion Planner (2.0.0 런치에 포함)</text>
+<text x="44.0" y="320.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">AutoE2E · LatentDrive · OnePlanner (독립 런타임)</text>
+<text x="44.0" y="342.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">연산: NVIDIA GPU · TensorRT 전제</text>
+<rect x="560.0" y="248.0" width="510.0" height="120.0" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.6"/>
+<text x="574.0" y="274.0" font-size="14.5" fill="#d97706" font-weight="bold" text-anchor="start">학습 모델</text>
+<text x="574.0" y="298.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">AutoSteer (경로) · AutoSpeed (CIPO) · AutoDrive (E2E)</text>
+<text x="574.0" y="320.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">AutoSeg 계열 (SceneSeg · Scene3D · EgoLanes …)</text>
+<text x="574.0" y="342.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">INT8 ONNX 가중치 제공</text>
+<rect x="30.0" y="386.0" width="1040.0" height="140.0" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4"/>
+<text x="48.0" y="412.0" font-size="14.5" fill="#6b7280" font-weight="bold" text-anchor="start">공통 기반</text>
+<rect x="48.0" y="424.0" width="240.0" height="88.0" rx="8" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="168.0" y="448.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">모델 배포</text>
+<text x="168.0" y="472.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="middle">Hugging Face</text>
+<text x="168.0" y="492.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">AutowareFoundation</text>
+<rect x="306.0" y="424.0" width="240.0" height="88.0" rx="8" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="426.0" y="448.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">패키지 유통</text>
+<text x="426.0" y="472.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="middle">Autoware Index</text>
+<text x="426.0" y="492.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">Reference Design</text>
+<rect x="564.0" y="424.0" width="240.0" height="88.0" rx="8" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="684.0" y="448.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">배포</text>
+<text x="684.0" y="472.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="middle">Open AD Kit</text>
+<text x="684.0" y="492.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">v2.0 Autoware → v2.1 Vision Pilot</text>
+<rect x="822.0" y="424.0" width="240.0" height="88.0" rx="8" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="942.0" y="448.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">안전</text>
+<text x="942.0" y="472.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="middle">Safety Island</text>
+<text x="942.0" y="492.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">S32Z · R-Car X5H (Cortex-R52)</text>
+<text x="550.0" y="550.0" font-size="13" fill="#59636e" font-weight="normal" text-anchor="middle">두 트랙은 같은 E2E 진화 방향(Architecture 2.0)을 공유하지만, 코드베이스·센서·연산·릴리스는 별개다.</text>
 </svg>

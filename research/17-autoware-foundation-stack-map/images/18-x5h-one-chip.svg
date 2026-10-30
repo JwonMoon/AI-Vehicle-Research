@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif" role="img" aria-label="R-Car X5H 한 칩 구성">
+<title>R-Car X5H 한 칩 구성</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker></defs>
+<rect width="1100" height="470" fill="#ffffff"/>
+<text x="22.0" y="34.0" font-size="17" fill="#1f2328" font-weight="bold" text-anchor="start">R-Car X5H 한 칩 안의 구성 — 애플리케이션 코어와 안전 코어</text>
+<rect x="30.0" y="56.0" width="640.0" height="300.0" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+<text x="50.0" y="84.0" font-size="15" fill="#7c3aed" font-weight="bold" text-anchor="start">Renesas R-Car X5H (단일 SoC)</text>
+<rect x="52.0" y="104.0" width="290.0" height="150.0" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+<text x="66.0" y="130.0" font-size="14.5" fill="#2563eb" font-weight="bold" text-anchor="start">Cortex-A720AE 클러스터</text>
+<text x="66.0" y="154.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">OS: AutoSD</text>
+<text x="66.0" y="176.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">CES 2026 MCO/MRM 데모 스택 이식</text>
+<text x="66.0" y="198.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">(Open AD Kit 이슈 #120)</text>
+<rect x="358.0" y="104.0" width="290.0" height="150.0" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.6"/>
+<text x="372.0" y="130.0" font-size="14.5" fill="#059669" font-weight="bold" text-anchor="start">Cortex-R52 클러스터</text>
+<text x="372.0" y="154.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">OS: FreeRTOS</text>
+<text x="372.0" y="176.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">Safety Island 타깃 freertos-x5h</text>
+<text x="372.0" y="198.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">= CR52 (Core1)</text>
+<line x1="342.0" y1="200.0" x2="356.0" y2="200.0" stroke="#59636e" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="358.0" y1="214.0" x2="344.0" y2="214.0" stroke="#59636e" stroke-width="2" marker-end="url(#arr)"/>
+<text x="350.0" y="284.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="middle">칩 내부 RPMsg — 이더넷 연결을 대체</text>
+<text x="350.0" y="308.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">2026-08-07 보드에서 왕복 100/100 확인 · 2026-09-02 완료</text>
+<text x="350.0" y="334.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">이전(CES 2026): 두 상자를 CycloneDDS로 연결</text>
+<rect x="700.0" y="56.0" width="370.0" height="64.0" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.4"/>
+<text x="714.0" y="82.0" font-size="13.5" fill="#d97706" font-weight="bold" text-anchor="start">Open AD Kit v2.1 (CES 2027 이후)</text>
+<text x="714.0" y="104.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="start">주 소비자: "X5H, Vision Pilot"</text>
+<rect x="700.0" y="132.0" width="370.0" height="64.0" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+<text x="714.0" y="158.0" font-size="13.5" fill="#059669" font-weight="bold" text-anchor="start">L2 Safety Island 실험 (2026-10-15 보고)</text>
+<text x="714.0" y="180.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="start">Vision Pilot 계획 → Safety Island 승인·정지 · CARLA</text>
+<rect x="700.0" y="208.0" width="370.0" height="64.0" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="714.0" y="234.0" font-size="13.5" fill="#7c3aed" font-weight="bold" text-anchor="start">L4 안전섬 설계 · 최대 안전 분기</text>
+<text x="714.0" y="256.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="start">카메라 + 레이더 4대 + 초음파 + IMU/GNSS on X5H</text>
+<rect x="700.0" y="284.0" width="370.0" height="64.0" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4"/>
+<text x="714.0" y="310.0" font-size="13.5" fill="#6b7280" font-weight="bold" text-anchor="start">L4 안전섬 설계 · 최소 비용 분기</text>
+<text x="714.0" y="332.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="start">S32Z2 · AURIX TC4x · Stellar MCU, 레이더 없음</text>
+<text x="30.0" y="396.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="start">근거: Open AD Kit 이슈 #120 · 로드맵 #91 · WG 회의 #7357 · Reference Design WG #7358 · autoware-safety-island README</text>
+<text x="30.0" y="420.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="start">그림은 문서에 적힌 사실을 나란히 놓은 것이며, Vision Pilot이 X5H의 A720AE 클러스터에서 실행됐다는 기록은 확인되지 않았다.</text>
+</svg>
