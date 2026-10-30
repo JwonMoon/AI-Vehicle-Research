@@ -1,45 +1,114 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Autoware 재단 스택 지도 — Autoware 2.0 시대의 저장소 157개와 두 트랙</title>
+<title>Autoware 재단 스택 지도</title>
+<meta name="description" content="Autoware 2.0.0 공개 직후, autowarefoundation 저장소 157개와 로보택시·L4 / ADAS·POV(Vision Pilot) 두 트랙, 주행 모델과 컴퓨트, 로드맵 위치를 정리한 보고서(2판)">
+<meta name="author" content="AI-Vehicle-Research">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--bg:#fff;--soft:#f6f8fa;--link:#0a5bd6;--mark:#fff6d5}
-@media (prefers-color-scheme:dark){:root{--fg:#e6edf3;--muted:#9da7b3;--line:#3d444d;--bg:#0d1117;--soft:#161b22;--link:#6ea8fe;--mark:#3a3422}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
-main{max-width:980px;margin:0 auto;padding:32px 16px 80px}
-h1{font-size:1.75rem;line-height:1.3;margin:0 0 16px;border-bottom:2px solid var(--line);padding-bottom:12px}
-h2{font-size:1.35rem;margin:48px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
-h3{font-size:1.1rem;margin:28px 0 8px}
-p{margin:10px 0}
-blockquote{margin:16px 0;padding:8px 16px;border-left:4px solid var(--line);background:var(--soft);color:var(--muted)}
-blockquote p{margin:4px 0}
-table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.92rem;display:block;overflow-x:auto}
-th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top;text-align:left}
-th{background:var(--soft)}
-tr:nth-child(even) td{background:color-mix(in srgb,var(--soft) 50%,transparent)}
-a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
-a.cite{font-size:.8em;vertical-align:super;line-height:0;padding:0 1px;background:var(--mark);border-radius:3px}
-.cite.missing{color:#c00}
-ol.refs{font-size:.88rem;padding-left:2.2em}
-ol.refs li{margin:4px 0;word-break:break-all}
-hr{border:0;border-top:1px solid var(--line);margin:32px 0}
-code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:.9em}
-.toc{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px 20px;margin:20px 0;font-size:.92rem}
-.toc ul{margin:4px 0;padding-left:1.2em}
-img{max-width:100%;height:auto;display:block;margin:18px auto 6px;border:1px solid var(--line);border-radius:8px;background:#fff}
-p:has(> img) + p > em:only-child, p > em:only-child{display:block;text-align:center;color:var(--muted);font-size:.88rem;font-style:normal}
-.footnote{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);margin-top:32px}
-sup a.footnote-ref{font-size:.75em;padding:0 2px;border-radius:3px;background:var(--soft);border:1px solid var(--line)}
-ul ul{margin:2px 0}
-li{margin:3px 0}
+:root{
+  --bg:#f7f6f2; --bg-2:#ffffff; --bg-3:#efede6; --fg:#1d1f22; --fg-2:#4a4e55; --fg-3:#767b84;
+  --line:#dcd9d0; --line-2:#e9e6de;
+  --accent:#0f6f8e; --accent-2:#0a5a74; --accent-bg:#e5f1f5;
+  --adas:#9a5a00; --adas-bg:#fbf1df; --adas-line:#e7c98f;
+  --meta-bg:#eeede8;
+  --code-bg:#f0efea; --pre-bg:#1e2126; --pre-fg:#e6e8ec;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px -12px rgba(0,0,0,.18);
+  --radius:12px; --w:900px; --toc-w:280px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131518; --bg-2:#1b1e23; --bg-3:#22262c; --fg:#e7e9ec; --fg-2:#b7bcc5; --fg-3:#858c97;
+    --line:#2f343c; --line-2:#272c33;
+    --accent:#5cc0e0; --accent-2:#8ad4ec; --accent-bg:#152a33;
+    --adas:#f0b458; --adas-bg:#2a2115; --adas-line:#5a4520;
+    --meta-bg:#1e2126;
+    --code-bg:#262a31; --pre-bg:#0e1013; --pre-fg:#dfe3e8;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131518; --bg-2:#1b1e23; --bg-3:#22262c; --fg:#e7e9ec; --fg-2:#b7bcc5; --fg-3:#858c97;
+  --line:#2f343c; --line-2:#272c33;
+  --accent:#5cc0e0; --accent-2:#8ad4ec; --accent-bg:#152a33;
+  --adas:#f0b458; --adas-bg:#2a2115; --adas-line:#5a4520;
+  --meta-bg:#1e2126;
+  --code-bg:#262a31; --pre-bg:#0e1013; --pre-fg:#dfe3e8;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans KR","Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;font-size:16px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}
+code,pre,kbd{font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;height:auto}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-2)}
+.topbar .in{max-width:calc(var(--w) + var(--toc-w) + 64px);margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.topbar .brand{font-weight:600;color:var(--fg-2);font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{border:1px solid var(--line);background:var(--bg-2);color:var(--fg-2);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.layout{max-width:calc(var(--w) + var(--toc-w) + 64px);margin:0 auto;padding:24px 16px 80px;display:grid;grid-template-columns:var(--toc-w) minmax(0,1fr);gap:32px}
+nav.toc{position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);overflow:auto;font-size:13px;padding-right:8px}
+nav.toc .ttl{font-weight:700;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;margin:0 0 8px}
+nav.toc ul{list-style:none;margin:0;padding:0}
+nav.toc li{margin:0}
+nav.toc a{display:block;color:var(--fg-2);padding:3px 8px;border-left:2px solid transparent;border-radius:0 6px 6px 0;line-height:1.4}
+nav.toc a:hover{background:var(--bg-3);text-decoration:none}
+nav.toc ul ul a{padding-left:20px;font-size:12px;color:var(--fg-3)}
+nav.toc a.active{border-left-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+main{min-width:0}
+header.hero h1{font-size:30px;line-height:1.3;margin:0 0 12px;letter-spacing:-.01em}
+blockquote.meta{margin:0 0 28px;padding:16px 20px;background:var(--meta-bg);border-left:4px solid var(--accent);border-radius:var(--radius);font-size:14px;color:var(--fg-2)}
+blockquote.meta p{margin:6px 0}
+blockquote{margin:16px 0;padding:8px 16px;border-left:3px solid var(--line);color:var(--fg-2)}
+h2{font-size:24px;margin:52px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--line);letter-spacing:-.01em}
+h3{font-size:19px;margin:36px 0 12px;color:var(--fg)}
+h4{font-size:16px;margin:28px 0 8px;color:var(--accent-2)}
+p{margin:0 0 14px}
+ul,ol{padding-left:1.4em;margin:0 0 14px}
+li{margin:4px 0}
+hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+code{background:var(--code-bg);padding:1px 6px;border-radius:5px;font-size:.86em}
+pre{background:var(--pre-bg);color:var(--pre-fg);padding:14px 16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.55}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+.tw{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:10px;background:var(--bg-2);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.55}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:top;text-align:left}
+th{background:var(--bg-3);font-weight:600;color:var(--fg-2);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td code,th code{white-space:nowrap}
+figure{margin:22px 0 28px;padding:12px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+figure img{display:block;margin:0 auto;border-radius:6px}
+figcaption{margin-top:10px;font-size:13px;color:var(--fg-3);line-height:1.5}
+strong{font-weight:600}
+
+blockquote.key{margin:18px 0 22px;padding:12px 18px;background:var(--accent-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;color:var(--fg)}
+blockquote.key p{margin:4px 0}blockquote.key ul{margin:6px 0 2px}
+sup.cites{line-height:0;margin-left:1px;white-space:nowrap}
+a.cite{display:inline-block;font-size:.68em;font-weight:600;min-width:1.5em;padding:0 .3em;margin:0 1px;text-align:center;border-radius:4px;background:var(--accent-bg);color:var(--accent-2);vertical-align:super}
+a.cite:hover{background:var(--accent);color:#fff;text-decoration:none}
+figcaption .fig-label{display:inline-block;font-weight:700;color:var(--accent-2);margin-right:8px}
+figcaption .fig-title{color:var(--fg-2)}
+figcaption .fig-note{display:block;margin-top:2px;font-size:12px;color:var(--fg-3)}
+figure img{background:#fff}
+ol.refs{font-size:13px;padding-left:2.4em;color:var(--fg-2)}ol.refs li{margin:5px 0;word-break:break-all}
+ol.refs li:target{background:var(--accent-bg)}
+.foot{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--fg-3)}
+@media (max-width:1000px){.layout{grid-template-columns:1fr}nav.toc{position:static;max-height:none;border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:var(--bg-2);margin-bottom:8px}header.hero h1{font-size:24px}}
 </style>
 </head>
 <body>
-<main>
-<nav class="toc"><div class="toc">
+<div class="topbar"><div class="in"><span class="brand">AI-Vehicle-Research · research/17 · Autoware 재단 스택 지도</span><button class="btn" id="themeBtn" type="button">테마</button><a class="btn" href="autoware-foundation-stack-map.md">MD 원본</a></div></div>
+<div class="layout">
+<nav class="toc" aria-label="목차"><p class="ttl">목차</p><div class="toc">
 <ul>
 <li><a href="#autoware-200-2026-10-29">최근 소식 — Autoware 2.0.0 공개 (2026-10-29)</a></li>
 <li><a href="#0">0. 한눈에 보기</a></li>
@@ -85,8 +154,9 @@ li{margin:3px 0}
 </ul>
 </div>
 </nav>
-<h1 id="autoware-autoware-20-157">Autoware 재단 스택 지도 — Autoware 2.0 시대의 저장소 157개와 두 트랙</h1>
-<blockquote>
+<main>
+<header class="hero"><h1>Autoware 재단 스택 지도 — Autoware 2.0 시대의 저장소 157개와 두 트랙</h1></header>
+<blockquote class="meta">
 <p><strong>작성일</strong>: 2026-10-30 (2판 — 최근 소식 추가, 글머리 형식으로 재구성, 주행 모델 × 컴퓨트 장 추가, 미확인 내용 삭제)
 <strong>조사 범위</strong>: GitHub <code>autowarefoundation</code> 조직의 저장소 157개, Autoware 공식 문서 원본, 워킹그룹(WG) 회의록·이슈(2026-01 ~ 2026-10).
 <strong>출처 표기 원칙</strong>: 모든 사실 문장·표 행에 <code>[번호]</code>로 출처를 달고, 말미 출처 목록에 등급과 URL을 수록했다. 등급은 💻 저장소 원본(raw 파일·clone 직접 확인) · 🔍 1차 페이지(GitHub 릴리스·이슈·토론 직접 열람). 원문으로 확인하지 못한 내용은 싣지 않았다(10장).
@@ -95,35 +165,35 @@ li{margin:3px 0}
 <hr>
 <h2 id="autoware-200-2026-10-29">최근 소식 — Autoware 2.0.0 공개 (2026-10-29)</h2>
 <ul>
-<li><strong>무엇이 나왔나</strong>: Autoware 2.0.0이 2026-10-29 GitHub 릴리스로 공개됐다. 릴리스 노트의 한 줄 요약은 "규칙 기반 스택 옆에 AI 플래너를 추가하고, 재단 모델을 Hugging Face로 옮기고, Autoware Index와 Reference Design을 도입"이다 <a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a>.</li>
-<li><strong>AI 플래너 선택</strong>: 런치 인자 <code>planning_setting</code>으로 규칙 기반(기본값)과 Diffusion Planner 중 하나를 고른다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a>.</li>
-<li><strong>아직 아닌 것</strong>: 후보 궤적을 검사·선택하는 Selector 패키지는 들어 있지만 2.0.0에서 기동하지 않는다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a>.</li>
-<li><strong>문서</strong>: 같은 날 공식 문서의 Architecture 2.0 페이지에서 "Under Construction" 표시가 빠지고 "2.0.0이 오늘 하는 일" 절이 추가됐다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/pull/839" target="_blank" rel="noopener" title="🔍 autoware-documentation PR #839 — docs: update the documentation for the Autoware 2.0 release — 2026-10-29">[16]</a>.</li>
-<li><strong>버전 체계 변경</strong>: 2.0.0부터 Autoware 버전이 <code>autoware_core</code> 버전과 분리됐다. Autoware 2.0.0은 <code>autoware_core</code> 1.10.0을 쓴다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/versioning-and-release.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Versioning and release process (&quot;Autoware 2.0.0 uses autoware_core 1.10.0&quot;) — main">[9]</a>.</li>
-<li><strong>업그레이드 주의</strong>: 1.9.0 이전에 받은 AI 모델 파일은 2.0.0에서 동작하지 않아 다시 받아야 한다. <code>setup-dev-env.sh</code>가 제거됐다 <a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a>.</li>
+<li><strong>무엇이 나왔나</strong>: Autoware 2.0.0이 2026-10-29 GitHub 릴리스로 공개됐다. 릴리스 노트의 한 줄 요약은 "규칙 기반 스택 옆에 AI 플래너를 추가하고, 재단 모델을 Hugging Face로 옮기고, Autoware Index와 Reference Design을 도입"이다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup>.</li>
+<li><strong>AI 플래너 선택</strong>: 런치 인자 <code>planning_setting</code>으로 규칙 기반(기본값)과 Diffusion Planner 중 하나를 고른다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup>.</li>
+<li><strong>아직 아닌 것</strong>: 후보 궤적을 검사·선택하는 Selector 패키지는 들어 있지만 2.0.0에서 기동하지 않는다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup>.</li>
+<li><strong>문서</strong>: 같은 날 공식 문서의 Architecture 2.0 페이지에서 "Under Construction" 표시가 빠지고 "2.0.0이 오늘 하는 일" 절이 추가됐다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/pull/839" target="_blank" rel="noopener" title="🔍 autoware-documentation PR #839 — docs: update the documentation for the Autoware 2.0 release — 2026-10-29">16</a></sup>.</li>
+<li><strong>버전 체계 변경</strong>: 2.0.0부터 Autoware 버전이 <code>autoware_core</code> 버전과 분리됐다. Autoware 2.0.0은 <code>autoware_core</code> 1.10.0을 쓴다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/versioning-and-release.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Versioning and release process (&quot;Autoware 2.0.0 uses autoware_core 1.10.0&quot;) — main">9</a></sup>.</li>
+<li><strong>업그레이드 주의</strong>: 1.9.0 이전에 받은 AI 모델 파일은 2.0.0에서 동작하지 않아 다시 받아야 한다. <code>setup-dev-env.sh</code>가 제거됐다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup>.</li>
 </ul>
 <hr>
 <h2 id="0">0. 한눈에 보기</h2>
 <p><strong>세 줄 요약</strong></p>
 <ol>
 <li><strong>AWF 저장소는 "로보택시·L4 트랙"과 "ADAS·개인차량(POV) 트랙" 두 줄기로 정리된다.</strong><ul>
-<li>로보택시·L4: <code>autoware</code> 본체(Core·Universe·Launch)와 학습 플래너·E2E 모델(Diffusion Planner, <code>auto_e2e</code>, <code>autoware_latent_drive</code>, <code>autoware_oneplanner</code>) <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a>.</li>
-<li>ADAS·POV: <code>vision_pilot</code>과 부품 모델(<code>auto_steer</code>·<code>auto_speed</code>·<code>auto_drive</code>, AutoSeg 계열) <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a><a class="cite" href="https://github.com/autowarefoundation/auto_steer" target="_blank" rel="noopener" title="💻 auto_steer — README (AutoSteer 2.0) — main">[29]</a><a class="cite" href="https://github.com/autowarefoundation/auto_speed" target="_blank" rel="noopener" title="💻 auto_speed — README (AutoSpeed) — main">[30]</a><a class="cite" href="https://github.com/autowarefoundation/auto_drive" target="_blank" rel="noopener" title="💻 auto_drive — README (AutoDrive) — main">[31]</a>.</li>
-<li>두 트랙은 주체 WG, 센서, 연산 규모, 릴리스가 다른 별개 코드베이스다 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">[33]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7335" target="_blank" rel="noopener" title="🔍 Discussion #7335 — ADAS Work Group Meeting 2026/09/28 — 2026-09-28">[61]</a>.</li>
+<li>로보택시·L4: <code>autoware</code> 본체(Core·Universe·Launch)와 학습 플래너·E2E 모델(Diffusion Planner, <code>auto_e2e</code>, <code>autoware_latent_drive</code>, <code>autoware_oneplanner</code>) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a></sup>.</li>
+<li>ADAS·POV: <code>vision_pilot</code>과 부품 모델(<code>auto_steer</code>·<code>auto_speed</code>·<code>auto_drive</code>, AutoSeg 계열) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a><a class="cite" href="https://github.com/autowarefoundation/auto_steer" target="_blank" rel="noopener" title="💻 auto_steer — README (AutoSteer 2.0) — main">29</a><a class="cite" href="https://github.com/autowarefoundation/auto_speed" target="_blank" rel="noopener" title="💻 auto_speed — README (AutoSpeed) — main">30</a><a class="cite" href="https://github.com/autowarefoundation/auto_drive" target="_blank" rel="noopener" title="💻 auto_drive — README (AutoDrive) — main">31</a></sup>.</li>
+<li>두 트랙은 주체 WG, 센서, 연산 규모, 릴리스가 다른 별개 코드베이스다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">33</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7335" target="_blank" rel="noopener" title="🔍 Discussion #7335 — ADAS Work Group Meeting 2026/09/28 — 2026-09-28">61</a></sup>.</li>
 </ul>
 </li>
 <li><strong>Autoware 2.0.0은 "E2E 완성판"이 아니라 "생성기를 바꿔 끼울 수 있게 한 첫 릴리스"다.</strong><ul>
-<li>생성기 2개 중 하나를 런치 시점에 고르고, Selector는 아직 기동하지 않는다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a>.</li>
+<li>생성기 2개 중 하나를 런치 시점에 고르고, Selector는 아직 기동하지 않는다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup>.</li>
 </ul>
 </li>
 <li><strong>배포·안전 층이 따로 자라고 있다.</strong><ul>
-<li>Open AD Kit은 Autoware·Vision Pilot·Safety Island를 "버전 고정 + 실행 증거 서명" 릴리스로 내보내는 계층으로 재편 중이다 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a>.</li>
-<li>Renesas R-Car X5H 한 칩에서 AutoSD(Cortex-A720AE)와 FreeRTOS(Cortex-R52)를 함께 돌리는 작업이 2026-09 완료됐다 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">[74]</a>.</li>
+<li>Open AD Kit은 Autoware·Vision Pilot·Safety Island를 "버전 고정 + 실행 증거 서명" 릴리스로 내보내는 계층으로 재편 중이다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup>.</li>
+<li>Renesas R-Car X5H 한 칩에서 AutoSD(Cortex-A720AE)와 FreeRTOS(Cortex-R52)를 함께 돌리는 작업이 2026-09 완료됐다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">74</a></sup>.</li>
 </ul>
 </li>
 </ol>
 <p><strong>핵심 숫자</strong></p>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>지표</th>
@@ -135,50 +205,49 @@ li{margin:3px 0}
 <tr>
 <td>AWF GitHub 저장소</td>
 <td>157개 (아카이브 27 · 포크 24 포함)</td>
-<td><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">[53]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">53</a></sup></td>
 </tr>
 <tr>
 <td>2026년에 갱신된 비아카이브 저장소</td>
 <td>86개</td>
-<td><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">[53]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">53</a></sup></td>
 </tr>
 <tr>
 <td>Autoware 최신 릴리스</td>
 <td>2.0.0 (2026-10-29), core 1.10.0 · universe 0.53.1 · launch 0.53.0</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup></td>
 </tr>
 <tr>
 <td>2.0.0에서 고를 수 있는 궤적 생성기</td>
 <td>2개 (<code>rule_based</code> 기본, <code>diffusion_planner</code>)</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></td>
 </tr>
 <tr>
 <td>Vision Pilot 최신 릴리스</td>
 <td>1.2 (2026-08-10)</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>Vision Pilot 연산 목표</td>
 <td>3–5 INT8 TOPS급 칩에서 전체 파이프라인 10 FPS 이상</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>AutoE2E 모델 규모</td>
 <td>79.9M 파라미터, 카메라 6대, 6.4 s 궤적, 10 Hz</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup></td>
 </tr>
 <tr>
 <td>Open AD Kit v2.0 목표</td>
 <td>2026-10 말 (10-15 WG 회의에서 "리스크")</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">[68]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">68</a></sup></td>
 </tr>
 </tbody>
-</table>
-<p><img alt="AWF 스택 지도" src="images/01-awf-stack-map.svg"></p>
-<p><em>그림 1. AWF 스택 지도 — 두 트랙과 공통 기반 · 자체 작성 · 근거 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">[26]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">[38]</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></em></p>
+</table></div>
+<figure data-num="1"><img alt="AWF 스택 지도" src="images/01-awf-stack-map.svg"><figcaption><span class="fig-label">그림 1</span><span class="fig-title">AWF 스택 지도 — 두 트랙과 공통 기반</span><span class="fig-note">자체 작성 · 근거 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">26</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">38</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></span></figcaption></figure>
 <hr>
 <h2 id="_1">읽기 전에 — 주요 용어</h2>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>용어</th>
@@ -192,11 +261,11 @@ li{margin:3px 0}
 </tr>
 <tr>
 <td>Core / Universe</td>
-<td>Core는 재단이 엄격한 테스트로 유지하는 안정 패키지, Universe는 커뮤니티가 기여하는 확장 패키지 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-concepts/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware concepts (Microautonomy, Core &amp; Universe) — main">[6]</a></td>
+<td>Core는 재단이 엄격한 테스트로 유지하는 안정 패키지, Universe는 커뮤니티가 기여하는 확장 패키지 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-concepts/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware concepts (Microautonomy, Core &amp; Universe) — main">6</a></sup></td>
 </tr>
 <tr>
 <td>Generator / Selector</td>
-<td>Architecture 2.0의 두 부품. 궤적 후보를 내는 모든 모듈이 Generator, 후보를 안전 검사·순위화해 하나를 고르는 것이 Selector <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a></td>
+<td>Architecture 2.0의 두 부품. 궤적 후보를 내는 모든 모듈이 Generator, 후보를 안전 검사·순위화해 하나를 고르는 것이 Selector <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup></td>
 </tr>
 <tr>
 <td>E2E</td>
@@ -208,19 +277,19 @@ li{margin:3px 0}
 </tr>
 <tr>
 <td>Autoware Index</td>
-<td>커뮤니티 패키지 등록·검증 레지스트리 <a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">[38]</a></td>
+<td>커뮤니티 패키지 등록·검증 레지스트리 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">38</a></sup></td>
 </tr>
 <tr>
 <td>Reference Design</td>
-<td>"배포 프로파일 + 레퍼런스 소프트웨어 스택"으로 재현 가능하게 문서화한 시스템 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/reference-design/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Reference design (Deployment Profile + Reference Software Stack) — main">[11]</a></td>
+<td>"배포 프로파일 + 레퍼런스 소프트웨어 스택"으로 재현 가능하게 문서화한 시스템 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/reference-design/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Reference design (Deployment Profile + Reference Software Stack) — main">11</a></sup></td>
 </tr>
 <tr>
 <td>Open AD Kit</td>
-<td>Autoware 생태계의 배포 계층. SOAFEE 블루프린트 <a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">[26]</a></td>
+<td>Autoware 생태계의 배포 계층. SOAFEE 블루프린트 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">26</a></sup></td>
 </tr>
 <tr>
 <td>Safety Island</td>
-<td>안전급 프로세서에서 궤적 추종 제어를 돌리는 애플리케이션 <a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a></td>
+<td>안전급 프로세서에서 궤적 추종 제어를 돌리는 애플리케이션 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a></sup></td>
 </tr>
 <tr>
 <td>TRL</td>
@@ -235,17 +304,18 @@ li{margin:3px 0}
 <td>Closest In-Path Object, 자차 경로 위 가장 가까운 객체</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr>
 <h2 id="1">1. 두 트랙 구조 — 공식 자료로 본 근거</h2>
-<blockquote>
-<p><strong>요점</strong>
-- 공식 다년 로드맵은 E2E 기술 계단 하나와, 차종(ODD)별 양산 성숙도 계단을 따로 둔다. POV가 가장 먼저, 로보택시가 가장 늦다.
-- Architecture 2.0 문서는 E2E를 4단계로 정의하고, 단계마다 HD맵 옵션과 2D맵 옵션을 둔다.
-- 트랙을 가르는 것은 E2E 로드맵이 아니라 워킹그룹과 차종이다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>공식 다년 로드맵은 E2E 기술 계단 하나와, 차종(ODD)별 양산 성숙도 계단을 따로 둔다. POV가 가장 먼저, 로보택시가 가장 늦다.</li>
+<li>Architecture 2.0 문서는 E2E를 4단계로 정의하고, 단계마다 HD맵 옵션과 2D맵 옵션을 둔다.</li>
+<li>트랙을 가르는 것은 E2E 로드맵이 아니라 워킹그룹과 차종이다.</li>
+</ul>
 </blockquote>
 <h3 id="11">1.1 두 트랙 비교 — 핵심만</h3>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>항목</th>
@@ -256,33 +326,33 @@ li{margin:3px 0}
 <tbody>
 <tr>
 <td>대표 스택</td>
-<td>Autoware 2.0.0 (ROS 2 Humble·Jazzy) <a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a></td>
-<td>Vision Pilot 1.2 (C++, ONNX Runtime) <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td>Autoware 2.0.0 (ROS 2 Humble·Jazzy) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup></td>
+<td>Vision Pilot 1.2 (C++, ONNX Runtime) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>주체</td>
-<td>Software WG, Robotaxi WG(<code>auto_e2e</code>) <a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">[33]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-projects/wiki" target="_blank" rel="noopener" title="💻 autoware-projects 위키 — Home(WG 목록) · Privately Owned Vehicles · Software · Safety Assurance · Reference Design · Truck · Low Speed Autonomy WG 페이지 — 2026-10-30">[50]</a></td>
-<td>ADAS WG(2026-06까지 "Privately Owned Vehicle WG") <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7148" target="_blank" rel="noopener" title="🔍 Discussion #7148 — Privately Owned Vehicle Work Group Meeting 2026/06/08 — 2026-06-08">[60]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7335" target="_blank" rel="noopener" title="🔍 Discussion #7335 — ADAS Work Group Meeting 2026/09/28 — 2026-09-28">[61]</a></td>
+<td>Software WG, Robotaxi WG(<code>auto_e2e</code>) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">33</a><a class="cite" href="https://github.com/autowarefoundation/autoware-projects/wiki" target="_blank" rel="noopener" title="💻 autoware-projects 위키 — Home(WG 목록) · Privately Owned Vehicles · Software · Safety Assurance · Reference Design · Truck · Low Speed Autonomy WG 페이지 — 2026-10-30">50</a></sup></td>
+<td>ADAS WG(2026-06까지 "Privately Owned Vehicle WG") <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7148" target="_blank" rel="noopener" title="🔍 Discussion #7148 — Privately Owned Vehicle Work Group Meeting 2026/06/08 — 2026-06-08">60</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7335" target="_blank" rel="noopener" title="🔍 Discussion #7335 — ADAS Work Group Meeting 2026/09/28 — 2026-09-28">61</a></sup></td>
 </tr>
 <tr>
 <td>센서·맵</td>
-<td>LiDAR·카메라·레이더 융합, 지도 기반 NDT 위치추정 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Home (Autoware 2.0 release notes 배지, Validated use cases) — main">[13]</a></td>
-<td>단안 전방 카메라 1대, HD맵 없음 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a></td>
+<td>LiDAR·카메라·레이더 융합, 지도 기반 NDT 위치추정 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Home (Autoware 2.0 release notes 배지, Validated use cases) — main">13</a></sup></td>
+<td>단안 전방 카메라 1대, HD맵 없음 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup></td>
 </tr>
 <tr>
 <td>연산</td>
-<td>NVIDIA GPU(TensorRT) 전제 모델 다수 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a></td>
-<td>3–5 INT8 TOPS급 양산 칩 목표 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td>NVIDIA GPU(TensorRT) 전제 모델 다수 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a></sup></td>
+<td>3–5 INT8 TOPS급 양산 칩 목표 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>배포</td>
-<td>Open AD Kit v2.0 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></td>
-<td>Open AD Kit v2.1 (R-Car X5H와 함께) <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></td>
+<td>Open AD Kit v2.0 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></td>
+<td>Open AD Kit v2.1 (R-Car X5H와 함께) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3 id="12">1.2 다년 로드맵 — 기술 계단과 차종별 계단</h3>
-<p>공식 문서 "Autoware Multi-Year Roadmap"의 기술 목표 두 개다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">[10]</a>.</p>
+<p>공식 문서 "Autoware Multi-Year Roadmap"의 기술 목표 두 개다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">10</a></sup>.</p>
 <ul>
 <li><strong>Objective 1 — AI-first 기술 도입</strong><ul>
 <li>Year 1: LiDAR·비전·레이더 컴포넌트형 AI 인식 도입, AI 기반 플래너 초판.</li>
@@ -301,23 +371,23 @@ li{margin:3px 0}
 <li>Robobus: ADASTEC. 오프로드: DriveBlocks. Robotaxi: TIER IV.</li>
 </ul>
 </li>
-<li>로드맵 문서에는 Year 1이 몇 년인지 적혀 있지 않다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">[10]</a>.</li>
+<li>로드맵 문서에는 Year 1이 몇 년인지 적혀 있지 않다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">10</a></sup>.</li>
 </ul>
 <h3 id="13-architecture-20-e2e-4">1.3 Architecture 2.0의 E2E 4단계</h3>
 <ul>
-<li><strong>목표</strong>: Autoware 1.0(전통 로보틱스 스택)에서 Autoware 2.0(데이터 중심 AI 스택)으로 진화해 SAE Level 4+를 달성 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Architecture: Executive Summary (Autoware 1.0 → 2.0) — main">[2]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">[3]</a>.</li>
-<li><strong>맵 옵션</strong>: 단계마다 옵션 A(HD맵)와 옵션 B(2D 내비 맵)를 둔다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">[3]</a>.<ul>
+<li><strong>목표</strong>: Autoware 1.0(전통 로보틱스 스택)에서 Autoware 2.0(데이터 중심 AI 스택)으로 진화해 SAE Level 4+를 달성 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Architecture: Executive Summary (Autoware 1.0 → 2.0) — main">2</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">3</a></sup>.</li>
+<li><strong>맵 옵션</strong>: 단계마다 옵션 A(HD맵)와 옵션 B(2D 내비 맵)를 둔다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">3</a></sup>.<ul>
 <li>옵션 B의 장점: HD맵 구축·유지 없이 2D맵이 있는 곳이면 동작.</li>
 <li>옵션 A의 장점: HD맵이 정적 환경 정보를 주어 강건성이 높다.</li>
 </ul>
 </li>
-<li><strong>일정</strong>: 로드맵 폴더의 <code>development-roadmap.md</code> 본문은 "TBD"이고, 2.0 문서 PR이 TBD 로드맵 페이지 4개를 숨겼다. 날짜가 박힌 공식 개발 일정표는 없다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/development-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Development Roadmap (본문 &quot;TBD&quot;) — main">[5]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/pull/839" target="_blank" rel="noopener" title="🔍 autoware-documentation PR #839 — docs: update the documentation for the Autoware 2.0 release — 2026-10-29">[16]</a>.</li>
+<li><strong>일정</strong>: 로드맵 폴더의 <code>development-roadmap.md</code> 본문은 "TBD"이고, 2.0 문서 PR이 TBD 로드맵 페이지 4개를 숨겼다. 날짜가 박힌 공식 개발 일정표는 없다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/development-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Development Roadmap (본문 &quot;TBD&quot;) — main">5</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/pull/839" target="_blank" rel="noopener" title="🔍 autoware-documentation PR #839 — docs: update the documentation for the Autoware 2.0 release — 2026-10-29">16</a></sup>.</li>
 </ul>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>단계</th>
-<th>공식 정의 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">[3]</a></th>
+<th>공식 정의 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">3</a></sup></th>
 <th>공식 문서에 명시된 구현</th>
 </tr>
 </thead>
@@ -325,7 +395,7 @@ li{margin:3px 0}
 <tr>
 <td>Step 1 Learned Planner</td>
 <td>위치·3D 객체·신호등 등 "로컬 월드 표현"을 받아 궤적을 내는 학습 플래너</td>
-<td>Diffusion Planner — 2.0 문서가 "a learned planner"로 명시, 2.0.0에서 선택 가능 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></td>
+<td>Diffusion Planner — 2.0 문서가 "a learned planner"로 명시, 2.0.0에서 선택 가능 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></td>
 </tr>
 <tr>
 <td>Step 2 Component-based E2E</td>
@@ -343,22 +413,20 @@ li{margin:3px 0}
 <td>명시 없음</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
 <li><strong>각 저장소의 자기 규정(README 표현)</strong> — 단계 대응은 공식 문서에 없으므로 원문 표현만 옮긴다.<ul>
-<li>AutoE2E: "camera-first End-to-End driving model" <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a></li>
-<li>LatentDrive: "camera-only end-to-end planner" <a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a></li>
-<li>OnePlanner: "end-to-end planning models" <a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a></li>
-<li>Vision Pilot: "Hybrid End-to-End AI Architecture" — 안전용 인식 모델과 성능용 E2E 모델을 병렬로 처리 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a></li>
+<li>AutoE2E: "camera-first End-to-End driving model" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup></li>
+<li>LatentDrive: "camera-only end-to-end planner" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a></sup></li>
+<li>OnePlanner: "end-to-end planning models" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a></sup></li>
+<li>Vision Pilot: "Hybrid End-to-End AI Architecture" — 안전용 인식 모델과 성능용 E2E 모델을 병렬로 처리 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup></li>
 </ul>
 </li>
 </ul>
-<p><img alt="단계적 기술 진화" src="images/02-e2e-stepwise-evolution.png"></p>
-<p><em>그림 2. 단계적 기술 진화(Stepwise technology evolution) · 원본: autoware-documentation <code>design/autoware-architecture-v2/roadmap/media/detailed_architecture_figure1.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a></em></p>
-<p><img alt="학습 하이브리드, 2D맵 옵션" src="images/03-e2e-fig09-hybrid-2dmap.png"></p>
-<p><em>그림 3. Step 4 학습 하이브리드, 2D맵 옵션(Figure 9) · 원본: 같은 폴더 <code>architecture_figure09.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">[3]</a></em></p>
+<figure data-num="2"><img alt="단계적 기술 진화" src="images/02-e2e-stepwise-evolution.png"><figcaption><span class="fig-label">그림 2</span><span class="fig-title">단계적 기술 진화(Stepwise technology evolution)</span><span class="fig-note">원본: autoware-documentation <code>design/autoware-architecture-v2/roadmap/media/detailed_architecture_figure1.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup></span></figcaption></figure>
+<figure data-num="3"><img alt="학습 하이브리드, 2D맵 옵션" src="images/03-e2e-fig09-hybrid-2dmap.png"><figcaption><span class="fig-label">그림 3</span><span class="fig-title">Step 4 학습 하이브리드, 2D맵 옵션(Figure 9)</span><span class="fig-note">원본: 같은 폴더 <code>architecture_figure09.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">3</a></sup></span></figcaption></figure>
 <h3 id="14-e2e-adas-vision-pilot-adas">1.4 가설 점검 — "E2E 로드맵이 자율주행·ADAS 트랙으로 나뉘고 Vision Pilot은 ADAS 쪽"</h3>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>가설</th>
@@ -370,56 +438,56 @@ li{margin:3px 0}
 <tr>
 <td>E2E로 전환하는 공식 로드맵이 있다</td>
 <td>맞음</td>
-<td>Architecture 2.0 E2E 4단계, 다년 로드맵 Objective 1 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">[3]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">[10]</a></td>
+<td>Architecture 2.0 E2E 4단계, 다년 로드맵 Objective 1 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">3</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">10</a></sup></td>
 </tr>
 <tr>
 <td>자율주행 트랙과 ADAS 트랙으로 나뉜다</td>
 <td>맞음, 단 나누는 기준은 WG·차종</td>
-<td>E2E 4단계는 공통이고, 양산 계단은 차종별로 다르다. <code>auto_e2e</code>는 Robotaxi WG, Vision Pilot은 ADAS WG <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">[10]</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">[33]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7335" target="_blank" rel="noopener" title="🔍 Discussion #7335 — ADAS Work Group Meeting 2026/09/28 — 2026-09-28">[61]</a></td>
+<td>E2E 4단계는 공통이고, 양산 계단은 차종별로 다르다. <code>auto_e2e</code>는 Robotaxi WG, Vision Pilot은 ADAS WG <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">10</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">33</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7335" target="_blank" rel="noopener" title="🔍 Discussion #7335 — ADAS Work Group Meeting 2026/09/28 — 2026-09-28">61</a></sup></td>
 </tr>
 <tr>
 <td>Vision Pilot은 ADAS 트랙에 들어간다</td>
 <td>맞음</td>
-<td>Vision Pilot은 "open-source L2 ADAS" <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>. POV 레퍼런스 디자인이 Vision Pilot을 Phase 1로 정의 <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Introduction (Vision Pilot · Plus · Pro · Vision Drive 4단계) — main">[17]</a></td>
+<td>Vision Pilot은 "open-source L2 ADAS" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>. POV 레퍼런스 디자인이 Vision Pilot을 Phase 1로 정의 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Introduction (Vision Pilot · Plus · Pro · Vision Drive 4단계) — main">17</a></sup></td>
 </tr>
 <tr>
 <td>두 트랙은 완전히 분리돼 있다</td>
 <td>아님</td>
-<td><code>auto_e2e</code>는 로보택시(LiDAR·레이더 안전층과 융합)와 L2++ ADAS(카메라만) 두 용도를 명시 <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a>. 2026-06-08 회의는 로보택시 E2E 연구를 Vision Pilot에 재사용하는 방안과 그 역을 논의 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7148" target="_blank" rel="noopener" title="🔍 Discussion #7148 — Privately Owned Vehicle Work Group Meeting 2026/06/08 — 2026-06-08">[60]</a></td>
+<td><code>auto_e2e</code>는 로보택시(LiDAR·레이더 안전층과 융합)와 L2++ ADAS(카메라만) 두 용도를 명시 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup>. 2026-06-08 회의는 로보택시 E2E 연구를 Vision Pilot에 재사용하는 방안과 그 역을 논의 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7148" target="_blank" rel="noopener" title="🔍 Discussion #7148 — Privately Owned Vehicle Work Group Meeting 2026/06/08 — 2026-06-08">60</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr>
 <h2 id="2-l4-autoware-20">2. 로보택시·L4 트랙 — Autoware 2.0 본체와 학습 모델</h2>
-<blockquote>
-<p><strong>요점</strong>
-- Autoware 2.0.0 = 메타 저장소 <code>autoware</code>가 하위 저장소 버전을 고정한 묶음이다.
-- Generator-Selector 구조에서 생성기는 바꿔 끼울 수 있고, Selector는 아직 꺼져 있다.
-- Universe는 줄이고 Index로 분산하는 방향이 공식 제안으로 나왔다.
-- 재단이 직접 만든 E2E 모델 3종(AutoE2E·LatentDrive·OnePlanner)은 Autoware 2.0.0 런치에 포함되지 않은 독립 런타임이다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>Autoware 2.0.0 = 메타 저장소 <code>autoware</code>가 하위 저장소 버전을 고정한 묶음이다.</li>
+<li>Generator-Selector 구조에서 생성기는 바꿔 끼울 수 있고, Selector는 아직 꺼져 있다.</li>
+<li>Universe는 줄이고 Index로 분산하는 방향이 공식 제안으로 나왔다.</li>
+<li>재단이 직접 만든 E2E 모델 3종(AutoE2E·LatentDrive·OnePlanner)은 Autoware 2.0.0 런치에 포함되지 않은 독립 런타임이다.</li>
+</ul>
 </blockquote>
 <h3 id="21-autoware-200">2.1 Autoware 2.0.0의 구성</h3>
 <ul>
-<li><strong>메타 저장소</strong>: <code>autoware</code>는 소스 코드 없이 <code>repositories/autoware.repos</code>로 하위 저장소 버전을 고정한다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/repos-files.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — repositories/*.repos files — main">[8]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a>.</li>
-<li><strong>2.0.0 고정판 — core 그룹</strong> <a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><ul>
+<li><strong>메타 저장소</strong>: <code>autoware</code>는 소스 코드 없이 <code>repositories/autoware.repos</code>로 하위 저장소 버전을 고정한다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/repos-files.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — repositories/*.repos files — main">8</a><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a></sup>.</li>
+<li><strong>2.0.0 고정판 — core 그룹</strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a></sup><ul>
 <li><code>autoware_core</code> 1.10.0, <code>autoware_msgs</code> 1.13.0, <code>autoware_adapi_msgs</code> 1.9.2, <code>autoware_internal_msgs</code> 1.16.0</li>
 <li><code>autoware_utils</code> 1.11.0, <code>autoware_cmake</code> 1.4.0, <code>autoware_lanelet2_extension</code> 1.3.0, <code>autoware_rviz_plugins</code> 0.6.0</li>
 <li><code>agnocast</code> 2.4.1(소스 빌드), <code>autoware_simple_planning_simulator</code> 1.1.0, <code>autoware_system_designer</code> v0.4.2</li>
 </ul>
 </li>
-<li><strong>2.0.0 고정판 — universe·launcher·센서</strong> <a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><ul>
+<li><strong>2.0.0 고정판 — universe·launcher·센서</strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a></sup><ul>
 <li><code>autoware_universe</code> 0.53.1, <code>cuda_blackboard</code> 0.4.0, <code>bevdet_vendor</code> 0.2.1, <code>managed_transform_buffer</code> 0.3.0</li>
 <li><code>autoware_launch</code> 0.53.0, tier4 <code>nebula</code> v1.2.0</li>
 </ul>
 </li>
-<li><strong>별도 매니페스트</strong>: 도구는 <code>tools.repos</code>(autoware_tools 0.8.0), 시뮬레이터는 <code>simulator.repos</code>(tier4 scenario_simulator_v2 22.0.0) <a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a>.</li>
-<li><strong>설치 요건</strong>: amd64·arm64, 8코어, 16 GB RAM. NVIDIA GPU(4 GB)는 선택이지만 LiDAR·카메라 객체 검출과 신호등 인식에는 필수 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/index.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Installation (Target platforms, Universe vs Core) — main">[15]</a>.</li>
-<li><strong>Docker 이미지</strong>: ROS 2 Humble·Jazzy, amd64·arm64 <a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a>.</li>
+<li><strong>별도 매니페스트</strong>: 도구는 <code>tools.repos</code>(autoware_tools 0.8.0), 시뮬레이터는 <code>simulator.repos</code>(tier4 scenario_simulator_v2 22.0.0) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a></sup>.</li>
+<li><strong>설치 요건</strong>: amd64·arm64, 8코어, 16 GB RAM. NVIDIA GPU(4 GB)는 선택이지만 LiDAR·카메라 객체 검출과 신호등 인식에는 필수 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/index.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Installation (Target platforms, Universe vs Core) — main">15</a></sup>.</li>
+<li><strong>Docker 이미지</strong>: ROS 2 Humble·Jazzy, amd64·arm64 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup>.</li>
 </ul>
-<p><img alt="Core/Universe 생태계" src="images/04-autoware-ecosystem-core-universe.png"></p>
-<p><em>그림 4. Autoware Core/Universe 생태계 · 원본: autoware-documentation <code>design/autoware-concepts/images/autoware_ecosystem.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-concepts/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware concepts (Microautonomy, Core &amp; Universe) — main">[6]</a></em></p>
+<figure data-num="4"><img alt="Core/Universe 생태계" src="images/04-autoware-ecosystem-core-universe.png"><figcaption><span class="fig-label">그림 4</span><span class="fig-title">Autoware Core/Universe 생태계</span><span class="fig-note">원본: autoware-documentation <code>design/autoware-concepts/images/autoware_ecosystem.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-concepts/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware concepts (Microautonomy, Core &amp; Universe) — main">6</a></sup></span></figcaption></figure>
 <h3 id="22">2.2 릴리스 타임라인</h3>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>릴리스</th>
@@ -433,46 +501,46 @@ li{margin:3px 0}
 <td>1.5.0</td>
 <td>2025-11-20</td>
 <td>1.x 체계 첫 태그(1.0~1.4 태그 없음). 2.0.0 전까지 Autoware 버전 = core 버전</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/versioning-and-release.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Versioning and release process (&quot;Autoware 2.0.0 uses autoware_core 1.10.0&quot;) — main">[9]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/tags" target="_blank" rel="noopener" title="💻 autoware 태그 목록과 태그 커밋일(git ls-remote · fetch) — 2026-10-30">[72]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/versioning-and-release.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Versioning and release process (&quot;Autoware 2.0.0 uses autoware_core 1.10.0&quot;) — main">9</a><a class="cite" href="https://github.com/autowarefoundation/autoware/tags" target="_blank" rel="noopener" title="💻 autoware 태그 목록과 태그 커밋일(git ls-remote · fetch) — 2026-10-30">72</a></sup></td>
 </tr>
 <tr>
 <td>1.8.0</td>
 <td>2026-05-04</td>
 <td>월간 릴리스</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/releases" target="_blank" rel="noopener" title="🔍 GitHub Releases — autoware 릴리스 목록(1.8.0 · 1.9.0 · 2.0.0) — 2026-10-30">[55]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases" target="_blank" rel="noopener" title="🔍 GitHub Releases — autoware 릴리스 목록(1.8.0 · 1.9.0 · 2.0.0) — 2026-10-30">55</a></sup></td>
 </tr>
 <tr>
 <td>1.9.0</td>
 <td>2026-07-16</td>
 <td>core 1.9.0, universe 0.52.0, agnocast 2.3.5</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/autoware/releases" target="_blank" rel="noopener" title="🔍 GitHub Releases — autoware 릴리스 목록(1.8.0 · 1.9.0 · 2.0.0) — 2026-10-30">[55]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/autoware/releases" target="_blank" rel="noopener" title="🔍 GitHub Releases — autoware 릴리스 목록(1.8.0 · 1.9.0 · 2.0.0) — 2026-10-30">55</a></sup></td>
 </tr>
 <tr>
 <td><strong>2.0.0</strong></td>
 <td><strong>2026-10-29</strong></td>
 <td>Generator-Selector 공식화, 모델 Hugging Face 이관, Autoware Index, Reference Design</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li>릴리스는 "대략 월간"이 원칙이다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/versioning-and-release.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Versioning and release process (&quot;Autoware 2.0.0 uses autoware_core 1.10.0&quot;) — main">[9]</a>.</li>
+<li>릴리스는 "대략 월간"이 원칙이다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/versioning-and-release.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Versioning and release process (&quot;Autoware 2.0.0 uses autoware_core 1.10.0&quot;) — main">9</a></sup>.</li>
 </ul>
 <h3 id="23-generator-selector-200">2.3 Generator-Selector — 2.0.0에서 실제로 도는 것</h3>
 <ul>
-<li><strong>개념</strong>: 1.0의 고정 파이프라인(Sensing → Perception → Localization → Planning)에서 "파이프라인의 앞 절반을 추상화"했다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a>.<ul>
-<li>Generator: 규칙 기반·최적화 플래너, 원시 센서를 쓰는 E2E 모델, 학습·샘플링 플래너 무엇이든. 여러 개가 병렬로 돌 수 있다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a>.</li>
-<li>Selector: 안전 검사(규칙 준수·주행가능영역)와 순위화·선택. 플러그인으로 구현해 사용자별 안전 정책을 넣는다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a>.</li>
-<li>Generator 예시로 공식 문서가 든 것: 기존 Autoware 스택, <strong>AWF 회원사의 사내 독점 AI 모델</strong>, 오픈소스 Autoware E2E 모델 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a>.</li>
+<li><strong>개념</strong>: 1.0의 고정 파이프라인(Sensing → Perception → Localization → Planning)에서 "파이프라인의 앞 절반을 추상화"했다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup>.<ul>
+<li>Generator: 규칙 기반·최적화 플래너, 원시 센서를 쓰는 E2E 모델, 학습·샘플링 플래너 무엇이든. 여러 개가 병렬로 돌 수 있다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup>.</li>
+<li>Selector: 안전 검사(규칙 준수·주행가능영역)와 순위화·선택. 플러그인으로 구현해 사용자별 안전 정책을 넣는다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup>.</li>
+<li>Generator 예시로 공식 문서가 든 것: 기존 Autoware 스택, <strong>AWF 회원사의 사내 독점 AI 모델</strong>, 오픈소스 Autoware E2E 모델 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup>.</li>
 </ul>
 </li>
 </ul>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>역할</th>
 <th>패키지(<code>autoware_universe</code> 0.53.1)</th>
-<th>2.0.0 상태 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></th>
+<th>2.0.0 상태 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></th>
 </tr>
 </thead>
 <tbody>
@@ -507,48 +575,44 @@ li{margin:3px 0}
 <td><code>CandidateTrajectories</code> · <code>CandidateTrajectory</code> · <code>GeneratorInfo</code></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>모델 배포</strong>: Diffusion Planner 등 AI 모델은 Hugging Face <code>AutowareFoundation</code>에 버전 태그로 올라가고, Ansible <code>artifacts</code> 역할이 고정 버전을 받는다. 2.0.0은 Diffusion Planner v5.0을 쓴다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a>.</li>
+<li><strong>모델 배포</strong>: Diffusion Planner 등 AI 모델은 Hugging Face <code>AutowareFoundation</code>에 버전 태그로 올라가고, Ansible <code>artifacts</code> 역할이 고정 버전을 받는다. 2.0.0은 Diffusion Planner v5.0을 쓴다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup>.</li>
 </ul>
-<p><img alt="Architecture 1.0 개요" src="images/05-architecture-1-0-overview.svg"></p>
-<p><em>그림 5. Architecture 1.0 개요 · 원본: autoware-documentation <code>design/autoware-architecture-v1/image/autoware-architecture-overview.drawio.svg</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v1/index.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Architecture 1.0 overview — main">[14]</a></em></p>
-<p><img alt="Generator-Selector 개념도" src="images/06-generator-selector-simple.svg"></p>
-<p><em>그림 6. Architecture 2.0 Generator-Selector 개념도 · 원본: autoware-documentation <code>design/autoware-architecture-v2/images/generator-selector-simple.svg</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></em></p>
-<p><img alt="Generator-Selector 프레임워크" src="images/07-generator-selector-framework.png"></p>
-<p><em>그림 7. Generator-Selector 프레임워크(Figure 2) · 원본: 같은 문서 roadmap <code>media/detailed_architecture_figure2.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a></em></p>
+<figure data-num="5"><img alt="Architecture 1.0 개요" src="images/05-architecture-1-0-overview.svg"><figcaption><span class="fig-label">그림 5</span><span class="fig-title">Architecture 1.0 개요</span><span class="fig-note">원본: autoware-documentation <code>design/autoware-architecture-v1/image/autoware-architecture-overview.drawio.svg</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v1/index.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Architecture 1.0 overview — main">14</a></sup></span></figcaption></figure>
+<figure data-num="6"><img alt="Generator-Selector 개념도" src="images/06-generator-selector-simple.svg"><figcaption><span class="fig-label">그림 6</span><span class="fig-title">Architecture 2.0 Generator-Selector 개념도</span><span class="fig-note">원본: autoware-documentation <code>design/autoware-architecture-v2/images/generator-selector-simple.svg</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></span></figcaption></figure>
+<figure data-num="7"><img alt="Generator-Selector 프레임워크" src="images/07-generator-selector-framework.png"><figcaption><span class="fig-label">그림 7</span><span class="fig-title">Generator-Selector 프레임워크(Figure 2)</span><span class="fig-note">원본: 같은 문서 roadmap <code>media/detailed_architecture_figure2.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup></span></figcaption></figure>
 <h3 id="24-universe-autoware-index">2.4 Universe 축소와 Autoware Index</h3>
 <ul>
-<li><strong>3층 구조 제안(2026-05-02, 열린 상태)</strong>: Core(재단 큐레이션·버전 고정) / Universe("legacy, shrinking") / Index(레지스트리·CI·사이트·CLI) <a class="cite" href="https://github.com/autowarefoundation/autoware/issues/7090" target="_blank" rel="noopener" title="🔍 autoware issue #7090 — Establish Autoware Index to federate Universe community packages — 2026-05-02">[70]</a>.</li>
-<li><strong>Index의 동작</strong> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/autoware/autoware-index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Index (aw-index-cli, --reference-design) — main">[12]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">[38]</a><ul>
+<li><strong>3층 구조 제안(2026-05-02, 열린 상태)</strong>: Core(재단 큐레이션·버전 고정) / Universe("legacy, shrinking") / Index(레지스트리·CI·사이트·CLI) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/issues/7090" target="_blank" rel="noopener" title="🔍 autoware issue #7090 — Establish Autoware Index to federate Universe community packages — 2026-05-02">70</a></sup>.</li>
+<li><strong>Index의 동작</strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/autoware/autoware-index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Index (aw-index-cli, --reference-design) — main">12</a><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">38</a></sup><ul>
 <li>저장소 하나·ref 하나·패키지 목록을 <code>distributions/&lt;distro&gt;.yaml</code>에 PR로 등록한다.</li>
 <li>CI가 최신 Autoware 릴리스에 대해 빌드·테스트하고 결과를 이력으로 쌓는다. <code>branch</code> ref는 매일 재검증, <code>tag</code>·<code>sha</code>는 고정.</li>
 <li><code>aw-index-cli compose</code>로 <code>autoware-index.repos</code>를 만들어 <code>vcs import</code>한다.</li>
 </ul>
 </li>
-<li><strong>Index로 간 패키지</strong> <a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7375" target="_blank" rel="noopener" title="🔍 Discussion #7375 — Software WG Meeting 2026/10/27 — 2026-10-27">[66]</a><ul>
+<li><strong>Index로 간 패키지</strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7375" target="_blank" rel="noopener" title="🔍 Discussion #7375 — Software WG Meeting 2026/10/27 — 2026-10-27">66</a></sup><ul>
 <li><code>autoware_livox_tag_filter</code> — Universe에서 제거되고 Index로 이동(2.0.0).</li>
 <li><code>autoware_image_diagnostics</code> — 2026-10 이동.</li>
 <li><code>autoware_pose2twist</code> · <code>autoware_bluetooth_monitor</code> · <code>autoware_component_monitor</code> — Index에 등록, universe 0.53.1에는 아직 포함(중복 추가 금지).</li>
 </ul>
 </li>
-<li><strong>CUDA 패키지 재구조화</strong> <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7156" target="_blank" rel="noopener" title="🔍 Discussion #7156 — Repository restructuring: Extracting shared CUDA components into core — 2026-06-11 (10월 갱신)">[65]</a><ul>
+<li><strong>CUDA 패키지 재구조화</strong> <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7156" target="_blank" rel="noopener" title="🔍 Discussion #7156 — Repository restructuring: Extracting shared CUDA components into core — 2026-06-11 (10월 갱신)">65</a></sup><ul>
 <li>Universe 241개 패키지 중 CUDA/TensorRT 관련 약 27개. 공통 패키지(<code>cuda_utils</code>·<code>tensorrt_common</code>·<code>cuda_dependency_meta</code>)와 <code>cuda_blackboard</code>를 <code>autoware_cuda</code>(core 그룹)로 옮기고, 나머지 CUDA 패키지는 Index의 개별 패키지로 보낸다.</li>
 <li>TIER IV 측 반대 의견과 일정 조율로 2026-09 말까지 연기됐다가 10-05 재개, 전환 목표일은 10-15.</li>
 </ul>
 </li>
-<li><strong>Reference Design</strong>: Index 항목에 리뷰어가 <code>reference_design: true</code>를 붙인다. 첫 사례가 Vision Pilot이고 <code>aw-index-cli compose --reference-design</code>이 <code>vision_pilot</code>을 돌려준다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/reference-design/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Reference design (Deployment Profile + Reference Software Stack) — main">[11]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/pull/839" target="_blank" rel="noopener" title="🔍 autoware-documentation PR #839 — docs: update the documentation for the Autoware 2.0 release — 2026-10-29">[16]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">[38]</a>.</li>
+<li><strong>Reference Design</strong>: Index 항목에 리뷰어가 <code>reference_design: true</code>를 붙인다. 첫 사례가 Vision Pilot이고 <code>aw-index-cli compose --reference-design</code>이 <code>vision_pilot</code>을 돌려준다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/reference-design/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Reference design (Deployment Profile + Reference Software Stack) — main">11</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/pull/839" target="_blank" rel="noopener" title="🔍 autoware-documentation PR #839 — docs: update the documentation for the Autoware 2.0 release — 2026-10-29">16</a><a class="cite" href="https://github.com/autowarefoundation/autoware-index" target="_blank" rel="noopener" title="💻 autoware-index — README — main">38</a></sup>.</li>
 </ul>
-<p><img alt="Autoware Index 브라우즈 사이트" src="images/08-autoware-index-browse-site.png"></p>
-<p><em>그림 8. Autoware Index 브라우즈 사이트 · 원본: autoware-documentation <code>installation/autoware/images/autoware-index/browse-site.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/autoware/autoware-index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Index (aw-index-cli, --reference-design) — main">[12]</a></em></p>
+<figure data-num="8"><img alt="Autoware Index 브라우즈 사이트" src="images/08-autoware-index-browse-site.png"><figcaption><span class="fig-label">그림 8</span><span class="fig-title">Autoware Index 브라우즈 사이트</span><span class="fig-note">원본: autoware-documentation <code>installation/autoware/images/autoware-index/browse-site.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/autoware/autoware-index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Index (aw-index-cli, --reference-design) — main">12</a></sup></span></figcaption></figure>
 <h3 id="25-autoe2e-latentdrive-oneplanner">2.5 재단이 만드는 학습 모델 — AutoE2E · LatentDrive · OnePlanner</h3>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>항목</th>
-<th>AutoE2E (<code>auto_e2e</code>) <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a></th>
-<th>LatentDrive (<code>autoware_latent_drive</code>) <a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a></th>
-<th>OnePlanner (<code>autoware_oneplanner</code>) <a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a></th>
+<th>AutoE2E (<code>auto_e2e</code>) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup></th>
+<th>LatentDrive (<code>autoware_latent_drive</code>) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a></sup></th>
+<th>OnePlanner (<code>autoware_oneplanner</code>) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a></sup></th>
 </tr>
 </thead>
 <tbody>
@@ -584,50 +648,47 @@ li{margin:3px 0}
 </tr>
 <tr>
 <td>상태 표기</td>
-<td>Robotaxi WG 개발 <a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">[33]</a></td>
+<td>Robotaxi WG 개발 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e/blob/main/ONBOARDING.md" target="_blank" rel="noopener" title="💻 auto_e2e — ONBOARDING.md (Robotaxi work group) — main">33</a></sup></td>
 <td>"연구 모델, 공도 제어 금지"</td>
 <td>"차에 쓰려면 Autoware 궤적 검증 뒤에 배선"</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>AutoE2E의 두 용도</strong>: README는 "LiDAR·레이더 안전층과 융합해 무인 로보택시로, 또는 카메라만으로 L2++ 핸즈프리 ADAS로"라고 적는다 <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a>.</li>
-<li><strong>외부 모델 노드</strong>: <code>alpamayo-autoware</code>(포크)는 NVIDIA Alpamayo를 Autoware ROS 2 노드로 돌린다. 카메라 4대 입력, 궤적과 추론 텍스트 출력, 24 GB 이상 VRAM 권장 <a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">[47]</a>.</li>
+<li><strong>AutoE2E의 두 용도</strong>: README는 "LiDAR·레이더 안전층과 융합해 무인 로보택시로, 또는 카메라만으로 L2++ 핸즈프리 ADAS로"라고 적는다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup>.</li>
+<li><strong>외부 모델 노드</strong>: <code>alpamayo-autoware</code>(포크)는 NVIDIA Alpamayo를 Autoware ROS 2 노드로 돌린다. 카메라 4대 입력, 궤적과 추론 텍스트 출력, 24 GB 이상 VRAM 권장 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">47</a></sup>.</li>
 </ul>
-<p><img alt="AutoE2E 아키텍처" src="images/09-auto-e2e-architecture.svg"></p>
-<p><em>그림 9. AutoE2E 아키텍처(World Action · Reasoning · Reactive) · 원본: auto_e2e <code>Media/readme/architecture.svg</code> <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a></em></p>
-<p><img alt="LatentDrive 장면" src="images/10-latent-drive-scenes.png"></p>
-<p><em>그림 10. LatentDrive 개루프 재생 6장면(리본이 4 s 계획) · 원본: autoware_latent_drive <code>docs/latent_drive_scenes.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a></em></p>
-<p><img alt="OnePlanner 장면" src="images/11-oneplanner-scenes.png"></p>
-<p><em>그림 11. OnePlanner 개루프 재생 6장면 · 원본: autoware_oneplanner <code>media/oneplanner_scenes.png</code> <a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a></em></p>
+<figure data-num="9"><img alt="AutoE2E 아키텍처" src="images/09-auto-e2e-architecture.svg"><figcaption><span class="fig-label">그림 9</span><span class="fig-title">AutoE2E 아키텍처(World Action · Reasoning · Reactive)</span><span class="fig-note">원본: auto_e2e <code>Media/readme/architecture.svg</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup></span></figcaption></figure>
+<figure data-num="10"><img alt="LatentDrive 장면" src="images/10-latent-drive-scenes.png"><figcaption><span class="fig-label">그림 10</span><span class="fig-title">LatentDrive 개루프 재생 6장면(리본이 4 s 계획)</span><span class="fig-note">원본: autoware_latent_drive <code>docs/latent_drive_scenes.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a></sup></span></figcaption></figure>
+<figure data-num="11"><img alt="OnePlanner 장면" src="images/11-oneplanner-scenes.png"><figcaption><span class="fig-label">그림 11</span><span class="fig-title">OnePlanner 개루프 재생 6장면</span><span class="fig-note">원본: autoware_oneplanner <code>media/oneplanner_scenes.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a></sup></span></figcaption></figure>
 <hr>
 <h2 id="3-adaspov-vision-pilot">3. ADAS·POV 트랙 — Vision Pilot</h2>
-<blockquote>
-<p><strong>요점</strong>
-- Vision Pilot은 "양산 가능·안전 인증 가능"을 표방하는 오픈소스 L2 ADAS다. 카메라 1대, HD맵 없음, 모델 가중치까지 Apache 2.0.
-- 모델 3종(AutoSteer·AutoSpeed·AutoDrive)을 인식축과 E2E축으로 병렬 처리한다.
-- 2026-01부터 8월까지 5번 릴리스했고, 지금은 1.3과 안전 인증 작업을 진행 중이다.
-- POV 레퍼런스 디자인은 Vision Pilot을 4단계 중 Phase 1로 둔다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>Vision Pilot은 "양산 가능·안전 인증 가능"을 표방하는 오픈소스 L2 ADAS다. 카메라 1대, HD맵 없음, 모델 가중치까지 Apache 2.0.</li>
+<li>모델 3종(AutoSteer·AutoSpeed·AutoDrive)을 인식축과 E2E축으로 병렬 처리한다.</li>
+<li>2026-01부터 8월까지 5번 릴리스했고, 지금은 1.3과 안전 인증 작업을 진행 중이다.</li>
+<li>POV 레퍼런스 디자인은 Vision Pilot을 4단계 중 Phase 1로 둔다.</li>
+</ul>
 </blockquote>
 <h3 id="31">3.1 무엇인가</h3>
 <ul>
-<li><strong>정의</strong>: "productionizable and safety certifiable implementation of an open-source L2 ADAS system" <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>대상</strong>: OEM·Tier-1의 양산 승용차 통합. 버스·트럭에도 적용 가능 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>기능</strong>: ACC · FCW · AEB · LKAS · LDW · ISA · 단일차로 핸즈프리 고속도로 오토파일럿 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>센서</strong>: 전방 단안 카메라 1대(수평 화각 52–55°, 1–2 MP). HD맵 불필요 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>라이선스</strong>: Apache 2.0, AI 모델 가중치 포함 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>배포 형태</strong>: 미들웨어 없이 실행, ROS 2 통합 인터페이스 제공 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a>. 소스 빌드·Debian 패키지·Docker(GPU/CPU) <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>저장소 이름</strong>: <code>autoware.privately-owned-vehicles</code>와 <code>autoware_vision_pilot</code> 주소가 현재 <code>vision_pilot</code> 저장소로 연결된다 <a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">[53]</a>.</li>
+<li><strong>정의</strong>: "productionizable and safety certifiable implementation of an open-source L2 ADAS system" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>대상</strong>: OEM·Tier-1의 양산 승용차 통합. 버스·트럭에도 적용 가능 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>기능</strong>: ACC · FCW · AEB · LKAS · LDW · ISA · 단일차로 핸즈프리 고속도로 오토파일럿 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>센서</strong>: 전방 단안 카메라 1대(수평 화각 52–55°, 1–2 MP). HD맵 불필요 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>라이선스</strong>: Apache 2.0, AI 모델 가중치 포함 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>배포 형태</strong>: 미들웨어 없이 실행, ROS 2 통합 인터페이스 제공 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup>. 소스 빌드·Debian 패키지·Docker(GPU/CPU) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>저장소 이름</strong>: <code>autoware.privately-owned-vehicles</code>와 <code>autoware_vision_pilot</code> 주소가 현재 <code>vision_pilot</code> 저장소로 연결된다 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">53</a></sup>.</li>
 </ul>
-<p><img alt="Vision Pilot 1.0 개요" src="images/12-visionpilot-1-0-overview.png"></p>
-<p><em>그림 12. Vision Pilot 1.0 개요 · 원본: vision_pilot <code>Media/VisionPilot_1.0.png</code> <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a></em></p>
+<figure data-num="12"><img alt="Vision Pilot 1.0 개요" src="images/12-visionpilot-1-0-overview.png"><figcaption><span class="fig-label">그림 12</span><span class="fig-title">Vision Pilot 1.0 개요</span><span class="fig-note">원본: vision_pilot <code>Media/VisionPilot_1.0.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup></span></figcaption></figure>
 <h3 id="32-3">3.2 구조와 모델 3종</h3>
 <ul>
-<li><strong>하이브리드 E2E</strong>: 인식 AI 모델(안전)과 E2E AI 모델(성능)이 데이터를 병렬로 처리한다 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>런타임 모듈</strong>: <code>engine</code>(ONNX Runtime), <code>models</code>, <code>sensing</code>, <code>safety_guardian</code>(fusion·planning), <code>middleware_interfaces/ros2_interface</code>, <code>visualization</code>, <code>logging</code>, <code>config</code> <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>제어·계획</strong>: 호모그래피로 픽셀→도로 좌표, 칼만 필터 CIPO 추적, RSS 영감 속도 계획, PID 종방향(0.9) <a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a>. 1.1부터 공간 영역 MPC <a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a>.</li>
+<li><strong>하이브리드 E2E</strong>: 인식 AI 모델(안전)과 E2E AI 모델(성능)이 데이터를 병렬로 처리한다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>런타임 모듈</strong>: <code>engine</code>(ONNX Runtime), <code>models</code>, <code>sensing</code>, <code>safety_guardian</code>(fusion·planning), <code>middleware_interfaces/ros2_interface</code>, <code>visualization</code>, <code>logging</code>, <code>config</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>제어·계획</strong>: 호모그래피로 픽셀→도로 좌표, 칼만 필터 CIPO 추적, RSS 영감 속도 계획, PID 종방향(0.9) <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup>. 1.1부터 공간 영역 MPC <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup>.</li>
 </ul>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>모델</th>
@@ -639,31 +700,30 @@ li{margin:3px 0}
 <tbody>
 <tr>
 <td>AutoSteer 2.0</td>
-<td><code>auto_steer</code> <a class="cite" href="https://github.com/autowarefoundation/auto_steer" target="_blank" rel="noopener" title="💻 auto_steer — README (AutoSteer 2.0) — main">[29]</a></td>
+<td><code>auto_steer</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_steer" target="_blank" rel="noopener" title="💻 auto_steer — README (AutoSteer 2.0) — main">29</a></sup></td>
 <td>카메라 프레임→자차 미래 경로 웨이포인트. 차선 검출 없이 전체 프레임 처리</td>
 <td>1024×512 입력, 검증 mAP@50 0.969 (INT8 0.966)</td>
 </tr>
 <tr>
 <td>AutoSpeed 2.0</td>
-<td><code>auto_speed</code> <a class="cite" href="https://github.com/autowarefoundation/auto_speed" target="_blank" rel="noopener" title="💻 auto_speed — README (AutoSpeed) — main">[30]</a></td>
+<td><code>auto_speed</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_speed" target="_blank" rel="noopener" title="💻 auto_speed — README (AutoSpeed) — main">30</a></sup></td>
 <td>경로 내 객체(CIPO) 검출 → ACC·FCW·AEB</td>
 <td>YOLOv11 변형, mAP@50 0.74 (INT8 0.73)</td>
 </tr>
 <tr>
 <td>AutoDrive</td>
-<td><code>auto_drive</code> <a class="cite" href="https://github.com/autowarefoundation/auto_drive" target="_blank" rel="noopener" title="💻 auto_drive — README (AutoDrive) — main">[31]</a></td>
+<td><code>auto_drive</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_drive" target="_blank" rel="noopener" title="💻 auto_drive — README (AutoDrive) — main">31</a></sup></td>
 <td>연속 2프레임→CIPO 거리·도로 곡률·CIPO 존재 확률</td>
 <td>곡률 오차 핸들각 4°, 존재 정확도 88%, 거리 5–40 m 90% · 100–150 m 72%</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>세 모델 모두</strong> ONNX FP32와 INT8 가중치를 제공한다 <a class="cite" href="https://github.com/autowarefoundation/auto_steer" target="_blank" rel="noopener" title="💻 auto_steer — README (AutoSteer 2.0) — main">[29]</a><a class="cite" href="https://github.com/autowarefoundation/auto_speed" target="_blank" rel="noopener" title="💻 auto_speed — README (AutoSpeed) — main">[30]</a><a class="cite" href="https://github.com/autowarefoundation/auto_drive" target="_blank" rel="noopener" title="💻 auto_drive — README (AutoDrive) — main">[31]</a>.</li>
+<li><strong>세 모델 모두</strong> ONNX FP32와 INT8 가중치를 제공한다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_steer" target="_blank" rel="noopener" title="💻 auto_steer — README (AutoSteer 2.0) — main">29</a><a class="cite" href="https://github.com/autowarefoundation/auto_speed" target="_blank" rel="noopener" title="💻 auto_speed — README (AutoSpeed) — main">30</a><a class="cite" href="https://github.com/autowarefoundation/auto_drive" target="_blank" rel="noopener" title="💻 auto_drive — README (AutoDrive) — main">31</a></sup>.</li>
 </ul>
-<p><img alt="Vision Pilot 하이브리드 E2E 아키텍처" src="images/13-visionpilot-hybrid-e2e-architecture.png"></p>
-<p><em>그림 13. Vision Pilot "Hybrid End-to-End AI Architecture" · 원본: vision_pilot <code>Media/VisionPilot_architecture.png</code> <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a></em></p>
+<figure data-num="13"><img alt="Vision Pilot 하이브리드 E2E 아키텍처" src="images/13-visionpilot-hybrid-e2e-architecture.png"><figcaption><span class="fig-label">그림 13</span><span class="fig-title">Vision Pilot "Hybrid End-to-End AI Architecture"</span><span class="fig-note">원본: vision_pilot <code>Media/VisionPilot_architecture.png</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup></span></figcaption></figure>
 <h3 id="33">3.3 릴리스 이력과 다음 단계</h3>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>버전</th>
@@ -677,60 +737,59 @@ li{margin:3px 0}
 <td>0.5</td>
 <td>2026-01-22</td>
 <td>EgoLanes + AutoSteer 조향만. OEM 사설 트랙 실차 시험에서 인간 조향 대비 90% 이상 일치</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>0.9</td>
 <td>2026-03-02</td>
 <td>AutoSpeed + ObjectFinder 종방향 인식·추적, RSS 영감 속도 계획, PID</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>1.0</td>
 <td>2026-07-06</td>
 <td>모델 3종, 교차 모달 융합 + 궤적 계획. 당초 목표 6월 말</td>
-<td><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/6786" target="_blank" rel="noopener" title="🔍 Discussion #6786 — Privately Owned Vehicle Work Group Meeting 2026/02/09 — 2026-02-09">[57]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7148" target="_blank" rel="noopener" title="🔍 Discussion #7148 — Privately Owned Vehicle Work Group Meeting 2026/06/08 — 2026-06-08">[60]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/6786" target="_blank" rel="noopener" title="🔍 Discussion #6786 — Privately Owned Vehicle Work Group Meeting 2026/02/09 — 2026-02-09">57</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7148" target="_blank" rel="noopener" title="🔍 Discussion #7148 — Privately Owned Vehicle Work Group Meeting 2026/06/08 — 2026-06-08">60</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>1.1</td>
 <td>2026-07-27</td>
 <td>공간 영역 MPC, 융합·추적 개선, Docker, CARLA 0.9.16</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>1.2</td>
 <td>2026-08-10</td>
 <td>CARLA 통합·횡방향 추적 개선, 3D 점유 시각화, Rerun 로깅</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>1.3 (진행 중)</td>
 <td>—</td>
 <td>CARLA 브리지, 점유 BEV 창, 융합·추적 개선, 코드 규정 준수</td>
-<td><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">[64]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">64</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>다음 릴리스로 미룬 항목</strong>: 고해상도 카메라(8 MP·120°), 카메라 + 자동차 레이더 융합("Stopped for now") <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">[64]</a>.</li>
+<li><strong>다음 릴리스로 미룬 항목</strong>: 고해상도 카메라(8 MP·120°), 카메라 + 자동차 레이더 융합("Stopped for now") <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">64</a></sup>.</li>
 <li><strong>안전 인증</strong><ul>
-<li>2026-10-26 ADAS WG: "안전 인증 마무리에 집중" <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">[64]</a>.</li>
-<li>SEooC 문서(초안): Vision Pilot 일부 컴포넌트(계획·차량 제어·Safety Guardian)로 ISO 26262 Part 6(+Part 8 지원 프로세스) 준수 소프트웨어 SEooC를 목표. 차량 수준 안전 활동은 OEM·Tier-1 몫 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot/tree/main/Functional_Safety" target="_blank" rel="noopener" title="💻 vision_pilot — Functional_Safety/SAFETY_ELEMENT_OUT_OF_CONTEXT.md (SEooC 초안) — main">[28]</a>.</li>
-<li>README 로드맵: ISO 26262 · ISO 8800 안전 검증, 레이더 융합, 8 MP 120° 카메라 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
+<li>2026-10-26 ADAS WG: "안전 인증 마무리에 집중" <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">64</a></sup>.</li>
+<li>SEooC 문서(초안): Vision Pilot 일부 컴포넌트(계획·차량 제어·Safety Guardian)로 ISO 26262 Part 6(+Part 8 지원 프로세스) 준수 소프트웨어 SEooC를 목표. 차량 수준 안전 활동은 OEM·Tier-1 몫 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/tree/main/Functional_Safety" target="_blank" rel="noopener" title="💻 vision_pilot — Functional_Safety/SAFETY_ELEMENT_OUT_OF_CONTEXT.md (SEooC 초안) — main">28</a></sup>.</li>
+<li>README 로드맵: ISO 26262 · ISO 8800 안전 검증, 레이더 융합, 8 MP 120° 카메라 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
 </ul>
 </li>
-<li><strong>다른 차종으로의 확장</strong>: 2026-10-22 Trucks WG 회의는 Vision Pilot v1.2 릴리스와 트럭 모델 작업 진행을 기록했고, Inceptio가 CARLA 0.9.16 + Vision Pilot v1.2로 시뮬레이션했다 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7370" target="_blank" rel="noopener" title="🔍 Discussion #7370 — Trucks WG Meeting 2026/10/22 — 2026-10-22">[69]</a>.</li>
+<li><strong>다른 차종으로의 확장</strong>: 2026-10-22 Trucks WG 회의는 Vision Pilot v1.2 릴리스와 트럭 모델 작업 진행을 기록했고, Inceptio가 CARLA 0.9.16 + Vision Pilot v1.2로 시뮬레이션했다 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7370" target="_blank" rel="noopener" title="🔍 Discussion #7370 — Trucks WG Meeting 2026/10/22 — 2026-10-22">69</a></sup>.</li>
 </ul>
 <h3 id="34-pov-4">3.4 POV 레퍼런스 디자인의 4단계</h3>
-<p><img alt="POV 로드맵 4단계" src="images/14-pov-roadmap-4-phases.jpg"></p>
-<p><em>그림 14. POV 레퍼런스 디자인 로드맵 4단계와 센서 배치 · 원본: autoware.pov-reference-design-docs <code>docs/system-configuration/images/Roadmap.jpg</code> <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">[18]</a></em></p>
-<table>
+<figure data-num="14"><img alt="POV 로드맵 4단계" src="images/14-pov-roadmap-4-phases.jpg"><figcaption><span class="fig-label">그림 14</span><span class="fig-title">POV 레퍼런스 디자인 로드맵 4단계와 센서 배치</span><span class="fig-note">원본: autoware.pov-reference-design-docs <code>docs/system-configuration/images/Roadmap.jpg</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">18</a></sup></span></figcaption></figure>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>Phase</th>
 <th>이름</th>
-<th>목표 레벨 · ODD <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Introduction (Vision Pilot · Plus · Pro · Vision Drive 4단계) — main">[17]</a><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/odd-definition/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — ODD Definition — main">[19]</a></th>
-<th>요구 연산 <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">[18]</a></th>
+<th>목표 레벨 · ODD <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Introduction (Vision Pilot · Plus · Pro · Vision Drive 4단계) — main">17</a><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/odd-definition/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — ODD Definition — main">19</a></sup></th>
+<th>요구 연산 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">18</a></sup></th>
 </tr>
 </thead>
 <tbody>
@@ -759,33 +818,33 @@ li{margin:3px 0}
 <td>1000 TOPS</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>가이드의 센서 사양</strong> <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/hardware-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Hardware Configuration — main">[20]</a><ul>
+<li><strong>가이드의 센서 사양</strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/hardware-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Hardware Configuration — main">20</a></sup><ul>
 <li>Phase 1: 전방 카메라 2대(8 MP 120° 메인 + 8 MP 30° 장거리), 전방 4D 레이더 1대.</li>
 <li>Phase 2: + 전·후 4D 레이더, 사각 레이더 4대. Phase 3: + 측면 카메라 4대, 2D 맵. Phase 4: + LWIR·SWIR 카메라.</li>
 </ul>
 </li>
-<li><strong>가이드 작성 시점</strong>: "2025.09 기준 개발 중" <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">[18]</a>. 현재 코드의 센서 사양(1–2 MP 단안)과 다르다 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a>.</li>
-<li><strong>AutoSeg</strong>: 6개 전문가 모델(Scene3D·SceneSeg·DomainSeg·EgoSpace·EgoPath·EgoLanes)을 Depth·Scene·Path 세 분기로 묶은 인식 파운데이션 모델 <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/software-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Software Configuration (AutoSeg 6개 모델) — main">[21]</a>.<ul>
-<li>분리 저장소 <code>scene_seg</code>·<code>scene_3d</code>·<code>ego_lanes</code>·<code>lite_models</code>는 README가 한 줄뿐이다 <a class="cite" href="https://github.com/autowarefoundation/lite_models" target="_blank" rel="noopener" title="💻 README가 한 줄뿐인 저장소 8개 — lite_models · scene_seg · scene_3d · ego_lanes · blindspot_detector · auto_speed_limit · vision_pilot_model_recipes · autoware_launch_v2 — 2026-10-30">[75]</a>.</li>
-<li><code>domain_seg</code>: 공사구간 객체 분할, ROADWork 데이터셋 검증 mIoU 46.6 <a class="cite" href="https://github.com/autowarefoundation/domain_seg" target="_blank" rel="noopener" title="💻 domain_seg — README (DomainSeg) — main">[48]</a>.</li>
-<li>2026-02 회의: AEI가 SceneSeg·Scene3D·EgoLanes 경량판으로 "정확도 유지하며 3배 속도" <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/6838" target="_blank" rel="noopener" title="🔍 Discussion #6838 — Privately Owned Vehicle Work Group Meeting 2026/02/23 — 2026-02-23">[58]</a>.</li>
+<li><strong>가이드 작성 시점</strong>: "2025.09 기준 개발 중" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">18</a></sup>. 현재 코드의 센서 사양(1–2 MP 단안)과 다르다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a></sup>.</li>
+<li><strong>AutoSeg</strong>: 6개 전문가 모델(Scene3D·SceneSeg·DomainSeg·EgoSpace·EgoPath·EgoLanes)을 Depth·Scene·Path 세 분기로 묶은 인식 파운데이션 모델 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/software-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Software Configuration (AutoSeg 6개 모델) — main">21</a></sup>.<ul>
+<li>분리 저장소 <code>scene_seg</code>·<code>scene_3d</code>·<code>ego_lanes</code>·<code>lite_models</code>는 README가 한 줄뿐이다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/lite_models" target="_blank" rel="noopener" title="💻 README가 한 줄뿐인 저장소 8개 — lite_models · scene_seg · scene_3d · ego_lanes · blindspot_detector · auto_speed_limit · vision_pilot_model_recipes · autoware_launch_v2 — 2026-10-30">75</a></sup>.</li>
+<li><code>domain_seg</code>: 공사구간 객체 분할, ROADWork 데이터셋 검증 mIoU 46.6 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/domain_seg" target="_blank" rel="noopener" title="💻 domain_seg — README (DomainSeg) — main">48</a></sup>.</li>
+<li>2026-02 회의: AEI가 SceneSeg·Scene3D·EgoLanes 경량판으로 "정확도 유지하며 3배 속도" <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/6838" target="_blank" rel="noopener" title="🔍 Discussion #6838 — Privately Owned Vehicle Work Group Meeting 2026/02/23 — 2026-02-23">58</a></sup>.</li>
 </ul>
 </li>
 </ul>
-<p><img alt="AutoSeg 파운데이션 모델" src="images/15-autoseg-foundation-model.jpg"></p>
-<p><em>그림 15. AutoSeg 파운데이션 모델 · 원본: autoware.pov-reference-design-docs <code>docs/software-configuration/images/AutoSeg.jpg</code> <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/software-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Software Configuration (AutoSeg 6개 모델) — main">[21]</a></em></p>
+<figure data-num="15"><img alt="AutoSeg 파운데이션 모델" src="images/15-autoseg-foundation-model.jpg"><figcaption><span class="fig-label">그림 15</span><span class="fig-title">AutoSeg 파운데이션 모델</span><span class="fig-note">원본: autoware.pov-reference-design-docs <code>docs/software-configuration/images/AutoSeg.jpg</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/software-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Software Configuration (AutoSeg 6개 모델) — main">21</a></sup></span></figcaption></figure>
 <hr>
 <h2 id="4">4. 주행 모델과 컴퓨트 — 무엇이 어떤 칩 위에서 도나</h2>
-<blockquote>
-<p><strong>요점</strong>
-- 로보택시 트랙의 생성기 후보는 모두 NVIDIA GPU·TensorRT를 전제로 한다. Generator-Selector는 이들이 "같은 스택 위에서 경쟁"하도록 설계됐고, 회원사 독점 모델도 생성기로 명시돼 있다.
-- ADAS 트랙은 ONNX Runtime으로 GPU·CPU를 모두 지원하고, 3–5 INT8 TOPS급 양산 칩을 목표로 한다.
-- Renesas R-Car X5H가 두 트랙의 접점이다. 한 칩에서 AutoSD(Cortex-A720AE)와 FreeRTOS(Cortex-R52)를 함께 돌리는 작업이 끝났고, Open AD Kit v2.1은 "X5H, Vision Pilot"을 소비자로 둔다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>로보택시 트랙의 생성기 후보는 모두 NVIDIA GPU·TensorRT를 전제로 한다. Generator-Selector는 이들이 "같은 스택 위에서 경쟁"하도록 설계됐고, 회원사 독점 모델도 생성기로 명시돼 있다.</li>
+<li>ADAS 트랙은 ONNX Runtime으로 GPU·CPU를 모두 지원하고, 3–5 INT8 TOPS급 양산 칩을 목표로 한다.</li>
+<li>Renesas R-Car X5H가 두 트랙의 접점이다. 한 칩에서 AutoSD(Cortex-A720AE)와 FreeRTOS(Cortex-R52)를 함께 돌리는 작업이 끝났고, Open AD Kit v2.1은 "X5H, Vision Pilot"을 소비자로 둔다.</li>
+</ul>
 </blockquote>
 <h3 id="41">4.1 모델별 실행 환경 — 문서에 적힌 것만</h3>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>모델·스택</th>
@@ -801,74 +860,73 @@ li{margin:3px 0}
 <td>①</td>
 <td>TensorRT (ONNX→엔진 첫 기동 시 빌드)</td>
 <td>NVIDIA GPU 필요</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></td>
 </tr>
 <tr>
 <td>OnePlanner</td>
 <td>①</td>
 <td>TensorRT 10, CUDA 12·13, spconv</td>
 <td>NVIDIA GPU(Turing 이상). RTX PRO 6000 Blackwell Max-Q에서 전체 패스 p50 12.7 ms · p99 26.1 ms</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a></sup></td>
 </tr>
 <tr>
 <td>LatentDrive</td>
 <td>①</td>
 <td>TensorRT 10.8, CUDA 12 컨테이너</td>
 <td>NVIDIA GPU. 엔진 빌드 3카메라 약 7분 · 1카메라 약 1.5분</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a></sup></td>
 </tr>
 <tr>
 <td>AutoE2E</td>
 <td>①</td>
 <td>PyTorch</td>
 <td>RTX 5080, SwinV2-Tiny, 배치 1에서 최대 약 76 FPS</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup></td>
 </tr>
 <tr>
 <td>Alpamayo 노드</td>
 <td>①</td>
 <td>Python 3.10, ROS 2 Humble</td>
 <td>NVIDIA GPU 24 GB 이상 VRAM 권장</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">[47]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">47</a></sup></td>
 </tr>
 <tr>
 <td>Vision Pilot</td>
 <td>②</td>
 <td>ONNX Runtime (GPU 기본, CPU 가능)</td>
 <td>3–5 INT8 TOPS급 양산 칩에서 10 FPS 이상(1.0 릴리스 노트). CARLA 문서는 RTX 3060 노트북에서 시험</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>AutoSeg 모델(POV 가이드 벤치)</td>
 <td>②</td>
 <td>TensorRT · ONNX Runtime</td>
 <td>Jetson AGX Orin 64GB TensorRT FP16 약 29–30 FPS, ADLINK AL30(RTX 4000 SFF Ada) Zenoh 50–56 FPS</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/evaluation-and-testing/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Evaluation and Testing (ADLINK AL30 · Jetson AGX Orin 벤치마크) — main">[22]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/evaluation-and-testing/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Evaluation and Testing (ADLINK AL30 · Jetson AGX Orin 벤치마크) — main">22</a></sup></td>
 </tr>
 <tr>
 <td>Safety Island</td>
 <td>공통</td>
 <td>Zephyr · FreeRTOS, CycloneDDS</td>
 <td>NXP S32Z·S32Z2, R-Car X5H CR52(Core1). 로컬 검증은 FVP·POSIX</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>POV 가이드의 칩 지원 상태</strong>: "NVIDIA GPU는 잘 지원되며 AMD·Qualcomm·Hailo-8 NPU는 로드맵에 있음" <a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">[18]</a>.</li>
-<li><strong>Autoware 본체</strong>: GPU 없이 설치는 되지만 신경망 기반 검출·신호등 인식은 NVIDIA GPU가 필요하다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/index.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Installation (Target platforms, Universe vs Core) — main">[15]</a>.</li>
+<li><strong>POV 가이드의 칩 지원 상태</strong>: "NVIDIA GPU는 잘 지원되며 AMD·Qualcomm·Hailo-8 NPU는 로드맵에 있음" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/system-configuration/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — System Configuration (프레임워크·TOPS·미들웨어) — main">18</a></sup>.</li>
+<li><strong>Autoware 본체</strong>: GPU 없이 설치는 되지만 신경망 기반 검출·신호등 인식은 NVIDIA GPU가 필요하다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/installation/index.md" target="_blank" rel="noopener" title="🔍 Autoware 문서 — Installation (Target platforms, Universe vs Core) — main">15</a></sup>.</li>
 </ul>
-<p><img alt="주행 모델과 컴퓨트 조합" src="images/16-model-compute.svg"></p>
-<p><em>그림 16. 주행 모델과 컴퓨트 조합 — 두 트랙 · 자체 작성 · 근거 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">[27]</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">[47]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></em></p>
+<figure data-num="16"><img alt="주행 모델과 컴퓨트 조합" src="images/16-model-compute.svg"><figcaption><span class="fig-label">그림 16</span><span class="fig-title">주행 모델과 컴퓨트 조합 — 두 트랙</span><span class="fig-note">자체 작성 · 근거 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot" target="_blank" rel="noopener" title="💻 vision_pilot — README · VisionPilot/modules 트리 — main">27</a><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">47</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></span></figcaption></figure>
 <h3 id="42">4.2 "같은 스택 위의 생성기 경쟁"</h3>
 <ul>
-<li><strong>구조로 보장된 경쟁</strong>: Generator-Selector는 "여러 생성기가 병렬로 돌고, Selector가 안전 검사 후 순위로 고른다"는 설계다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a>.</li>
-<li><strong>경쟁 참가자의 범위</strong>: 공식 문서는 생성기 예시로 기존 Autoware 스택, <strong>AWF 회원사의 사내 독점 AI 모델</strong>, 오픈소스 Autoware E2E 모델을 나란히 든다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a>.</li>
-<li><strong>현재 실제로 꽂힌 생성기</strong>: 2.0.0에서는 규칙 기반과 Diffusion Planner 두 개뿐이고 한 번에 하나만 돈다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a>.</li>
-<li><strong>런치 밖에서 경쟁 중인 후보</strong>: OnePlanner·LatentDrive·AutoE2E·Alpamayo 노드는 각자 독립 런타임으로 공개됐다 <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">[34]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">[47]</a>.</li>
-<li><strong>모델 간 공개 비교</strong>: AutoE2E README가 KITScenes-Multimodal 검증셋에서 오픈 가중치 모델 8종의 3 s 개루프 오차를 비교한다 <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a>.</li>
+<li><strong>구조로 보장된 경쟁</strong>: Generator-Selector는 "여러 생성기가 병렬로 돌고, Selector가 안전 검사 후 순위로 고른다"는 설계다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup>.</li>
+<li><strong>경쟁 참가자의 범위</strong>: 공식 문서는 생성기 예시로 기존 Autoware 스택, <strong>AWF 회원사의 사내 독점 AI 모델</strong>, 오픈소스 Autoware E2E 모델을 나란히 든다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup>.</li>
+<li><strong>현재 실제로 꽂힌 생성기</strong>: 2.0.0에서는 규칙 기반과 Diffusion Planner 두 개뿐이고 한 번에 하나만 돈다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup>.</li>
+<li><strong>런치 밖에서 경쟁 중인 후보</strong>: OnePlanner·LatentDrive·AutoE2E·Alpamayo 노드는 각자 독립 런타임으로 공개됐다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a><a class="cite" href="https://github.com/autowarefoundation/autoware_latent_drive" target="_blank" rel="noopener" title="💻 autoware_latent_drive — README (LatentDrive) — main">34</a><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a><a class="cite" href="https://github.com/autowarefoundation/alpamayo-autoware" target="_blank" rel="noopener" title="💻 alpamayo-autoware — README (Alpamayo ROS 2 노드) — main">47</a></sup>.</li>
+<li><strong>모델 간 공개 비교</strong>: AutoE2E README가 KITScenes-Multimodal 검증셋에서 오픈 가중치 모델 8종의 3 s 개루프 오차를 비교한다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup>.</li>
 </ul>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>모델</th>
@@ -927,40 +985,39 @@ li{margin:3px 0}
 <td>4.774</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>비교 조건 차이(README 명시)</strong>: AutoE2E는 HD맵·경로를 추가로 받고, VAD·Drive-JEPA는 주행 명령을 받는다. 평가 표본도 202 키프레임과 11,035 샘플로 다르다 <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a>.</li>
+<li><strong>비교 조건 차이(README 명시)</strong>: AutoE2E는 HD맵·경로를 추가로 받고, VAD·Drive-JEPA는 주행 명령을 받는다. 평가 표본도 202 키프레임과 11,035 샘플로 다르다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup>.</li>
 </ul>
-<p><img alt="KITScenes 벤치마크" src="images/17-auto-e2e-benchmark-kitscenes.svg"></p>
-<p><em>그림 17. KITScenes-Multimodal 검증 3 s ADE/FDE, 오픈 가중치 8종 · 원본: auto_e2e <code>Media/readme/benchmark-kitscenes-3s.svg</code> <a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">[32]</a></em></p>
+<figure data-num="17"><img alt="KITScenes 벤치마크" src="images/17-auto-e2e-benchmark-kitscenes.svg"><figcaption><span class="fig-label">그림 17</span><span class="fig-title">KITScenes-Multimodal 검증 3 s ADE/FDE, 오픈 가중치 8종</span><span class="fig-note">원본: auto_e2e <code>Media/readme/benchmark-kitscenes-3s.svg</code> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/auto_e2e" target="_blank" rel="noopener" title="💻 auto_e2e — README (AutoE2E, 벤치마크 표) — main">32</a></sup></span></figcaption></figure>
 <h3 id="43-r-car-x5h">4.3 "한 칩 안의 주행 스택과 안전섬" — R-Car X5H</h3>
 <ul>
-<li><strong>단일 SoC 이식 완료</strong>: Open AD Kit 이슈 #120은 CES 2026의 MCO/MRM 데모(두 상자를 CycloneDDS로 연결)를 R-Car X5H 한 칩으로 옮겼다 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">[74]</a>.<ul>
+<li><strong>단일 SoC 이식 완료</strong>: Open AD Kit 이슈 #120은 CES 2026의 MCO/MRM 데모(두 상자를 CycloneDDS로 연결)를 R-Car X5H 한 칩으로 옮겼다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">74</a></sup>.<ul>
 <li>AutoSD는 Cortex-A720AE 클러스터, FreeRTOS는 Cortex-R52 클러스터에서 돈다.</li>
 <li>칩 내부 RPMsg가 이더넷 연결을 대신한다. 2026-08-07 보드에서 왕복 100/100 확인, 2026-09-02 완료 처리.</li>
 </ul>
 </li>
-<li><strong>Safety Island의 X5H 타깃</strong>: <code>freertos-x5h</code>는 R-Car X5H CR52(Core1)용 FreeRTOS 타깃이다 <a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a>.</li>
-<li><strong>Open AD Kit v2.1</strong>: 주 소비자를 "X5H, Vision Pilot"으로 적었다 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a>.</li>
-<li><strong>Reference Design WG(2026-10)</strong>: L4 안전섬 설계에서 "최대 안전" 분기는 카메라·레이더 4대·초음파·IMU/GNSS를 R-Car X5H에, "최소 비용" 분기는 S32Z2·AURIX TC4x·Stellar 마이크로컨트롤러에 둔다 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7358" target="_blank" rel="noopener" title="🔍 Discussion #7358 — Reference Design WG Meeting (2026-10) — 2026-10-16">[67]</a>.</li>
-<li><strong>L2 Safety Island 실험(2026-10-15 보고)</strong>: CARLA 폐루프에서 Vision Pilot이 계획하고 Safety Island가 승인·정지한다. 고장→제동 4–14 ms(한계 500 ms), 9 m/s로 약 2.5 km 차선 유지 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">[68]</a>.</li>
+<li><strong>Safety Island의 X5H 타깃</strong>: <code>freertos-x5h</code>는 R-Car X5H CR52(Core1)용 FreeRTOS 타깃이다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a></sup>.</li>
+<li><strong>Open AD Kit v2.1</strong>: 주 소비자를 "X5H, Vision Pilot"으로 적었다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup>.</li>
+<li><strong>Reference Design WG(2026-10)</strong>: L4 안전섬 설계에서 "최대 안전" 분기는 카메라·레이더 4대·초음파·IMU/GNSS를 R-Car X5H에, "최소 비용" 분기는 S32Z2·AURIX TC4x·Stellar 마이크로컨트롤러에 둔다 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7358" target="_blank" rel="noopener" title="🔍 Discussion #7358 — Reference Design WG Meeting (2026-10) — 2026-10-16">67</a></sup>.</li>
+<li><strong>L2 Safety Island 실험(2026-10-15 보고)</strong>: CARLA 폐루프에서 Vision Pilot이 계획하고 Safety Island가 승인·정지한다. 고장→제동 4–14 ms(한계 500 ms), 9 m/s로 약 2.5 km 차선 유지 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">68</a></sup>.</li>
 </ul>
-<p><img alt="R-Car X5H 한 칩 구성" src="images/18-x5h-one-chip.svg"></p>
-<p><em>그림 18. R-Car X5H 한 칩 안의 구성과 관련 계획 · 자체 작성 · 근거 <a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7358" target="_blank" rel="noopener" title="🔍 Discussion #7358 — Reference Design WG Meeting (2026-10) — 2026-10-16">[67]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">[68]</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">[74]</a></em></p>
+<figure data-num="18"><img alt="R-Car X5H 한 칩 구성" src="images/18-x5h-one-chip.svg"><figcaption><span class="fig-label">그림 18</span><span class="fig-title">R-Car X5H 한 칩 안의 구성과 관련 계획</span><span class="fig-note">자체 작성 · 근거 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7358" target="_blank" rel="noopener" title="🔍 Discussion #7358 — Reference Design WG Meeting (2026-10) — 2026-10-16">67</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">68</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">74</a></sup></span></figcaption></figure>
 <hr>
 <h2 id="5-open-ad-kit-safety-island">5. 배포·안전 층 — Open AD Kit · Safety Island</h2>
-<blockquote>
-<p><strong>요점</strong>
-- Open AD Kit은 "SOAFEE 블루프린트 + 증거 기반 릴리스"로 재편 중이다. v2.0(Autoware) → v2.1(Vision Pilot) → v3.0(폐루프).
-- Safety Island는 궤적 추종 제어를 안전급 코어로 떼어 내는 구현과, L4 설계 RFC 두 갈래다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>Open AD Kit은 "SOAFEE 블루프린트 + 증거 기반 릴리스"로 재편 중이다. v2.0(Autoware) → v2.1(Vision Pilot) → v3.0(폐루프).</li>
+<li>Safety Island는 궤적 추종 제어를 안전급 코어로 떼어 내는 구현과, L4 설계 RFC 두 갈래다.</li>
+</ul>
 </blockquote>
 <h3 id="51-open-ad-kit">5.1 Open AD Kit</h3>
 <ul>
-<li><strong>정의</strong>: Autoware를 컨테이너화된 클라우드·엣지 SDV 컴포넌트로 배포하는 첫 SOAFEE 블루프린트 <a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">[26]</a>.</li>
-<li><strong>제공물</strong>: GHCR 컴포넌트 이미지, 배포 구성(planning·logging·scenario·CARLA 시뮬레이션, Zenoh 브리지), 버전 고정 런타임 번들, CI 메타데이터 <a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">[26]</a>.</li>
-<li><strong>로드맵(이슈 #91, 2026-10 갱신)</strong> — "날짜는 의도이지 계약이 아니다" <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></li>
+<li><strong>정의</strong>: Autoware를 컨테이너화된 클라우드·엣지 SDV 컴포넌트로 배포하는 첫 SOAFEE 블루프린트 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">26</a></sup>.</li>
+<li><strong>제공물</strong>: GHCR 컴포넌트 이미지, 배포 구성(planning·logging·scenario·CARLA 시뮬레이션, Zenoh 브리지), 버전 고정 런타임 번들, CI 메타데이터 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit" target="_blank" rel="noopener" title="💻 openadkit — README — main">26</a></sup>.</li>
+<li><strong>로드맵(이슈 #91, 2026-10 갱신)</strong> — "날짜는 의도이지 계약이 아니다" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></li>
 </ul>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>릴리스</th>
@@ -1005,31 +1062,31 @@ li{margin:3px 0}
 <td>빌드→배포→테스트→관측→업데이트→롤백 폐루프</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li><strong>핵심 결정</strong> <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a><ul>
+<li><strong>핵심 결정</strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup><ul>
 <li>워크로드는 digest로 고정. 모든 후보는 실행 후 결과를 서명(L0 렌더 → L1 프로세스·토픽 생존 → L2 시나리오 통과).</li>
 <li>차량 안은 CycloneDDS, 경계는 Zenoh, 쿠버네티스 미사용.</li>
 <li>Autoware는 2027-05에 Humble 지원 중단.</li>
 <li>비목표: 인증 주장(ISO 26262·ISO/SAE 21434·ASPICE), 자체 OTA·MLOps.</li>
 </ul>
 </li>
-<li><strong>현황</strong>: 2026-10-15 WG 회의는 v2.0.0의 "10월 말" 목표를 "리스크"로 적었다 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">[68]</a>.</li>
+<li><strong>현황</strong>: 2026-10-15 WG 회의는 v2.0.0의 "10월 말" 목표를 "리스크"로 적었다 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">68</a></sup>.</li>
 </ul>
 <h3 id="52-safety-island">5.2 Safety Island</h3>
 <ul>
-<li><strong><code>autoware-safety-island</code></strong> <a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a><ul>
+<li><strong><code>autoware-safety-island</code></strong> <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a></sup><ul>
 <li>Autoware 궤적 추종기(MPC 횡방향 + PID 종방향)를 안전급 프로세서에서 돌리고 DDS로 제어 명령을 교환하는 단독 애플리케이션. Autoware 코드 수정 불필요.</li>
 <li>런타임: Zephyr(<code>zephyr-fvp</code>, <code>zephyr-s32z</code>), FreeRTOS(<code>freertos-posix</code>, <code>freertos-s32z2</code>, <code>freertos-x5h</code>).</li>
 <li>고정 버전: Autoware 2025.02, Universe 0.40.0, CycloneDDS 0.11.0(AWF 포크).</li>
 <li>README 원본에 Arm Limited 저작권 주석이 있다.</li>
 </ul>
 </li>
-<li><strong><code>RFC_L4_SafetyIslandDesign</code></strong>: L4 안전섬 설계 RFC·설계 문서·슬라이드 <a class="cite" href="https://github.com/autowarefoundation/RFC_L4_SafetyIslandDesign" target="_blank" rel="noopener" title="💻 RFC_L4_SafetyIslandDesign — README — main">[37]</a>. 2026-10 Reference Design WG는 HPC와 안전섬 사이 ROS 노드 분할과 비상정지를 논의했다 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7358" target="_blank" rel="noopener" title="🔍 Discussion #7358 — Reference Design WG Meeting (2026-10) — 2026-10-16">[67]</a>.</li>
+<li><strong><code>RFC_L4_SafetyIslandDesign</code></strong>: L4 안전섬 설계 RFC·설계 문서·슬라이드 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/RFC_L4_SafetyIslandDesign" target="_blank" rel="noopener" title="💻 RFC_L4_SafetyIslandDesign — README — main">37</a></sup>. 2026-10 Reference Design WG는 HPC와 안전섬 사이 ROS 노드 분할과 비상정지를 논의했다 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7358" target="_blank" rel="noopener" title="🔍 Discussion #7358 — Reference Design WG Meeting (2026-10) — 2026-10-16">67</a></sup>.</li>
 </ul>
 <hr>
 <h2 id="6">6. 공통 기반 — 미들웨어·도구·시뮬레이션</h2>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>저장소</th>
@@ -1043,68 +1100,69 @@ li{margin:3px 0}
 <td><code>agnocast</code></td>
 <td>rclcpp 호환 제로카피 IPC. rosidl 생성 메시지 그대로 지원</td>
 <td>core 그룹, 2.4.1 소스 빌드</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/agnocast" target="_blank" rel="noopener" title="💻 agnocast — README — main">[41]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/agnocast" target="_blank" rel="noopener" title="💻 agnocast — README — main">41</a></sup></td>
 </tr>
 <tr>
 <td><code>callback_isolated_executor</code></td>
 <td>콜백 그룹마다 전용 스레드를 배정하는 Executor</td>
 <td>Agnocast에 통합</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/agnocast" target="_blank" rel="noopener" title="💻 agnocast — README — main">[41]</a><a class="cite" href="https://github.com/autowarefoundation/callback_isolated_executor" target="_blank" rel="noopener" title="💻 callback_isolated_executor — README — main">[43]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/agnocast" target="_blank" rel="noopener" title="💻 agnocast — README — main">41</a><a class="cite" href="https://github.com/autowarefoundation/callback_isolated_executor" target="_blank" rel="noopener" title="💻 callback_isolated_executor — README — main">43</a></sup></td>
 </tr>
 <tr>
 <td><code>cuda_blackboard</code></td>
 <td>REP-2007·2009로 GPU 메모리를 노드 간 복사 없이 공유</td>
 <td>universe 그룹 0.4.0, core/cuda로 이동 예정</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/cuda_blackboard" target="_blank" rel="noopener" title="💻 cuda_blackboard — README — main">[42]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7156" target="_blank" rel="noopener" title="🔍 Discussion #7156 — Repository restructuring: Extracting shared CUDA components into core — 2026-06-11 (10월 갱신)">[65]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/cuda_blackboard" target="_blank" rel="noopener" title="💻 cuda_blackboard — README — main">42</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7156" target="_blank" rel="noopener" title="🔍 Discussion #7156 — Repository restructuring: Extracting shared CUDA components into core — 2026-06-11 (10월 갱신)">65</a></sup></td>
 </tr>
 <tr>
 <td><code>autoware_system_designer</code></td>
 <td>YAML 설계에서 ROS 2 런치·노드 그래프·지연 뷰·파라미터 템플릿 생성</td>
 <td>core 그룹 v0.4.2</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_system_designer" target="_blank" rel="noopener" title="💻 autoware_system_designer — README — main">[40]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/autoware_system_designer" target="_blank" rel="noopener" title="💻 autoware_system_designer — README — main">40</a></sup></td>
 </tr>
 <tr>
 <td><code>autoware_simple_planning_simulator</code></td>
 <td>Universe에서 옮긴 단독 planning simulator</td>
 <td>core 그룹 1.1.0</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_simple_planning_simulator" target="_blank" rel="noopener" title="💻 autoware_simple_planning_simulator — README — main">[49]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/autowarefoundation/autoware_simple_planning_simulator" target="_blank" rel="noopener" title="💻 autoware_simple_planning_simulator — README — main">49</a></sup></td>
 </tr>
 <tr>
 <td><code>autoware-harness</code></td>
 <td>코딩 에이전트용 Autoware 스킬·에이전트·MCP 묶음</td>
 <td>별도</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-harness" target="_blank" rel="noopener" title="💻 autoware-harness — README — main">[51]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-harness" target="_blank" rel="noopener" title="💻 autoware-harness — README — main">51</a></sup></td>
 </tr>
 <tr>
 <td><code>3dgs_io</code></td>
 <td>3D Gaussian Splatting 장면 + Autoware 맵 번들 I/O</td>
 <td>별도</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/3dgs_io" target="_blank" rel="noopener" title="💻 3dgs_io — README — main">[52]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/3dgs_io" target="_blank" rel="noopener" title="💻 3dgs_io — README — main">52</a></sup></td>
 </tr>
 <tr>
 <td><code>AWSIM</code>, CARLA 계열</td>
 <td>디지털 트윈 시뮬레이터, CARLA 포크·브리지·시나리오</td>
 <td>별도</td>
-<td><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">[53]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">53</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
 <li><strong>차종별 프로젝트</strong><ul>
-<li>고속도로 트럭(<code>autoware.trucks</code>): SAE L4 고속도로 자율 트럭 목표. Truck WG 단기 목표에 "비전 전용 경량 신경망 벤치마크" <a class="cite" href="https://github.com/autowarefoundation/autoware.trucks" target="_blank" rel="noopener" title="💻 autoware.trucks — README — main">[46]</a><a class="cite" href="https://github.com/autowarefoundation/autoware-projects/wiki" target="_blank" rel="noopener" title="💻 autoware-projects 위키 — Home(WG 목록) · Privately Owned Vehicles · Software · Safety Assurance · Reference Design · Truck · Low Speed Autonomy WG 페이지 — 2026-10-30">[50]</a>.</li>
-<li>오프로드(<code>autoware.off-road</code>, <code>autoware_off-road_sim</code>): 광산 트럭·RoboRacer·행성 로버, Isaac Sim 기반 시뮬레이터. 오프로드 WG는 2026-05-07 회의에서 "추후 통지까지 일시 중단" <a class="cite" href="https://github.com/autowarefoundation/autoware.off-road" target="_blank" rel="noopener" title="💻 autoware.off-road — README — main">[44]</a><a class="cite" href="https://github.com/autowarefoundation/autoware_off-road_sim" target="_blank" rel="noopener" title="💻 autoware_off-road_sim — README — main">[45]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7101" target="_blank" rel="noopener" title="🔍 Discussion #7101 — Off-road/Racing Working Group Meeting 2026/05/07 — 2026-05-07">[73]</a>.</li>
-<li>저속 자율주행(LSA)·RoboRacer·GoKart·ITRI 버스: 레퍼런스 디자인 문서 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/reference-design/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Reference design (Deployment Profile + Reference Software Stack) — main">[11]</a>.</li>
+<li>고속도로 트럭(<code>autoware.trucks</code>): SAE L4 고속도로 자율 트럭 목표. Truck WG 단기 목표에 "비전 전용 경량 신경망 벤치마크" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.trucks" target="_blank" rel="noopener" title="💻 autoware.trucks — README — main">46</a><a class="cite" href="https://github.com/autowarefoundation/autoware-projects/wiki" target="_blank" rel="noopener" title="💻 autoware-projects 위키 — Home(WG 목록) · Privately Owned Vehicles · Software · Safety Assurance · Reference Design · Truck · Low Speed Autonomy WG 페이지 — 2026-10-30">50</a></sup>.</li>
+<li>오프로드(<code>autoware.off-road</code>, <code>autoware_off-road_sim</code>): 광산 트럭·RoboRacer·행성 로버, Isaac Sim 기반 시뮬레이터. 오프로드 WG는 2026-05-07 회의에서 "추후 통지까지 일시 중단" <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.off-road" target="_blank" rel="noopener" title="💻 autoware.off-road — README — main">44</a><a class="cite" href="https://github.com/autowarefoundation/autoware_off-road_sim" target="_blank" rel="noopener" title="💻 autoware_off-road_sim — README — main">45</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7101" target="_blank" rel="noopener" title="🔍 Discussion #7101 — Off-road/Racing Working Group Meeting 2026/05/07 — 2026-05-07">73</a></sup>.</li>
+<li>저속 자율주행(LSA)·RoboRacer·GoKart·ITRI 버스: 레퍼런스 디자인 문서 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/reference-design/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Reference design (Deployment Profile + Reference Software Stack) — main">11</a></sup>.</li>
 </ul>
 </li>
 </ul>
 <hr>
 <h2 id="7-157">7. 저장소 157개 분류</h2>
-<blockquote>
-<p><strong>요점</strong>
-- 157개 중 아카이브 27개·포크 24개이고, 2026년에 갱신된 비아카이브 저장소는 86개다.
-- 2026년 활동은 재단 자체 AI 모델(B·C), 배포·안전(E), 레지스트리·인프라(F)에 몰려 있다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>157개 중 아카이브 27개·포크 24개이고, 2026년에 갱신된 비아카이브 저장소는 86개다.</li>
+<li>2026년 활동은 재단 자체 AI 모델(B·C), 배포·안전(E), 레지스트리·인프라(F)에 몰려 있다.</li>
+</ul>
 </blockquote>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>분류</th>
@@ -1164,17 +1222,18 @@ li{margin:3px 0}
 <td>(2026년 갱신 없음) Autoware.AI 저장소 9개, Core/Universe 프로토타입 등</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <ul>
-<li>분류는 이 보고서의 정리 기준이다. 전체 목록(설명·별·포크·갱신일·상태)은 <a href="reference/repo-inventory.md">저장소 전수 목록</a>에 있다 <a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">[53]</a>.</li>
+<li>분류는 이 보고서의 정리 기준이다. 전체 목록(설명·별·포크·갱신일·상태)은 <a href="reference/repo-inventory.md">저장소 전수 목록</a>에 있다 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/repositories" target="_blank" rel="noopener" title="🔍 GitHub — autowarefoundation 조직 저장소 목록(6쪽, 157개) · fork:true 필터(24개) — 2026-10-30">53</a></sup>.</li>
 </ul>
 <hr>
 <h2 id="8">8. 로드맵 위의 현재 위치</h2>
-<blockquote>
-<p><strong>요점</strong>
-- 공식 로드맵 문서와 해당 산출물이 같은 대상을 명시한 경우만 연결했다.</p>
+<blockquote class="key"><p><strong>요점</strong></p>
+<ul>
+<li>공식 로드맵 문서와 해당 산출물이 같은 대상을 명시한 경우만 연결했다.</li>
+</ul>
 </blockquote>
-<table>
+<div class="tw"><table>
 <thead>
 <tr>
 <th>공식 로드맵 항목</th>
@@ -1185,71 +1244,71 @@ li{margin:3px 0}
 <tbody>
 <tr>
 <td>Architecture 2.0 Step 1 학습 플래너</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">[3]</a></td>
-<td>Diffusion Planner가 2.0.0에서 선택 가능 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/autonomous-driving-stack-architecture.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autonomous Driving Stack Architecture (Autoware E2E Step 1~4, Figure 1~9) — main">3</a></sup></td>
+<td>Diffusion Planner가 2.0.0에서 선택 가능 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></td>
 </tr>
 <tr>
 <td>Generator-Selector의 Selector</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a></td>
-<td>패키지 존재, 2.0.0에서 미기동 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">[1]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup></td>
+<td>패키지 존재, 2.0.0에서 미기동 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29">1</a></sup></td>
 </tr>
 <tr>
 <td>POV Phase 1 Vision Pilot</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Introduction (Vision Pilot · Plus · Pro · Vision Drive 4단계) — main">[17]</a></td>
-<td>1.2 릴리스(2026-08-10), 1.3 진행 중 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">[64]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware.pov-reference-design-docs/blob/main/docs/index.md" target="_blank" rel="noopener" title="💻 POV 레퍼런스 디자인 — Introduction (Vision Pilot · Plus · Pro · Vision Drive 4단계) — main">17</a></sup></td>
+<td>1.2 릴리스(2026-08-10), 1.3 진행 중 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7371" target="_blank" rel="noopener" title="🔍 Discussion #7371 — ADAS Work Group Meeting 2026/10/26 — 2026-10-26">64</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup></td>
 </tr>
 <tr>
 <td>Open AD Kit v2.0</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></td>
-<td>2026-10 말 목표, "리스크" <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">[68]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></td>
+<td>2026-10 말 목표, "리스크" <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">68</a></sup></td>
 </tr>
 <tr>
 <td>Open AD Kit v2.1 (X5H, Vision Pilot)</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></td>
-<td>CES 2027 이후 예정. X5H 한 칩 AutoSD+FreeRTOS 이식 완료 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">[74]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></td>
+<td>CES 2027 이후 예정. X5H 한 칩 AutoSD+FreeRTOS 이식 완료 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">74</a></sup></td>
 </tr>
 <tr>
 <td>Open AD Kit v2.0.x Safety Island 증거</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a></td>
-<td>L2 Safety Island CARLA 폐루프 실험 보고 <a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">[68]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup></td>
+<td>L2 Safety Island CARLA 폐루프 실험 보고 <sup class="cites"><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7357" target="_blank" rel="noopener" title="🔍 Discussion #7357 — Open ADKit Working Group Meeting 2026/10/15 — 2026-10-15">68</a></sup></td>
 </tr>
 <tr>
 <td>Universe → Index 분산</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware/issues/7090" target="_blank" rel="noopener" title="🔍 autoware issue #7090 — Establish Autoware Index to federate Universe community packages — 2026-05-02">[70]</a></td>
-<td>Index 공개, 패키지 5개 등록·이동 <a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">[54]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7375" target="_blank" rel="noopener" title="🔍 Discussion #7375 — Software WG Meeting 2026/10/27 — 2026-10-27">[66]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/issues/7090" target="_blank" rel="noopener" title="🔍 autoware issue #7090 — Establish Autoware Index to federate Universe community packages — 2026-05-02">70</a></sup></td>
+<td>Index 공개, 패키지 5개 등록·이동 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/releases/tag/2.0.0" target="_blank" rel="noopener" title="🔍 GitHub Release — Autoware 2.0.0 — 2026-10-29">54</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7375" target="_blank" rel="noopener" title="🔍 Discussion #7375 — Software WG Meeting 2026/10/27 — 2026-10-27">66</a></sup></td>
 </tr>
 <tr>
 <td>다년 로드맵 Objective 2 Robotaxi TRL-6</td>
-<td><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">[10]</a></td>
-<td>Year 3 목표. 기준 연도는 문서에 없음 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">[10]</a></td>
+<td><sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">10</a></sup></td>
+<td>Year 3 목표. 기준 연도는 문서에 없음 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/home/roadmap/multi-year-roadmap.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Autoware Multi-Year Roadmap (Objective 1~8, Year 1~3) — main">10</a></sup></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr>
 <h2 id="9-hpc">9. 시사점 — 차량용 HPC 관점</h2>
 <p>출처 있는 사실에서 바로 도출되는 것만 적었다.</p>
 <ol>
 <li><strong>같은 재단 안에 두 개의 연산 등급이 공존한다.</strong><ul>
-<li>근거: 로보택시 트랙 모델은 NVIDIA GPU·TensorRT를 전제로 하고(OnePlanner RTX PRO 6000에서 p50 12.7 ms), Vision Pilot은 3–5 INT8 TOPS급 양산 칩에서 10 FPS 이상을 목표로 한다 <a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">[35]</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a>.</li>
+<li>근거: 로보택시 트랙 모델은 NVIDIA GPU·TensorRT를 전제로 하고(OnePlanner RTX PRO 6000에서 p50 12.7 ms), Vision Pilot은 3–5 INT8 TOPS급 양산 칩에서 10 FPS 이상을 목표로 한다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware_oneplanner" target="_blank" rel="noopener" title="💻 autoware_oneplanner — README (OnePlanner) — main">35</a><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup>.</li>
 <li>의미: 어느 트랙을 올리느냐가 SoC 등급을 결정한다.</li>
 </ul>
 </li>
 <li><strong>주행 모델 층이 교체 가능한 부품으로 설계됐다.</strong><ul>
-<li>근거: Generator-Selector는 회원사 독점 모델을 생성기로 명시하고, Selector가 안전 검사·순위화를 맡는다 <a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">[4]</a>.</li>
+<li>근거: Generator-Selector는 회원사 독점 모델을 생성기로 명시하고, Selector가 안전 검사·순위화를 맡는다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/detailed-architectural-interface.md" target="_blank" rel="noopener" title="💻 Autoware 문서 — Detailed Architectural Interface (Generator-Selector Framework) — main">4</a></sup>.</li>
 <li>의미: 플랫폼 쪽은 "어떤 생성기가 와도 돌아가는 연산 + 공통 안전 게이트"를 제공하는 구조다.</li>
 </ul>
 </li>
 <li><strong>안전 코어 분리가 구체적 칩 이름으로 내려왔다.</strong><ul>
-<li>근거: Safety Island 타깃은 NXP S32Z·S32Z2와 R-Car X5H CR52이고, X5H 한 칩에서 Cortex-A720AE(AutoSD)와 Cortex-R52(FreeRTOS)를 함께 돌리는 이식이 완료됐다 <a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">[36]</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">[74]</a>.</li>
+<li>근거: Safety Island 타깃은 NXP S32Z·S32Z2와 R-Car X5H CR52이고, X5H 한 칩에서 Cortex-A720AE(AutoSD)와 Cortex-R52(FreeRTOS)를 함께 돌리는 이식이 완료됐다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware-safety-island" target="_blank" rel="noopener" title="💻 autoware-safety-island — README (Zephyr/FreeRTOS, S32Z·R-Car X5H, Arm Limited 저작권 주석) — main">36</a><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener" title="🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료)">74</a></sup>.</li>
 <li>의미: 애플리케이션 코어와 안전 코어를 한 SoC에 넣는 구성이 오픈소스 레퍼런스로 공개되고 있다.</li>
 </ul>
 </li>
 <li><strong>배포 단위가 "버전 고정 + 서명된 실행 증거"로 바뀐다.</strong><ul>
-<li>근거: Open AD Kit은 digest 고정, L0~L2 증거 서명, SBOM, AutoSD·Quadlet·BlueChi, 쿠버네티스 미사용을 결정했다 <a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">[56]</a>.</li>
+<li>근거: Open AD Kit은 digest 고정, L0~L2 증거 서명, SBOM, AutoSD·Quadlet·BlueChi, 쿠버네티스 미사용을 결정했다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/openadkit/issues/91" target="_blank" rel="noopener" title="🔍 openadkit issue #91 — Open AD Kit 2026-2027 Roadmap (2026-10 갱신) — 2026-10">56</a></sup>.</li>
 </ul>
 </li>
 <li><strong>제로카피 IPC와 GPU 메모리 공유가 Core의 정식 구성원이 됐다.</strong><ul>
-<li>근거: Agnocast는 core 그룹에 소스 빌드로 고정됐고, cuda_blackboard는 core/cuda로 이동이 결정됐다 <a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">[23]</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7156" target="_blank" rel="noopener" title="🔍 Discussion #7156 — Repository restructuring: Extracting shared CUDA components into core — 2026-06-11 (10월 갱신)">[65]</a>.</li>
+<li>근거: Agnocast는 core 그룹에 소스 빌드로 고정됐고, cuda_blackboard는 core/cuda로 이동이 결정됐다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/autoware/blob/2.0.0/repositories/autoware.repos" target="_blank" rel="noopener" title="💻 autoware — repositories/autoware.repos 외 tools·simulator·extra-packages.repos (태그 2.0.0, 1.9.0 대조) — 2026-10">23</a><a class="cite" href="https://github.com/orgs/autowarefoundation/discussions/7156" target="_blank" rel="noopener" title="🔍 Discussion #7156 — Repository restructuring: Extracting shared CUDA components into core — 2026-06-11 (10월 갱신)">65</a></sup>.</li>
 </ul>
 </li>
 </ol>
@@ -1266,10 +1325,10 @@ li{margin:3px 0}
 <li>각 저장소와 Architecture 2.0 단계의 대응(공식 문서에 없음).</li>
 </ul>
 </li>
-<li><strong>수치 기준</strong>: 별·포크 수는 목록 페이지 표기다. Vision Pilot 릴리스 날짜는 릴리스 페이지 날짜이고, 연도는 태그 커밋일로 확인했다 <a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">[71]</a>.</li>
+<li><strong>수치 기준</strong>: 별·포크 수는 목록 페이지 표기다. Vision Pilot 릴리스 날짜는 릴리스 페이지 날짜이고, 연도는 태그 커밋일로 확인했다 <sup class="cites"><a class="cite" href="https://github.com/autowarefoundation/vision_pilot/releases" target="_blank" rel="noopener" title="🔍 vision_pilot Releases (v0.5 · v0.9 · v1.0 · v1.1 · v1.2, 태그 커밋일 대조) — 2026-01 ~ 08">71</a></sup>.</li>
 </ul>
 <hr>
-<h2>출처</h2>
+<h2 id="sources">출처</h2>
 <ol class="refs">
 <li id="src-1" value="1">💻 Autoware 문서 — Autoware 2.0 architecture (What 2.0.0 does today · Packages · Generator-Selector 개요) — 2026-10-29 — <a href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md" target="_blank" rel="noopener">https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/index.md</a></li>
 <li id="src-2" value="2">💻 Autoware 문서 — Autoware Architecture: Executive Summary (Autoware 1.0 → 2.0) — main — <a href="https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/index.md" target="_blank" rel="noopener">https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/index.md</a></li>
@@ -1347,6 +1406,22 @@ li{margin:3px 0}
 <li id="src-74" value="74">🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료) — <a href="https://github.com/autowarefoundation/openadkit/issues/120" target="_blank" rel="noopener">https://github.com/autowarefoundation/openadkit/issues/120</a></li>
 <li id="src-75" value="75">💻 README가 한 줄뿐인 저장소 8개 — lite_models · scene_seg · scene_3d · ego_lanes · blindspot_detector · auto_speed_limit · vision_pilot_model_recipes · autoware_launch_v2 — 2026-10-30 — <a href="https://github.com/autowarefoundation/lite_models" target="_blank" rel="noopener">https://github.com/autowarefoundation/lite_models</a></li>
 </ol>
+<div class="foot">이 페이지는 같은 폴더의 Markdown 원본에서 생성했다. 캡션에 "자체 작성"이라고 적은 그림 외에는 원본 저장소 파일을 그대로 실었다. 출처 기록: <a href="reference/references.md">reference/references.md</a> · Anthropic 보고서풍 버전: <a href="autoware-foundation-stack-map-anthropic.html">autoware-foundation-stack-map-anthropic.html</a> · 저장소 전수 목록: <a href="reference/repo-inventory.md">reference/repo-inventory.md</a></div>
 </main>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('themeBtn');
+  try{var s=localStorage.getItem('awf-theme');if(s)root.setAttribute('data-theme',s);}catch(e){}
+  function cur(){var t=root.getAttribute('data-theme');if(t)return t;return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+  function label(){btn.textContent=cur()==='dark'?'☀️ 라이트':'🌙 다크';}
+  btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('awf-theme',n);}catch(e){}label();});
+  label();
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var heads=links.map(function(a){return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));});
+  function onScroll(){var y=window.scrollY+90,idx=0;for(var i=0;i<heads.length;i++){if(heads[i]&&heads[i].offsetTop<=y)idx=i;}links.forEach(function(a,i){a.classList.toggle('active',i===idx);});}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
 </body>
 </html>

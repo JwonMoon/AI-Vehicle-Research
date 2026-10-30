@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autoware 재단 스택 지도</title>
+<meta name="description" content="Autoware 2.0.0 공개 직후, autowarefoundation 저장소 157개와 두 트랙, 주행 모델과 컴퓨트, 로드맵 위치를 정리한 보고서 — 보고서풍 레이아웃">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf9f5; --paper:#f0eee6; --card:#ffffff; --ink:#141413; --ink-2:#3d3d3a; --muted:#73726c; --line:#e3dfd3; --line-2:#ebe8df;
+  --accent:#d97757; --accent-ink:#b4532f; --accent-soft:#f5e6dd;
+  --serif:"Source Serif 4","Noto Serif KR",Georgia,serif;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --col:680px; --wide:900px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1f1e1d; --paper:#262624; --card:#30302e; --ink:#f0eee6; --ink-2:#d6d3c9; --muted:#a3a29d; --line:#3e3d39; --line-2:#34332f;
+  --accent:#d97757; --accent-ink:#e8936f; --accent-soft:#3a2a22;}}
+:root[data-theme="dark"]{--bg:#1f1e1d; --paper:#262624; --card:#30302e; --ink:#f0eee6; --ink-2:#d6d3c9; --muted:#a3a29d; --line:#3e3d39; --line-2:#34332f; --accent:#d97757; --accent-ink:#e8936f; --accent-soft:#3a2a22; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.72;word-break:keep-all;overflow-wrap:anywhere}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent)}
+img{max-width:100%;height:auto}
+/* nav */
+.nav{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line-2)}
+.nav .in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:10px}
+.mark{font-family:var(--sans);font-weight:700;letter-spacing:.14em;font-size:14px;text-decoration:none;flex:1;white-space:nowrap}
+.pill{font-family:var(--sans);font-size:13px;color:var(--ink-2);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 14px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.pill:hover{border-color:var(--ink-2)}
+.chap{position:sticky;top:57px;z-index:25;background:var(--bg);border-bottom:1px solid var(--line-2)}
+.chap .in{max-width:1180px;margin:0 auto;padding:9px 20px;display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;color:var(--ink-2);cursor:pointer;user-select:none}
+.chap b{font-weight:600;color:var(--ink)}
+.chap .lab{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chap .car{transition:transform .2s}
+.chap.open .car{transform:rotate(180deg)}
+.toc-panel{display:none;position:sticky;top:96px;z-index:24;background:var(--bg);border-bottom:1px solid var(--line);max-height:60vh;overflow:auto}
+.chap.open + .toc-panel{display:block}
+.toc-panel .in{max-width:var(--wide);margin:0 auto;padding:12px 20px 18px;font-family:var(--sans);font-size:14px}
+.toc-panel ul{list-style:none;margin:0;padding:0}
+.toc-panel li{margin:0}
+.toc-panel a{display:block;padding:5px 0;text-decoration:none;color:var(--ink)}
+.toc-panel ul ul a{padding-left:20px;color:var(--muted);font-size:13px}
+/* hero */
+header.hero{max-width:var(--wide);margin:0 auto;padding:64px 20px 24px;text-align:center}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1.18;letter-spacing:-.01em;margin:14px 0 6px}
+.subtitle{font-family:var(--serif);font-size:clamp(20px,3vw,27px);line-height:1.35;color:var(--ink-2);margin:0 auto 18px;max-width:760px}
+.updated{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--muted);margin-bottom:18px}
+.hero-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+.hero-art{background:var(--paper);border-radius:6px;padding:34px 26px 18px;margin:0 auto}
+.hero-art svg{display:block;width:100%;max-width:620px;height:auto;margin:0 auto}
+.hero-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin-top:20px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.hero-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.hero-cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:12px 0 0}
+/* article */
+main{padding:8px 20px 80px}
+main > *{max-width:var(--col);margin-left:auto;margin-right:auto}
+main > figure, main > .tw{max-width:var(--wide)}
+h2{font-family:var(--sans);font-weight:700;font-size:27px;line-height:1.3;letter-spacing:-.01em;margin-top:84px;margin-bottom:6px}
+h2 .no{display:block;font-family:var(--mono);font-weight:400;font-size:12.5px;letter-spacing:.08em;color:var(--accent-ink);text-transform:uppercase;margin-bottom:8px}
+h3{font-family:var(--sans);font-weight:600;font-size:20px;line-height:1.4;margin-top:46px;margin-bottom:8px}
+p{margin-top:0;margin-bottom:18px}
+ul,ol{padding-left:1.25em;margin-top:0;margin-bottom:18px}
+li{margin:6px 0}
+li > ul{margin:4px 0 6px}
+hr{display:none}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:.82em;background:var(--paper);border:1px solid var(--line-2);border-radius:4px;padding:1px 5px}
+pre{background:var(--paper);border-radius:6px;padding:14px 16px;overflow:auto;font-size:14px}
+pre code{border:0;background:none;padding:0}
+blockquote{margin:0 auto 22px;padding:0}
+blockquote.meta{font-family:var(--sans);font-size:14.5px;line-height:1.65;color:var(--ink-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;margin-top:28px;margin-bottom:10px}
+blockquote.meta p{margin:5px 0}
+blockquote.key{font-family:var(--sans);font-size:15.5px;line-height:1.65;background:var(--paper);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:16px 20px;margin-top:18px}
+blockquote.key p{margin:0 0 6px}blockquote.key ul{margin:0}
+sup.cites{line-height:0;white-space:nowrap}
+a.cite{font-family:var(--sans);font-size:.62em;font-weight:600;color:var(--accent-ink);text-decoration:none;padding:0 1px;vertical-align:super}
+a.cite + a.cite::before{content:",";color:var(--muted);padding-right:1px}
+a.cite:hover{text-decoration:underline}
+/* tables */
+.tw{overflow-x:auto;margin:22px auto 30px}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.55}
+th{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--ink)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td code{white-space:nowrap}
+/* figures */
+figure{margin:34px auto 38px}
+figure img{display:block;margin:0 auto;background:var(--card);border-radius:4px}
+figure > img{background:var(--card)}
+figure{background:transparent}
+figure .frame{background:var(--paper);padding:22px;border-radius:6px}
+figcaption{display:grid;grid-template-columns:96px 1fr;gap:4px 16px;max-width:var(--col);margin:14px auto 0;font-family:var(--sans);font-size:13.5px;line-height:1.55}
+.fig-label{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;padding-top:2px}
+.fig-title{font-weight:600;color:var(--ink)}
+.fig-note{grid-column:2;color:var(--muted);font-size:12.5px}
+/* sources */
+h2#sources{margin-top:96px}
+ol.refs{font-family:var(--sans);font-size:13px;line-height:1.6;color:var(--ink-2);padding-left:2.4em}
+ol.refs li{margin:6px 0;word-break:break-all}
+ol.refs li:target{background:var(--accent-soft)}
+footer{max-width:var(--col);margin:0 auto;padding:30px 20px 70px;font-family:var(--sans);font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+@media (max-width:720px){
+  body{font-size:17px}
+  .nav .in{padding:12px 16px}.pill.opt{display:none}
+  .chap{top:53px}.toc-panel{top:90px}
+  header.hero{padding-top:40px}
+  main{padding:4px 16px 60px}
+  figure .frame{padding:12px}
+  figcaption{grid-template-columns:1fr}.fig-note{grid-column:1}
+  h2{font-size:23px;margin-top:64px}
+}
+</style>
+</head>
+<body>
+<div class="nav"><div class="in">
+  <a class="mark" href="#top">AI-VEHICLE-RESEARCH</a>
+  <a class="pill opt" href="autoware-foundation-stack-map.html">기본 디자인</a>
+  <a class="pill opt" href="autoware-foundation-stack-map.md">Markdown</a>
+  <button class="pill" id="themeBtn" type="button">다크</button>
+</div></div>
+<div class="chap" id="chap"><div class="in"><span class="lab" id="chapLabel"><b>Intro</b></span><span class="car">⌄</span></div></div>
+<nav class="toc-panel" aria-label="목차"><div class="in">{{TOC}}</div></nav>
+<header class="hero" id="top">
+  <div class="kicker">Research · Autoware Foundation · 17</div>
+  <h1>{{TITLE_MAIN}}</h1>
+  <p class="subtitle">{{TITLE_SUB}}</p>
+  <div class="updated">Last updated: 2026-10-30 · 2판</div>
+  <div class="hero-actions"><a class="pill" href="autoware-foundation-stack-map.md">Markdown 원본</a><a class="pill" href="#sources">출처 75건</a><a class="pill" href="reference/repo-inventory.md">저장소 157개 목록</a></div>
+  {{HERO}}
+</header>
+<main>
+{{BODY}}
+{{REFS}}
+</main>
+<footer>같은 폴더의 Markdown 원본에서 생성했다. 캡션에 "자체 작성"이라고 적은 그림 외에는 Autoware 문서·저장소의 원본 그림이다. 레이아웃은 공개 연구 보고서들의 형식(장 표시줄, 그림 카드, 번호 캡션)을 참고했다. · <a href="autoware-foundation-stack-map.html">기본 디자인으로 보기</a></footer>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  try{var s=localStorage.getItem('awf17-theme'); if(s) root.setAttribute('data-theme',s);}catch(e){}
+  function cur(){var t=root.getAttribute('data-theme'); if(t) return t; return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+  function lab(){btn.textContent=cur()==='dark'?'라이트':'다크';}
+  btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark'; root.setAttribute('data-theme',n); try{localStorage.setItem('awf17-theme',n);}catch(e){} lab();});
+  lab();
+  // 그림: 이미지를 종이색 프레임으로 감싼다
+  [].forEach.call(document.querySelectorAll('main figure > img'),function(img){var f=document.createElement('div'); f.className='frame'; img.parentNode.insertBefore(f,img); f.appendChild(img);});
+  // h2 번호 → Chapter 표기
+  var hs=[].slice.call(document.querySelectorAll('main h2'));
+  hs.forEach(function(h){var m=h.textContent.match(/^(\d+)\.\s*(.*)$/); var t=(m?m[2]:h.textContent).split(' — ')[0];
+    h.dataset.chap=(m?'Chapter '+('0'+m[1]).slice(-2):h.id==='sources'?'Sources':'Intro')+': '+t;
+    if(m){var s=document.createElement('span'); s.className='no'; s.textContent='Chapter '+('0'+m[1]).slice(-2); h.textContent=m[2]; h.insertBefore(s,h.firstChild);} });
+  var label=document.getElementById('chapLabel'), chap=document.getElementById('chap');
+  function upd(){var y=window.scrollY+130, c=null; hs.forEach(function(h){if(h.offsetTop<=y) c=h;}); var t=c?c.dataset.chap:'Intro: 개요'; var i=t.indexOf(':'); label.innerHTML='<b>'+t.slice(0,i)+':</b> '+t.slice(i+1);}
+  window.addEventListener('scroll',upd,{passive:true}); upd();
+  chap.addEventListener('click',function(){chap.classList.toggle('open');});
+  document.querySelectorAll('.toc-panel a').forEach(function(a){a.addEventListener('click',function(){chap.classList.remove('open');});});
+})();
+</script>
+</body>
+</html>
