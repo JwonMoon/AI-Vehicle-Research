@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="640" viewBox="0 0 1100 640" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif" role="img" aria-label="Wayve 생태계 관계도">
+<title>Wayve 생태계 관계도</title>
+<rect width="1100" height="640" fill="#ffffff"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker></defs>
+<rect x="400.0" y="262.0" width="300.0" height="116.0" rx="14" fill="#eef2ff" stroke="#4338ca" stroke-width="2.4"/>
+<text x="550.0" y="302.0" font-size="26" fill="#4338ca" font-weight="bold" text-anchor="middle">Wayve</text>
+<text x="550.0" y="328.0" font-size="14" fill="#1f2328" font-weight="bold" text-anchor="middle">AI Driver 소프트웨어 라이선스</text>
+<text x="550.0" y="352.0" font-size="12.5" fill="#59636e" font-weight="normal" text-anchor="middle">차량 제조·플릿 운영은 하지 않음</text>
+<rect x="30.0" y="20.0" width="330.0" height="200.0" rx="8" fill="#fff" stroke="#2563eb" stroke-width="1.6"/>
+<path d="M30.0,28.0 a8,8 0 0 1 8,-8 h314.0 a8,8 0 0 1 8,8 v20 h-330.0 z" fill="#2563eb"/>
+<text x="42.0" y="39.0" font-size="13.5" fill="#fff" font-weight="bold" text-anchor="start">투자자 · Series D (2026-02)</text>
+<text x="42.0" y="66.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">리드: Eclipse · Balderton · SoftBank VF2</text>
+<text x="42.0" y="85.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">기존: Microsoft · NVIDIA · Uber</text>
+<text x="42.0" y="105.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">OEM 첫 직접 투자: Mercedes · Nissan ·</text>
+<text x="42.0" y="124.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">  Stellantis</text>
+<text x="42.0" y="144.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">연장(2026-04): AMD · Arm · Qualcomm</text>
+<rect x="740.0" y="20.0" width="330.0" height="200.0" rx="8" fill="#fff" stroke="#2563eb" stroke-width="1.6"/>
+<path d="M740.0,28.0 a8,8 0 0 1 8,-8 h314.0 a8,8 0 0 1 8,8 v20 h-330.0 z" fill="#2563eb"/>
+<text x="752.0" y="39.0" font-size="13.5" fill="#fff" font-weight="bold" text-anchor="start">OEM 양산 계약</text>
+<text x="752.0" y="66.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Nissan — 확정 2025-12 · FY2027 일본</text>
+<text x="752.0" y="85.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Stellantis — 2026-05 · 2028 북미 (L2++)</text>
+<text x="752.0" y="105.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Mercedes-Benz — 확정 2026-09 · 2년 내</text>
+<text x="752.0" y="124.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">세 건 모두 차종·금액 비공개</text>
+<rect x="740.0" y="420.0" width="330.0" height="200.0" rx="8" fill="#fff" stroke="#059669" stroke-width="1.6"/>
+<path d="M740.0,428.0 a8,8 0 0 1 8,-8 h314.0 a8,8 0 0 1 8,8 v20 h-330.0 z" fill="#059669"/>
+<text x="752.0" y="439.0" font-size="13.5" fill="#fff" font-weight="bold" text-anchor="start">모빌리티 · 로보택시 (Uber)</text>
+<text x="752.0" y="466.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">런던 — 감독형 유료 서비스 운영 중</text>
+<text x="752.0" y="485.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">  (2026-09 개시, 안전 운전자 탑승)</text>
+<text x="752.0" y="505.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">도쿄 — Nissan LEAF 파일럿 MoU</text>
+<text x="752.0" y="524.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">  (2026년 말 목표, 미개시)</text>
+<text x="752.0" y="544.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Stellantis L4 — 3자 MoU (비구속)</text>
+<rect x="30.0" y="420.0" width="330.0" height="200.0" rx="8" fill="#fff" stroke="#7c3aed" stroke-width="1.6"/>
+<path d="M30.0,428.0 a8,8 0 0 1 8,-8 h314.0 a8,8 0 0 1 8,8 v20 h-330.0 z" fill="#7c3aed"/>
+<text x="42.0" y="439.0" font-size="13.5" fill="#fff" font-weight="bold" text-anchor="start">실리콘 · 컴퓨트 플랫폼</text>
+<text x="42.0" y="466.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">NVIDIA Orin — 런던 개발 플릿</text>
+<text x="42.0" y="485.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">NVIDIA Thor · Hyperion — LEAF, 프랑스</text>
+<text x="42.0" y="505.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Qualcomm Snapdragon Ride — 사전 통합</text>
+<text x="42.0" y="524.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">AMD · Arm — 통합 협력</text>
+<text x="42.0" y="544.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Mercedes 자체 HW + MB.OS</text>
+<rect x="400.0" y="470.0" width="300.0" height="72.0" rx="8" fill="#fff" stroke="#6b7280" stroke-width="1.6"/>
+<path d="M400.0,478.0 a8,8 0 0 1 8,-8 h284.0 a8,8 0 0 1 8,8 v20 h-300.0 z" fill="#6b7280"/>
+<text x="412.0" y="489.0" font-size="13.5" fill="#fff" font-weight="bold" text-anchor="start">Tier-1 시스템 통합</text>
+<text x="412.0" y="516.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Valeo — Nissan ProPILOT (2026-10)</text>
+<rect x="400.0" y="20.0" width="300.0" height="96.0" rx="8" fill="#fff" stroke="#d97706" stroke-width="1.6"/>
+<path d="M400.0,28.0 a8,8 0 0 1 8,-8 h284.0 a8,8 0 0 1 8,8 v20 h-300.0 z" fill="#d97706"/>
+<text x="412.0" y="39.0" font-size="13.5" fill="#fff" font-weight="bold" text-anchor="start">정부 · 규제</text>
+<text x="412.0" y="66.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">영국 — TfL PHV 면허, AV Act 2024</text>
+<text x="412.0" y="85.5" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">프랑스 — 정부 협력 선언 (2026-10)</text>
+<line x1="360.0" y1="150.0" x2="400.0" y2="276.0" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="362.0" y="236.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="middle">투자</text>
+<line x1="700.0" y1="276.0" x2="740.0" y2="150.0" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="740.0" y="236.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="middle">라이선스</text>
+<line x1="700.0" y1="364.0" x2="740.0" y2="490.0" stroke="#059669" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="740.0" y="404.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="middle">로보택시 탑재</text>
+<line x1="360.0" y1="490.0" x2="400.0" y2="364.0" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="362.0" y="404.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="middle">구동 플랫폼</text>
+<line x1="550.0" y1="470.0" x2="550.0" y2="378.0" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600.0" y="452.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="middle">통합</text>
+<line x1="550.0" y1="116.0" x2="550.0" y2="262.0" stroke="#d97706" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600.0" y="240.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="middle">인허가·협력</text>
+</svg>

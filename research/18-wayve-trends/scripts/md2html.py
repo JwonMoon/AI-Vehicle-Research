@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 사용: python3 -I scripts/md2html.py wayve-trends.md reference/references.md wayve-trends.html
-# 의존: pip install markdown. 본문의 [n] 인용 번호를 references.md의 n번 URL로 연결한 자체 완결 HTML을 만든다.
+# 의존: pip install markdown. 각주([^x])와 그림을 지원하며, 본문의 [n] 인용 번호를 references.md의 n번 URL로 연결한 자체 완결 HTML을 만든다.
 """Convert the report .md to self-contained HTML; numeric citation [n] becomes a link to source n's URL."""
 import html
 import pathlib
@@ -48,7 +48,10 @@ def repl(m: re.Match) -> str:
 
 body_md = re.sub(r"(?<!\w)\[(\d{1,3}(?:\s*,\s*\d{1,3})*)\](?!\()", repl, body_md)
 
-md = markdown.Markdown(extensions=["tables", "fenced_code", "toc", "sane_lists"], extension_configs={"toc": {"toc_depth": "2-3"}}, output_format="html5")
+# GitHub식 2칸 하위 목록을 Python-Markdown이 읽는 4칸으로 보정
+body_md = re.sub(r"^  (- |\d+\. )", r"    \1", body_md, flags=re.M)
+
+md = markdown.Markdown(extensions=["tables", "fenced_code", "toc", "sane_lists", "footnotes"], extension_configs={"toc": {"toc_depth": "2-3"}, "footnotes": {"BACKLINK_TEXT": "↩"}}, output_format="html5")
 body_html = md.convert(body_md)
 
 # 출처 목록은 번호 anchor를 붙여 별도 변환
@@ -91,6 +94,12 @@ hr{border:0;border-top:1px solid var(--line);margin:32px 0}
 code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:.9em}
 .toc{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px 20px;margin:20px 0;font-size:.92rem}
 .toc ul{margin:4px 0;padding-left:1.2em}
+img{max-width:100%;height:auto;display:block;margin:18px auto 6px;border:1px solid var(--line);border-radius:8px;background:#fff}
+p:has(> img) + p > em:only-child, p > em:only-child{display:block;text-align:center;color:var(--muted);font-size:.88rem;font-style:normal}
+.footnote{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);margin-top:32px}
+sup a.footnote-ref{font-size:.75em;padding:0 2px;border-radius:3px;background:var(--soft);border:1px solid var(--line)}
+ul ul{margin:2px 0}
+li{margin:3px 0}
 """
 
 out_html = f"""<!doctype html>

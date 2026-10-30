@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="470" viewBox="0 0 1180 470" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif" role="img" aria-label="같은 칩 위 모델 경쟁 구조">
+<title>같은 칩 위 모델 경쟁 구조</title>
+<rect width="1180" height="470" fill="#ffffff"/>
+<text x="22.0" y="34.0" font-size="15" fill="#1f2328" font-weight="bold" text-anchor="start">같은 칩 위의 모델 경쟁 — 차량 프로그램별 "주행 모델"과 "컴퓨트" 조합</text>
+<text x="22.0" y="102.0" font-size="13.5" fill="#59636e" font-weight="bold" text-anchor="start">차량 프로그램</text>
+<text x="22.0" y="206.0" font-size="13.5" fill="#59636e" font-weight="bold" text-anchor="start">주행 모델</text>
+<text x="22.0" y="306.0" font-size="13.5" fill="#59636e" font-weight="bold" text-anchor="start">컴퓨트</text>
+<rect x="150.0" y="60.0" width="160.0" height="84.0" rx="10" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="230.0" y="84.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">Nissan</text>
+<text x="230.0" y="106.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="middle">LEAF 로보택시</text>
+<text x="230.0" y="128.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">L4 · 시제차</text>
+<rect x="150.0" y="170.0" width="160.0" height="60.0" rx="10" fill="#eef2ff" stroke="#4338ca" stroke-width="1.8"/>
+<text x="230.0" y="206.0" font-size="13.5" fill="#4338ca" font-weight="bold" text-anchor="middle">Wayve AI Driver</text>
+<rect x="150.0" y="270.0" width="160.0" height="60.0" rx="10" fill="#f7fee7" stroke="#4d7c0f" stroke-width="1.8"/>
+<text x="230.0" y="296.0" font-size="13" fill="#4d7c0f" font-weight="bold" text-anchor="middle">NVIDIA Hyperion</text>
+<text x="230.0" y="316.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">듀얼 Thor</text>
+<line x1="230.0" y1="144.0" x2="230.0" y2="170.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<line x1="230.0" y1="230.0" x2="230.0" y2="270.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<rect x="320.0" y="60.0" width="160.0" height="84.0" rx="10" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="400.0" y="84.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">Stellantis</text>
+<text x="400.0" y="106.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="middle">프랑스 L4 실증</text>
+<text x="400.0" y="128.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">L4 · 2028~ 계획</text>
+<rect x="320.0" y="170.0" width="160.0" height="60.0" rx="10" fill="#eef2ff" stroke="#4338ca" stroke-width="1.8"/>
+<text x="400.0" y="206.0" font-size="13.5" fill="#4338ca" font-weight="bold" text-anchor="middle">Wayve AI Driver</text>
+<rect x="320.0" y="270.0" width="160.0" height="60.0" rx="10" fill="#f7fee7" stroke="#4d7c0f" stroke-width="1.8"/>
+<text x="400.0" y="296.0" font-size="13" fill="#4d7c0f" font-weight="bold" text-anchor="middle">NVIDIA Hyperion</text>
+<text x="400.0" y="316.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">+ Halos</text>
+<line x1="400.0" y1="144.0" x2="400.0" y2="170.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<line x1="400.0" y1="230.0" x2="400.0" y2="270.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<rect x="490.0" y="60.0" width="160.0" height="84.0" rx="10" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="570.0" y="84.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">Mercedes-Benz</text>
+<text x="570.0" y="106.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="middle">CLA</text>
+<text x="570.0" y="128.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">L2+ · 양산 중</text>
+<rect x="490.0" y="170.0" width="160.0" height="60.0" rx="10" fill="#f7fee7" stroke="#4d7c0f" stroke-width="1.8"/>
+<text x="570.0" y="206.0" font-size="13.5" fill="#4d7c0f" font-weight="bold" text-anchor="middle">NVIDIA DRIVE AV</text>
+<rect x="490.0" y="270.0" width="160.0" height="60.0" rx="10" fill="#f7fee7" stroke="#4d7c0f" stroke-width="1.8"/>
+<text x="570.0" y="296.0" font-size="13" fill="#4d7c0f" font-weight="bold" text-anchor="middle">NVIDIA Orin급</text>
+<text x="570.0" y="316.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">254 TOPS</text>
+<line x1="570.0" y1="144.0" x2="570.0" y2="170.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<line x1="570.0" y1="230.0" x2="570.0" y2="270.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<rect x="660.0" y="60.0" width="160.0" height="84.0" rx="10" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="740.0" y="84.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">Mercedes-Benz</text>
+<text x="740.0" y="106.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="middle">미래 차종</text>
+<text x="740.0" y="128.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">주행보조 · 2년 내</text>
+<rect x="660.0" y="170.0" width="160.0" height="60.0" rx="10" fill="#eef2ff" stroke="#4338ca" stroke-width="1.8"/>
+<text x="740.0" y="206.0" font-size="13.5" fill="#4338ca" font-weight="bold" text-anchor="middle">Wayve AI Driver</text>
+<rect x="660.0" y="270.0" width="160.0" height="60.0" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.8"/>
+<text x="740.0" y="296.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="middle">Mercedes 자체 HW</text>
+<text x="740.0" y="316.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">+ MB.OS</text>
+<line x1="740.0" y1="144.0" x2="740.0" y2="170.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<line x1="740.0" y1="230.0" x2="740.0" y2="270.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<rect x="830.0" y="60.0" width="160.0" height="84.0" rx="10" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="910.0" y="84.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">Stellantis</text>
+<text x="910.0" y="106.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="middle">북미 차종</text>
+<text x="910.0" y="128.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">L2++ · 2028</text>
+<rect x="830.0" y="170.0" width="160.0" height="60.0" rx="10" fill="#eef2ff" stroke="#4338ca" stroke-width="1.8"/>
+<text x="910.0" y="206.0" font-size="13.5" fill="#4338ca" font-weight="bold" text-anchor="middle">Wayve AI Driver</text>
+<rect x="830.0" y="270.0" width="160.0" height="60.0" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.8"/>
+<text x="910.0" y="296.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="middle">STLA AutoDrive</text>
+<text x="910.0" y="316.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">SoC 비공개</text>
+<line x1="910.0" y1="144.0" x2="910.0" y2="170.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<line x1="910.0" y1="230.0" x2="910.0" y2="270.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<rect x="1000.0" y="60.0" width="160.0" height="84.0" rx="10" fill="#fff" stroke="#d1d9e0" stroke-width="1.2"/>
+<text x="1080.0" y="84.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="middle">Stellantis</text>
+<text x="1080.0" y="106.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="middle">Peugeot · Jeep</text>
+<text x="1080.0" y="128.0" font-size="12" fill="#59636e" font-weight="normal" text-anchor="middle">ADAS · DSAT 계열</text>
+<rect x="1000.0" y="170.0" width="160.0" height="60.0" rx="10" fill="#fff7ed" stroke="#c2410c" stroke-width="1.8"/>
+<text x="1080.0" y="206.0" font-size="13.5" fill="#c2410c" font-weight="bold" text-anchor="middle">Momenta</text>
+<rect x="1000.0" y="270.0" width="160.0" height="60.0" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.8"/>
+<text x="1080.0" y="296.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="middle">비공개</text>
+<line x1="1080.0" y1="144.0" x2="1080.0" y2="170.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<line x1="1080.0" y1="230.0" x2="1080.0" y2="270.0" stroke="#d1d9e0" stroke-width="1.4"/>
+<rect x="150.0" y="360.0" width="18.0" height="18.0" rx="4" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
+<text x="176.0" y="374.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Wayve</text>
+<rect x="246.2" y="360.0" width="18.0" height="18.0" rx="4" fill="#f7fee7" stroke="#4d7c0f" stroke-width="1.6"/>
+<text x="272.2" y="374.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">NVIDIA</text>
+<rect x="349.8" y="360.0" width="18.0" height="18.0" rx="4" fill="#fff7ed" stroke="#c2410c" stroke-width="1.6"/>
+<text x="375.8" y="374.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">Momenta</text>
+<rect x="460.5" y="360.0" width="18.0" height="18.0" rx="4" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.6"/>
+<text x="486.5" y="374.0" font-size="12.5" fill="#1f2328" font-weight="normal" text-anchor="start">OEM 자체·비공개</text>
+<text x="150.0" y="410.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="start">NVIDIA는 Wayve의 투자자이자 컴퓨트 공급자이면서, Mercedes CLA에는 자사 모델을 직접 공급하는 경쟁자다.</text>
+<text x="150.0" y="436.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">Mercedes·Stellantis는 모두 두 곳 이상의 주행 모델 공급사를 병행한다.</text>
+</svg>

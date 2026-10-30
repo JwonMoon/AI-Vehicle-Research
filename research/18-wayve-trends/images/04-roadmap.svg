@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="560" viewBox="0 0 1180 560" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif" role="img" aria-label="Wayve 상용화 로드맵 — 실제와 계획">
+<title>Wayve 상용화 로드맵 — 실제와 계획</title>
+<rect width="1180" height="560" fill="#ffffff"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker></defs>
+<text x="20.0" y="30.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">실선·채움 = 실제(체결·운영)   점선·빈 상자 = 공식 목표(미실현)</text>
+<line x1="300.0" y1="60.0" x2="300.0" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="422.2" y1="60.0" x2="422.2" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="426.2" y="54.0" font-size="13" fill="#59636e" font-weight="bold" text-anchor="start">2026</text>
+<line x1="542.4" y1="60.0" x2="542.4" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="664.6" y1="60.0" x2="664.6" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="668.6" y="54.0" font-size="13" fill="#59636e" font-weight="bold" text-anchor="start">2027</text>
+<line x1="784.8" y1="60.0" x2="784.8" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="907.0" y1="60.0" x2="907.0" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="911.0" y="54.0" font-size="13" fill="#59636e" font-weight="bold" text-anchor="start">2028</text>
+<line x1="1027.8" y1="60.0" x2="1027.8" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<line x1="1150.0" y1="60.0" x2="1150.0" y2="520.0" stroke="#e5e7eb" stroke-width="1"/>
+<rect x="14.0" y="70.0" width="1152.0" height="54.0" rx="6" fill="#f6f8fa" stroke="none" stroke-width="1.2"/>
+<text x="28.0" y="102.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">런던 Uber 로보택시</text>
+<rect x="584.9" y="88.0" width="37.9" height="18.0" rx="4" fill="#059669" stroke="#059669" stroke-width="1.2"/>
+<text x="578.9" y="102.0" font-size="12" fill="#059669" font-weight="bold" text-anchor="end">감독형 유료 서비스 운영 중</text>
+<text x="633.4" y="102.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="start">→ 무인 전환: APS 허가 필요 · 일정 미정</text>
+<text x="28.0" y="156.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">도쿄 Uber 파일럿</text>
+<circle cx="468.7" cy="151.0" r="6" fill="#059669"/>
+<text x="468.7" y="139.0" font-size="11.5" fill="#059669" font-weight="bold" text-anchor="middle">MoU</text>
+<rect x="603.5" y="140.0" width="60.4" height="22.0" rx="4" fill="#fff" stroke="#059669" stroke-width="1.6" stroke-dasharray="5,3"/>
+<text x="671.9" y="156.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="start">2026년 말 목표</text>
+<rect x="14.0" y="178.0" width="1152.0" height="54.0" rx="6" fill="#f6f8fa" stroke="none" stroke-width="1.2"/>
+<text x="28.0" y="210.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">Nissan 차세대 ProPILOT</text>
+<circle cx="407.6" cy="205.0" r="6" fill="#2563eb"/>
+<text x="407.6" y="193.0" font-size="11.5" fill="#2563eb" font-weight="bold" text-anchor="middle">확정계약</text>
+<rect x="724.3" y="194.0" width="242.4" height="22.0" rx="4" fill="#fff" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5,3"/>
+<text x="845.5" y="210.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="middle">FY2027 첫 모델(일본)</text>
+<text x="28.0" y="264.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">Mercedes-Benz</text>
+<circle cx="597.5" cy="259.0" r="6" fill="#2563eb"/>
+<text x="597.5" y="247.0" font-size="11.5" fill="#2563eb" font-weight="bold" text-anchor="middle">확정계약</text>
+<rect x="597.5" y="248.0" width="485.4" height="22.0" rx="4" fill="#fff" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5,3"/>
+<text x="840.2" y="264.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="middle">"향후 2년 내" 고객 제공</text>
+<rect x="14.0" y="286.0" width="1152.0" height="54.0" rx="6" fill="#f6f8fa" stroke="none" stroke-width="1.2"/>
+<text x="28.0" y="318.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">Stellantis L2++</text>
+<circle cx="515.2" cy="313.0" r="6" fill="#2563eb"/>
+<text x="515.2" y="301.0" font-size="11.5" fill="#2563eb" font-weight="bold" text-anchor="middle">파트너십</text>
+<rect x="907.0" y="302.0" width="242.4" height="22.0" rx="4" fill="#fff" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5,3"/>
+<text x="1028.1" y="318.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="middle">2028 북미 첫 양산</text>
+<text x="28.0" y="372.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">Stellantis·Uber L4</text>
+<circle cx="533.1" cy="367.0" r="6" fill="#2563eb"/>
+<text x="533.1" y="355.0" font-size="11.5" fill="#2563eb" font-weight="bold" text-anchor="middle">MoU(비구속)</text>
+<text x="555.0" y="372.0" font-size="12" fill="#59636e" font-weight="bold" text-anchor="start">→ 차종·시장·일정 미정</text>
+<rect x="14.0" y="394.0" width="1152.0" height="54.0" rx="6" fill="#f6f8fa" stroke="none" stroke-width="1.2"/>
+<text x="28.0" y="426.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">프랑스 L4 (Greater Paris)</text>
+<circle cx="618.1" cy="421.0" r="6" fill="#2563eb"/>
+<text x="618.1" y="409.0" font-size="11.5" fill="#2563eb" font-weight="bold" text-anchor="middle">협력 선언</text>
+<rect x="907.0" y="410.0" width="242.4" height="22.0" rx="4" fill="#fff" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5,3"/>
+<text x="1028.1" y="426.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="middle">2028~ 실증 계획</text>
+<text x="28.0" y="480.0" font-size="13.5" fill="#1f2328" font-weight="bold" text-anchor="start">영국 AV Act 2024</text>
+<circle cx="511.2" cy="475.0" r="6" fill="#d97706"/>
+<text x="511.2" y="463.0" font-size="11.5" fill="#d97706" font-weight="bold" text-anchor="middle">APS 허가제 발효</text>
+<circle cx="668.6" cy="475.0" r="6" fill="#d97706"/>
+<text x="668.6" y="497.0" font-size="11.5" fill="#d97706" font-weight="bold" text-anchor="middle">마케팅 규제</text>
+<rect x="784.8" y="464.0" width="121.5" height="22.0" rx="4" fill="#fff" stroke="#d97706" stroke-width="1.6" stroke-dasharray="5,3"/>
+<text x="845.5" y="480.0" font-size="12" fill="#1f2328" font-weight="normal" text-anchor="middle">전면 시행 목표</text>
+<line x1="622.7" y1="60.0" x2="622.7" y2="520.0" stroke="#dc2626" stroke-width="1.4" stroke-dasharray="4,3"/>
+<text x="622.7" y="538.0" font-size="11.5" fill="#dc2626" font-weight="bold" text-anchor="middle">조사일 2026-10-30</text>
+</svg>

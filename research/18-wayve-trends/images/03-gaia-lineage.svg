@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="330" viewBox="0 0 1180 330" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif" role="img" aria-label="GAIA 세계모델 계보">
+<title>GAIA 세계모델 계보</title>
+<rect width="1180" height="330" fill="#ffffff"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#59636e"/></marker></defs>
+<text x="22.0" y="34.0" font-size="15" fill="#1f2328" font-weight="bold" text-anchor="start">GAIA 세계모델 계보 — 용도가 "데이터 생성"에서 "안전 검증 인프라"로 이동</text>
+<rect x="22.0" y="64.0" width="250.0" height="170.0" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="38.0" y="98.0" font-size="20" fill="#7c3aed" font-weight="bold" text-anchor="start">GAIA-1</text>
+<text x="256.0" y="96.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="end">2023-10</text>
+<text x="38.0" y="134.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">비디오·텍스트·행동 조건</text>
+<text x="38.0" y="158.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">생성형 세계모델 · 9B</text>
+<rect x="38.0" y="190.0" width="218.0" height="30.0" rx="15" fill="#fff" stroke="#7c3aed" stroke-width="1.2"/>
+<text x="147.0" y="210.0" font-size="13" fill="#7c3aed" font-weight="bold" text-anchor="middle">용도: 생성 데모</text>
+<line x1="276.0" y1="149.0" x2="316.0" y2="149.0" stroke="#59636e" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="320.0" y="64.0" width="250.0" height="170.0" rx="12" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="336.0" y="98.0" font-size="20" fill="#7c3aed" font-weight="bold" text-anchor="start">GAIA-2</text>
+<text x="554.0" y="96.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="end">2025-03</text>
+<text x="336.0" y="134.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">잠재 확산 · 멀티뷰</text>
+<text x="336.0" y="158.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">최대 5카메라 동시 생성</text>
+<rect x="336.0" y="190.0" width="218.0" height="30.0" rx="15" fill="#fff" stroke="#7c3aed" stroke-width="1.2"/>
+<text x="445.0" y="210.0" font-size="13" fill="#7c3aed" font-weight="bold" text-anchor="middle">용도: 합성 데이터</text>
+<line x1="574.0" y1="149.0" x2="614.0" y2="149.0" stroke="#59636e" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="618.0" y="64.0" width="250.0" height="170.0" rx="12" fill="#c4b5fd" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="634.0" y="98.0" font-size="20" fill="#7c3aed" font-weight="bold" text-anchor="start">GAIA-3</text>
+<text x="852.0" y="96.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="end">2025-12</text>
+<text x="634.0" y="134.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">15B · 데이터 10배</text>
+<text x="634.0" y="158.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">World-on-Rails 교란</text>
+<rect x="634.0" y="190.0" width="218.0" height="30.0" rx="15" fill="#fff" stroke="#7c3aed" stroke-width="1.2"/>
+<text x="743.0" y="210.0" font-size="13" fill="#7c3aed" font-weight="bold" text-anchor="middle">용도: 오프라인 평가</text>
+<line x1="872.0" y1="149.0" x2="912.0" y2="149.0" stroke="#59636e" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="916.0" y="64.0" width="250.0" height="170.0" rx="12" fill="#a78bfa" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="932.0" y="98.0" font-size="20" fill="#3b0764" font-weight="bold" text-anchor="start">GAIA-4</text>
+<text x="1150.0" y="96.0" font-size="13" fill="#1f2328" font-weight="bold" text-anchor="end">2026-08</text>
+<text x="932.0" y="134.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">AI Driver in-the-loop</text>
+<text x="932.0" y="158.0" font-size="13" fill="#1f2328" font-weight="normal" text-anchor="start">반응형 에이전트 · 합성 레이더</text>
+<rect x="932.0" y="190.0" width="218.0" height="30.0" rx="15" fill="#fff" stroke="#7c3aed" stroke-width="1.2"/>
+<text x="1041.0" y="210.0" font-size="13" fill="#7c3aed" font-weight="bold" text-anchor="middle">용도: 폐루프 검증</text>
+<text x="22.0" y="276.0" font-size="13" fill="#59636e" font-weight="normal" text-anchor="start">GAIA-3·4는 논문 없이 블로그로 공개 · 가중치 비공개 · 성능 주장은 모두 Wayve 자체 주장(독립 검증 없음).</text>
+<text x="22.0" y="300.0" font-size="13" fill="#59636e" font-weight="normal" text-anchor="start">GAIA-4 메시지: "검증은 도로 주행 거리가 아니라 컴퓨트로 확장된다" (Simulation 2.0).</text>
+</svg>
