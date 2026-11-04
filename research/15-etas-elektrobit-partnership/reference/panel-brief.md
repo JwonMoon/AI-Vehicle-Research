@@ -1,6 +1,6 @@
 # ETAS × Elektrobit 패널 토론 — 요약
 
-- 자료: 양사 공동 웨비나 패널 토론, 영문 자동 전사본 (녹화일 미기재, 2026-06~10 추정)
+- 자료: 양사 공동 웨비나 패널 토론(2026-10-06, Mobex 주최 "Elektrobit and ETAS: accelerating the future of ADAS through strategic partnership"), 영문 자동 전사본
 - 정리일: 2026-11-04
 - 원문: [영문 전사](panel-transcript-raw-en.md) · [줄 단위 해석](panel-transcript-line-by-line-ko.md)
 - 참석: Björn Reistel(ETAS, 오픈소스 커뮤니티) · Subhash Sindhya(ETAS, 컴퓨트 제품 총괄) · Isaac Trebs(EB, Linux for Safety Applications PM) · Moritz Neukirchner(EB, HPC·SDV 사업) · 사회 Anton(EB)

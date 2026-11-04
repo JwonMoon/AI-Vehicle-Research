@@ -1,7 +1,7 @@
 # ETAS × Elektrobit 패널 토론 — 영문 자동 전사 원문
 
 - 출처: 사용자가 제공한 웨비나 자동 전사본(ASR). 화자·제품명 오기가 많음(ETAs→ETAS, ElectraBit→Elektrobit, EDAS/Adidas→ADAS, Corbus/Corvus→corbos, S-Core/ESCO/escrow→S-CORE 등).
-- 녹화 일자: 전사본에 없음. 본문에 "JSAE in Tokyo a few months ago"(2026-05 발표)와 "ETAS Connections, 20th of October in Stuttgart"(예정)가 언급되므로 2026-06 ~ 2026-10 사이로 추정.
+- 녹화 일자: 2026-10-06 (Mobex 주최 웨비나 "Elektrobit and ETAS: accelerating the future of ADAS through strategic partnership" — 2026-11-04 확인). 전사본 자체에는 날짜가 없음.
 - 정리본: [`panel-summary-ko.md`](panel-summary-ko.md) · 줄 단위 해석: [`panel-transcript-line-by-line-ko.md`](panel-transcript-line-by-line-ko.md)
 
 ---

@@ -1,8 +1,8 @@
 # ETAS × Elektrobit 파트너십 — 두 회사는 누구이고, 무엇을 팔며, 왜 손을 잡았나
 
-> **작성일**: 2026-10-06 · **2판** 2026-11-04 (가독성 개선 — 장별 요점 박스, 글머리 재구성, 출처를 키로 정리)
+> **작성일**: 2026-10-06 · **2판** 2026-11-04 (가독성 개선 — 장별 요점 박스, 글머리 재구성, 출처를 키로 정리 · §4.1 후속 동향 추가, 패널 토론 날짜 확정, S-CORE 버전 갱신) · **요약판**: [etas-elektrobit-partnership-brief.md](etas-elektrobit-partnership-brief.md)
 > **배경**: 두 회사가 공동 진행한 웨비나형 패널 토론(영문 자동 전사본)을 바탕으로, 두 회사를 처음 접하는 독자도 이해할 수 있게 정리한다. ① 각 회사가 무엇을 하고 무엇을 파는지, ② 이번에 합친 제품이 무엇인지, ③ 왜 손을 잡았고 합의점을 어디서 찾았는지. 합의점은 패널 토론 외에 보도자료·언론·오픈소스 프로젝트 공개 자료로 보강했다.
-> **출처 표기**: 사실 문장 끝에 출처 키를 단다. 🎙️ = 패널 토론([원문](reference/panel-transcript-raw-en.md) · [글머리 정리](reference/panel-summary-ko.md)) · `[A1]`~`[D6]` = [출처 기록](reference/references.md)의 표 번호(A 발표 · B Elektrobit · C ETAS · D S-CORE) · ⚠️ = 미확인 또는 본 보고서의 해석.
+> **출처 표기**: 사실 문장 끝에 출처 키를 단다. 🎙️ = 패널 토론(2026-10-06 Mobex 웨비나, [원문](reference/panel-transcript-raw-en.md) · [요약](reference/panel-brief.md)) · `[A1]`~`[E8]` = [출처 기록](reference/references.md)의 표 번호(A 발표 · B Elektrobit · C ETAS · D S-CORE · E 후속 동향) · ⚠️ = 미확인 또는 본 보고서의 해석.
 > **조사 제약**: 네트워크 정책으로 etas.com·elektrobit.com·보도자료 전재 사이트·Eclipse 사이트 대부분을 직접 열지 못했다. 외부 출처는 **웹 검색이 돌려준 본문 발췌**로 확인했으며, 직접 열람한 것은 Canonical 블로그 1건이다. 상세는 [출처 기록](reference/references.md).
 
 ---
@@ -24,7 +24,7 @@
 | EB corbos Linux for Safety Applications | TÜV Nord 긍정 평가 ISO 26262 **ASIL B** / IEC 61508 SIL 2 · 최대 15년 유지보수 | [B7] |
 | EDMS | 제로카피 IPC **10 GB/s 이상** · ASIL-D까지 지원 | [C5][C7] |
 | 통합 솔루션 | **ASIL-B** · 2026-05-27 첫 공개 · 파일럿 가용, 양산 사례 0 | [A1][A6] |
-| S-CORE 레퍼런스 OS | QNX · Red Hat AutoSD · **EB corbos Linux for Safety Applications** (0.5-alpha 2025-11, 0.6.0 2026-02) | [D2][D3] |
+| S-CORE 레퍼런스 OS | QNX · Red Hat AutoSD · **EB corbos Linux for Safety Applications** (0.5-alpha 2025-11, 0.6.0 2026-02 · 최신 0.9 2026-07~09) | [D2][D3][E6] |
 
 ---
 
@@ -191,7 +191,8 @@
 **배경 — Eclipse S-CORE란**
 - Eclipse 재단 SDV 워킹그룹 산하 오픈소스 프로젝트(Eclipse Safe Open Vehicle Core). OS와 애플리케이션 사이에서 오케스트레이션·프로세스 간 통신(IPC)·로깅·데이터 영속성 같은, **모든 SDV가 필요로 하지만 차별화 요소는 아닌 기본 서비스**를 제공한다. [D1]
 - 2024년 Accenture·BMW·ETAS·Mercedes-Benz·Qorix가 시작. Bosch·QNX가 참여하고 2025-11 Qualcomm 합류. 2025-06 유럽 자동차 업계가 오픈소스 지지 MoU를 체결했고 S-CORE가 대표 사례. [D1][D2]
-- 첫 공개 릴리스 0.5-alpha 2025-11-17, 0.6.0 2026-02(C++·Rust 이중 언어). [D2][D3]
+- 첫 공개 릴리스 0.5-alpha 2025-11-17, 0.6.0 2026-02(C++·Rust 이중 언어), 0.7 2026-04~05, 0.9 2026-07~09(발표일 출처 간 상이 ⚠️). 1.0은 양산 적용 가능 수준을 목표로 한다. [D2][D3][E6]
+- 참여사 목록에는 Accenture·**Aumovio SE**·BMW·Elektrobit·ETAS 등이 올라 있다. Elektrobit의 모회사도 직접 참여한다는 뜻이다. [E6]
 
 **ETAS가 S-CORE를 시작한 이유**
 - Subhash Sindhya: "HPC가 도입된 지 7~8년이 지났는데 컴퓨트 소프트웨어 시장은 여전히 파편화되어 있다. 고객과 '어디서 비용을 나누고 공동 투자할 수 있나'를 논의할 때마다 이 레이어가 거론됐고, 그것이 Eclipse에서 S-CORE를 시작한 계기다." 🎙️
@@ -253,9 +254,39 @@
 | 2026-02 | S-CORE 0.6.0(C++·Rust 이중 언어, 세 플랫폼 지원 강화) | [D3] |
 | 2026-02-24 | EB corbos Linux for Safety Applications, Mobileye Drive 통합 발표 | [B9] |
 | **2026-05-27~29** | **요코하마 JSAE에서 통합 ADAS 소프트웨어 기반 첫 공개.** MONOist "금단의 태그" 보도, MarkLines가 ETAS K.K. 사장 미즈모토 분고·Elektrobit Japan 사장 가와이 아키히코 인터뷰 | [A1][A6][A7][A8] |
-| 2026-06~10 (추정) | 본 패널 토론 웨비나 (날짜 미기재 ⚠️) | 🎙️ |
-| 2026-10-20 | ETAS Connections, 슈투트가르트 — 공동 데모 예고 (행사 페이지 미확인 ⚠️) | 🎙️ |
+| 2026-06-10~11 | Bosch Connected World, ETAS가 S-CORE 기반 Vehicle Software Platform Suite 시연 | [E5] |
+| 2026-07~09 | S-CORE 0.9 마일스톤 릴리스 | [E6] |
+| **2026-10-06** | **본 패널 토론 웨비나** — Mobex 주최 "Elektrobit and ETAS: accelerating the future of ADAS through strategic partnership" | [E1] 🎙️ |
+| 2026-10-15 | Elektrobit–Microchip 사전 통합 AUTOSAR 협력 발표(Elektrobit 단독) | [E3] |
+| 2026-10-20 | ETAS Connections, 슈투트가르트 Wagenhallen — S-CORE 폐막 패널, VSP Suite Experience Package 0.6 데모. Elektrobit 공동 데모는 공개 기록에서 미확인 ⚠️ | [E2] |
 | 미정 | 첫 양산(SOP) 적용 — 양측이 꼽은 다음 마일스톤 | 🎙️ |
+
+### 4.1 후속 동향 (2026-11-04 기준)
+
+> **요점** — 패널 토론 뒤 한 달간 두 회사의 **새 공동 발표는 없다.** 웨비나 날짜가 확정됐고, ETAS Connections는 S-CORE 중심으로 진행됐으며, S-CORE는 0.9까지 나왔다. 각사 단독 활동만 이어졌다.
+
+**공동**
+- 패널 토론은 2026-10-06 Mobex 주최 웨비나 "Elektrobit and ETAS: accelerating the future of ADAS through strategic partnership"로 확인됐다. 1판의 "날짜 미기재(2026-06~10 추정)"를 확정한다. 녹화·자료는 Elektrobit Tech corner 다운로드 센터에 게재된 것으로 보인다. [E1]
+- 그 외 공동 보도자료, SOP 공표, 고객명 공개는 없었다. [E4][E7]
+- Mobex의 다른 웨비나 연사 목록에는 Elektrobit PM이 "Isaac **Trefz**"로 나온다. 전사본의 "Isaac Trebs"는 오기일 가능성이 크다. 확정하지 못했다. ⚠️ [E1]
+
+**ETAS Connections 2026 (10-20, 슈투트가르트 Wagenhallen)** [E2]
+- Bosch 공동 주최, 약 400명 규모. 폐막 패널 "The Moment of Delivery: Turning Our Promise into Reality with Eclipse S-CORE"에 ETAS·Bosch·Mercedes-Benz·Eclipse 재단이 참여했다.
+- 현장 데모: Vehicle SW Platform Suite Experience Package 0.6(S-CORE 0.9 기반)을 하드웨어에서 시연.
+- 패널에서 예고한 Elektrobit 공동 데모는 행사 페이지·회고 글에서 확인되지 않았다. 데모가 없었다는 뜻이 아니라 공개 기록이 없다는 뜻이다. ⚠️
+
+**Elektrobit 단독**
+- 10-15 Microchip과 사전 통합 AUTOSAR(EB tresos MCAL, SAMA5 마이크로프로세서) 협력 발표. 아시아 시장 우선. [E3]
+- 10-29 Integration-as-code가 Gasgoo Awards 2026 Best Technical Practice 수상(회사 사이트 기준). [E4]
+
+**Eclipse S-CORE** [E6]
+- 0.9 마일스톤 릴리스. 발표일은 출처마다 7-28 / 9-09 / 9-24로 다르다. 통합 전략 일원화, 설정 관리 서비스 신설, 툴체인 갱신이 골자다.
+- 참여사 목록에 **Aumovio SE**가 직접 올라 있다. §3.2의 "Elektrobit의 S-CORE 참여가 결정적 신호" 논지를 모회사 차원에서 보강하는 사실이다.
+
+**ETAS 단독**
+- 06-10~11 Bosch Connected World에서 S-CORE 기반 Vehicle Software Platform Suite를 시연했다. 10~11월 신규 보도자료는 검색상 없다. [E5][E7]
+
+**모니터링 기준(⚠️ 해석)** — SOP 공표, 고객명 공개, 통합 솔루션의 ASIL 수준 변화, S-CORE 1.0 릴리스, ETAS General Purpose 프로파일의 S-CORE 전환 완료.
 
 ---
 
@@ -275,7 +306,7 @@
 
 - **ASIL-B 상한.** 통합 솔루션은 ASIL-B다(§2.3). ASIL-D 기능은 별도 구조가 필요하다.
 - **양산 실적 부재.** 2026-11 현재 공개된 것은 "평가·파일럿 가능" 단계이고, SOP 사례는 없다. 양측도 이를 다음 목표로 명시했다.
-- **S-CORE 성숙도.** S-CORE는 0.6 단계이고, ETAS General Purpose 프로파일의 S-CORE 전환도 "진행 중"이다. ADAS 프로파일(EDMS)은 S-CORE와 별개 코드베이스이며, "S-CORE 기반 플랫폼과의 추가 통합"은 로드맵 사항이다. 🎙️ [C6]
+- **S-CORE 성숙도.** S-CORE는 0.9 단계(1.0 목표)이고, ETAS General Purpose 프로파일의 S-CORE 전환도 "진행 중"(Experience Package 0.6)이다. ADAS 프로파일(EDMS)은 S-CORE와 별개 코드베이스이며, "S-CORE 기반 플랫폼과의 추가 통합"은 로드맵 사항이다. 🎙️ [C6]
 - **경쟁 영역의 긴장.** Adaptive AUTOSAR/HPC 미들웨어에서 두 회사는 여전히 경쟁한다. 고객이 EB corbos AdaptiveCore와 ETAS 미들웨어를 함께 쓸 때 누가 통합 책임을 지는지는 공개 자료에 없다.
 - **모회사 변수.** Elektrobit의 모회사가 Continental에서 AUMOVIO로 바뀌었고 2025년 감원을 겪었다. 파트너십의 지속성은 양 그룹의 전략에 따라 달라질 수 있다. [B2][B4]
 
@@ -326,3 +357,5 @@
 | C4 · C5 · C6 · C7 | ETAS VSP Suite 플라이어 · ADAS/AD 프로파일 · General Purpose 프로파일 · EDMS 공개 문서 |
 | C9 · C10 | ESCRYPT 제품 · ETAS×ThunderSoft(2025) |
 | D1 · D2 · D3 · D4 | S-CORE 출범(Eclipse 뉴스룸) · 0.5-alpha(2025-11-17) · 0.6.0(2026-02) · Eclipse S-CORE articles(OCX 2026 시연) |
+| E1 · E2 · E3 · E4 | Mobex 웨비나(2026-10-06) · ETAS Connections 2026 행사 페이지·10times · Elektrobit–Microchip(2026-10-15) · Elektrobit 뉴스룸·블로그(Gasgoo 수상, JSAE 회고) |
+| E5 · E6 · E7 · E8 | Bosch Connected World 2026(ETAS 보도자료) · S-CORE 0.9(Eclipse 뉴스레터·articles) · ETAS 뉴스룸 2026-10~11 검색 · Ahmann·Reistel S-CORE 1.0 로드맵 슬라이드 |

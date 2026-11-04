@@ -89,13 +89,29 @@
 | D5 | [Ahmann·Reistel(ETAS) 발표 슬라이드 2026-02-24](https://eclipsesdv.org/wp-content/uploads/2025/12/2-AhmannReistel-20260224_Eclipse_Community_Day_in_Bonn_S-CORE.pdf) | 🔍 (미열람) ⚠️ | Björn Reistel(패널 참석자)이 Eclipse 커뮤니티 데이에서 S-CORE 발표한 사실만 확인 |
 | D6 | [VDA 2026-01-07: 오픈소스 협업 모멘텀](https://www.vda.de/en/press/press-releases/2026/260107_Automotive-innovation-through-open-collaboration--Momentum-builds-around-open-source-software-as-a-key-driver-of-efficiency-and-success) | 🔍 (검색 발췌) | 독일 자동차산업협회의 오픈소스 지지 보도자료 존재 확인. 본문 미열람 |
 
-### E. 확인하지 못한 항목
+### E. 후속 동향 (2026-11-04 추가 조사)
+
+조사일 2026-11-04. 원문 사이트(mobex.io·etas.com·elektrobit.com·eclipse.dev·marklines.com) 직접 열람은 모두 실패(DNS 차단), 웹 검색 발췌로 확인.
+
+| # | 출처 | 등급 | 확인 내용 |
+|---|---|---|---|
+| E1 | [Mobex 웨비나: Elektrobit and ETAS — accelerating the future of ADAS through strategic partnership](https://mobex.io/webinars/elektrobit-and-etas-accelerating-the-future-of-adas-through-strategic-partnership/) · [Elektrobit Tech corner](https://www.elektrobit.com/tech-corner/) | 📰 (검색 발췌) | 2026-10-06 13:00(슈투트가르트) 공동 웨비나 = 본 패널 토론. 연사 중 "Chief Product Manager, Compute Middleware, ETAS" 표기. Mobex 다른 웨비나 연사 목록에 Elektrobit "Isaac Trefz" 등재(전사본 "Trebs" 오기 가능성 ⚠️). 자료는 Tech corner 다운로드 센터 |
+| E2 | [ETAS Connections 2026 행사 페이지](https://www.etas.com/ww/en/about-etas/events/etas-connections/) · [10times 리스팅](https://10times.com/e1ks-0kp8-f2x5) · ETAS LinkedIn 게시물(검색 발췌) | 🔍·📰 (검색 발췌) | 2026-10-20 09:00~20:00, 슈투트가르트 Wagenhallen, Bosch 공동 주최, 약 400명. 오프닝 패널 "AI in the driver's seat: From vision to volume", 폐막 패널 "The Moment of Delivery: Turning Our Promise into Reality with Eclipse S-CORE"(ETAS·Bosch·Mercedes-Benz·Eclipse 재단). 데모: VSP Suite Experience Package 0.6, S-CORE 0.9 기반. Elektrobit 언급 없음 |
+| E3 | [Microchip 보도자료 2026-10-15](https://www.microchip.com/en-us/about/news-releases/products/elektrobit-and-microchip-collaborate-on-pre-integrated-autosar-solutions) · [Automotive World](https://www.automotiveworld.com/news/elektrobit-brings-autosar-base-software-to-microchip-chips/) | 🔍·📰 (검색 발췌) | Elektrobit–Microchip 사전 통합 AUTOSAR MCAL(EB tresos), SAMA5 우선 지원, Integration-as-code 적용, 아시아 시장 우선 |
+| E4 | [Elektrobit 뉴스룸](https://www.prnewswire.com/news/elektrobit/) · [Elektrobit 블로그](https://www.elektrobit.com/blog/) | 📰 (검색 발췌) | 2026-10-29 Integration-as-code Gasgoo Awards 2026 Best Technical Practice 수상. 블로그 JSAE 회고(SOP 언급 없음). ETAS 관련 신규 공동 발표 없음 |
+| E5 | [ETAS 보도자료: Bosch Connected World 2026](https://www.etas.com/ww/en/about-etas/press-room/press-releases/etas-at-bosch-connected-world-2026/) · [MarkLines 345971](https://www.marklines.com/en/news/345971) | 🔍·📰 (검색 발췌) | 2026-06-10~11, Bosch Mobility 부스에서 S-CORE 기반 Vehicle Software Platform Suite 시연, 초기 릴리스 제공 |
+| E6 | [Eclipse 뉴스레터 2026-09](https://newsroom.eclipse.org/eclipse-newsletter/2026/september) · [Eclipse S-CORE articles](https://eclipse.dev/score/articles.html) · [Eclipse SDV: S-CORE 0.7](https://eclipsesdv.org/news/eclipse-s-core-0-7-is-here/) · [GitHub eclipse-score #2892](https://github.com/eclipse-score/score/issues/2892) | 🔍 (검색 발췌) | 0.7 릴리스 2026-04-24 또는 05-12(출처 상이). 0.9 마일스톤 발표 2026-07-28 / 09-09 / 09-24(출처 상이 ⚠️): 통합 전략 일원화, 설정 관리 서비스, 툴체인 갱신, baselibs·persistency·logging·time 업데이트. 개발 참여사에 Accenture·Aumovio SE·BMW·Elektrobit·ETAS 등재 |
+| E7 | ETAS 프레스룸 2026-10~11 검색 · Elektrobit 뉴스룸 2026-10~11 검색 | ⚠️ | 두 회사 공동 신규 보도자료·SOP·고객명 발표 검색상 없음(색인 지연 가능) |
+| E8 | [Ahmann·Reistel(ETAS) S-CORE 슬라이드 2026-02-24](https://eclipsesdv.org/wp-content/uploads/2025/12/2-AhmannReistel-20260224_Eclipse_Community_Day_in_Bonn_S-CORE.pdf) | 🔍 (검색 발췌) | "S-CORE는 양산 적용 가능 수준의 v1.0을 목표로 진행 중" |
+
+### F. 확인하지 못한 항목
 
 | 항목 | 상태 |
 |---|---|
-| 패널 토론 녹화 일자·주최·공개 URL | ⚠️ 전사본에 없음. 2026-06~10 사이로 추정 |
-| ETAS Connections 2026 (2026-10-20 슈투트가르트) 행사 페이지 | ⚠️ 웹 검색으로 찾지 못함. 패널 발언만 근거 |
-| Subhash Sindhya의 공식 직함 | ⚠️ 패널 자기소개("Chief Product Manager, 컴퓨트 포트폴리오")만 근거 |
+| 패널 토론 녹화 일자·주최·공개 URL | ✅ 2026-11-04 확정: 2026-10-06 Mobex 웨비나 [E1]. 녹화 URL은 미열람 |
+| ETAS Connections 2026 (2026-10-20 슈투트가르트) 행사 페이지 | ✅ 2026-11-04 확인 [E2]. 단, Elektrobit 공동 데모 여부는 미확인 ⚠️ |
+| Isaac Trebs / Trefz 표기 | ⚠️ Mobex 연사 목록상 "Trefz". 전사본 오기 가능성 높으나 미확정 |
+| Subhash Sindhya의 공식 직함 | ⚠️ 패널 자기소개("Chief Product Manager, 컴퓨트 포트폴리오")와 Mobex 연사 표기("Chief Product Manager, Compute Middleware")만 근거 |
 | 보도자료의 Elektrobit 측 인용문 | ⚠️ 검색 발췌에 미포함 |
 | ETAS 하이퍼바이저 제품 유무 | ⚠️ 미확인 |
 | 두 회사가 EB corbos AdaptiveCore vs ETAS 미들웨어 경쟁을 어떻게 다루는지 | ⚠️ 공개 자료 없음 |

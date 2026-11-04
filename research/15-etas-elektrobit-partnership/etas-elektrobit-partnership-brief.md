@@ -1,8 +1,23 @@
 # ETAS × Elektrobit 파트너십 — 요약판
 
 - 작성일: 2026-11-04 · 상세판: [etas-elektrobit-partnership.md](etas-elektrobit-partnership.md) · 출처: [reference/references.md](reference/references.md)
-- 출처 표기: 🎙️ 패널 토론 · `[A1]`~`[D6]` 출처 기록 표 번호 · ⚠️ 미확인/해석
+- 출처 표기: 🎙️ 패널 토론(2026-10-06 Mobex 웨비나) · `[A1]`~`[E8]` 출처 기록 표 번호 · ⚠️ 미확인/해석
 - 조사 제약: 대부분의 원문 사이트 접근 불가, 웹 검색 발췌로 확인
+
+## 요약
+
+- **무엇**: Bosch 자회사 ETAS와 AUMOVIO(옛 Continental) 자회사 Elektrobit이 ADAS용 소프트웨어 기반을 공동 출시. Elektrobit의 안전 인증 리눅스(EB corbos Linux for Safety Applications, ASIL B) 위에 ETAS의 ADAS 결정적 미들웨어(EDMS)를 사전 통합. 통합 안전 수준 ASIL-B [A1][B7][C5]
+- **언제**: 2026-05-27 요코하마 JSAE 첫 공개 → 2026-10-06 공동 웨비나 → 2026-10-20 ETAS Connections. 현재 Tier-1·OEM 파일럿 가능 단계, 양산(SOP) 사례 없음 [A1][E1][E2]
+- **왜**: 모회사는 ADAS 경쟁사이지만 두 소프트웨어 자회사는 ① 서로에게 없는 층(OS vs 미들웨어)만 결합 ② Eclipse S-CORE에 비차별 기반을 공동 투자하고 차별화는 각자 상용 ③ "리눅스로 개발 → 양산 직전 독점 OS 전환" 고객 리스크 제거 ④ 그룹 외부 시장 공략 자유 ⑤ OEM 예산 압박·협업 문화 — 다섯 가지가 맞물려 성립 🎙️
+- **한 달 뒤(2026-11-04)**: 공동 신규 발표 없음. 각사 단독 활동(Elektrobit–Microchip AUTOSAR, ETAS Connections S-CORE 데모)과 S-CORE 0.9 릴리스만 진행. Aumovio SE가 S-CORE 참여사에 직접 등재 [E1]~[E8]
+
+## 시사점
+
+- **ADAS 플랫폼의 OS 선택지가 바뀌고 있음**: 독점 RTOS(QNX 등) 일변도였던 ADAS 기반에 "안전 인증 리눅스 + 결정적 미들웨어"가 공급사 보증을 받은 선택지로 등장. AI·E2E 모델 툴체인이 리눅스 중심이라는 점이 배경 [A7][B7]
+- **ASIL-B가 현실적 경계**: 통합 솔루션 상한은 ASIL-B. L2/L2+ 대중화 영역을 노린 제품이며, ASIL-D 기능은 여전히 별도 안전 섬·다른 OS 조합 필요 (⚠️ 해석)
+- **오픈 코어가 협력의 공통 언어**: 비차별 레이어(S-CORE)를 함께 만들고 그 위에서 경쟁하는 모델이 자리 잡음. Aumovio·Bosch·BMW·Mercedes·Qualcomm까지 참여사로 들어와, HPC 미들웨어 표준화 압력은 계속 커질 전망 [D1][E6]
+- **프레너미 협력의 선례**: 모회사 경쟁과 무관하게 소프트웨어 자회사끼리 층별로 묶는 비독점 협력이 가능함을 보여줌. 같은 리눅스가 Mobileye에도, 같은 ETAS 미들웨어가 ThunderSoft 등에도 공급되는 구조 [B9][C10]
+- **검증 포인트는 SOP**: 양측이 다음 목표로 꼽은 첫 양산 사례가 나오기 전까지는 "파일럿 가능한 사전 통합 제품"에 머무름. 후속 모니터링 기준: SOP 공표, 고객명 공개, 통합 솔루션의 ASIL 수준 변화, S-CORE 1.0 [E8] 🎙️
 
 ## 1. 결론
 
@@ -82,7 +97,8 @@ SoC (특정 칩 비종속 목표)
 **Eclipse S-CORE** [D1][D2][D3]
 - Eclipse 재단 SDV 워킹그룹 오픈소스 프로젝트. OS와 앱 사이의 비차별 기본 서비스(오케스트레이션·IPC·로깅·영속성)
 - 2024 시작: Accenture·BMW·ETAS·Mercedes-Benz·Qorix. Bosch·QNX 참여, 2025-11 Qualcomm 합류
-- 0.5-alpha 2025-11-17(레퍼런스 OS: QNX·Red Hat AutoSD·EB corbos Linux for Safety Applications), 0.6.0 2026-02(C++·Rust)
+- 0.5-alpha 2025-11-17(레퍼런스 OS: QNX·Red Hat AutoSD·EB corbos Linux for Safety Applications), 0.6.0 2026-02(C++·Rust), 0.7 2026-04~05, 0.9 2026-07~09(발표일 출처 간 상이 ⚠️) [E6]
+- 참여사 목록에 Accenture·Aumovio SE·BMW·Elektrobit·ETAS 등 등재. Elektrobit 모회사도 직접 참여 [E6]
 
 ## 5. 타임라인
 
@@ -95,11 +111,42 @@ SoC (특정 칩 비종속 목표)
 | 2025-11-17 | S-CORE 0.5-alpha, corbos Linux 레퍼런스 포함 | [D2] |
 | 2026-02 | S-CORE 0.6.0 · Mobileye Drive 통합 발표(02-24) | [D3][B9] |
 | **2026-05-27** | **JSAE 요코하마, 통합 ADAS 기반 첫 공개** | [A1][A6] |
-| 2026-06~10 | 패널 토론 웨비나(⚠️ 날짜 미기재) | 🎙️ |
-| 2026-10-20 | ETAS Connections 슈투트가르트 공동 데모(⚠️ 행사 페이지 미확인) | 🎙️ |
+| 2026-06-10~11 | Bosch Connected World, ETAS S-CORE 기반 VSP Suite 시연 | [E5] |
+| 2026-07~09 | S-CORE 0.9 마일스톤 | [E6] |
+| **2026-10-06** | **공동 웨비나(본 패널 토론)** — Mobex 주최 | [E1] 🎙️ |
+| 2026-10-15 | Elektrobit–Microchip 사전 통합 AUTOSAR 협력(단독) | [E3] |
+| 2026-10-20 | ETAS Connections 슈투트가르트 — S-CORE 폐막 패널, VSP Suite 데모. Elektrobit 참여는 공개 기록 없음 | [E2] |
 | 미정 | 첫 SOP | 🎙️ |
 
-## 6. 평가
+## 6. 후속 동향 (2026-11-04 기준)
+
+패널 토론(10-06) 이후 한 달간 공개 소식. 원문 사이트 직접 열람 불가, 검색 발췌 기준.
+
+**공동**
+- 2026-10-06 Mobex 웨비나 "Elektrobit and ETAS: accelerating the future of ADAS through strategic partnership" — 본 패널 토론. 보고서 1판의 "날짜 미기재" 항목 확정. 녹화·자료는 Elektrobit Tech corner 다운로드 센터 게재 추정 [E1]
+- 그 외 공동 보도자료·SOP·고객명 발표 없음 [E4]
+- Mobex 연사 목록상 Elektrobit PM 이름은 "Isaac Trefz". 전사본의 "Isaac Trebs"는 오기 가능성 (⚠️ 미확정) [E1]
+
+**ETAS Connections 2026 (10-20, 슈투트가르트 Wagenhallen)** [E2]
+- Bosch 공동 주최, 약 400명 규모
+- 폐막 패널 "The Moment of Delivery: Turning Our Promise into Reality with Eclipse S-CORE" — ETAS·Bosch·Mercedes-Benz·Eclipse 재단 참여
+- 데모: Vehicle SW Platform Suite Experience Package 0.6(S-CORE 0.9 기반), 하드웨어 시연
+- 패널에서 예고한 Elektrobit 공동 데모는 행사 페이지·회고 글에서 확인되지 않음
+
+**Elektrobit 단독**
+- 10-15 Microchip과 사전 통합 AUTOSAR(EB tresos MCAL, SAMA5) 협력. 아시아 시장 우선 [E3]
+- 10-29 Integration-as-code, Gasgoo Awards 2026 Best Technical Practice 수상(회사 사이트 기준) [E4]
+
+**Eclipse S-CORE** [E6]
+- 0.9 마일스톤 릴리스(발표일 7-28 / 9-09 / 9-24로 출처 간 상이). 통합 전략 일원화, 설정 관리 서비스, 툴체인 갱신
+- 참여사 목록에 Aumovio SE 직접 등재 → Elektrobit 모회사도 S-CORE 참여. §4 ②의 논지 보강
+- 1판에서 "최신 0.6"으로 기술한 부분은 0.7·0.9 릴리스로 갱신 필요
+
+**ETAS 단독**
+- 06-10~11 Bosch Connected World에서 S-CORE 기반 VSP Suite 시연 [E5]
+- 10~11월 신규 보도자료는 검색상 없음 [E7]
+
+## 7. 평가
 
 **가치**
 - 통합 부담 제거, 개발 연속성(프로토타입→양산 동일 OS·도구), OS·SoC 종속 회피, 안전 실증, 공급사 생존성
@@ -107,7 +154,7 @@ SoC (특정 칩 비종속 목표)
 **한계 (⚠️ 해석)**
 - 통합 안전 수준 ASIL-B 상한. ASIL-D 기능은 별도 구조 필요
 - 양산 실적 없음
-- S-CORE 0.6 단계, ETAS General Purpose 프로파일의 S-CORE 전환 진행 중. EDMS는 S-CORE와 별개 코드베이스
+- S-CORE 0.9 단계(1.0 목표), ETAS General Purpose 프로파일의 S-CORE 전환 진행 중(Experience Package 0.6). EDMS는 S-CORE와 별개 코드베이스
 - HPC 미들웨어 경쟁 지속. EB corbos AdaptiveCore와 ETAS 미들웨어 병용 시 통합 책임 불명
 - EB 모회사 변경(Continental→AUMOVIO)·2025 감원 → 지속성 변수
 

@@ -1,6 +1,6 @@
 # ETAS × Elektrobit 파트너십 패널 토론 — 핵심 정리
 
-> **자료**: ETAS·Elektrobit 공동 웨비나형 패널 토론 (영문 자동 전사본, 녹화일 미기재 — 2026-06~10 추정)
+> **자료**: ETAS·Elektrobit 공동 웨비나형 패널 토론 (2026-10-06 Mobex 주최, 영문 자동 전사본)
 > **정리일**: 2026-11-04 (2판 — 글머리 형식으로 재구성, 핵심만 남김)
 > **원문**: [영문 전사](panel-transcript-raw-en.md) · [줄 단위 해석](panel-transcript-line-by-line-ko.md) · **종합 보고서**: [../etas-elektrobit-partnership.md](../etas-elektrobit-partnership.md)
 > **주의**: 자동 전사라 이름·제품명 오기가 많아 문맥으로 바로잡았다. 화자 표기도 문맥 추정이다.
