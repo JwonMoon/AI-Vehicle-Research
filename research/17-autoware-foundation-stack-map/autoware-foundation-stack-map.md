@@ -1,22 +1,38 @@
 # Autoware 재단 스택 지도 — Autoware 2.0 시대의 저장소 157개와 두 트랙
 
-> **작성일**: 2026-10-30 (2판 — 최근 소식 추가, 글머리 형식으로 재구성, 주행 모델 × 컴퓨트 장 추가, 미확인 내용 삭제)
-> **조사 범위**: GitHub `autowarefoundation` 조직의 저장소 157개, Autoware 공식 문서 원본, 워킹그룹(WG) 회의록·이슈(2026-01 ~ 2026-10).
-> **출처 표기 원칙**: 모든 사실 문장·표 행에 `[번호]`로 출처를 달고, 말미 출처 목록에 등급과 URL을 수록했다. 등급은 💻 저장소 원본(raw 파일·clone 직접 확인) · 🔍 1차 페이지(GitHub 릴리스·이슈·토론 직접 열람). 원문으로 확인하지 못한 내용은 싣지 않았다(10장).
+> **작성일**: 2026-11-05 (3판 — 11-02 보도자료·OnePlanner 공개·공식 문서 개편·autoware_cuda 이전 완료 반영, 공식 도식을 새 판으로 교체) · 2판 2026-10-30 · 초판 2026-10-30
+> **조사 범위**: GitHub `autowarefoundation` 조직의 저장소 157개, Autoware 공식 문서 원본, 워킹그룹(WG) 회의록·이슈(2026-01 ~ 2026-11-05).
+> **출처 표기 원칙**: 모든 사실 문장·표 행에 `[번호]`로 출처를 달고, 말미 출처 목록에 등급과 URL을 수록했다. 등급은 💻 저장소 원본(raw 파일·clone 직접 확인) · 🔍 1차 페이지(GitHub 릴리스·이슈·토론 직접 열람) · 📰 검색 요약(원문 사이트가 차단돼 검색 결과의 발췌로만 확인, 11-02 보도자료 2건에만 사용). 그 밖에 원문으로 확인하지 못한 내용은 싣지 않았다(10장).
 > **표기 약속**: "계획·목표"와 "릴리스·실행"을 구분한다. 캡션에 "자체 작성"이라고 적은 그림은 **자체 도식**이고, 나머지는 Autoware 문서·저장소의 **원본 그림**이며 캡션에 원본 경로를 적었다.
 
 ---
 
-## 최근 소식 — Autoware 2.0.0 공개 (2026-10-29)
+## 최근 소식 — Autoware 2.0 공개와 그 뒤 일주일 (2026-10-29 ~ 11-05)
 
-- **무엇이 나왔나**: Autoware 2.0.0이 2026-10-29 GitHub 릴리스로 공개됐다. 릴리스 노트의 한 줄 요약은 "규칙 기반 스택 옆에 AI 플래너를 추가하고, 재단 모델을 Hugging Face로 옮기고, Autoware Index와 Reference Design을 도입"이다 [54].
-- **AI 플래너 선택**: 런치 인자 `planning_setting`으로 규칙 기반(기본값)과 Diffusion Planner 중 하나를 고른다 [1][54].
-- **아직 아닌 것**: 후보 궤적을 검사·선택하는 Selector 패키지는 들어 있지만 2.0.0에서 기동하지 않는다 [1].
-- **문서**: 같은 날 공식 문서의 Architecture 2.0 페이지에서 "Under Construction" 표시가 빠지고 "2.0.0이 오늘 하는 일" 절이 추가됐다 [16].
-- **버전 체계 변경**: 2.0.0부터 Autoware 버전이 `autoware_core` 버전과 분리됐다. Autoware 2.0.0은 `autoware_core` 1.10.0을 쓴다 [9].
-- **업그레이드 주의**: 1.9.0 이전에 받은 AI 모델 파일은 2.0.0에서 동작하지 않아 다시 받아야 한다. `setup-dev-env.sh`가 제거됐다 [54].
-
----
+- **10-29 GitHub 릴리스**: Autoware 2.0.0 공개. 릴리스 노트의 한 줄 요약은 "규칙 기반 스택 옆에 AI 플래너를 추가하고, 재단 모델을 Hugging Face로 옮기고, Autoware Index와 Reference Design을 도입"이다 [54].
+    - 런치 인자 `planning_setting`으로 규칙 기반(기본값)과 Diffusion Planner 중 하나를 고른다. 후보 궤적을 검사·선택하는 Selector 패키지는 들어 있지만 기동하지 않는다 [1][54].
+    - 2.0.0부터 Autoware 버전이 `autoware_core` 버전과 분리됐다. 2.0.0은 core 1.10.0을 쓴다 [9].
+- **11-02 재단 보도자료**: "Autoware Foundation releases Autoware 2.0 to Expand AI Support for Open-Source Autonomous Driving"이 autoware.org에 게시됐다. 11-03 Software WG 회의록이 "Released Autoware 2.0" 항목으로 이 글을 링크한다 [77]. 본문은 세션 네트워크 제약으로 열지 못했다(10장).
+- **11-02 TIER IV 보도자료** "TIER IV spearheads Autoware 2.0 initiatives" (📰 검색 요약, 원문 미열람) [78]
+    - TIER IV가 AWF·커뮤니티와 함께 Autoware 2.0 이니셔티브를 주도한다고 발표. Autoware 2.0을 "규칙 기반 접근과의 호환을 유지하며 데이터 중심 AI 접근 지원을 넓힌" 릴리스로 설명.
+    - 협력사 역할: Arm은 Arm Total Design for Physical AI의 사례로 컴퓨팅 플랫폼, AWS는 클라우드 네이티브 개발·운영 환경, Red Hat은 자사 차량용 OS의 업스트림인 AutoSD와의 시스템 통합.
+    - TIER IV CEO 加藤真平(Shinpei Kato): "Autoware 2.0은 AI 정의 차량 시대에 자율주행을 민주화하는 중요한 한 걸음". AWF 회장 Muhammad Zain Khawaja: "Autoware 2.0은 첨단 자율주행 기술을 더 접근 가능하게 만들려는 글로벌 커뮤니티의 집단적 노력을 반영".
+    - 네 회사가 2026-11-03~04 미국 산호세 Automotive Software Strategies US 2026에서 발표.
+- **11-02 OnePlanner 공식 공개**: TIER IV 측이 GitHub 토론(Show and tell)에 "OnePlanner: 기존 인식 모델의 특징에서 바로 계획하는 E2E 플래너"를 소개했다 [79].
+    - BEVFusion-L LiDAR 백본(8.3M 파라미터, 고정) 위에 플래너(27.3M)가 BEV 특징 지도 3장과 Lanelet2 지도·경로·신호등·자차 상태를 받아 6 s 궤적을 낸다. 추적·예측 객체는 입력하지 않는다.
+    - 공개물: ROS 2 노드 `autoware_oneplanner`(Apache-2.0), **Autoware Index에 Jazzy용 태그 1.1.0으로 등록(Index CI가 Autoware 2.0.0에 대해 빌드·테스트 통과)**, Hugging Face `AutowareFoundation/oneplanner` v1.0.
+    - 1.1.0은 궤적을 `CandidateTrajectories`(생성기 정보·방향지시등 포함)로도 내보내므로 "`autoware_trajectory_selector`의 생성기로도 쓸 수 있다"고 명시했다 [79][80].
+    - 한계: 연구용, TIER IV의 일본 주행 데이터로 학습(비공개), 정확도 수치 미공개.
+- **10-30 ~ 11-04 공식 문서 전면 개편**: 858개 파일이 바뀌었고 설계 도식이 모두 새 일러스트 스타일로 다시 그려졌다. 주소는 docs.autoware.org로 안내된다 [81][82].
+    - Architecture 2.0 페이지: "규칙 기반 스택은 2.0.0의 기본 스택이고, Architecture 2.0은 그것을 대체하지 않는다. 규칙 기반 계획 스택은 여러 생성기 중 하나가 된다" [1].
+    - 같은 페이지의 "다른 학습 주행 패키지" 절이 **Vision Pilot을 "Autoware Index에 있는 오픈소스 E2E L2 ADAS 시스템. 별도 저장소이고 `autoware.repos`에 포함되지 않는다"** 고 명시했다 [1].
+    - 개발 로드맵 페이지가 "TBD"에서 상태표로 바뀌었다. Generator-Selector 이행 Phase 0~6의 상태와 E2E Step 1~4의 2.0.0 상태를 적되, "미래 작업의 날짜는 주지 않는다" [83].
+    - 문서 저장소에 AI 에이전트용 규칙 파일 AGENTS.md가 추가됐다 [84].
+- **10-31 ~ 11-04 autoware_cuda 이전 완료**: Universe의 CUDA 공통 패키지 3개(`autoware_cuda_dependency_meta`·`autoware_cuda_utils`·`autoware_tensorrt_common`)가 새 저장소 `autoware_cuda` 1.0.0으로 옮겨졌다. `autoware.repos`(main)는 `core/cuda/` 아래에 autoware_cuda 1.0.0·cuda_blackboard 0.5.0·negotiated를 둔다. core CUDA Docker 이미지(11-02)와 문서(11-04)까지 끝났고, 2.0.0 고정판은 바뀌지 않았다 [85][86][87].
+- **Autoware Index에 E2E 모델 등록**: 11-05 기준 Jazzy 레지스트리에 `autoware_oneplanner` 1.1.0, `autoware_latent_drive` 1.0.1, `vision_pilot`(reference_design: true), Index 이동 패키지 5개, `tamagawa_imu_driver`가 등록돼 있다. 11-03 Software WG는 "새 E2E 모델을 Autoware Index에 등록"을 공지했다 [77][88].
+- **AutoE2E·LatentDrive 저장소 변경**: AutoE2E는 11-02에 "체크포인트는 CC BY-NC-SA 4.0(학습 데이터 nuPlan·BEVFormer V2 가중치의 조건), 코드는 Apache-2.0"을 README에 명시했고 11-01 폐루프 통합 PR을 머지했다 [89]. LatentDrive는 10-30 ROS 패키지 이름을 `autoware_latent_drive`로 바꿨다 [90].
+- **11-02 ADAS WG 회의**: 로드맵은 10-26과 같다(VisionPilot 1.3: CARLA·점유 BEV·융합·추적·코드 규정 준수). 슬롯 2는 "ADAS 그룹 멤버가 참석하지 않아 일찍 종료" [91].
+- **업그레이드 주의**(변함없음): 1.9.0 이전에 받은 AI 모델 파일은 2.0.0에서 동작하지 않아 다시 받아야 한다. `setup-dev-env.sh`가 제거됐다 [54].
 
 ## 0. 한눈에 보기
 
@@ -44,6 +60,8 @@
 | Vision Pilot 연산 목표 | 3–5 INT8 TOPS급 칩에서 전체 파이프라인 10 FPS 이상 | [71] |
 | AutoE2E 모델 규모 | 79.9M 파라미터, 카메라 6대, 6.4 s 궤적, 10 Hz | [32] |
 | Open AD Kit v2.0 목표 | 2026-10 말 (10-15 WG 회의에서 "리스크") | [56][68] |
+| Autoware Index 등록 E2E 모델(Jazzy, 11-05) | 2개 — `autoware_oneplanner` 1.1.0, `autoware_latent_drive` 1.0.1 (+ Vision Pilot = 레퍼런스 디자인) | [88] |
+| OnePlanner 지연(공식 공개 글) | 패스당 약 13 ms(중앙값) · 18.7 ms(p95), RTX PRO 6000 Blackwell Max-Q | [79] |
 
 ![AWF 스택 지도](images/01-awf-stack-map.svg)
 
@@ -87,6 +105,12 @@
 | 연산 | NVIDIA GPU(TensorRT) 전제 모델 다수 [1][34][35] | 3–5 INT8 TOPS급 양산 칩 목표 [71] |
 | 배포 | Open AD Kit v2.0 [56] | Open AD Kit v2.1 (R-Car X5H와 함께) [56] |
 
+![두 갈래 관계도](images/02-two-tracks-explained.svg)
+
+*그림 2. 두 갈래 관계도 — 왼쪽은 Autoware 플랫폼과 그 '생성기' 정의에 해당하는 AI 모델들, 오른쪽은 혼자 도는 Vision Pilot · 자체 작성 · 근거 [1][4][27][32][34][35][79]*
+
+- **공식 문서의 확인(2026-10-30 개편)**: Architecture 2.0 페이지는 Vision Pilot을 "Autoware Index에 있는 별도 저장소, `autoware.repos`에 포함되지 않음"으로, VAD를 "Universe `e2e/` 폴더에 있으나 기본 런치에 없음"으로, 그 밖의 E2E 모델을 "재단의 별도 저장소"로 적는다 [1][83].
+
 ### 1.2 다년 로드맵 — 기술 계단과 차종별 계단
 
 공식 문서 "Autoware Multi-Year Roadmap"의 기술 목표 두 개다 [10].
@@ -110,28 +134,28 @@
 - **맵 옵션**: 단계마다 옵션 A(HD맵)와 옵션 B(2D 내비 맵)를 둔다 [3].
     - 옵션 B의 장점: HD맵 구축·유지 없이 2D맵이 있는 곳이면 동작.
     - 옵션 A의 장점: HD맵이 정적 환경 정보를 주어 강건성이 높다.
-- **일정**: 로드맵 폴더의 `development-roadmap.md` 본문은 "TBD"이고, 2.0 문서 PR이 TBD 로드맵 페이지 4개를 숨겼다. 날짜가 박힌 공식 개발 일정표는 없다 [5][16].
+- **일정**: 10-30 개편으로 `development-roadmap.md`가 "TBD"에서 상태표로 바뀌었다. Generator-Selector 이행 Phase 0~6과 Step 1~4의 2.0.0 상태를 적되 "미래 작업의 날짜는 주지 않는다". 날짜가 박힌 공식 개발 일정표는 여전히 없다 [83].
 
 | 단계 | 공식 정의 [3] | 공식 문서에 명시된 구현 |
 |---|---|---|
-| Step 1 Learned Planner | 위치·3D 객체·신호등 등 "로컬 월드 표현"을 받아 궤적을 내는 학습 플래너 | Diffusion Planner — 2.0 문서가 "a learned planner"로 명시, 2.0.0에서 선택 가능 [1] |
-| Step 2 Component-based E2E | 학습 인식 + 학습 플래너. 둘 사이 인터페이스가 남아 내부를 들여다볼 수 있음 | 명시 없음 |
-| Step 3 Learned Driving | 명시적 인식·계획 모듈 없는 단일 신경망. CNN형 또는 VLA형 | 명시 없음 |
-| Step 4 Learned Hybrid | E2E 주행 모델 + 별도 Safety Perception(LiDAR·레이더 가능) + Safety Guardian. "업계가 개발 중" | 명시 없음 |
+| Step 1 Learned Planner | 위치·3D 객체·신호등 등 "로컬 월드 표현"을 받아 궤적을 내는 학습 플래너 | "릴리스에 포함. Diffusion Planner를 런치에서 선택 가능" [83] |
+| Step 2 Component-based E2E | 학습 인식 + 학습 플래너. 둘 사이 인터페이스가 남아 내부를 들여다볼 수 있음 | "2.0.0에는 Step 2 스택이 없다. 규칙 기반 스택의 많은 인식 모듈은 이미 학습 모델을 쓴다" [3][83] |
+| Step 3 Learned Driving | 명시적 인식·계획 모듈 없는 단일 신경망. CNN형 또는 VLA형 | "`autoware_tensorrt_vad`가 Universe에 있으나 기본 런치는 시작하지 않는다. 다른 E2E 모델들은 재단의 별도 저장소에 있다" [83] |
+| Step 4 Learned Hybrid | E2E 주행 모델 + 별도 Safety Perception(LiDAR·레이더 가능) + Safety Guardian. "업계가 개발 중" | "릴리스에 없음. 관련 장치는 Selector의 안전 게이트" [3][83] |
 
-- **각 저장소의 자기 규정(README 표현)** — 단계 대응은 공식 문서에 없으므로 원문 표현만 옮긴다.
+- **각 저장소의 자기 규정(README 표현)** — 공식 문서는 "다른 E2E 모델들은 재단의 별도 저장소에 있다"고만 적고 저장소별 단계를 지정하지 않으므로 원문 표현만 옮긴다.
     - AutoE2E: "camera-first End-to-End driving model" [32]
     - LatentDrive: "camera-only end-to-end planner" [34]
     - OnePlanner: "end-to-end planning models" [35]
     - Vision Pilot: "Hybrid End-to-End AI Architecture" — 안전용 인식 모델과 성능용 E2E 모델을 병렬로 처리 [27]
 
-![단계적 기술 진화](images/02-e2e-stepwise-evolution.png)
+![단계적 기술 진화](images/03-e2e-stepwise-evolution.svg)
 
-*그림 2. 단계적 기술 진화(Stepwise technology evolution) · 원본: autoware-documentation `design/autoware-architecture-v2/roadmap/media/detailed_architecture_figure1.png` [4]*
+*그림 3. 단계적 기술 진화(현재 → Step 1~4) · 원본: autoware-documentation `design/autoware-architecture-v2/roadmap/media/detailed_architecture_figure1.svg`, 2026-10-30 개편판 [4][82]*
 
-![학습 하이브리드, 2D맵 옵션](images/03-e2e-fig09-hybrid-2dmap.png)
+![학습 하이브리드, 2D맵 옵션](images/04-e2e-fig09-hybrid-2dmap.svg)
 
-*그림 3. Step 4 학습 하이브리드, 2D맵 옵션(Figure 9) · 원본: 같은 폴더 `architecture_figure09.png` [3]*
+*그림 4. Step 4 학습 하이브리드, 2D맵 옵션(Figure 9) · 원본: 같은 폴더 `architecture_figure09.svg`, 2026-10-30 개편판 [3][82]*
 
 ### 1.4 가설 점검 — "E2E 로드맵이 자율주행·ADAS 트랙으로 나뉘고 Vision Pilot은 ADAS 쪽"
 
@@ -139,7 +163,7 @@
 |---|---|---|
 | E2E로 전환하는 공식 로드맵이 있다 | 맞음 | Architecture 2.0 E2E 4단계, 다년 로드맵 Objective 1 [3][10] |
 | 자율주행 트랙과 ADAS 트랙으로 나뉜다 | 맞음, 단 나누는 기준은 WG·차종 | E2E 4단계는 공통이고, 양산 계단은 차종별로 다르다. `auto_e2e`는 Robotaxi WG, Vision Pilot은 ADAS WG [10][33][61] |
-| Vision Pilot은 ADAS 트랙에 들어간다 | 맞음 | Vision Pilot은 "open-source L2 ADAS" [27]. POV 레퍼런스 디자인이 Vision Pilot을 Phase 1로 정의 [17] |
+| Vision Pilot은 ADAS 트랙에 들어간다 | 맞음 | Vision Pilot은 "open-source L2 ADAS" [27]. POV 레퍼런스 디자인이 Vision Pilot을 Phase 1로 정의 [17]. 10-30 개편된 Architecture 2.0 문서가 "Autoware Index의 별도 저장소, `autoware.repos`에 없음"으로 명시 [1] |
 | 두 트랙은 완전히 분리돼 있다 | 아님 | `auto_e2e`는 로보택시(LiDAR·레이더 안전층과 융합)와 L2++ ADAS(카메라만) 두 용도를 명시 [32]. 2026-06-08 회의는 로보택시 E2E 연구를 Vision Pilot에 재사용하는 방안과 그 역을 논의 [60] |
 
 ---
@@ -163,12 +187,14 @@
     - `autoware_universe` 0.53.1, `cuda_blackboard` 0.4.0, `bevdet_vendor` 0.2.1, `managed_transform_buffer` 0.3.0
     - `autoware_launch` 0.53.0, tier4 `nebula` v1.2.0
 - **별도 매니페스트**: 도구는 `tools.repos`(autoware_tools 0.8.0), 시뮬레이터는 `simulator.repos`(tier4 scenario_simulator_v2 22.0.0) [23].
+- **인터페이스 명세**: `autoware_core` 1.10.0부터 `interface_manifest.json`과 RIHS01 lockfile이 버전 관리되는 인터페이스 집합을 기계가 읽을 수 있게 기술하고, PR 게이트가 일관성을 지킨다. 릴리스 간 변경 보고 도구는 11-01 제안 단계다 [92].
+- **2.0.0 이후 main 브랜치**: `core/cuda/` 그룹이 생겨 `autoware_cuda` 1.0.0·`cuda_blackboard` 0.5.0·`negotiated`를 둔다(10-31). 2.0.0 태그의 고정판은 바뀌지 않았다 [86].
 - **설치 요건**: amd64·arm64, 8코어, 16 GB RAM. NVIDIA GPU(4 GB)는 선택이지만 LiDAR·카메라 객체 검출과 신호등 인식에는 필수 [15].
 - **Docker 이미지**: ROS 2 Humble·Jazzy, amd64·arm64 [54].
 
-![Core/Universe 생태계](images/04-autoware-ecosystem-core-universe.png)
+![저장소 구조](images/05-repository-structure.svg)
 
-*그림 4. Autoware Core/Universe 생태계 · 원본: autoware-documentation `design/autoware-concepts/images/autoware_ecosystem.png` [6]*
+*그림 5. Autoware 저장소 구조(main 브랜치 기준: Core · CUDA 층 · Universe · 센서 컴포넌트 · Launch · 옵션) · 원본: autoware-documentation `design/images/repository-structure.svg`, 2026-11-04판 [7][82]*
 
 ### 2.2 릴리스 타임라인
 
@@ -192,24 +218,45 @@
 |---|---|---|
 | Generator | `autoware_diffusion_planner` | `planning_setting:=diffusion_planner`일 때 실행. TensorRT·NVIDIA GPU 필요 |
 | 후처리 | `autoware_trajectory_modifier` | 후보 중 첫 번째를 planning validator로 전달 |
-| Selector 노드 | `autoware_trajectory_selector` | 미기동(런치 파일에 자리만 있음) |
-| Safety gate | `autoware_trajectory_validator` | 미기동, selector 내부 라이브러리 |
-| Ranking | `autoware_trajectory_ranker` | 미기동, selector가 쓰는 라이브러리 |
-| 메시지 | `autoware_internal_planning_msgs` 1.16.0 | `CandidateTrajectories` · `CandidateTrajectory` · `GeneratorInfo` |
+| 예비 생성기 | `autoware_minimum_rule_based_planner` | 미기동. Lanelet 중심선을 따라가며 `CandidateTrajectories`를 냄 |
+| Selector 노드 | `autoware_trajectory_selector` | 미기동(런치 파일에 자리만 있음). 후보를 합치고·검사하고·순위화해 `Trajectory` 하나를 냄 |
+| 후보 합치기 | `autoware_trajectory_concatenator` | 미기동, selector 내부 라이브러리. 모든 생성기의 후보를 병합 |
+| Safety gate | `autoware_trajectory_validator` | 미기동, selector 내부 라이브러리. 플러그인이 안전하지 않거나 규칙을 어기는 후보를 제거 |
+| Ranking | `autoware_trajectory_ranker` | 미기동, selector 내부 라이브러리. 후보마다 점수 |
+| 변환 | `autoware_trajectory_adapter` | 미기동, selector 내부 라이브러리. 최선 후보를 `Trajectory`로 변환 |
+| 메시지 | `autoware_internal_planning_msgs` 1.16.0 | `CandidateTrajectories` · `CandidateTrajectory` · `GeneratorInfo` · `ScoredCandidateTrajectories` · `ScoredCandidateTrajectory` |
+
+- **이행 단계(공식 개발 로드맵 페이지, 2026-10-30)** [83]
+
+| Phase | 계획 | 2.0.0 상태 |
+|---|---|---|
+| 0 | 새 메시지 추가 | 완료 |
+| 1 | 옛 궤적 토픽과 새 토픽을 함께 발행 | 완료(옛 토픽은 2.0.0에 없음) |
+| 2 | 제어기가 `/planning/trajectory`만 사용 | 완료 |
+| 3 | 생성기 추가 | 완료(Diffusion Planner + trajectory_modifier) |
+| 4 | Selector 추가 | 패키지는 Universe에 있으나 런치가 시작하지 않음 |
+| 5 | 생성기·Selector를 런치 옵션으로 | 부분 완료(생성기만 선택 가능, Selector 자리만 있음) |
+| 6 | 전체 모듈형 파이프라인 통합·옛 토픽 제거 | 부분 완료. 2026-03 이슈에 실차 시험 중인 프로토타입이 보고됨 |
+
+- 원래 계획은 각 Phase에 2025년 날짜를 줬으나 "작업이 더 오래 걸렸다". 런치 구성의 큰 변경은 이슈 "New launch package: autoware_launch_v2"와 `autoware_launch_v2` 저장소가 추적한다 [83].
 
 - **모델 배포**: Diffusion Planner 등 AI 모델은 Hugging Face `AutowareFoundation`에 버전 태그로 올라가고, Ansible `artifacts` 역할이 고정 버전을 받는다. 2.0.0은 Diffusion Planner v5.0을 쓴다 [1].
 
-![Architecture 1.0 개요](images/05-architecture-1-0-overview.svg)
+![Architecture 1.0 개요](images/06-architecture-1-0-overview.svg)
 
-*그림 5. Architecture 1.0 개요 · 원본: autoware-documentation `design/autoware-architecture-v1/image/autoware-architecture-overview.drawio.svg` [14]*
+*그림 6. 규칙 기반 스택(Architecture 1.0) 개요 · 원본: autoware-documentation `design/autoware-architecture-v1/image/autoware-architecture-overview.svg`, 2026-10-30 개편판 [14][82]*
 
-![Generator-Selector 개념도](images/06-generator-selector-simple.svg)
+![Generator-Selector 개념도](images/07-generator-selector.svg)
 
-*그림 6. Architecture 2.0 Generator-Selector 개념도 · 원본: autoware-documentation `design/autoware-architecture-v2/images/generator-selector-simple.svg` [1]*
+*그림 7. Architecture 2.0 Generator-Selector 개념도(생성기 4종 예시: 로보틱스 · 모듈형 E2E · 모놀리식 E2E · 월드모델 E2E) · 원본: autoware-documentation `design/autoware-architecture-v2/images/generator-selector.svg`, 2026-10-30 개편판 [1][82]*
 
-![Generator-Selector 프레임워크](images/07-generator-selector-framework.png)
+![2.0.0 계획 데이터 흐름](images/08-planning-data-flow.svg)
 
-*그림 7. Generator-Selector 프레임워크(Figure 2) · 원본: 같은 문서 roadmap `media/detailed_architecture_figure2.png` [4]*
+*그림 8. 2.0.0의 계획 데이터 흐름 — `planning_setting`이 궤적의 출처를 고르고, 둘 다 planning validator를 거친다 · 원본: 같은 폴더 `planning-data-flow.svg` [1][82]*
+
+![Generator-Selector 프레임워크](images/09-generator-selector-framework.svg)
+
+*그림 9. Generator-Selector 프레임워크(Figure 2; 생성기 예시에 "Proprietary AI models" 포함) · 원본: 같은 문서 roadmap `media/detailed_architecture_figure2.svg`, 2026-10-30 개편판 [4][82]*
 
 ### 2.4 Universe 축소와 Autoware Index
 
@@ -222,14 +269,14 @@
     - `autoware_livox_tag_filter` — Universe에서 제거되고 Index로 이동(2.0.0).
     - `autoware_image_diagnostics` — 2026-10 이동.
     - `autoware_pose2twist` · `autoware_bluetooth_monitor` · `autoware_component_monitor` — Index에 등록, universe 0.53.1에는 아직 포함(중복 추가 금지).
-- **CUDA 패키지 재구조화** [65]
-    - Universe 241개 패키지 중 CUDA/TensorRT 관련 약 27개. 공통 패키지(`cuda_utils`·`tensorrt_common`·`cuda_dependency_meta`)와 `cuda_blackboard`를 `autoware_cuda`(core 그룹)로 옮기고, 나머지 CUDA 패키지는 Index의 개별 패키지로 보낸다.
-    - TIER IV 측 반대 의견과 일정 조율로 2026-09 말까지 연기됐다가 10-05 재개, 전환 목표일은 10-15.
+- **CUDA 패키지 재구조화 — 완료** [65][85][86][87]
+    - Universe 241개 패키지 중 CUDA/TensorRT 관련 약 27개. 공통 패키지 3개(`autoware_cuda_dependency_meta`·`autoware_cuda_utils`·`autoware_tensorrt_common`)를 새 저장소 `autoware_cuda`로 옮기고, `cuda_blackboard`·`negotiated`와 함께 Core의 "선택적 CUDA 층"으로 둔다. 기본 Core 빌드는 GPU가 필요 없다.
+    - TIER IV 측 반대 의견과 일정 조율로 2026-09 말까지 연기됐다가 10-05 재개. 10-30 `autoware_cuda` 1.0.0, 10-31 Universe 0.53.2에서 패키지 제거와 `autoware.repos` 반영, 11-02 core CUDA Docker 이미지(`core-devel-cuda`·`core-cuda`), 11-04 문서 반영으로 추적 이슈의 "cutover is done".
 - **Reference Design**: Index 항목에 리뷰어가 `reference_design: true`를 붙인다. 첫 사례가 Vision Pilot이고 `aw-index-cli compose --reference-design`이 `vision_pilot`을 돌려준다 [11][16][38].
 
-![Autoware Index 브라우즈 사이트](images/08-autoware-index-browse-site.png)
+![Autoware Index 브라우즈 사이트](images/10-autoware-index-browse-site.png)
 
-*그림 8. Autoware Index 브라우즈 사이트 · 원본: autoware-documentation `installation/autoware/images/autoware-index/browse-site.png` [12]*
+*그림 10. Autoware Index 브라우즈 사이트 · 원본: autoware-documentation `installation/autoware/images/autoware-index/browse-site.png` [12]*
 
 ### 2.5 재단이 만드는 학습 모델 — AutoE2E · LatentDrive · OnePlanner
 
@@ -239,23 +286,26 @@
 | 구조 | 카메라→BEV 격자→GRU 플래너. Reactive 모델 완성, World Action·Reasoning 모델은 개발 중 | V-JEPA ViT-L 잠재 월드모델 + 계획 헤드(객체 검출·추적 없음) | BEV 특징 시계열 + 맵 컨텍스트 학습 플래너 |
 | 출력 | 6.4 s 가속도·곡률, 10 Hz | 4 s 궤적 40점, 10 Hz | 6 s 궤적, LiDAR 주기 |
 | 런타임 | PyTorch (CPU·CUDA) | ROS 비의존 C++ 라이브러리 + TensorRT + rosbag 재생 ROS 2 노드 | Autoware Core 1.x 위 ROS 2 노드, TensorRT 10 |
-| 가중치 | HF `AutowareFoundation/auto_e2e` | HF `AutowareFoundation/latent_drive` v1.0 | HF `AutowareFoundation/oneplanner` v1.0 |
-| 상태 표기 | Robotaxi WG 개발 [33] | "연구 모델, 공도 제어 금지" | "차에 쓰려면 Autoware 궤적 검증 뒤에 배선" |
+| 가중치·라이선스 | HF `AutowareFoundation/auto_e2e`. 체크포인트 CC BY-NC-SA 4.0(비상업), 코드 Apache-2.0 [89] | HF `AutowareFoundation/latent_drive` v1.0 | HF `AutowareFoundation/oneplanner` v1.0, Apache-2.0 [79] |
+| Autoware Index | 미등록 [88] | `autoware_latent_drive` 1.0.1 등록(Jazzy) [88] | `autoware_oneplanner` 1.1.0 등록, Index CI가 2.0.0에 대해 통과 [79][88] |
+| Selector 연결 | — | — | 1.1.0부터 `CandidateTrajectories`(생성기 정보·방향지시등 포함)도 발행 → "`autoware_trajectory_selector`의 생성기로 쓸 수 있음" [79][80] |
+| 상태 표기 | Robotaxi WG 개발 [33]. 11-01 폐루프 통합 PR 머지, 11-04 논문 초고 [89] | "연구 모델, 공도 제어 금지". 10-30 ROS 패키지명을 `autoware_latent_drive`로 변경 [90] | "연구 모델. 일본 주행 데이터로 학습, 정확도 미공개. 차에 쓰려면 Autoware 궤적 검증 뒤에 배선" [79] |
 
 - **AutoE2E의 두 용도**: README는 "LiDAR·레이더 안전층과 융합해 무인 로보택시로, 또는 카메라만으로 L2++ 핸즈프리 ADAS로"라고 적는다 [32].
+- **OnePlanner의 설계 요지(공식 공개 글)**: "플래너는 보통 인식의 출력(검출·추적·예측 객체 목록)으로 장면을 본다. OnePlanner는 인식 백본의 BEV 특징 지도를 입력으로 받아, 검출 헤드가 이름 붙인 객체만이 아니라 백본이 인코딩한 모든 것으로 계획한다". 백본은 교체 가능한 부품이다 [79].
 - **외부 모델 노드**: `alpamayo-autoware`(포크)는 NVIDIA Alpamayo를 Autoware ROS 2 노드로 돌린다. 카메라 4대 입력, 궤적과 추론 텍스트 출력, 24 GB 이상 VRAM 권장 [47].
 
-![AutoE2E 아키텍처](images/09-auto-e2e-architecture.svg)
+![AutoE2E 아키텍처](images/11-auto-e2e-architecture.svg)
 
-*그림 9. AutoE2E 아키텍처(World Action · Reasoning · Reactive) · 원본: auto_e2e `Media/readme/architecture.svg` [32]*
+*그림 11. AutoE2E 아키텍처(World Action · Reasoning · Reactive) · 원본: auto_e2e `Media/readme/architecture.svg` [32]*
 
-![LatentDrive 장면](images/10-latent-drive-scenes.png)
+![LatentDrive 장면](images/12-latent-drive-scenes.png)
 
-*그림 10. LatentDrive 개루프 재생 6장면(리본이 4 s 계획) · 원본: autoware_latent_drive `docs/latent_drive_scenes.png` [34]*
+*그림 12. LatentDrive 개루프 재생 6장면(리본이 4 s 계획) · 원본: autoware_latent_drive `docs/latent_drive_scenes.png` [34]*
 
-![OnePlanner 장면](images/11-oneplanner-scenes.png)
+![OnePlanner 장면](images/13-oneplanner-scenes.png)
 
-*그림 11. OnePlanner 개루프 재생 6장면 · 원본: autoware_oneplanner `media/oneplanner_scenes.png` [35]*
+*그림 13. OnePlanner 개루프 재생 6장면 · 원본: autoware_oneplanner `media/oneplanner_scenes.png` [35]*
 
 ---
 
@@ -277,9 +327,9 @@
 - **배포 형태**: 미들웨어 없이 실행, ROS 2 통합 인터페이스 제공 [71]. 소스 빌드·Debian 패키지·Docker(GPU/CPU) [27].
 - **저장소 이름**: `autoware.privately-owned-vehicles`와 `autoware_vision_pilot` 주소가 현재 `vision_pilot` 저장소로 연결된다 [53].
 
-![Vision Pilot 1.0 개요](images/12-visionpilot-1-0-overview.png)
+![Vision Pilot 1.0 개요](images/14-visionpilot-1-0-overview.png)
 
-*그림 12. Vision Pilot 1.0 개요 · 원본: vision_pilot `Media/VisionPilot_1.0.png` [27]*
+*그림 14. Vision Pilot 1.0 개요 · 원본: vision_pilot `Media/VisionPilot_1.0.png` [27]*
 
 ### 3.2 구조와 모델 3종
 
@@ -295,9 +345,9 @@
 
 - **세 모델 모두** ONNX FP32와 INT8 가중치를 제공한다 [29][30][31].
 
-![Vision Pilot 하이브리드 E2E 아키텍처](images/13-visionpilot-hybrid-e2e-architecture.png)
+![Vision Pilot 하이브리드 E2E 아키텍처](images/15-visionpilot-hybrid-e2e-architecture.png)
 
-*그림 13. Vision Pilot "Hybrid End-to-End AI Architecture" · 원본: vision_pilot `Media/VisionPilot_architecture.png` [27]*
+*그림 15. Vision Pilot "Hybrid End-to-End AI Architecture" · 원본: vision_pilot `Media/VisionPilot_architecture.png` [27]*
 
 ### 3.3 릴리스 이력과 다음 단계
 
@@ -308,20 +358,20 @@
 | 1.0 | 2026-07-06 | 모델 3종, 교차 모달 융합 + 궤적 계획. 당초 목표 6월 말 | [57][60][71] |
 | 1.1 | 2026-07-27 | 공간 영역 MPC, 융합·추적 개선, Docker, CARLA 0.9.16 | [71] |
 | 1.2 | 2026-08-10 | CARLA 통합·횡방향 추적 개선, 3D 점유 시각화, Rerun 로깅 | [71] |
-| 1.3 (진행 중) | — | CARLA 브리지, 점유 BEV 창, 융합·추적 개선, 코드 규정 준수 | [64] |
+| 1.3 (진행 중) | — | CARLA 브리지(Ackermann·1V1R), 점유 BEV 창(레이더+카메라), 융합·추적 개선, 코드 규정 준수. 11-02 회의에서도 동일 | [64][91] |
 
 - **다음 릴리스로 미룬 항목**: 고해상도 카메라(8 MP·120°), 카메라 + 자동차 레이더 융합("Stopped for now") [64].
 - **안전 인증**
-    - 2026-10-26 ADAS WG: "안전 인증 마무리에 집중" [64].
+    - 2026-10-26·11-02 ADAS WG: "안전 인증 마무리에 집중" [64][91]. 11-02 슬롯 2는 "ADAS 그룹 멤버가 참석하지 않아 일찍 종료" [91].
     - SEooC 문서(초안): Vision Pilot 일부 컴포넌트(계획·차량 제어·Safety Guardian)로 ISO 26262 Part 6(+Part 8 지원 프로세스) 준수 소프트웨어 SEooC를 목표. 차량 수준 안전 활동은 OEM·Tier-1 몫 [28].
     - README 로드맵: ISO 26262 · ISO 8800 안전 검증, 레이더 융합, 8 MP 120° 카메라 [27].
 - **다른 차종으로의 확장**: 2026-10-22 Trucks WG 회의는 Vision Pilot v1.2 릴리스와 트럭 모델 작업 진행을 기록했고, Inceptio가 CARLA 0.9.16 + Vision Pilot v1.2로 시뮬레이션했다 [69].
 
 ### 3.4 POV 레퍼런스 디자인의 4단계
 
-![POV 로드맵 4단계](images/14-pov-roadmap-4-phases.jpg)
+![POV 로드맵 4단계](images/16-pov-roadmap-4-phases.jpg)
 
-*그림 14. POV 레퍼런스 디자인 로드맵 4단계와 센서 배치 · 원본: autoware.pov-reference-design-docs `docs/system-configuration/images/Roadmap.jpg` [18]*
+*그림 16. POV 레퍼런스 디자인 로드맵 4단계와 센서 배치 · 원본: autoware.pov-reference-design-docs `docs/system-configuration/images/Roadmap.jpg` [18]*
 
 | Phase | 이름 | 목표 레벨 · ODD [17][19] | 요구 연산 [18] |
 |---|---|---|---|
@@ -339,9 +389,9 @@
     - `domain_seg`: 공사구간 객체 분할, ROADWork 데이터셋 검증 mIoU 46.6 [48].
     - 2026-02 회의: AEI가 SceneSeg·Scene3D·EgoLanes 경량판으로 "정확도 유지하며 3배 속도" [58].
 
-![AutoSeg 파운데이션 모델](images/15-autoseg-foundation-model.jpg)
+![AutoSeg 파운데이션 모델](images/17-autoseg-foundation-model.jpg)
 
-*그림 15. AutoSeg 파운데이션 모델 · 원본: autoware.pov-reference-design-docs `docs/software-configuration/images/AutoSeg.jpg` [21]*
+*그림 17. AutoSeg 파운데이션 모델 · 원본: autoware.pov-reference-design-docs `docs/software-configuration/images/AutoSeg.jpg` [21]*
 
 ---
 
@@ -357,7 +407,7 @@
 | 모델·스택 | 트랙 | 런타임 | 문서에 적힌 실행 환경·수치 | 출처 |
 |---|---|---|---|---|
 | Diffusion Planner | ① | TensorRT (ONNX→엔진 첫 기동 시 빌드) | NVIDIA GPU 필요 | [1] |
-| OnePlanner | ① | TensorRT 10, CUDA 12·13, spconv | NVIDIA GPU(Turing 이상). RTX PRO 6000 Blackwell Max-Q에서 전체 패스 p50 12.7 ms · p99 26.1 ms | [35] |
+| OnePlanner | ① | TensorRT 10, CUDA 12·13, spconv | NVIDIA GPU(Turing 이상). RTX PRO 6000 Blackwell Max-Q에서 전체 패스 p50 12.7 ms · p99 26.1 ms(README), 공개 글은 "약 13 ms(중앙값)·18.7 ms(p95), 그중 플래너 추론 9 ms" | [35][79] |
 | LatentDrive | ① | TensorRT 10.8, CUDA 12 컨테이너 | NVIDIA GPU. 엔진 빌드 3카메라 약 7분 · 1카메라 약 1.5분 | [34] |
 | AutoE2E | ① | PyTorch | RTX 5080, SwinV2-Tiny, 배치 1에서 최대 약 76 FPS | [32] |
 | Alpamayo 노드 | ① | Python 3.10, ROS 2 Humble | NVIDIA GPU 24 GB 이상 VRAM 권장 | [47] |
@@ -368,9 +418,9 @@
 - **POV 가이드의 칩 지원 상태**: "NVIDIA GPU는 잘 지원되며 AMD·Qualcomm·Hailo-8 NPU는 로드맵에 있음" [18].
 - **Autoware 본체**: GPU 없이 설치는 되지만 신경망 기반 검출·신호등 인식은 NVIDIA GPU가 필요하다 [15].
 
-![주행 모델과 컴퓨트 조합](images/16-model-compute.svg)
+![주행 모델과 컴퓨트 조합](images/18-model-compute.svg)
 
-*그림 16. 주행 모델과 컴퓨트 조합 — 두 트랙 · 자체 작성 · 근거 [1][27][32][34][35][36][47][71]*
+*그림 18. 주행 모델과 컴퓨트 조합 — 두 트랙 · 자체 작성 · 근거 [1][27][32][34][35][36][47][71]*
 
 ### 4.2 "같은 스택 위의 생성기 경쟁"
 
@@ -378,6 +428,7 @@
 - **경쟁 참가자의 범위**: 공식 문서는 생성기 예시로 기존 Autoware 스택, **AWF 회원사의 사내 독점 AI 모델**, 오픈소스 Autoware E2E 모델을 나란히 든다 [4].
 - **현재 실제로 꽂힌 생성기**: 2.0.0에서는 규칙 기반과 Diffusion Planner 두 개뿐이고 한 번에 하나만 돈다 [1].
 - **런치 밖에서 경쟁 중인 후보**: OnePlanner·LatentDrive·AutoE2E·Alpamayo 노드는 각자 독립 런타임으로 공개됐다 [32][34][35][47].
+- **Selector 규격에 먼저 맞춘 후보**: OnePlanner 1.1.0은 `CandidateTrajectories`로도 발행해 "`autoware_trajectory_selector`의 생성기"가 될 수 있다고 명시했고, Autoware Index에 등록돼 Index CI가 2.0.0에 대해 빌드·테스트를 통과했다. 2.0.0 자체에는 예비 생성기 `autoware_minimum_rule_based_planner`도 들어 있다(미기동) [1][79][80].
 - **모델 간 공개 비교**: AutoE2E README가 KITScenes-Multimodal 검증셋에서 오픈 가중치 모델 8종의 3 s 개루프 오차를 비교한다 [32].
 
 | 모델 | 설정 | ADE@3s (m) | FDE@3s (m) |
@@ -393,9 +444,9 @@
 
 - **비교 조건 차이(README 명시)**: AutoE2E는 HD맵·경로를 추가로 받고, VAD·Drive-JEPA는 주행 명령을 받는다. 평가 표본도 202 키프레임과 11,035 샘플로 다르다 [32].
 
-![KITScenes 벤치마크](images/17-auto-e2e-benchmark-kitscenes.svg)
+![KITScenes 벤치마크](images/19-auto-e2e-benchmark-kitscenes.svg)
 
-*그림 17. KITScenes-Multimodal 검증 3 s ADE/FDE, 오픈 가중치 8종 · 원본: auto_e2e `Media/readme/benchmark-kitscenes-3s.svg` [32]*
+*그림 19. KITScenes-Multimodal 검증 3 s ADE/FDE, 오픈 가중치 8종 · 원본: auto_e2e `Media/readme/benchmark-kitscenes-3s.svg` [32]*
 
 ### 4.3 "한 칩 안의 주행 스택과 안전섬" — R-Car X5H
 
@@ -407,9 +458,9 @@
 - **Reference Design WG(2026-10)**: L4 안전섬 설계에서 "최대 안전" 분기는 카메라·레이더 4대·초음파·IMU/GNSS를 R-Car X5H에, "최소 비용" 분기는 S32Z2·AURIX TC4x·Stellar 마이크로컨트롤러에 둔다 [67].
 - **L2 Safety Island 실험(2026-10-15 보고)**: CARLA 폐루프에서 Vision Pilot이 계획하고 Safety Island가 승인·정지한다. 고장→제동 4–14 ms(한계 500 ms), 9 m/s로 약 2.5 km 차선 유지 [68].
 
-![R-Car X5H 한 칩 구성](images/18-x5h-one-chip.svg)
+![R-Car X5H 한 칩 구성](images/20-x5h-one-chip.svg)
 
-*그림 18. R-Car X5H 한 칩 안의 구성과 관련 계획 · 자체 작성 · 근거 [36][56][67][68][74]*
+*그림 20. R-Car X5H 한 칩 안의 구성과 관련 계획 · 자체 작성 · 근거 [36][56][67][68][74]*
 
 ---
 
@@ -462,6 +513,7 @@
 | `cuda_blackboard` | REP-2007·2009로 GPU 메모리를 노드 간 복사 없이 공유 | universe 그룹 0.4.0, core/cuda로 이동 예정 | [23][42][65] |
 | `autoware_system_designer` | YAML 설계에서 ROS 2 런치·노드 그래프·지연 뷰·파라미터 템플릿 생성 | core 그룹 v0.4.2 | [23][40] |
 | `autoware_simple_planning_simulator` | Universe에서 옮긴 단독 planning simulator | core 그룹 1.1.0 | [23][49] |
+| `autoware_cuda` | CUDA·TensorRT 공통 기반 패키지 3개(cuda_dependency_meta·cuda_utils·tensorrt_common). Core의 선택적 CUDA 층 | main의 `core/cuda/` 1.0.0(10-31). 2.0.0 고정판에는 없음 | [85][86][87] |
 | `autoware-harness` | 코딩 에이전트용 Autoware 스킬·에이전트·MCP 묶음 | 별도 | [51] |
 | `3dgs_io` | 3D Gaussian Splatting 장면 + Autoware 맵 번들 I/O | 별도 | [52] |
 | `AWSIM`, CARLA 계열 | 디지털 트윈 시뮬레이터, CARLA 포크·브리지·시나리오 | 별도 | [53] |
@@ -481,7 +533,7 @@
 
 | 분류 | 개수 | 2026년에 갱신된 주요 저장소 |
 |---|---|---|
-| A. 메타·핵심 | 17 | `autoware`, `autoware_core`, `autoware_universe`, `autoware_launch`, `autoware_system_designer`, `autoware_simple_planning_simulator`, `autoware_cuda`, `autoware-documentation` |
+| A. 메타·핵심 | 17 | `autoware`, `autoware_core`, `autoware_universe`, `autoware_launch`, `autoware_system_designer`, `autoware_simple_planning_simulator`, `autoware_cuda`(10-31부터 실체), `autoware-documentation` |
 | B. 로보택시·L4 E2E | 6 | `auto_e2e`, `autoware_latent_drive`, `autoware_oneplanner`, `alpamayo-autoware`(포크), `3dgs_io` |
 | C. ADAS·POV | 13 | `vision_pilot`, `auto_steer`, `auto_speed`, `auto_drive`, `domain_seg`, `ego_lanes`, `blindspot_detector`, `auto_speed_limit` |
 | D. 미들웨어·GPU | 14 | `agnocast`, `callback_isolated_executor`, `cuda_blackboard`, `managed_transform_buffer`, `ros2_socketcan`, `spconv_cpp` |
@@ -493,6 +545,7 @@
 | J. 레거시·아카이브·포크·벤더 | 31 | (2026년 갱신 없음) Autoware.AI 저장소 9개, Core/Universe 프로토타입 등 |
 
 - 분류는 이 보고서의 정리 기준이다. 전체 목록(설명·별·포크·갱신일·상태)은 [저장소 전수 목록](reference/repo-inventory.md)에 있다 [53].
+- 11-05 기준 조직 저장소 수는 여전히 157개이고 새 저장소는 없다. 10-31~11-05에 갱신이 집중된 곳은 core 그룹·`autoware_cuda`·`autoware-index`·`auto_e2e`·`autoware-documentation`이다 [53].
 
 ---
 
@@ -503,8 +556,11 @@
 
 | 공식 로드맵 항목 | 문서 | 확인된 현재 상태(2026-10) |
 |---|---|---|
-| Architecture 2.0 Step 1 학습 플래너 | [3] | Diffusion Planner가 2.0.0에서 선택 가능 [1] |
-| Generator-Selector의 Selector | [4] | 패키지 존재, 2.0.0에서 미기동 [1] |
+| Architecture 2.0 Step 1 학습 플래너 | [3] | "릴리스에 포함" — Diffusion Planner 선택 가능 [83] |
+| Architecture 2.0 Step 2·4 | [3] | "2.0.0에 없음"(공식 상태표) [83] |
+| Architecture 2.0 Step 3 학습 주행 | [3] | VAD가 Universe에 있으나 기본 런치에 없음. 다른 E2E 모델은 별도 저장소 — OnePlanner·LatentDrive는 Index 등록 [83][88] |
+| Generator-Selector 이행 Phase 4~6 | [83] | Selector 미기동, Phase 5·6 부분 완료. 2026-03 실차 프로토타입 보고 [83] |
+| Universe CUDA 공통 패키지 → Core CUDA 층 | [65] | 완료(10-31 코드, 11-02 이미지, 11-04 문서) [85][86][87] |
 | POV Phase 1 Vision Pilot | [17] | 1.2 릴리스(2026-08-10), 1.3 진행 중 [64][71] |
 | Open AD Kit v2.0 | [56] | 2026-10 말 목표, "리스크" [68] |
 | Open AD Kit v2.1 (X5H, Vision Pilot) | [56] | CES 2027 이후 예정. X5H 한 칩 AutoSD+FreeRTOS 이식 완료 [74] |
@@ -539,12 +595,14 @@
 - **조사일·범위**: 2026-10-30. AWF GitHub 저장소·문서 원본·WG 회의록·이슈.
 - **방법**: 저장소는 raw 파일과 shallow clone으로 읽었고, 릴리스·이슈·토론은 GitHub 페이지를 직접 열람했다. 실행·실측은 하지 않았다.
 - **접근 제약**: 세션 네트워크 정책으로 autoware.org, docs.autoware.org, medium.com, 언론 사이트, GitHub 조직 API에 접근하지 못했다. 공식 문서는 같은 내용의 문서 저장소 원본으로 대신 읽었다.
+- **11-02 보도자료 2건(📰)**: autoware.org·tier4.co.jp·PR Newswire·언론 사이트가 모두 차단돼 원문을 열지 못했다. 재단 보도자료는 제목과 URL만(Software WG 회의록의 링크로 확인), TIER IV 보도자료는 복수 검색 결과에 공통으로 나온 내용(협력사 3곳의 역할, 인용문 2건, 행사)만 실었다. 인용문의 정확한 문구는 매체마다 조금 달라 원문 대조를 권한다.
 - **제외한 항목** — 원문으로 확인하지 못해 뺐다.
     - 전시회에서 Vision Pilot을 특정 SoC와 함께 시연했다는 언론 보도(원문 접근 불가).
-    - 재단 홈페이지·블로그의 공식 표현과 2026년 사업 계획.
+    - 재단 홈페이지·블로그의 공식 표현과 2026년 사업 계획(11-02 보도자료 본문 포함).
     - 저장소별 생성일(조직 API 차단). "2026년 신규"라는 표현은 쓰지 않고 "2026년 갱신"만 적었다.
     - 각 저장소와 Architecture 2.0 단계의 대응(공식 문서에 없음).
 - **수치 기준**: 별·포크 수는 목록 페이지 표기다. Vision Pilot 릴리스 날짜는 릴리스 페이지 날짜이고, 연도는 태그 커밋일로 확인했다 [71].
+- **그림의 기준판**: 공식 문서의 설계 도식은 2026-10-30 개편으로 전부 새로 그려졌다. 3판은 새 SVG 원본(문서 저장소 커밋 037c3a2, 2026-11-04)을 싣는다. 2판까지 실었던 PNG 원본은 개편 전 판(커밋 722d7f7)이었다 [82].
 
 ---
 
@@ -625,3 +683,20 @@
 73. 🔍 Discussion #7101 — Off-road/Racing Working Group Meeting 2026/05/07 — 2026-05-07 — https://github.com/orgs/autowarefoundation/discussions/7101
 74. 🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료) — https://github.com/autowarefoundation/openadkit/issues/120
 75. 💻 README가 한 줄뿐인 저장소 8개 — lite_models · scene_seg · scene_3d · ego_lanes · blindspot_detector · auto_speed_limit · vision_pilot_model_recipes · autoware_launch_v2 — 2026-10-30 — https://github.com/autowarefoundation/lite_models
+76. 🔍 GitHub Discussions 인덱스(2026-10-30 ~ 11-05 게시물 6건) — 2026-11-05 — https://github.com/orgs/autowarefoundation/discussions
+77. 🔍 Discussion #7388 — Software WG Meeting 2026/11/03 ("Released Autoware 2.0" 링크, docs.autoware.org, "Registered new E2E models to Autoware Index") — 2026-11-03 — https://github.com/orgs/autowarefoundation/discussions/7388
+78. 📰 TIER IV 보도자료 — TIER IV spearheads Autoware 2.0 initiatives (Arm Total Design for Physical AI · AWS · Red Hat AutoSD · ASSC US 2026) — 2026-11-02 — https://tier4.co.jp/en/updates/press-release/20261102-tieriv-spearheads-autoware2.0-initiatives (PR Newswire 전재: https://www.prnewswire.com/news-releases/tier-iv-spearheads-autoware-2-0-initiatives-302925841.html) · 재단 보도자료 제목·URL: https://autoware.org/autoware-foundation-releases-autoware-2-0-to-expand-ai-support-for-open-source-autonomous-driving/
+79. 🔍 Discussion #7384 — Introducing OnePlanner: End-to-End Planning from the Features of Existing Perception Models (Show and tell, Max-Bin) — 2026-11-02 — https://github.com/orgs/autowarefoundation/discussions/7384
+80. 💻 autoware_oneplanner — 1.1.0 커밋(CandidateTrajectory·GeneratorInfo 채움, 방향지시등 포함) — 2026-10-30 — https://github.com/autowarefoundation/autoware_oneplanner
+81. 💻 autoware README — 2.0 설계로 갱신(docs.autoware.org 안내, Autoware Index 문서 링크) — 2026-11-04 — https://github.com/autowarefoundation/autoware/pull/7389
+82. 💻 autoware-documentation — 2026-10-30 ~ 11-04 머지 PR 26건(#848 도식 재작성, #849 설계 절 갱신, #858 로드맵, #864 레퍼런스 디자인, #870 CUDA 층, #877 AGENTS.md), 커밋 037c3a2 — https://github.com/autowarefoundation/autoware-documentation/pulls?q=is%3Apr+merged%3A%3E%3D2026-10-30
+83. 💻 Autoware 문서 — Development roadmap(Generator-Selector 이행 Phase 0~6 상태, Step 1~4의 2.0.0 상태) — 2026-10-30 — https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/development-roadmap.md
+84. 💻 autoware-documentation — AGENTS.md(AI 에이전트용 규칙, Zensical·llms.txt) — 2026-11-04 — https://github.com/autowarefoundation/autoware-documentation/blob/main/AGENTS.md
+85. 🔍 autoware issue #7340 — Extract the shared CUDA base packages into a new autoware_cuda repository ("The cutover is done", 일자별 진행표) — 2026-10-05 ~ 11-04 — https://github.com/autowarefoundation/autoware/issues/7340
+86. 💻 autoware — repositories/autoware.repos(main: core/cuda/autoware_cuda 1.0.0 · cuda_blackboard 0.5.0 · negotiated), PR #7379·#7383·#7386 — 2026-10-31 ~ 11-02 — https://github.com/autowarefoundation/autoware/blob/main/repositories/autoware.repos
+87. 💻 autoware_cuda README · Autoware 문서 "The CUDA layer"(core-package-inclusion-criteria.md) — 2026-11-04 — https://github.com/autowarefoundation/autoware_cuda
+88. 💻 autoware-index — distributions/jazzy.yaml(autoware_oneplanner 1.1.0 · autoware_latent_drive 1.0.1 · vision_pilot reference_design · Index 이동 패키지 5개 · tamagawa_imu_driver) — 2026-11-05 — https://github.com/autowarefoundation/autoware-index/blob/main/distributions/jazzy.yaml
+89. 💻 auto_e2e — README 라이선스 절(체크포인트 CC BY-NC-SA 4.0, 코드 Apache-2.0, 11-02) · 커밋 이력(폐루프 통합 PR #177·#233 머지 11-01, 논문 초고 11-04) — https://github.com/autowarefoundation/auto_e2e
+90. 💻 autoware_latent_drive — 커밋 이력(ROS 패키지 latentdrive_ros → autoware_latent_drive, 10-30) — https://github.com/autowarefoundation/autoware_latent_drive
+91. 🔍 Discussion #7387 — ADAS Work Group Meeting 2026/11/02 — 2026-11-02 — https://github.com/orgs/autowarefoundation/discussions/7387
+92. 🔍 Discussion #7382 — Release-to-release interface change report from interface_manifest.json(autoware_core 1.10.0부터 interface_manifest.json·RIHS01 lockfile) — 2026-11-01 — https://github.com/orgs/autowarefoundation/discussions/7382

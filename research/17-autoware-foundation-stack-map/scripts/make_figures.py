@@ -136,7 +136,7 @@ def fig_model_compute():
              "• R-Car X5H 한 칩에 AutoSD(Cortex-A720AE)와 FreeRTOS(Cortex-R52)를 함께 올리는 이식이 2026-09 완료됐다."]
     for n, s in enumerate(notes):
         b.append(text(120, 384 + n * 30, s, 13, INK if n in (0, 3) else MUTED, "bold" if n in (0, 3) else "normal"))
-    (OUT / "16-model-compute.svg").write_text(svg(W, H, "\n".join(b), "주행 모델과 컴퓨트"), encoding="utf-8")
+    (OUT / "18-model-compute.svg").write_text(svg(W, H, "\n".join(b), "주행 모델과 컴퓨트"), encoding="utf-8")
 
 
 # ---------------------------------------------------------------- 그림: R-Car X5H 한 칩
@@ -164,7 +164,7 @@ def fig_x5h():
         b.append(text(bx + 14, y + 48, s, 12, INK))
     b.append(text(30, 396, "근거: Open AD Kit 이슈 #120 · 로드맵 #91 · WG 회의 #7357 · Reference Design WG #7358 · autoware-safety-island README", 12, MUTED))
     b.append(text(30, 420, "그림은 문서에 적힌 사실을 나란히 놓은 것이며, Vision Pilot이 X5H의 A720AE 클러스터에서 실행됐다는 기록은 확인되지 않았다.", 12, MUTED))
-    (OUT / "18-x5h-one-chip.svg").write_text(svg(W, H, "\n".join(b), "R-Car X5H 한 칩 구성"), encoding="utf-8")
+    (OUT / "20-x5h-one-chip.svg").write_text(svg(W, H, "\n".join(b), "R-Car X5H 한 칩 구성"), encoding="utf-8")
 
 
 for f in (fig_map, fig_model_compute, fig_x5h):

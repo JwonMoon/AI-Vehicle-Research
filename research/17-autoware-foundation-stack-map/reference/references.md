@@ -1,7 +1,7 @@
 # 출처 기록 — Autoware 재단 스택 지도
 
-> **조사일**: 2026-10-30
-> **등급**: 💻 저장소 원본(raw 파일·shallow clone으로 직접 확인) · 🔍 1차 페이지(GitHub 릴리스·이슈·토론을 직접 열람)
+> **조사일**: 2026-10-30 · 3판 추가분(76~92) 2026-11-05
+> **등급**: 💻 저장소 원본(raw 파일·shallow clone으로 직접 확인) · 🔍 1차 페이지(GitHub 릴리스·이슈·토론을 직접 열람) · 📰 검색 요약(원문 차단, 78번에만 사용)
 > 번호는 본 보고서 [`../autoware-foundation-stack-map.md`](../autoware-foundation-stack-map.md)의 인라인 인용 번호와 일치한다.
 
 ## 수집 방법
@@ -85,3 +85,20 @@ Autoware 재단(AWF)의 GitHub 저장소·문서 원본·GitHub 1차 페이지�
 73. 🔍 Discussion #7101 — Off-road/Racing Working Group Meeting 2026/05/07 — 2026-05-07 — https://github.com/orgs/autowarefoundation/discussions/7101
 74. 🔍 openadkit issue #120 — Reproduce the CES 2026 MCO/MRM edge stack on a single R-Car X5H ECU (AutoSD + FreeRTOS) — 2026-08-07 (2026-09-02 완료) — https://github.com/autowarefoundation/openadkit/issues/120
 75. 💻 README가 한 줄뿐인 저장소 8개 — lite_models · scene_seg · scene_3d · ego_lanes · blindspot_detector · auto_speed_limit · vision_pilot_model_recipes · autoware_launch_v2 — 2026-10-30 — https://github.com/autowarefoundation/lite_models
+76. 🔍 GitHub Discussions 인덱스(2026-10-30 ~ 11-05 게시물 6건) — 2026-11-05 — https://github.com/orgs/autowarefoundation/discussions
+77. 🔍 Discussion #7388 — Software WG Meeting 2026/11/03 ("Released Autoware 2.0" 링크, docs.autoware.org, "Registered new E2E models to Autoware Index") — 2026-11-03 — https://github.com/orgs/autowarefoundation/discussions/7388
+78. 📰 TIER IV 보도자료 — TIER IV spearheads Autoware 2.0 initiatives (Arm Total Design for Physical AI · AWS · Red Hat AutoSD · ASSC US 2026) — 2026-11-02 — https://tier4.co.jp/en/updates/press-release/20261102-tieriv-spearheads-autoware2.0-initiatives (PR Newswire 전재: https://www.prnewswire.com/news-releases/tier-iv-spearheads-autoware-2-0-initiatives-302925841.html) · 재단 보도자료 제목·URL: https://autoware.org/autoware-foundation-releases-autoware-2-0-to-expand-ai-support-for-open-source-autonomous-driving/
+79. 🔍 Discussion #7384 — Introducing OnePlanner: End-to-End Planning from the Features of Existing Perception Models (Show and tell, Max-Bin) — 2026-11-02 — https://github.com/orgs/autowarefoundation/discussions/7384
+80. 💻 autoware_oneplanner — 1.1.0 커밋(CandidateTrajectory·GeneratorInfo 채움, 방향지시등 포함) — 2026-10-30 — https://github.com/autowarefoundation/autoware_oneplanner
+81. 💻 autoware README — 2.0 설계로 갱신(docs.autoware.org 안내, Autoware Index 문서 링크) — 2026-11-04 — https://github.com/autowarefoundation/autoware/pull/7389
+82. 💻 autoware-documentation — 2026-10-30 ~ 11-04 머지 PR 26건(#848 도식 재작성, #849 설계 절 갱신, #858 로드맵, #864 레퍼런스 디자인, #870 CUDA 층, #877 AGENTS.md), 커밋 037c3a2 — https://github.com/autowarefoundation/autoware-documentation/pulls?q=is%3Apr+merged%3A%3E%3D2026-10-30
+83. 💻 Autoware 문서 — Development roadmap(Generator-Selector 이행 Phase 0~6 상태, Step 1~4의 2.0.0 상태) — 2026-10-30 — https://github.com/autowarefoundation/autoware-documentation/blob/main/docs/design/autoware-architecture-v2/roadmap/development-roadmap.md
+84. 💻 autoware-documentation — AGENTS.md(AI 에이전트용 규칙, Zensical·llms.txt) — 2026-11-04 — https://github.com/autowarefoundation/autoware-documentation/blob/main/AGENTS.md
+85. 🔍 autoware issue #7340 — Extract the shared CUDA base packages into a new autoware_cuda repository ("The cutover is done", 일자별 진행표) — 2026-10-05 ~ 11-04 — https://github.com/autowarefoundation/autoware/issues/7340
+86. 💻 autoware — repositories/autoware.repos(main: core/cuda/autoware_cuda 1.0.0 · cuda_blackboard 0.5.0 · negotiated), PR #7379·#7383·#7386 — 2026-10-31 ~ 11-02 — https://github.com/autowarefoundation/autoware/blob/main/repositories/autoware.repos
+87. 💻 autoware_cuda README · Autoware 문서 "The CUDA layer"(core-package-inclusion-criteria.md) — 2026-11-04 — https://github.com/autowarefoundation/autoware_cuda
+88. 💻 autoware-index — distributions/jazzy.yaml(autoware_oneplanner 1.1.0 · autoware_latent_drive 1.0.1 · vision_pilot reference_design · Index 이동 패키지 5개 · tamagawa_imu_driver) — 2026-11-05 — https://github.com/autowarefoundation/autoware-index/blob/main/distributions/jazzy.yaml
+89. 💻 auto_e2e — README 라이선스 절(체크포인트 CC BY-NC-SA 4.0, 코드 Apache-2.0, 11-02) · 커밋 이력(폐루프 통합 PR #177·#233 머지 11-01, 논문 초고 11-04) — https://github.com/autowarefoundation/auto_e2e
+90. 💻 autoware_latent_drive — 커밋 이력(ROS 패키지 latentdrive_ros → autoware_latent_drive, 10-30) — https://github.com/autowarefoundation/autoware_latent_drive
+91. 🔍 Discussion #7387 — ADAS Work Group Meeting 2026/11/02 — 2026-11-02 — https://github.com/orgs/autowarefoundation/discussions/7387
+92. 🔍 Discussion #7382 — Release-to-release interface change report from interface_manifest.json(autoware_core 1.10.0부터 interface_manifest.json·RIHS01 lockfile) — 2026-11-01 — https://github.com/orgs/autowarefoundation/discussions/7382
