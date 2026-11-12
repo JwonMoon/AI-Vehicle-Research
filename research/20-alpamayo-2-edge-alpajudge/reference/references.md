@@ -1,12 +1,12 @@
 # 출처 기록 — NVIDIA Alpamayo 2 Edge · AlpaJudge
 
-> **작성일(접근일)**: 2026-11-12 (KST)
-> **등급**: 📄 기술 블로그(기사 본문, 직접 열람) · 🔍 공식 저장소·모델 카드(기사가 링크한 1차 자료, 이번 작성에서는 미열람)
+> **작성일(접근일)**: 2026-11-12 (KST), 2판  
+> **등급**: 📄 기사 본문(직접 열람) · 🔍 기사가 링크한 1차 자료를 직접 열어 확인 · 🔗 URL만 기록(미열람)  
 > 번호는 본 보고서 [`../alpamayo-2-edge-alpajudge.md`](../alpamayo-2-edge-alpajudge.md)의 인라인 인용 번호와 일치한다.
 
 ## 수집 방법
 
-기사 1건을 2026-11-12에 직접 내려받아(HTML 원문) 본문·표·코드·캡션을 추출했다. 모든 사실 서술은 이 기사에서 나왔고, 기사가 링크한 Hugging Face 모델 카드와 GitHub 저장소는 URL만 기록했으며 본문을 열어 보지 않았다. 기사 안의 파트너 3사(PORT·Niulinx·Embedl) 수치는 각 사의 자체 평가 인용이다. 기사 상단의 NVIDIA Nemotron 생성 요약은 본문과 대조해 보조 참고로만 썼다.
+기사 1건의 HTML 원문을 2026-11-12에 내려받아 본문·표·코드·캡션을 추출했다. 2판에서는 기사가 링크한 1차 자료 중 Alpamayo 2 Edge 모델 카드와 GitHub README, Alpamayo 2 Super 모델 카드와 소개 블로그, AlpaJudge 모델 카드와 GitHub README, DFlash GitHub README, alpamayo-recipes의 허브 README와 Thor 배포 레시피 README를 직접 열어 교차 확인했다. 용어 풀이·Super 대비 비교·하네스 구성·지연 단계별 수치는 이들 1차 자료에서 가져왔다. 기사 안의 파트너 3사(PORT·Niulinx·Embedl) 수치는 각 사의 자체 평가 인용이다. 기사 상단의 NVIDIA Nemotron 생성 요약은 본문과 대조해 보조 참고로만 썼다.
 
 ## 그림
 
@@ -26,15 +26,17 @@
 
 
 1. 📄 NVIDIA Technical Blog — Running AV Reasoning Models Within Onboard Compute and Latency Limits (Marco Pavone, Boris Ivanovic) — 2026-11-10 — https://developer.nvidia.com/blog/running-av-reasoning-models-within-onboard-compute-and-latency-limits/
-2. 🔍 Hugging Face — nvidia/Alpamayo2-Edge 모델 카드 (기사 링크, 미열람) — https://huggingface.co/nvidia/Alpamayo2-Edge
-3. 🔍 Hugging Face — nvidia/alpajudge 모델 카드 (기사 링크, 미열람) — https://huggingface.co/nvidia/alpajudge
-4. 🔍 GitHub NVlabs/alpagym — AlpaGym 폐루프 RL 환경 (기사 링크, 미열람) — https://github.com/NVlabs/alpagym
-5. 🔍 NVIDIA — Cosmos (Cosmos 3 Edge 소개 페이지, 기사 링크, 미열람) — https://www.nvidia.com/en-us/ai/cosmos/
-6. 🔍 GitHub z-lab/dflash — DFlash2 speculative decoding (기사 링크, 미열람) — https://github.com/z-lab/dflash
-7. 🔍 GitHub NVlabs/alpamayo2-edge — inference.py 추론 스크립트 (기사 링크, 미열람) — https://github.com/NVlabs/alpamayo2-edge/tree/main/src/alpamayo2_edge/inference.py
-8. 🔍 GitHub NVlabs/alpamayo-recipes — Alpamayo Developer Hub, Thor 배포 레시피 (기사 링크, 미열람) — https://github.com/NVlabs/alpamayo-recipes
-9. 🔍 GitHub NVlabs/alpajudge — examples/alpajudge_pai.ipynb 예제 노트북 (기사 링크, 미열람) — https://github.com/NVlabs/alpajudge/blob/main/examples/alpajudge_pai.ipynb
-10. 🔍 GitHub NVlabs/alpamayo-recipes — alpamayo1_x_rl RL 레시피 README (기사 링크, 미열람) — https://github.com/NVlabs/alpamayo-recipes/blob/main/recipes/alpamayo1_x_rl/README.md
-11. 🔍 NVIDIA Developer Forums — Alpamayo 포럼 (기사 링크, 미열람) — https://forums.developer.nvidia.com/c/autonomous-vehicles/alpamayo/766
-12. 🔍 NVIDIA — Alpamayo Open Platform (기사 링크, 미열람) — https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/
-13. 🔍 NVIDIA Research — ASPIRE 연구실 (기사 링크, 미열람) — https://research.nvidia.com/labs/aspire/
+2. 🔍 Hugging Face — nvidia/Alpamayo2-Edge 모델 카드 (파라미터 구성·입출력·벤치마크·메모리·라이선스) — 2026-11-10 공개 — https://huggingface.co/nvidia/Alpamayo2-Edge
+3. 🔍 GitHub NVlabs/alpamayo2-edge — README (추론 코드, 입력 프로필, 가속 옵션) — https://github.com/NVlabs/alpamayo2-edge
+4. 🔍 Hugging Face — nvidia/Alpamayo2-Super 모델 카드 (34B 구성·입출력·평가) — 2026-08-04 공개 — https://huggingface.co/nvidia/Alpamayo2-Super
+5. 🔍 NVIDIA Technical Blog — Generate Trajectories, Reasoning Traces, and Auto-Labels with NVIDIA Alpamayo 2 Super — https://developer.nvidia.com/blog/generate-trajectories-reasoning-traces-and-auto-labels-with-nvidia-alpamayo-2-super/
+6. 🔍 GitHub NVlabs/alpajudge — README (RB·RF 입력 계약, 점수 공식, 한계) — https://github.com/NVlabs/alpajudge
+7. 🔍 Hugging Face — nvidia/alpajudge 모델 카드 (체크포인트 2종, 라이선스) — https://huggingface.co/nvidia/alpajudge
+8. 🔍 GitHub z-lab/dflash — README (DFlash·DFlash 2 개요, 지원 모델) — https://github.com/z-lab/dflash
+9. 🔗 arXiv 2602.06036 — DFlash: Block Diffusion for Flash Speculative Decoding (Chen, Liang, Liu) — 2026 — https://arxiv.org/abs/2602.06036
+10. 🔍 GitHub NVlabs/alpamayo-recipes — README (Alpamayo Developer Hub, 모델 가족·레시피 목록) — https://github.com/NVlabs/alpamayo-recipes
+11. 🔍 GitHub NVlabs/alpamayo-recipes — recipes/alpamayo2edge_edgellm/README.md (Thor 배포 레시피, 단계별 지연, 하네스 구성) — https://github.com/NVlabs/alpamayo-recipes/blob/main/recipes/alpamayo2edge_edgellm/README.md
+12. 🔗 GitHub NVlabs/alpagym — AlpaGym 폐루프 RL 프레임워크 — https://github.com/NVlabs/alpagym
+13. 🔗 GitHub NVlabs/alpamayo-recipes — recipes/alpamayo1_x_rl/README.md (GRPO RL 레시피) — https://github.com/NVlabs/alpamayo-recipes/blob/main/recipes/alpamayo1_x_rl/README.md
+14. 🔗 NVIDIA Developer Forums — Alpamayo 포럼 — https://forums.developer.nvidia.com/c/autonomous-vehicles/alpamayo/766
+15. 🔗 NVIDIA — Cosmos 소개 페이지 — https://www.nvidia.com/en-us/ai/cosmos/
