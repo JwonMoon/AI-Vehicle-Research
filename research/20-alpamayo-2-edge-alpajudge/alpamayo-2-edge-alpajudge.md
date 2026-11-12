@@ -1,6 +1,6 @@
 # NVIDIA Alpamayo 2 Edge · AlpaJudge — 온보드 컴퓨트·지연 한계 안에서 AV 추론 모델 구동하기
 
-> **작성일**: 2026-11-12 · 기사 게재일 2026-11-10 · 상위 주제: [03-nvidia-alpamayo](../) 후속편  
+> **작성일**: 2026-11-12 · 기사 게재일 2026-11-10 · 관련 주제: [03-nvidia-alpamayo](../03-nvidia-alpamayo/) · [14-alpamayo-hardware-alternatives](../14-alpamayo-hardware-alternatives/)  
 > **대상 자료**: NVIDIA Technical Blog, *Running AV Reasoning Models Within Onboard Compute and Latency Limits* (Marco Pavone, Boris Ivanovic) [1]  
 > **출처 표기 원칙**: 모든 사실 문장과 표 행에 `[번호]`를 달고, 말미 출처 목록에 URL을 수록했다. 등급은 📄 기술 블로그(기사 본문) · 🔍 공식 저장소·모델 카드(기사가 링크한 1차 자료). 기사 안의 파트너 인용 수치(PORT·Niulinx·Embedl)는 각 사의 자체 평가이며 NVIDIA가 독립 검증한 것은 아니므로 **"파트너 자체 평가"로 따로 표기**한다. 기사에 없는 내용은 쓰지 않았고, 기사가 링크한 저장소·모델 카드 본문은 이번 작성에서 직접 열어 보지 않았다(출처 미확인 항목은 본문에 명시).  
 > **그림**: 기사 원본 도식 5장을 `images/`에 저장해 수록했다(저작권은 NVIDIA에 있으며 인용 목적). 그림 설명 문장은 기사 캡션을 번역한 것이다.
@@ -37,7 +37,7 @@
 4. **데이터 큐레이션 원칙이 구체적으로 제시됐다.** 점수가 매우 낮은 샘플은 라벨 오류·실패 롤아웃·진짜 어려운 사례일 수 있어 일괄 삭제하면 희귀 실패까지 사라지고, 매우 높은 샘플은 이미 잘하는 쉬운 데이터라 학습 가치가 낮다. 중간 구간이 가장 유익하며, 큐레이션으로 그 비중을 27%에서 81%로 끌어올렸다 [1]. 자체 데이터셋을 가진 팀이 바로 적용할 수 있는 방법론이다.
 5. **보상 해킹 방지 설계를 명시했다.** RL 보상에 추론 점수를 넣되 궤적 게이트를 유지하고 두 성분 점수를 따로 로깅해, 유창하지만 틀린 주행 설명이 높은 총보상을 받지 못하게 한다 [1]. LLM 기반 보상을 쓰는 다른 도메인에도 참고가 된다.
 6. **NVIDIA 생태계 결합이 더 깊어진다.** 모델(Alpamayo), 시뮬레이터(AlpaGym·AlpaSim·NuRec), 판정 모델(AlpaJudge), 배포 스택(TensorRT Edge-LLM·DRIVE OS), 데이터셋(PhysicalAI-AV)이 한 묶음으로 제공된다 [1]. 파트너들이 "며칠 안에" 실차·실시간 구동까지 갔다는 인용은 진입 속도가 빠르다는 뜻이지만 [1], 스택 교체 비용도 함께 커진다는 점은 작성자의 해석이다.
-7. **이 저장소 관점**: 상위 주제 [03-nvidia-alpamayo](../)의 직접 후속편이다. 기존 보고서가 다룬 Alpamayo 1·1.5·2 Super 비교와 SW/HW 요구사항에 비해, 이번 기사는 **엣지 배포(2B·Thor 실시간)**와 **추론 평가 모델(AlpaJudge)**이라는 두 축을 새로 더했다. [14-alpamayo-hardware-alternatives](../../14-alpamayo-hardware-alternatives/)가 다룬 "Thor 대안 하드웨어" 논의도 2B 모델이 등장하면서 전제가 달라졌다.
+7. **이 저장소 관점**: [03-nvidia-alpamayo](../03-nvidia-alpamayo/)의 내용과 직접 이어진다. 기존 보고서가 다룬 Alpamayo 1·1.5·2 Super 비교와 SW/HW 요구사항에 비해, 이번 기사는 **엣지 배포(2B·Thor 실시간)**와 **추론 평가 모델(AlpaJudge)**이라는 두 축을 새로 더했다. [14-alpamayo-hardware-alternatives](../14-alpamayo-hardware-alternatives/)가 다룬 "Thor 대안 하드웨어" 논의도 2B 모델이 등장하면서 전제가 달라졌다.
 
 ---
 
