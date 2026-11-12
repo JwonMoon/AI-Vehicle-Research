@@ -6,6 +6,7 @@ AI 에이전트 **전반**(챗봇 수준 L0부터 장기 자율 과업 L3·다�
 
 | 문서 | 내용 |
 |---|---|
+| [ai-agent-baseline.html](ai-agent-baseline.html) | **baseline 보고서(2026-11-12, HTML 단일 파일)** — "현존 수준은 이 정도다"를 정량·정성으로 말하기 위한 본편. 0. 한 장 요약(baseline 정의·근거 4유형·baseline 문장 9개) · 1. 범위와 분류(출판 분류만: Google SAS/MAS 형식 정의, Mitchell·Feng·Morris 자율성 단계, MAFBench 설계 5차원) · 2. 단일 에이전트 baseline(SWE-bench Verified/Pro·Terminal-Bench 4.1·τ-bench·GAIA·OSWorld-Verified·BFCL V4 리더보드 조회 수치를 "현재 최고 / HAL 비용 통제 재측정 / 오픈 가중치" 3열로, pass^k·dual-control 정성) · 3. 멀티 에이전트 연동 baseline(Google·MIT 260구성 통제 실험 −70~+80.8%·오류 증폭 17.2 vs 4.4배·토큰 효율, Anthropic 사례, MARBLE·MAFBench, MAST 14유형 비율, MCP 2026-07-28·A2A 1.0.0 비교표, 프레임워크 6종 공식 문서 지원 매트릭스) · 4. 음성 에이전트 baseline(캐스케이드 vs S2S 공식 문서 비교, Open ASR WER, Artificial Analysis S2S 지표, τ-Voice/τ-i18n 텍스트 대비 격차·한국어, 공식 지연·전이중 수치) · 5. 스코어카드·성숙도 사실 체크리스트 · 6. 핵심 질문 4·미해결 문제 4 · 7. 주의(RDI 벤치마크 해킹 감사)·한계 · 8. 방법·출처 미확인 목록·출처 38건. 원본 도식·표·리더보드 캡처 25장(`images/baseline/`)에 출처 캡션 |
 | [plan.md](plan.md) | **P0 조사 계획서(2026-11-06)** — 0. 용도별 질문과 조사 구조 · 1. 작업 정의와 4축 분류 체계(자율성 L0~L4·모달리티·배치·도메인), 공통 구성 블록, 축별 지표 고정 · 2. 1부 에이전트 일반(벤치마크 후보표·플레이어 지도·오픈 모델 온디바이스·한계 축·시장 수치) · 3. 2부 음성 에이전트(두 갈래 구성 도식, 블록별 오픈소스 후보표, 음성 지표, 상용 비서·플랫폼) · 4. 3부 직접 구현 트랙(S1~S4 단계, 측정 항목, 실행 환경 선택지) · 5. 4부 종합(스코어카드·성숙도 매트릭스·연구 후보·HW 사양·경영 요약) · 6. 출처 원칙 · 7. 일정 · 8. 열린 질문 |
 | [reference/references.md](reference/references.md) | 계획서에 거론한 벤치마크·프레임워크·프로토콜·오픈소스의 공식 URL 목록(계획 단계, 수치 없음). 조사 단계에서 확장 |
 | [learning/roadmap.md](learning/roadmap.md) | **학습 트랙 — 로드맵(2026-11-11)**. 처음 시작하는 사람이 "현존 기술 수준"을 세 층(단일 에이전트 능력 / 멀티 협업 효과 / 연동 기술 성숙도)으로 파악하기 위한 6~9주 순서표. 0단계 선행 점검 → 1단계 개념 뼈대(읽을 순서 11건) → 2단계 정량 baseline(벤치마크 지도 11종·리더보드 읽기 규칙 6항목·점수 함정) → 3단계 정성 비교(MCP·A2A 사양, 프레임워크 6종 비교 축 6개) → 4단계 직접 측정(단일 vs orchestrator-worker vs 토론형 실험 설계). 단계별 자기 점검 체크리스트, 갱신 규칙 |
@@ -13,7 +14,7 @@ AI 에이전트 **전반**(챗봇 수준 L0부터 장기 자율 과업 L3·다�
 | [learning/reading-guide.md](learning/reading-guide.md) | **학습 트랙 — 자료 가이드**. 자료 37건마다 ① 무슨 자료인가 ② 무엇을 보고 공부해야 하나(장·표·그림·리더보드 열 지목) ③ 미리 답하자면(결론 3줄) ④ 다음 방향 네 항목. 핵심 10여 건(Anthropic 2편·MAST·Google 스케일링·MARBLE·MAFBench·τ²-bench·평가 서베이·RDI 감사·MCP·A2A)은 본문 전체 열람 후 작성(🟢), 나머지는 초록·목차 수준(🟡) 또는 공개 요지(⚪)로 표기. 서두에 "자료 전체를 관통하는 미리 답 7개" |
 | [learning/reference/references.md](learning/reference/references.md) | 학습 트랙 세 문서가 공유하는 번호 출처 목록 37건(🔍/📄 등급, 2026-11-11 URL 접속 확인 결과 🟢/🟡/🔴와 이전 주소 병기) |
 
-조사 단계별 산출물(예정): `part1-agents-general.md` · `part2-voice-agents.md` · `implementation/` + `measurement.md` · `ai-agent-baseline.md`(+`.html`) · `brief.md`.
+본편 보고서는 `ai-agent-baseline.html`(2026-11-12)로 먼저 작성했다. 계획서의 세부 산출물(`part1-*.md`·`part2-*.md`·`implementation/`·`brief.md`)은 후속 조사 시 추가한다.
 
 하위 폴더 `learning/`은 조사와 별개로 **처음 배우는 사람의 학습 트랙**(로드맵·요약본·자료 가이드)이다. 계획서(P0)와 동일하게 저장소 기존 문서를 참고하지 않고 외부 공개 자료만 썼으며, 음성 에이전트와 차량 도메인 응용은 다루지 않는다.
 

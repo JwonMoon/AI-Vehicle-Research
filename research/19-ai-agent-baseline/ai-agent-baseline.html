@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 에이전트·멀티 에이전트 연동 기술 — 현존 수준 baseline 보고서 (2026-11)</title>
+<style>
+  :root { --ink:#1b1b1f; --muted:#5f6368; --line:#e3e5e8; --bg:#ffffff; --soft:#f6f7f9; --accent:#1a56db; --warn:#b45309; --ok:#047857; --tag:#eef2ff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Segoe UI", Roboto, sans-serif; font-size:15px; line-height:1.6; word-break: keep-all; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  header.top { border-bottom: 2px solid var(--ink); padding-bottom: 16px; margin-bottom: 24px; }
+  header.top h1 { font-size: 26px; margin: 0 0 6px; line-height:1.3; }
+  header.top .meta { color: var(--muted); font-size: 13px; }
+  nav.toc { background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; font-size: 14px; }
+  nav.toc ol { margin: 6px 0 0 18px; padding: 0; columns: 2; column-gap: 28px; }
+  nav.toc li { margin: 2px 0; break-inside: avoid; }
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  h2 { font-size: 21px; margin: 44px 0 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  h3 { font-size: 16.5px; margin: 26px 0 8px; }
+  h4 { font-size: 15px; margin: 18px 0 6px; color:#333; }
+  p { margin: 6px 0 10px; }
+  ul, ol { margin: 4px 0 10px 22px; padding: 0; }
+  li { margin: 3px 0; }
+  li > ul { margin-top: 2px; }
+  .lead { background: #fffbeb; border-left: 4px solid var(--warn); padding: 10px 14px; margin: 10px 0 14px; border-radius: 0 6px 6px 0; }
+  .lead strong { color: #92400e; }
+  .conclusion { background: #ecfdf5; border-left: 4px solid var(--ok); padding: 10px 14px; margin: 10px 0 14px; border-radius: 0 6px 6px 0; }
+  .glossary { background: var(--soft); border: 1px dashed #c9ccd1; border-radius: 8px; padding: 10px 14px; margin: 12px 0 16px; font-size: 13.5px; }
+  .glossary .t { font-weight: 700; color: #374151; margin-bottom: 4px; }
+  .glossary dl { margin: 0; }
+  .glossary dt { font-weight: 700; display: inline; }
+  .glossary dd { display: inline; margin: 0; }
+  .glossary dd::after { content: ""; display: block; margin-bottom: 3px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 14px; font-size: 13.5px; }
+  th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-weight: 700; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .small { font-size: 12.5px; color: var(--muted); }
+  figure { margin: 14px 0 18px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  figure img.narrow { max-width: 720px; }
+  figure img.tall { max-height: 820px; width: auto; }
+  figcaption { font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  figcaption b { color: #374151; }
+  .src { display:inline-block; font-size: 11.5px; padding: 1px 6px; border-radius: 4px; background: var(--tag); color: #3730a3; margin-left: 4px; vertical-align: middle; white-space: nowrap; }
+  .src.off { background:#ecfeff; color:#155e75; }
+  .src.paper { background:#eef2ff; color:#3730a3; }
+  .src.vendor { background:#fff7ed; color:#9a3412; }
+  .src.warn { background:#fef2f2; color:#991b1b; }
+  .ref { color: var(--accent); text-decoration: none; font-size: 12px; vertical-align: super; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } nav.toc ol { columns: 1; } }
+  .refs ol { margin-left: 22px; font-size: 13px; }
+  .refs li { margin: 4px 0; }
+  .refs a { color: var(--accent); text-decoration: none; word-break: break-all; }
+  .kv { display:grid; grid-template-columns: 160px 1fr; gap: 4px 12px; font-size: 13.5px; margin: 8px 0 12px; }
+  .kv div:nth-child(odd) { color: var(--muted); }
+  @media print { body { font-size: 12px; } .wrap { max-width: none; padding: 0; } h2 { break-before: page; } nav.toc, header.top { break-after: avoid; } figure { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>AI 에이전트(음성 에이전트 포함)·멀티 에이전트 연동 기술 — 현존 수준 baseline 보고서</h1>
+  <div class="meta">작성일 2026-11-12 · 모든 수치는 조회일을 병기 · 근거 유형 표기: <span class="src off">🔍 공식 리더보드·사양</span> <span class="src paper">📄 논문·기술 블로그</span> <span class="src vendor">🏢 벤더 자체 보고</span> <span class="src warn">⚠ 주의 필요</span></div>
+  <div class="meta">원칙: 모든 문장에 출처 번호 <a class="ref" href="#refs">[n]</a>를 단다. 출처에서 확인하지 못한 내용은 쓰지 않고 "출처 미확인"으로 표기한다. 분류 체계는 출판된 것만 쓴다. 저장소의 기존 문서는 참고·인용하지 않았다.</div>
+</header>
+
+<nav class="toc">
+  <b>목차</b>
+  <ol start="0">
+    <li><a href="#ch0">한 장 요약 — baseline은 이 정도다</a></li>
+    <li><a href="#ch1">범위와 분류 — 출판된 분류만 사용</a></li>
+    <li><a href="#ch2">단일 에이전트 baseline (정량·정성)</a></li>
+    <li><a href="#ch3">멀티 에이전트 연동 baseline</a></li>
+    <li><a href="#ch4">음성 에이전트 baseline</a></li>
+    <li><a href="#ch5">종합 스코어카드와 성숙도 체크리스트</a></li>
+    <li><a href="#ch6">리서치 방향 — 핵심 질문 4·미해결 문제 4</a></li>
+    <li><a href="#ch7">주의·한계</a></li>
+    <li><a href="#ch8">조사 방법과 출처</a></li>
+  </ol>
+</nav>
+
+<h2 id="ch0">0. 한 장 요약 — baseline은 이 정도다</h2>
+
+<h3>0.1 이 보고서가 말하는 "baseline"</h3>
+<ul>
+  <li><b>정의</b>: 2026년 11월 시점에 공개되어 누구나 다시 확인할 수 있는 자료에서 확인되는 ① 지금 도달한 최고 수준, ② 널리 쓸 수 있는 수준(제3자가 비용을 통제해 재측정한 수치), ③ 오픈소스로 직접 돌릴 수 있는 수준, ④ 통제 실험이 보여준 구조적 효과(멀티로 나누면 얼마나 좋아지고 비용은 얼마나 드나), ⑤ 그 수치의 한계.</li>
+  <li><b>근거 4유형과 우선순위</b>: 🔍 공식 리더보드·사양서 → 📄 논문(통제 실험) → 🏢 벤더 자체 보고("주장"으로 표기) → 서베이(지형 설명에만). 2차 블로그는 어떤 수치의 근거로도 쓰지 않았다.</li>
+  <li><b>넣지 않은 것</b>: 실제 산업 배치의 성공률·비용 통계. 공개 자료가 없다. 따라서 아래 baseline은 "현장 평균"이 아니라 "공개 벤치마크에서 재현 가능한 수준 + 통제 실험의 구조적 효과"다.</li>
+</ul>
+
+<h3>0.2 baseline 문장 9개</h3>
+<table>
+  <tr><th style="width:4%">#</th><th>baseline</th><th style="width:12%">근거</th></tr>
+  <tr><td>1</td><td><b>코딩 에이전트</b>: 실제 GitHub 이슈 500개(SWE-bench Verified)를 운영자가 직접 돌린 기준으로 <b>76.8%</b> 해결, 문제당 $0.75. 오픈 가중치 모델은 75.8%($0.07)로 1%p 차. 비공개 기업 코드(SWE-bench Pro Private)는 <b>51.5%</b>. ⚠ 자체 보고 행은 79.2%까지 있으나 전체 180행 중 60행만 운영자 검증</td><td>🔍 [12][22]</td></tr>
+  <tr><td>2</td><td><b>터미널 장기 작업</b>: Terminal-Bench 4.1에서 1위가 <b>65.8% ± 3.1%</b>(Opus 5.5 + Claude Code, 330회 시행, 총비용 $4.7k). 즉 셋 중 하나는 실패하고, 1위와 3위(60.9%)의 총비용은 7배 차</td><td>🔍 [13]</td></tr>
+  <tr><td>3</td><td><b>고객 응대(정책 준수 + 대화 + 도구)</b>: 텍스트 1회 성공률 80~92%(항공/소매/통신)이지만 <b>4회 연속 성공은 52~78%</b>. "한 번은 되지만 매번은 안 된다"가 현재 수준</td><td>🔍 [14]</td></tr>
+  <tr><td>4</td><td><b>컴퓨터 GUI 조작</b>: OSWorld-Verified에서 모델 단독 <b>86.0%</b>, 프레임워크 포함 90.2%. 2024년 논문의 사람 기준선 72.36%를 수치상 넘었다. ⚠ 이 벤치마크는 해킹 가능성 감사 대상에 포함</td><td>🔍 [17] 📄 [11]</td></tr>
+  <tr><td>5</td><td><b>멀티 에이전트의 효과</b>: 통제 실험(260개 구성)에서 단일 대비 <b>−70%~+80.8%</b>, 평균 −0.3%. 병렬로 쪼갤 수 있는 과업에서만 이득이고, 단일 성능이 45%를 넘는 과업은 에이전트를 더해도 손해. 통신 없이 결과만 합치는 구조는 오류를 <b>17.2배</b> 증폭(중앙 검증 구조 4.4배). 토큰 효율은 단일보다 3~5배 나쁘다. 실제 제품 사례(Anthropic)는 +90.2% 향상에 채팅 대비 15배 토큰</td><td>📄 [2] 🏢 [9]</td></tr>
+  <tr><td>6</td><td><b>멀티 에이전트의 실패</b>: 7개 공개 시스템의 실패율 <b>41~86.7%</b>. 실패의 44.2%는 사양·역할·종료 조건 같은 시스템 설계 결함, 32.3%는 에이전트 간 불일치, 23.5%는 검증 문제. 설계 수정으로 +9.4~+15.6%p 개선되지만 근본 해결은 아님</td><td>📄 [7]</td></tr>
+  <tr><td>7</td><td><b>연동 규격과 프레임워크</b>: 도구 연결 표준 MCP는 1년 8개월 사이 사양 5판, 최신판(2026-07-28)에 비호환 변경. 에이전트 간 표준 A2A는 1.0.0. 주요 프레임워크 6종 모두 멀티 구성·사람 개입·체크포인트·MCP 클라이언트를 공식 지원하고, A2A는 2종(Google ADK, Microsoft)만. AutoGen은 보관(archived)됨</td><td>🔍 [20][21][23]–[28]</td></tr>
+  <tr><td>8</td><td><b>음성 에이전트</b>: 음성 인식 평균 단어 오류율 <b>4.87%</b>(오픈 5.70%). speech-to-speech 상용 모델의 음성 추론은 99%대로 포화, 첫 음성까지 0.6~1.2초. 그러나 실제 고객 응대 과업 성공률은 2026년 초 텍스트의 30~45% 수준이었고, 9~10월 전이중 모델이 항공·통신에서 텍스트에 근접(82/79/84). 캐스케이드 기준선은 48/29/17. 한국어는 모든 시스템에서 최저(−14.7점)</td><td>🔍 [29][31][14] 📄 [38]</td></tr>
+  <tr><td>9</td><td><b>수치의 신뢰성</b>: Berkeley RDI가 감사한 13개 벤치마크 <b>전부</b>가 과업을 풀지 않고도 점수를 얻을 수 있었다(작동하는 해킹 45건). 위 수치 중 BFCL·GAIA·Terminal-Bench·τ-bench·OSWorld가 감사 대상이다. 같은 모델도 하네스·버전에 따라 점수가 달라 비교는 같은 조건 안에서만 유효</td><td>📄 [11] 🔍 [13]</td></tr>
+</table>
+
+<div class="lead"><strong>한 줄로.</strong> 단일 에이전트는 코딩·GUI 조작에서 과업의 4분의 3 이상을 1회 시도로 해결하는 수준에 왔지만 반복 신뢰성과 비용은 미해결이고, 멀티 에이전트는 과업 유형에 따라 득실이 갈리는 "조건부 기술"이며, 음성은 인식·대화 자연스러움은 거의 포화했으나 과업 완수는 텍스트를 뒤따르는 중이다.</div>
+
+<h2 id="ch1">1. 범위와 분류 — 출판된 분류만 사용</h2>
+
+<div class="glossary"><div class="t">먼저 알아둘 용어</div>
+<dl>
+<dt>LLM</dt><dd> — 대규모 언어 모델. 텍스트를 입력받아 다음 단어를 예측하는 방식으로 답을 만드는 AI. GPT·Claude·Gemini가 여기 속한다.</dd>
+<dt>에이전트(agent)</dt><dd> — LLM이 목표를 받아 도구(검색·코드 실행·API 등)를 스스로 골라 부르고, 그 결과를 보고 다음 행동을 정하는 일을 반복해 과업을 끝내는 시스템. 아래 1.1에 출판된 정의를 적었다.</dd>
+<dt>멀티 에이전트(multi-agent system, MAS)</dt><dd> — 이런 에이전트가 둘 이상 역할을 나눠 통신하며 하나의 과업을 수행하는 구조.</dd>
+<dt>도구 호출(tool / function calling)</dt><dd> — 모델이 "이 함수를 이 인자로 불러 달라"는 형식의 출력을 내고, 실제 실행은 바깥 코드가 하는 방식.</dd>
+<dt>벤치마크 / 리더보드</dt><dd> — 벤치마크는 정해진 문제 집합과 채점 방식. 리더보드는 그 벤치마크에서 각 시스템이 얻은 점수를 순위로 보여주는 공개 표.</dd>
+</dl></div>
+
+<h3>1.1 에이전트의 정의 (출처가 있는 것만)</h3>
+<ul>
+  <li><b>형식 정의</b> <span class="src paper">📄</span> — Google Research·MIT의 2025년 논문은 에이전트 시스템을 S = (A, E, C, Ω)로 정의한다. A는 에이전트 집합, E는 환경, C는 통신 토폴로지(연결 모양), Ω는 조정 정책이다. |A| = 1이면 단일 에이전트 시스템(SAS), |A| &gt; 1이면 멀티 에이전트 시스템(MAS)이다 <a class="ref" href="#r2">[2]</a>.</li>
+  <li><b>"에이전트다운 과업(agentic task)"의 세 속성</b> <span class="src paper">📄</span> — 같은 논문의 블로그 설명: ① 외부 환경과 지속적으로 여러 단계 상호작용, ② 부분적으로만 관측되는 상황에서 반복 정보 수집, ③ 환경 피드백에 따른 전략 수정 <a class="ref" href="#r2">[2]</a>.</li>
+  <li><b>업계에서 흔히 쓰는 경계선</b> <span class="src paper">📄</span> — Anthropic은 "미리 정한 코드 경로로 LLM과 도구를 엮은 것"을 워크플로우, "LLM이 스스로 과정과 도구 사용을 지휘하는 것"을 에이전트라 부른다 <a class="ref" href="#r1">[1]</a>. 이는 한 회사의 정의이며 표준이나 비교 기준은 아니다. 이 보고서에서는 범위를 설명할 때만 참고한다.</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/anthropic-autonomous-agent.png" alt="Anthropic의 자율 에이전트 도식">
+  <figcaption><b>그림 1-1.</b> "자율 에이전트": 사람이 과업을 주면 LLM이 환경에 행동하고 피드백을 받아 반복하며, 중간에 사람 확인이 끼어들 수 있다. 출처: Anthropic, "Building effective agents" (2024-12-19), 도식 "Autonomous agent", https://www.anthropic.com/engineering/building-effective-agents (2026-11-12 조회) <a class="ref" href="#r1">[1]</a></figcaption>
+</figure>
+
+<h3>1.2 자율성 단계 — 출판된 분류 3종</h3>
+<p class="small">"에이전트"라는 말이 챗봇부터 몇 시간짜리 자율 과업까지 가리키므로, 수치를 말할 때 어느 단계의 이야기인지 밝혀야 한다. 아래 세 분류는 모두 논문 원문 표에서 확인한 것이다. 이 보고서는 이 중 어느 것도 수정하지 않고 그대로 쓴다.</p>
+
+<table>
+  <tr><th style="width:22%">분류</th><th>단계</th><th style="width:28%">기준</th></tr>
+  <tr><td>Mitchell 외(Hugging Face), 2025 <a class="ref" href="#r3">[3]</a> <span class="src paper">📄</span></td>
+      <td>✩✩✩✩ 단순 처리기(모델이 흐름에 영향 없음) → ★ 라우터(모델이 분기 결정) → ★★ 도구 호출기(모델이 함수와 인자 결정) → ★★★ 다단계 에이전트(모델이 반복과 계속 여부 결정) → ★★★★ 완전 자율 에이전트(모델이 새 코드를 만들어 실행)</td>
+      <td><b>코드 제어권</b>을 누가 쥐는가(사람 → 시스템)</td></tr>
+  <tr><td>Feng·McDonald·Zhang(워싱턴대), 2025 <a class="ref" href="#r4">[4]</a> <span class="src paper">📄</span></td>
+      <td>L1 사용자 = 조작자(Operator) → L2 협력자(Collaborator) → L3 자문(Consultant) → L4 승인자(Approver) → L5 관찰자(Observer)</td>
+      <td><b>사용자가 맡는 역할</b>. 단계마다 필수 제어장치와 예시 시스템(Copilot, Operator, Deep Research, Devin 등)을 제시</td></tr>
+  <tr><td>Morris 외(Google DeepMind), 2023, ICML 2024 <a class="ref" href="#r5">[5]</a> <span class="src paper">📄</span></td>
+      <td>Autonomy Level 0 No AI → 1 AI as a Tool → 2 AI as a Consultant → 3 AI as a Collaborator → 4 AI as an Expert → 5 AI as an Agent</td>
+      <td>사람과 AI의 상호작용 방식. 성능(Emerging~Superhuman) × 범용성(Narrow/General) 매트릭스와 함께 제시</td></tr>
+</table>
+
+<div class="grid2">
+<figure>
+  <img src="images/baseline/arxiv-2502.02649-table1-levels.png" alt="Mitchell 외 Table 1 에이전트 단계">
+  <figcaption><b>그림 1-2.</b> 코드 제어권 기준 5단계. 단계마다 예시 코드와 "누가 제어하나" 열이 있다. 출처: Mitchell, Ghosh, Luccioni, Pistilli, "Fully Autonomous AI Agents Should Not be Developed", arXiv:2502.02649 v3, Table 1, https://arxiv.org/html/2502.02649v3 (2026-11-12 캡처) <a class="ref" href="#r3">[3]</a></figcaption>
+</figure>
+<figure>
+  <img src="images/baseline/arxiv-2506.12469-fig1-levels.png" alt="Feng 외 Figure 1 자율성 5단계">
+  <figcaption><b>그림 1-3.</b> 사용자 역할 기준 5단계. 오른쪽으로 갈수록 사용자 개입이 줄고 에이전트 자율성이 는다. 출처: Feng, McDonald, Zhang, "Levels of Autonomy for AI Agents", arXiv:2506.12469 v2, Figure 1, https://arxiv.org/html/2506.12469v2 (2026-11-12 캡처) <a class="ref" href="#r4">[4]</a></figcaption>
+</figure>
+</div>
+
+<ul>
+  <li><b>기존 음성 비서의 위치</b> <span class="src paper">📄</span> — Morris 외는 Siri·Alexa·Google Assistant 같은 스마트 스피커를 성능 Level 2 "Competent Narrow AI"(좁은 범위에서 숙련된 성인의 50백분위 이상)로 분류한다 <a class="ref" href="#r5">[5]</a>. 즉 LLM 에이전트 이전 세대의 좁은 시스템으로 본다.</li>
+  <li><b>이 보고서에서 쓰는 방식</b> — 수치를 적을 때 "Mitchell ★★★(다단계 에이전트) 급 과업" 또는 "Feng L4(승인자) 급 자율성"처럼 출판 분류의 단계명을 그대로 인용한다. 자체 단계는 만들지 않는다.</li>
+</ul>
+
+<h3>1.3 멀티 에이전트의 분류 — 아키텍처 5종과 프레임워크 설계 5차원</h3>
+<ul>
+  <li><b>아키텍처 5종</b> <span class="src paper">📄</span> — Google Research·MIT 논문이 통제 실험에 쓴 분류 <a class="ref" href="#r2">[2]</a>:
+    <ul>
+      <li><b>Single-Agent(SAS)</b>: 에이전트 하나가 모든 추론·행동을 순차로 수행.</li>
+      <li><b>Independent</b>: 여러 에이전트가 서로 통신 없이 병렬로 하위 과업을 수행하고 끝에 결과만 합침.</li>
+      <li><b>Centralized</b>: 중앙 지휘자(orchestrator)가 작업자에게 위임하고 결과를 종합하는 hub-and-spoke.</li>
+      <li><b>Decentralized</b>: 에이전트들이 서로 직접 통신해 합의(토론·투표).</li>
+      <li><b>Hybrid</b>: 계층 감독 + 피어 간 통신.</li>
+    </ul></li>
+  <li><b>프레임워크 설계 5차원</b> <span class="src paper">📄</span> — MAFBench 논문은 멀티 에이전트 프레임워크를 ① 오케스트레이션(제어 흐름 권한: 개발자가 그래프로 / 에이전트가 역할로 / 환경이 상태로), ② 메모리, ③ 계획 인터페이스, ④ 특화(역할 부여 방식), ⑤ 통신 토폴로지로 분해한다 <a class="ref" href="#r6">[6]</a>.</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/google-scaling-architectures.png" alt="다섯 아키텍처 요약">
+  <figcaption><b>그림 1-4.</b> 다섯 아키텍처의 상호작용 형태와 계산 복잡도(LLM 호출 수, 통신 오버헤드, 병렬화 정도). 출처: Google Research 블로그, "Towards a science of scaling agent systems: When and why agent systems work" (2026-01-28), 첫 번째 그림, https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/ (2026-11-12 조회) <a class="ref" href="#r2">[2]</a></figcaption>
+</figure>
+
+<figure>
+  <img src="images/baseline/arxiv-2602.03128-fig1-paradigms.png" alt="MAFBench Figure 1 세 패러다임">
+  <figcaption><b>그림 1-5.</b> 같은 과업(여행 계획)을 그래프형·역할형·GABM(생성형 에이전트 기반 모델)의 세 패러다임으로 구성했을 때의 차이와 설계 차원 비교. 출처: "Architectural Design, Not Only Model Intelligence, Governs Multi-Agent LLM Performance", arXiv:2602.03128 v2, Figure 1, https://arxiv.org/html/2602.03128v2 (2026-11-12 캡처) <a class="ref" href="#r6">[6]</a></figcaption>
+</figure>
+
+<h3>1.4 음성 에이전트의 위치 — "다른 종류"가 아니라 "다른 모달리티"</h3>
+<ul>
+  <li>음성/텍스트는 입출력 방식(모달리티) 축이고, 단일/멀티는 구조 축이다. 둘은 독립이다.</li>
+  <li><b>근거</b> <span class="src off">🔍</span> — τ-bench 2.0 공식 저장소는 같은 과업 집합을 텍스트판(text-v1)과 음성판(voice-v1·voice-v2)으로 따로 제공해 모달리티만 바꿔 측정한다 <a class="ref" href="#r14">[14]</a>. A2A 프로토콜 사양은 설계 원칙에 "Modality Agnostic(모달리티 무관)"을 명시한다 <a class="ref" href="#r21">[21]</a>.</li>
+  <li>따라서 4장에서 음성을 따로 다루는 이유는 측정 지표가 다르기 때문이다(왕복 지연, 음성 인식 오류율, 끼어들기 처리 등).</li>
+</ul>
+
+<h2 id="ch2">2. 단일 에이전트 baseline</h2>
+
+<div class="glossary"><div class="t">용어</div>
+<dl>
+<dt>하네스(harness) / 스캐폴드(scaffold)</dt><dd> — 모델을 벤치마크에서 돌리는 에이전트 코드(프롬프트·도구·재시도 정책). 리더보드의 AGENT 열이 이것이다. 같은 모델도 하네스가 다르면 점수가 다르다 <a class="ref" href="#r13">[13]</a>.</dd>
+<dt>pass@1</dt><dd> — 과업당 한 번 시도해 성공한 비율. 대부분의 리더보드 기본값.</dd>
+<dt>pass^k</dt><dd> — 같은 과업을 k번 독립 시도해 <b>모두</b> 성공한 비율. "매번 같은 품질을 내는가"를 재는 신뢰성 지표. τ-bench가 도입 <a class="ref" href="#r14">[14]</a>.</dd>
+<dt>오픈 가중치(open weights)</dt><dd> — 모델 파라미터 파일이 공개되어 직접 내려받아 돌릴 수 있는 모델.</dd>
+<dt>HAL</dt><dd> — Holistic Agent Leaderboard. Princeton이 운영하는 제3자 리더보드로, 벤더 점수를 받아 적지 않고 같은 하네스로 직접 다시 돌려 정확도와 비용(USD)을 함께 공개한다. 확인일 기준 7개 벤치마크(Online Mind2Web, SciCode, SWE-bench Verified Mini, USACO, CORE-Bench Hard, GAIA, TAU-bench Airline)를 다룬다 <a class="ref" href="#r19">[19]</a>.</dd>
+</dl></div>
+
+<h3>2.1 무엇을 재는 벤치마크들인가</h3>
+<table>
+  <tr><th style="width:17%">축</th><th style="width:18%">벤치마크</th><th>재는 능력과 채점 방식</th><th style="width:16%">출판 분류 상 위치</th></tr>
+  <tr><td>코딩</td><td>SWE-bench Verified / Pro <a class="ref" href="#r12">[12]</a><a class="ref" href="#r22">[22]</a></td><td>실제 GitHub 이슈를 주고 저장소를 고치게 한 뒤 숨겨진 테스트 통과 여부로 채점. 원본은 12개 파이썬 저장소 2,294문제, Verified는 사람이 검증한 500문제, Pro는 Scale이 만든 후속(서베이 기준 41개 저장소 1,865문제) <a class="ref" href="#r12">[12]</a><a class="ref" href="#r10">[10]</a></td><td>Mitchell ★★★ 다단계 에이전트 <a class="ref" href="#r3">[3]</a></td></tr>
+  <tr><td>터미널 작업</td><td>Terminal-Bench <a class="ref" href="#r13">[13]</a></td><td>컨테이너 안 터미널에서 다단계 작업을 수행하고 과업별 검증 스크립트로 채점. 리더보드에 MODEL·AGENT·RESOLUTION RATE·COST·TOKENS 열</td><td>★★★</td></tr>
+  <tr><td>고객 응대(대화+도구+정책)</td><td>τ-bench / τ²-bench <a class="ref" href="#r14">[14]</a></td><td>LLM 시뮬레이터 사용자와 대화하며 도메인 정책을 지키고 도구를 써서 과업 완료. 대화 끝의 DB 상태를 목표 상태와 비교. 항공·소매(τ), 통신(τ²: 사용자도 도구를 쓰는 dual-control)</td><td>Feng L2~L3(사용자와 협력·자문) <a class="ref" href="#r4">[4]</a></td></tr>
+  <tr><td>범용 보조</td><td>GAIA <a class="ref" href="#r15">[15]</a></td><td>추론·멀티모달·웹 탐색·도구 사용을 조합해야 하는 466문항, 정답 일치로 채점. 발표 당시 사람 92% vs GPT-4+플러그인 15%</td><td>★★★</td></tr>
+  <tr><td>웹 탐색</td><td>BrowseComp <a class="ref" href="#r16">[16]</a></td><td>찾기 어렵고 얽힌 정보를 끈질기게 찾아야 하는 1,266문항, 짧은 정답 일치</td><td>★★★</td></tr>
+  <tr><td>컴퓨터 조작</td><td>OSWorld <a class="ref" href="#r17">[17]</a></td><td>실제 OS GUI(데스크톱 앱·파일·브라우저) 과업을 실행 결과로 검증</td><td>★★★</td></tr>
+  <tr><td>함수 호출</td><td>BFCL <a class="ref" href="#r18">[18]</a></td><td>단일·병렬·다중 턴 함수 호출의 형식·인자 정확도. 서베이는 BFCL을 "버전을 올려 가며 갱신되는 살아 있는 벤치마크"의 예로 든다 <a class="ref" href="#r10">[10]</a></td><td>Mitchell ★★ 도구 호출기</td></tr>
+</table>
+
+<figure>
+  <img src="images/baseline/arxiv-2503.16416-table1-benchmarks.png" alt="대표 벤치마크 비교표">
+  <figcaption><b>그림 2-1.</b> 대표 벤치마크 8개를 데이터 수집 방식·환경(정적/동적)·인터페이스(코드/GUI/도구)·채점 지표·안전 제약 포함 여부로 분류한 표. 출처: Yehudai et al., "Survey on Evaluation of LLM-based Agents", arXiv:2503.16416 v2, Table 1, https://arxiv.org/html/2503.16416v2 (2026-11-12 캡처) <a class="ref" href="#r10">[10]</a></figcaption>
+</figure>
+
+<h3>2.2 정량 baseline — 축별 현재 수치 (2026-11-12 조회)</h3>
+
+<p class="small">규칙(8.1절): 축마다 공식 리더보드 하나를 2026-11-12에 조회. <b>현재 최고</b> = 리더보드 1위(운영자 검증·실행 행 우선), <b>널리 쓸 수 있는 수준</b> = HAL이 비용 통제로 재측정한 최고치(없으면 "HAL 없음"), <b>오픈 가중치</b> = 오픈 표시 행 1위. 경고 코드: ⚠S 자체 보고 행 · ⚠H Berkeley RDI 감사에서 해킹 가능성이 확인된 벤치마크 <a class="ref" href="#r11">[11]</a> · ⚠V 버전·과업 집합이 자주 바뀜 · ⚠N 표본 작음.</p>
+
+<table style="font-size:12.5px">
+  <tr><th style="width:11%">축 / 벤치마크</th><th>현재 최고 (리더보드 1위)</th><th>널리 쓸 수 있는 수준 (HAL 비용 통제 재측정)</th><th>오픈 가중치 최고</th><th style="width:9%">경고</th></tr>
+  <tr><td><b>코딩</b><br>SWE-bench Verified (500문제) <a class="ref" href="#r12">[12]</a></td>
+      <td>전체 보드 1위 79.2% — Claude 4.5 Opus + Sonar Foundation Agent / live-SWE-agent (2025-12, 자체 보고 ⚠S).<br><b>운영자 실행 기준(Bash Only 기본 보기, mini-SWE-agent 2.0.0)</b>: 76.8% — Claude 4.5 Opus (high), 문제당 $0.75 (2026-02-17)</td>
+      <td>HAL "SWE-bench Verified Mini"(50문제 무작위 부분집합): 72.0% — SWE-Agent + Claude Sonnet 4.5 High, 총 $463.90 <a class="ref" href="#r19">[19]</a> ⚠N</td>
+      <td>75.8% — MiniMax M2.5 (high), mini-SWE-agent, 문제당 $0.07 (2026-02-17). 운영자 실행 1위와 1.0%p 차</td>
+      <td>⚠S(전체 보드 180행 중 60행만 운영자 검증) · 결함 테스트 보고 <a class="ref" href="#r11">[11]</a> · 보드 최신 등록 2026-02</td></tr>
+  <tr><td><b>코딩(어려운 판)</b><br>SWE-bench Pro <a class="ref" href="#r22">[22]</a></td>
+      <td>Public(731문제) 61.50±3.10% — Muse Spark 1.1 (mini-swe-agent, Scale 실행) · Private(276문제, 비공개 기업 코드) 51.50±5.50% — 같은 모델</td>
+      <td>HAL 없음</td>
+      <td>페이지에 오픈 표시 없음 — 출처 미확인</td>
+      <td>Scale 사이트가 "Legacy" 그룹에 분류</td></tr>
+  <tr><td><b>터미널 장기 작업</b><br>Terminal-Bench 4.1 <a class="ref" href="#r13">[13]</a></td>
+      <td>65.8% ± 3.1% — Opus 5.5 (max) + Claude Code, 330회 시행, 총 토큰 8.0B, 총비용 $4.7k (2026-09-22). 3위 GPT-6.1 Sol (max) + Codex 60.9% ± 3.0%는 총비용 $634</td>
+      <td>HAL 없음</td>
+      <td>페이지에 오픈 표시 없음. 오픈 가중치 계열로 보이는 최상위는 GLM-5.3 (max) 41.2% ± 3.3%(9위) — 오픈 여부 출처 미확인</td>
+      <td>⚠H ⚠V(사이트 표기 4.1)</td></tr>
+  <tr><td><b>고객 응대</b><br>τ-bench 2.0 저장소 1.x 텍스트 탭(v1.0.1, 사용자 시뮬레이터 gpt-5.2, 4회 이상 시행) <a class="ref" href="#r14">[14]</a></td>
+      <td>pass^1 항공/소매/통신: Claude Opus 4.5 (high) 84.0 / 79.6 / 92.3, GPT-5.2 (high) 83.0 / 81.6 / 89.7 (2026-02~03, Sierra 실행).<br>같은 행의 <b>pass^4</b>(4회 연속 성공): Opus 4.5 70.0 / 51.8 / 78.1, GPT-5.2 72.0 / 51.8 / 71.9</td>
+      <td>HAL "TAU-bench Airline"(50과업, 구판): 56.00% — TAU-bench Tool Calling + o4-mini High, 총 $11.36 <a class="ref" href="#r19">[19]</a> ⚠N</td>
+      <td>Qwen3.5-397B-A17B 81.5 / 84.4 / 97.8, GLM-5 82.5 / 73.7 / 86.8 — 두 모델의 오픈 가중치 여부는 리더보드에 표시 없음(출처 미확인)</td>
+      <td>⚠H ⚠V(2.0과 1.x 비교 불가). 리더보드 사이트 접근 불가, 저장소 데이터 파일로 확인</td></tr>
+  <tr><td><b>범용 보조</b><br>GAIA <a class="ref" href="#r15">[15]</a></td>
+      <td>HF 공개 결과(test 301문항, 자체 제출): 94.35% — Keen AgenticOS V1.1 (2026-11-03) ⚠S</td>
+      <td>HAL GAIA(validation 165문항): 74.55% — HAL Generalist Agent + Claude Sonnet 4.5, 총 $178.20 <a class="ref" href="#r19">[19]</a></td>
+      <td>표시 없음 — 출처 미확인</td>
+      <td>⚠H ⚠S(검증 표시 없음, 유사 하네스 중복 다수). 자체 제출 1위와 제3자 재측정 1위가 약 20%p 차</td></tr>
+  <tr><td><b>웹 탐색</b><br>BrowseComp <a class="ref" href="#r16">[16]</a></td>
+      <td colspan="3">공식 리더보드 없음. 논문(2025-04)은 벤치마크 정의만 제공. 이 보고서에서는 현재 최고 수치를 <b>확인하지 못함</b>(벤더 모델 카드의 자체 보고치만 존재) — 출처 미확인</td>
+      <td>—</td></tr>
+  <tr><td><b>컴퓨터 조작</b><br>OSWorld-Verified <a class="ref" href="#r17">[17]</a></td>
+      <td>기본 범위(Foundation E2E GUI, 100 steps): 86.0% — claude-fable-5[1m] (2026-08-01) · 전체 범위(에이전트 프레임워크 포함): 90.2% — Intelligence-Indeed Agent (2026-07-25). 운영팀이 통일 설정으로 평가. 논문 초록의 사람 기준선 72.36%</td>
+      <td>HAL 없음</td>
+      <td>표시 없음. Holo3-35B-A3B(특화 모델) 80.4±2.2%, Kimi K2.6 73.1% — 오픈 여부 출처 미확인</td>
+      <td>⚠H ⚠V(2026-06 OSWorld 2.0 공개). 사람 기준선은 2024년 논문 수치</td></tr>
+  <tr><td><b>함수 호출</b><br>BFCL V4 (2026-04-12 갱신) <a class="ref" href="#r18">[18]</a></td>
+      <td>Overall 77.47 — Claude-Opus-4-5-20251101 (FC). 세부: 웹 검색 84.5, 메모리 73.76, 다중 턴 68.38, 단일 턴 88.58, 비용 $86.55</td>
+      <td>HAL 없음(BFCL은 운영팀이 모든 행을 직접 실행)</td>
+      <td>Overall 72.38 — GLM-4.6 (FC thinking), MIT, 비용 $4.64. 1위와 5.1점 차</td>
+      <td>⚠H</td></tr>
+</table>
+
+<div class="conclusion"><b>단일 에이전트 정량 baseline 요약.</b> 운영자가 직접 실행한 수치 기준으로 코딩(SWE-bench Verified) 76.8%, 어려운 코딩(Pro) 61.5%, 터미널 장기 작업 65.8%, 고객 응대 1회 성공 80~92%(4회 연속 52~78%), 범용 보조(HAL) 74.6%, 컴퓨터 조작 86.0%, 함수 호출 77.5점이다. 오픈 가중치 모델은 코딩에서 1%p, 함수 호출에서 5점 차까지 근접했다. 자체 보고 행은 이보다 높지만 검증되지 않았다 <a class="ref" href="#r12">[12]</a>–<a class="ref" href="#r19">[19]</a><a class="ref" href="#r22">[22]</a>.</div>
+
+<div class="grid2">
+<figure>
+  <img src="images/baseline/lb-swebench-verified-bashonly.png" alt="SWE-bench Verified 리더보드(Bash Only 기본 보기)">
+  <figcaption><b>그림 2-4.</b> SWE-bench Verified 리더보드 기본 보기(Bash Only: 운영팀이 mini-SWE-agent로 직접 실행한 행). 비용 열이 함께 표시된다. 출처: https://www.swebench.com/ (2026-11-12 캡처) <a class="ref" href="#r12">[12]</a></figcaption>
+</figure>
+<figure>
+  <img src="images/baseline/lb-swebench-resolved-vs-cost.png" alt="SWE-bench Resolved vs cost 산점도">
+  <figcaption><b>그림 2-5.</b> 해결률 대 평균 비용 산점도(Bash Only 47행). 같은 해결률대에서 비용이 10배 넘게 갈린다. 출처: swebench.com "Compare results → Resolved vs cost" (2026-11-12 캡처) <a class="ref" href="#r12">[12]</a></figcaption>
+</figure>
+</div>
+<figure>
+  <img src="images/baseline/lb-terminal-bench-4.1.png" alt="Terminal-Bench 4.1 리더보드">
+  <figcaption><b>그림 2-6.</b> Terminal-Bench 4.1 리더보드. MODEL과 AGENT를 따로 적고 토큰·비용 열을 기본으로 보여준다. 출처: https://www.tbench.ai/ (2026-11-12 캡처) <a class="ref" href="#r13">[13]</a></figcaption>
+</figure>
+<div class="grid2">
+<figure>
+  <img src="images/baseline/lb-hal-gaia.png" alt="HAL GAIA 리더보드">
+  <figcaption><b>그림 2-7.</b> HAL GAIA 리더보드(제3자 실행, 정확도와 비용 USD 병기). 출처: https://hal.cs.princeton.edu/gaia (2026-11-12 캡처) <a class="ref" href="#r19">[19]</a></figcaption>
+</figure>
+<figure>
+  <img src="images/baseline/lb-bfcl-v4.png" alt="BFCL V4 리더보드">
+  <figcaption><b>그림 2-8.</b> BFCL V4 리더보드 상단(에이전트형·다중 턴·단일 턴·환각·지연 열). 출처: https://gorilla.cs.berkeley.edu/leaderboard.html (2026-11-12 캡처) <a class="ref" href="#r18">[18]</a></figcaption>
+</figure>
+</div>
+<figure>
+  <img src="images/baseline/lb-osworld-verified.png" alt="OSWorld-Verified 리더보드">
+  <figcaption><b>그림 2-9.</b> OSWorld-Verified 결과표(운영팀 통일 설정 평가). 출처: https://osworld-v1.xlang.ai/ (2026-11-12 캡처; 페이지의 표 라이브러리가 이 환경에서 차단되어 같은 라이브러리를 주입해 원본 데이터 파일로 렌더링) <a class="ref" href="#r17">[17]</a></figcaption>
+</figure>
+
+
+<h3>2.3 정성 baseline — 수치가 말해주지 않는 것</h3>
+<ul>
+  <li><b>한 번은 되지만 매번은 안 된다</b> <span class="src paper">📄</span>: τ²-bench에서 gpt-4.1의 pass^k는 소매 0.74(k=1) → 0.53(k=4), 통신 0.34 → 0.19. claude-3.7-sonnet은 통신 0.49 → 0.25 <a class="ref" href="#r14">[14]</a>. 한 번 성공률이 70%대인 도메인도 네 번 연속 성공은 50%대다.</li>
+  <li><b>사용자와 함께 하면 더 어렵다</b> <span class="src paper">📄</span>: 같은 통신 과업을 사용자 없이 에이전트 혼자 할 때(No-User)보다 사용자에게 행동을 안내해야 할 때(Default) pass^1이 gpt-4.1 18%p, o4-mini 25%p 낮았다 <a class="ref" href="#r14">[14]</a>.</li>
+  <li><b>긴 과업일수록 0에 수렴</b> <span class="src paper">📄</span>: 필요한 행동 수·하위 문제 수가 늘수록 성공률이 떨어져 많은 행동이 필요한 과업에서는 0에 가까워졌다 <a class="ref" href="#r14">[14]</a>.</li>
+  <li><b>사용자 시뮬레이터의 신뢰도도 확인 대상</b> <span class="src paper">📄</span>: τ²의 시뮬레이터 오류율은 통신 16%(치명 0%), 소매 40%(치명 12%), 항공 47%(치명 13%) <a class="ref" href="#r14">[14]</a>. 대화형 벤치마크 점수는 시뮬레이터 품질에 영향을 받는다.</li>
+  <li><b>비용은 1차원 점수에 안 보인다</b> <span class="src off">🔍</span>: HAL의 표현으로 "에이전트는 100배 비싸면서 1% 더 좋을 수 있는데, 1차원 리더보드로는 그 차이를 알 수 없다" <a class="ref" href="#r19">[19]</a>.</li>
+</ul>
+
+<div class="grid2">
+<figure>
+  <img src="images/baseline/arxiv-2506.07982-fig3-passk.png" alt="τ²-bench pass^k">
+  <figcaption><b>그림 2-2.</b> k번 연속 성공 비율(pass^k)이 k가 커질수록 떨어지는 모습. 네 모델 × 세 도메인. 출처: Barres et al., "τ²-Bench", arXiv:2506.07982, Figure 3, https://arxiv.org/html/2506.07982v1 (2026-11-12 캡처) <a class="ref" href="#r14">[14]</a></figcaption>
+</figure>
+<figure>
+  <img src="images/baseline/arxiv-2506.07982-fig1-dualcontrol.png" alt="τ²-bench dual-control 환경">
+  <figcaption><b>그림 2-3.</b> dual-control 환경: 에이전트는 DB 도구를, 사용자(시뮬레이터)는 모의 휴대폰 도구를 쓰며 같은 세계 상태를 바꾼다. 출처: 같은 논문 Figure 1 (2026-11-12 조회) <a class="ref" href="#r14">[14]</a></figcaption>
+</figure>
+</div>
+
+<h2 id="ch3">3. 멀티 에이전트 연동 baseline</h2>
+
+<div class="lead"><strong>결론.</strong> 멀티 에이전트는 "기본 업그레이드"가 아니다. 통제 실험에서 단일 대비 효과는 과업에 따라 <b>−70%에서 +80.8%</b>까지 갈리고 평균은 0에 가깝다. 통신 없이 결과만 합치는 구조는 오류를 <b>17.2배</b> 증폭하고, 토큰 효율은 단일보다 <b>3~5배</b> 나쁘다 <a class="ref" href="#r2">[2]</a>. 실패의 44%는 모델이 아니라 시스템 설계(사양·역할·종료 조건) 문제로 분류된다 <a class="ref" href="#r7">[7]</a>.</div>
+
+<div class="glossary"><div class="t">용어</div>
+<dl>
+<dt>지휘자-작업자(orchestrator-worker)</dt><dd> — 중앙 에이전트가 과업을 쪼개 하위 에이전트(worker, subagent)에게 맡기고 결과를 종합하는 구조. Google 분류의 Centralized에 해당.</dd>
+<dt>오류 증폭률(error amplification)</dt><dd> — 에이전트 하나의 오류가 시스템 최종 결과에 몇 배로 반영되는지. 단일 에이전트를 1.0으로 둔 배수 <a class="ref" href="#r2">[2]</a>.</dd>
+<dt>토큰(token)</dt><dd> — LLM이 글을 처리하는 단위(대략 단어 조각). 사용량이 곧 비용이다.</dd>
+<dt>토폴로지(topology)</dt><dd> — 에이전트 사이 연결 모양. 별(star)·사슬(chain)·나무(tree)·그래프(graph) 등.</dd>
+</dl></div>
+
+<h3>3.1 효과 — 단일 대비 얼마나 좋아지고, 비용은 얼마나 드나</h3>
+
+<h4>통제 실험 (Google Research·MIT, 2025) <span class="src paper">📄</span></h4>
+<ul>
+  <li><b>설계</b>: 도구·프롬프트·연산을 표준화하고 5개 아키텍처 × 6개 벤치마크(Finance Agent, BrowseComp-Plus, WorkBench, PlanCraft, SWE-bench Verified, Terminal-Bench) × 3개 모델 가족(OpenAI·Google·Anthropic) = 260개 구성을 비교. 벤치마크당 문제 수는 20~100개 <a class="ref" href="#r2">[2]</a>.</li>
+  <li><b>결과 범위</b>: 단일 대비 상대 변화는 Finance Agent의 Centralized +80.8%(평균 0.631 vs 단일 0.349)에서 PlanCraft의 Independent −70.0%(0.170 vs 0.568)까지. 전체 평균 개선은 −0.3%, 표준편차 37.5% <a class="ref" href="#r2">[2]</a>.</li>
+  <li><b>세 가지 발견</b> <a class="ref" href="#r2">[2]</a>:
+    <ul>
+      <li>능력 포화: 단일 에이전트 성능이 이미 약 45%를 넘는 과업에서는 에이전트를 더해도 수익이 음수(β = −0.236, p = 0.004).</li>
+      <li>도구가 많은 과업(예: 16개 도구의 업무 워크플로우)은 멀티 조정 오버헤드가 커진다(β = −0.096, p = 0.002).</li>
+      <li>중앙 검증이 없는 구조는 오류를 더 전파한다. 오류 증폭률: 단일 1.0 / Independent 17.2 / Decentralized 7.8 / Centralized 4.4 / Hybrid 5.1.</li>
+    </ul></li>
+  <li><b>비용</b>: 토큰 1천 개당 성공 수는 단일 67.7 → Independent 42.4 → Decentralized 23.9 → Centralized 21.5 → Hybrid 13.6. 턴 수는 단일 7.2 → Hybrid 44.3 <a class="ref" href="#r2">[2]</a>.</li>
+  <li><b>예측력</b>: 과업 속성으로 아키텍처를 고르는 회귀식이 처음 보는 구성의 87%에서 최적 아키텍처를 맞혔지만(무작위 20%), 교차 검증 설명력은 R² 0.37~0.41로 낮다. 방향을 주지만 절대 예측은 못 한다 <a class="ref" href="#r2">[2]</a>.</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/arxiv-2512.08296-fig2-boxplots.png" alt="여섯 벤치마크의 아키텍처별 성능 박스플롯" class="narrow">
+  <figcaption><b>그림 3-1.</b> 여섯 벤치마크에서 아키텍처별 성능 분포. 상자 위 %는 단일 에이전트(SAS) 대비 증감. (a) BrowseComp-Plus, (b) Finance Agent +57~+80.8%, (c) PlanCraft −70~−39%, (d) Workbench −11~+6%, (e) SWE-bench Verified −15~−2%, (f) Terminal-Bench. 출처: Kim et al., "Towards a Science of Scaling Agent Systems", arXiv:2512.08296 v3, Figure 2, https://arxiv.org/html/2512.08296v3 (2026-11-12 조회) <a class="ref" href="#r2">[2]</a></figcaption>
+</figure>
+
+<figure>
+  <img src="images/baseline/arxiv-2512.08296-table5-coordination.png" alt="아키텍처별 조정 지표 표">
+  <figcaption><b>그림 3-2.</b> 아키텍처별 조정 지표(260개 구성). 성공률은 비슷해도 턴 수·오버헤드·오류 증폭·토큰당 성공 수가 크게 다르다. 출처: 같은 논문 Table 5 (2026-11-12 캡처) <a class="ref" href="#r2">[2]</a></figcaption>
+</figure>
+
+<h4>실제 제품 사례 (Anthropic 리서치 기능, 2025) <span class="src vendor">🏢</span></h4>
+<ul>
+  <li><b>구조</b>: 선두 에이전트가 질의를 분석해 하위 에이전트 3~5개를 만들어 병렬 탐색시키고 종합. 마지막에 인용 에이전트가 출처를 붙인다 <a class="ref" href="#r9">[9]</a>.</li>
+  <li><b>효과</b>: 내부 평가에서 단일 에이전트(Claude Opus 4) 대비 90.2% 향상. BrowseComp 평가에서 성능 분산의 95%를 세 요인이 설명했고, 토큰 사용량만으로 80%를 설명했다 <a class="ref" href="#r9">[9]</a>.</li>
+  <li><b>비용</b>: 에이전트는 채팅의 약 4배, 멀티 에이전트는 약 15배의 토큰을 쓴다. "과업 가치가 비용을 정당화할 때만" 쓰라고 명시 <a class="ref" href="#r9">[9]</a>.</li>
+  <li><b>맞는 과업 / 안 맞는 과업</b>: 폭넓은 병렬 탐색에는 맞고, 공유 컨텍스트와 의존이 많은 대부분의 코딩 과업에는 맞지 않는다고 자체 평가 <a class="ref" href="#r9">[9]</a>.</li>
+  <li>⚠ 한 회사의 자체 평가 1건이다. 위 통제 실험과 방향은 같다(병렬 탐색 = 이득, 순차 의존 = 손해).</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/anthropic-research-architecture.png" alt="Anthropic 멀티 에이전트 리서치 아키텍처" class="narrow">
+  <figcaption><b>그림 3-3.</b> 사용자 질의가 선두 에이전트를 거쳐 병렬 하위 에이전트로 나뉘는 구조. 출처: Anthropic, "How we built our multi-agent research system" (2025-06-13), 아키텍처 도식, https://www.anthropic.com/engineering/multi-agent-research-system (2026-11-12 조회) <a class="ref" href="#r9">[9]</a></figcaption>
+</figure>
+
+<h3>3.2 멀티 전용 측정 — 협업의 질과 프레임워크 설계 차이</h3>
+
+<h4>MultiAgentBench (MARBLE), 2025 <span class="src paper">📄</span></h4>
+<ul>
+  <li><b>무엇을 재나</b>: 공동 목표 시나리오 4개(연구 제안서, Minecraft 건축, DB 이상 분석, 코딩)와 상충 목표 시나리오 2개(Werewolf 게임, 협상)에서 과업 점수와 함께 협업의 질을 잰다. 협업 질은 마일스톤 KPI(전체 마일스톤 중 각 에이전트 기여 비율)와 LLM이 5점 척도로 매긴 통신·계획 점수의 평균(조정 점수)이다 <a class="ref" href="#r8">[8]</a>.</li>
+  <li><b>비교 대상</b>: 토폴로지 star·tree(중앙집중) / graph·chain(분산), 계획 전략 vanilla·CoT·group discussion·cognitive self-evolving <a class="ref" href="#r8">[8]</a>.</li>
+  <li><b>결과</b>: 과업 성공의 1차 요인은 모델 능력. 연구 시나리오에서 graph 토폴로지가 가장 좋았고 tree는 토큰을 많이 쓰며 가장 나빴다. cognitive planning은 마일스톤 달성률을 3% 올렸고, group discussion은 모든 지표에서 최악이었다. 협업 점수가 높아도 과업 점수가 낮은 경우가 있었다(Llama-3.1-70B, Minecraft: 조정 점수 75.0 / 과업 점수 0.21 — 함수 호출의 절반 미만만 실행 가능) <a class="ref" href="#r8">[8]</a>.</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/arxiv-2503.01935-fig3-topologies.png" alt="MARBLE 토폴로지와 계획 전략">
+  <figcaption><b>그림 3-4.</b> (a) 중앙집중(star, tree)과 분산(graph, chain) 구조, (b) 계획 전략. 출처: Zhu et al., "MultiAgentBench", arXiv:2503.01935, Figure 3, https://arxiv.org/html/2503.01935v1 (2026-11-12 캡처) <a class="ref" href="#r8">[8]</a></figcaption>
+</figure>
+
+<h4>MAFBench, 2026 <span class="src paper">📄</span></h4>
+<ul>
+  <li><b>무엇을 재나</b>: LLM을 고정하고 프레임워크의 설계 선택만 바꿔 9개 프레임워크(LangGraph, CrewAI, AutoGen, OpenAI SDK, Agno, OpenAgents, Concordia, 최소 GABM 골격, OpenHands)를 비교. 기존 벤치마크(MemoryAgentBench, GSM8K·CSQA·MATH, CatDB, AGENTSNET 등)를 표준 파이프라인에 통합 <a class="ref" href="#r6">[6]</a>.</li>
+  <li><b>결과</b> <a class="ref" href="#r6">[6]</a>:
+    <ul>
+      <li>오케스트레이션만으로 지연이 직접 호출 대비 1.1배~62배. 단, 최소 골격 구현은 수 ms만 더 걸려 "패러다임이 아니라 구현의 비용"으로 판정.</li>
+      <li>스키마(정해진 형식)로 계획을 받는 인터페이스는 약한 모델에서 형식 위반(최대 84.7%)으로 정확도를 최대 32.3점 떨어뜨림. 추론 오류가 아니라 형식 실패.</li>
+      <li>통신 토폴로지가 구조에 맞지 않으면 대규모 조정 성공률이 90% 이상에서 30% 미만으로 하락.</li>
+      <li>평가한 어느 프레임워크도 메모리의 통제된 수정(선택적 망각)을 지원하지 않음. 모두 append-only.</li>
+    </ul></li>
+</ul>
+
+<figure>
+  <img src="images/baseline/arxiv-2602.03128-table1-ranges.png" alt="MAFBench 설계 차원별 최선/최악 범위" class="narrow">
+  <figcaption><b>그림 3-5.</b> 같은 모델·같은 과업에서 설계 선택만으로 벌어지는 성능 범위. 출처: arXiv:2602.03128 v2, Table 1, https://arxiv.org/html/2602.03128v2 (2026-11-12 캡처) <a class="ref" href="#r6">[6]</a></figcaption>
+</figure>
+
+<h3>3.3 실패 유형 — 왜 멀티 에이전트는 실패하나</h3>
+<ul>
+  <li><b>자료</b> <span class="src paper">📄</span>: UC Berkeley 연구진이 7개 공개 멀티 에이전트 시스템(MetaGPT, ChatDev, HyperAgent, AppWorld, AG2, Magentic-One, OpenManus)의 실행 궤적 1,642개를 모아 분석한 MAST(Multi-Agent System Failure Taxonomy). 사람 주석자 간 일치도 Cohen's κ 0.88, LLM 자동 판정기의 사람 일치도 94%(κ 0.77) <a class="ref" href="#r7">[7]</a>.</li>
+  <li><b>실패율</b>: 7개 시스템의 실패율은 벤치마크에 따라 41%~86.7% <a class="ref" href="#r7">[7]</a>.</li>
+  <li><b>3범주 14유형과 비율</b> <a class="ref" href="#r7">[7]</a>:
+    <ul>
+      <li><b>시스템 설계 결함 44.2%</b> — 과업 사양 불이행 11.8%, 역할 사양 불이행 1.5%, 단계 반복 15.7%, 대화 이력 상실 2.8%, 종료 조건 인지 실패 12.4%.</li>
+      <li><b>에이전트 간 불일치 32.3%</b> — 대화 리셋 2.2%, 명확화 요청 실패 6.8%, 과업 이탈 7.4%, 정보 은폐 0.8%, 상대 입력 무시 1.9%, 추론-행동 불일치 13.2%.</li>
+      <li><b>과업 검증 23.5%</b> — 조기 종료 6.2%, 검증 없음·불완전 8.2%, 잘못된 검증 9.1%.</li>
+    </ul></li>
+  <li><b>설계 개입의 효과</b>: ChatDev에서 역할 프롬프트 정비로 +9.4%p, 토폴로지를 순환 구조(CTO 에이전트가 검토 완료를 확인할 때만 종료)로 바꿔 +15.6%p. 저자들은 토폴로지 변경이 프롬프트 변경보다 효과적이었지만 둘 다 근본 해결은 아니라고 평가 <a class="ref" href="#r7">[7]</a>.</li>
+  <li><b>검증자는 은탄환이 아니다</b>: 종료 조건 인지 실패(1.5)와 정보 은폐(2.4)는 거의 실패한 실행에만 나타나지만, 검증 실패(3.2·3.3)는 성공한 실행에도 자주 나타난다 <a class="ref" href="#r7">[7]</a>.</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/arxiv-2503.13657-fig1-mast.png" alt="MAST 실패 분류표">
+  <figcaption><b>그림 3-6.</b> MAST: 14개 실패 유형이 대화의 어느 단계에서 생기는지와 각 비율(1,642개 궤적). 출처: Cemri et al., "Why Do Multi-Agent LLM Systems Fail?", arXiv:2503.13657 v3, Figure 1, https://arxiv.org/html/2503.13657v3 (2026-11-12 캡처) <a class="ref" href="#r7">[7]</a></figcaption>
+</figure>
+
+<figure>
+  <img src="images/baseline/arxiv-2503.13657-fig3-trace.png" alt="정보 은폐 실패 사례">
+  <figcaption><b>그림 3-7.</b> 실패 유형 2.4 "정보 은폐"의 실제 궤적: 전화 에이전트가 API의 사용자명 형식 요구사항을 감독 에이전트에게 알리지 않고, 감독 에이전트도 되묻지 않아 로그인이 반복 실패. 출처: 같은 논문 Figure 3 (2026-11-12 조회) <a class="ref" href="#r7">[7]</a></figcaption>
+</figure>
+
+<h3>3.4 연동 규격 — MCP와 A2A의 현재 상태</h3>
+
+<div class="glossary"><div class="t">용어</div>
+<dl>
+<dt>MCP (Model Context Protocol)</dt><dd> — 에이전트가 외부 도구·데이터를 표준 방식으로 가져다 쓰게 하는 프로토콜. "에이전트 ↔ 도구" 연결 <a class="ref" href="#r20">[20]</a>.</dd>
+<dt>A2A (Agent2Agent Protocol)</dt><dd> — 서로 다른 에이전트가 서로를 발견하고 일을 맡기게 하는 프로토콜. "에이전트 ↔ 에이전트" 연결 <a class="ref" href="#r21">[21]</a>.</dd>
+<dt>JSON-RPC 2.0</dt><dd> — 두 프로토콜이 공통으로 쓰는 메시지 형식. JSON으로 "이 함수를 이 인자로 호출해 달라"를 주고받는 규약.</dd>
+<dt>사양(specification) 버전</dt><dd> — 프로토콜 문서의 판. 버전이 바뀌면 구현을 고쳐야 할 수 있다.</dd>
+</dl></div>
+
+<table>
+  <tr><th style="width:16%">항목</th><th>MCP <a class="ref" href="#r20">[20]</a> <span class="src off">🔍</span></th><th>A2A <a class="ref" href="#r21">[21]</a> <span class="src off">🔍</span></th></tr>
+  <tr><td>연결 대상</td><td>에이전트(호스트) ↔ 도구·데이터(서버). 공식 문서 표현으로 "수직: 에이전트 하나를 깊게"</td><td>에이전트 ↔ 에이전트. "수평: 에이전트들을 연결"</td></tr>
+  <tr><td>확인일 기준 사양</td><td>2026-07-28판(이전 판: 2024-11-05, 2025-03-26, 2025-06-18, 2025-11-25)</td><td>1.0.0(이전 판: 0.1.0, 0.2.6, 0.3.0)</td></tr>
+  <tr><td>관리 주체</td><td>공식 사이트 modelcontextprotocol.io(사양 문서에 운영 조직 명시 없음 — 출처 미확인)</td><td>Linux Foundation(Apache 2.0). 사이트 배너에 "Agentic AI Foundation 합류" 공지</td></tr>
+  <tr><td>핵심 개념</td><td>참여자: Host(여러 클라이언트를 조정하는 AI 앱) · Client(서버 하나와 연결) · Server(컨텍스트 제공). 서버 기본 요소: Tools(모델이 실행할 함수) · Resources(데이터) · Prompts(템플릿). 클라이언트 요소: Elicitation(서버가 사용자에게 추가 정보 요청)</td><td>Agent Card(에이전트의 정체·능력·엔드포인트·인증을 적은 JSON, /.well-known/agent-card.json으로 발견) · Task(상태 있는 작업 단위) · Message(한 턴) · Part(텍스트/파일/구조화 데이터) · Artifact(산출물)</td></tr>
+  <tr><td>전송</td><td>stdio(같은 머신), Streamable HTTP(원격; HTTP POST + 선택적 SSE)</td><td>JSON-RPC 2.0 over HTTP(S), gRPC, HTTP+JSON/REST 세 바인딩. 스트리밍은 SSE, 장기 과업은 푸시 알림(웹훅)</td></tr>
+  <tr><td>최근 비호환 변경</td><td>2026-07-28판에서 무상태(stateless) 프로토콜로 전환(모든 요청이 버전·능력을 담음, 필수 server/discover), Sampling과 Logging 폐기(deprecated)</td><td>1.0에서 A2A-Version 헤더 필수(0.3 클라이언트는 빈 헤더를 0.3으로 간주)</td></tr>
+  <tr><td>사람 개입</td><td>보안 원칙: "호스트는 어떤 도구를 호출하기 전에도 명시적 사용자 동의를 얻어야 한다". 도구 설명(annotations)은 신뢰된 서버가 아니면 신뢰하지 말 것</td><td>Task 상태에 INPUT_REQUIRED·AUTH_REQUIRED(사람·클라이언트 입력 대기) 중단 상태 포함. 종결 상태: COMPLETED·FAILED·CANCELED·REJECTED</td></tr>
+  <tr><td>둘의 관계</td><td colspan="2">A2A 공식 문서: "MCP는 수직이다. 단일 에이전트를 깊게 한다. … A2A는 수평이다. … 함께 쓰면 MCP는 각 에이전트에 깊이를, A2A는 시스템에 도달 범위를 준다." 예시: 고객 에이전트가 A2A로 정비소 에이전트에 과업을 맡기고, 정비소 에이전트는 내부에서 MCP 도구(scan_vehicle_for_error_codes, get_repair_procedure, raise_platform)를 호출 <a class="ref" href="#r21">[21]</a></td></tr>
+</table>
+
+<div class="conclusion"><b>연동 규격 baseline.</b> 도구 연결(MCP)은 사실상 표준으로 자리 잡았지만 1년 8개월 사이 사양이 5판 나왔고 최신판에 비호환 변경이 있다. 에이전트 간 연결(A2A)은 1.0.0이 막 나온 단계다. 두 규격 모두 "사람 동의·입력 대기"를 1급 개념으로 둔다 <a class="ref" href="#r20">[20]</a><a class="ref" href="#r21">[21]</a>.</div>
+
+<h3>3.5 프레임워크 — 공식 문서 기준 지원 현황</h3>
+
+<p class="small">여섯 프레임워크의 <b>공식 문서만</b>으로 채운 표다(2026-11-12 조회). 문서에 없는 항목은 "문서에 없음"으로 적었다. 라이선스와 최신 버전은 문서 사이트에 없어 각 저장소의 LICENSE 파일과 PyPI 배포 메타데이터에서 가져왔다. <span class="src off">🔍</span></p>
+
+<div class="glossary"><div class="t">용어</div>
+<dl>
+<dt>핸드오프(handoff)</dt><dd> — 한 에이전트가 대화 주도권을 다른 에이전트에게 통째로 넘기는 것.</dd>
+<dt>사람 개입(HITL, human-in-the-loop)</dt><dd> — 실행을 멈추고 사람의 승인·입력을 기다렸다가 재개하는 기능.</dd>
+<dt>체크포인트(checkpoint)</dt><dd> — 실행 상태를 저장해 두었다가 실패 후 이어서 재개하거나 분기할 수 있게 하는 기능.</dd>
+<dt>OpenTelemetry(OTel)</dt><dd> — 추적·지표·로그를 표준 형식으로 내보내는 공개 규격. 지원하면 모니터링 도구를 자유롭게 고를 수 있다.</dd>
+</dl></div>
+
+<table style="font-size:12.5px">
+  <tr><th style="width:12%">항목</th><th>LangGraph <a class="ref" href="#r23">[23]</a></th><th>CrewAI <a class="ref" href="#r24">[24]</a></th><th>OpenAI Agents SDK <a class="ref" href="#r25">[25]</a></th><th>Google ADK <a class="ref" href="#r26">[26]</a></th><th>Microsoft Agent Framework <a class="ref" href="#r27">[27]</a></th><th>Claude Agent SDK <a class="ref" href="#r28">[28]</a></th></tr>
+  <tr><td>제어 흐름 모델</td><td>그래프(상태·노드·엣지)</td><td>역할·태스크 선언(Crew) + 이벤트 기반 코드 흐름(Flow). 문서: "프로덕션은 Flow로 시작"</td><td>파이썬 우선, 추상화 최소. 핸드오프·가드레일 기본 요소</td><td>LLM 에이전트 + 워크플로우 에이전트(순차·병렬·루프) + 그래프·동적 워크플로우(2.0)</td><td>에이전트 + 워크플로우(그래프; Python은 함수형도 실험)</td><td>Claude Code와 같은 에이전트 루프를 라이브러리로</td></tr>
+  <tr><td>멀티 에이전트 기본 요소(문서 명칭)</td><td>Subagents · Handoffs · Skills · Router · Custom workflow</td><td>Crew(순차/계층 프로세스, manager_agent) + Flow</td><td>Handoffs("LLM에게는 도구로 표현") · Agents as tools</td><td>sub_agents(LLM 주도 이전) · AgentTool · 워크플로우 에이전트</td><td>Orchestrations: Sequential · Concurrent · Handoff · Group Chat · Magentic</td><td>Subagents(프로그램·파일·내장 general-purpose)</td></tr>
+  <tr><td>MCP 클라이언트</td><td>○ tools(MCPAdapter, beta). 서버의 elicitation은 interrupt로 처리; sampling·roots는 오류</td><td>○ tools만("prompts·resources는 통합 안 됨")</td><td>○ tools · prompts · resources</td><td>○ tools · resources</td><td>○ tools(+prompt 탐색 언급)</td><td>○ stdio·HTTP·SSE·인프로세스 서버; tools</td></tr>
+  <tr><td>MCP 서버(에이전트를 MCP로 노출)</td><td>문서에 없음</td><td>문서에 없음</td><td>문서에 없음</td><td>○ to_mcp_server()</td><td>○ Python as_mcp_server(), Go; .NET "coming soon"</td><td>문서에 없음</td></tr>
+  <tr><td>A2A</td><td>문서에 없음</td><td>문서에 없음</td><td>문서에 없음</td><td>○ 클라이언트+서버(Python; Go·Java·Kotlin 실험). 프로토콜 버전 미표기</td><td>○ 클라이언트(A2AAgent)+서버 호스팅 패키지. A2A SDK v1, 예제 ProtocolVersion "1.0"</td><td>문서에 없음</td></tr>
+  <tr><td>사람 개입</td><td>○ interrupt()·Command(resume), "무기한 대기"</td><td>○ @human_feedback(Flows 1.8.0+), human_input, 웹훅(Enterprise)</td><td>○ needs_approval → interruptions, RunState로 직렬화·재개</td><td>○ Tool Confirmation(require_confirmation), 그래프 RequestInput 노드</td><td>○ RequestPort / request_info(), 승인 필요 도구가 워크플로우를 일시정지</td><td>○ canUseTool 콜백(권한·AskUserQuestion), PreToolUse hook defer</td></tr>
+  <tr><td>지속성·체크포인트</td><td>○ 체크포인터(슈퍼스텝 단위)·Store, 내구성 모드 exit/async/sync</td><td>○ Checkpointing("실패 후 재개 또는 분기"), @persist</td><td>세션(SQLite·Redis 등); 내구 실행은 Temporal·Dapr 연동(내장 아님)</td><td>○ Session/State/Memory, Resume(ResumabilityConfig)</td><td>○ 워크플로우 체크포인트(슈퍼스텝) + Durable Extension</td><td>○ 세션 자동 저장, continue/resume/fork, SessionStore</td></tr>
+  <tr><td>관측(추적)</td><td>LangSmith(별도 플랫폼)로; OTel 언급 없음</td><td>내장 추적 → CrewAI AMP(계정 필요) + 서드파티 OTel 연동</td><td>내장 추적 기본 켜짐 → OpenAI 대시보드; 외부 프로세서 가능</td><td>○ OTel GenAI 규약, OTLP</td><td>○ OTel GenAI 규약(추적·로그·지표)</td><td>○ OTel 추적·지표·로그, OTLP</td></tr>
+  <tr><td>언어</td><td>Python, TypeScript</td><td>Python(문서상)</td><td>Python(이 사이트 기준)</td><td>Python, TypeScript, Go, Java, Kotlin</td><td>.NET, Python; Go 공개 프리뷰</td><td>Python, TypeScript(그 외는 CLI 서브프로세스)</td></tr>
+  <tr><td>관리 주체·라이선스·최신 버전</td><td>LangChain, Inc. · MIT · langgraph 1.2.20 (2026-11-05)</td><td>crewAI, Inc. · MIT · 1.15.40 (2026-11-11)</td><td>OpenAI · MIT · 0.24.0 (2026-10-15), "0.Y.Z, 아직 빠르게 변함"</td><td>Google · Apache-2.0 · google-adk 2.14.0 (2026-11-07)</td><td>Microsoft · MIT · agent-framework 1.25.0 (2026-11-07)</td><td>Anthropic · MIT(저장소) + Anthropic 상용 약관 · 0.2.180 (2026-11-09)</td></tr>
+</table>
+
+<ul>
+  <li><b>AutoGen의 현재 상태</b> <span class="src off">🔍</span>: Microsoft Agent Framework 공식 개요는 "Agent Framework는 Semantic Kernel과 AutoGen 양쪽의 차세대"라고 밝히고, AutoGen 저장소 README는 "이 프로젝트는 보관(archived)되었고 Microsoft가 더 이상 유지보수하지 않는다. 신규 사용자는 Microsoft Agent Framework로 시작하라"고 명시한다 <a class="ref" href="#r27">[27]</a>.</li>
+  <li><b>읽는 법</b>: MCP 클라이언트는 6종 모두 지원하지만 지원 범위(tools만 vs tools·prompts·resources)가 다르다. A2A는 Google ADK와 Microsoft만 공식 문서에 있다. 사람 개입과 체크포인트는 6종 모두 1급 기능으로 제공한다. 관측은 OTel 표준(ADK·Microsoft·Claude)과 자사 플랫폼(LangSmith·CrewAI AMP·OpenAI 대시보드)으로 갈린다.</li>
+  <li>⚠ "문서에 없음"은 공식 문서에서 찾지 못했다는 뜻이지 기능이 없다는 확정이 아니다. 서드파티 연동 경로가 있을 수 있다.</li>
+</ul>
+
+<div class="conclusion"><b>프레임워크 baseline.</b> 2026-11 기준 여섯 프레임워크 모두 멀티 에이전트 구성·사람 개입·체크포인트·MCP 클라이언트를 공식 지원한다. 차이는 (1) 제어 흐름을 누가 쥐나(그래프/역할/코드), (2) MCP 지원 범위, (3) A2A 유무, (4) 관측 표준이다. 버전은 모두 월 단위로 갱신 중이며 OpenAI SDK는 스스로 "아직 빠르게 변하는 0.Y.Z"라고 적는다 <a class="ref" href="#r23">[23]</a>–<a class="ref" href="#r28">[28]</a>.</div>
+
+
+<h2 id="ch4">4. 음성 에이전트 baseline</h2>
+
+<div class="lead"><strong>결론.</strong> 음성 에이전트는 두 갈래(① 음성인식→LLM→음성합성을 잇는 <b>캐스케이드</b>, ② 음성을 바로 음성으로 만드는 <b>speech-to-speech</b>)로 만들어지며, 2026년 들어 양방향 동시 대화(full-duplex) 모델이 상용화됐다. 과업 성공률은 같은 과업의 텍스트 에이전트보다 낮다: 2026년 초 논문 기준 텍스트 85% vs 음성 31~51%였고 <a class="ref" href="#r38">[38]</a>, 2026년 9~10월의 full-duplex 모델은 항공·통신 도메인에서 격차를 크게 좁혔다(제3자 실행 기준 평균 81.7%) <a class="ref" href="#r14">[14]</a>. 음성 인식 자체는 평균 단어 오류율 5% 안팎까지 내려왔다 <a class="ref" href="#r29">[29]</a>.</div>
+
+<div class="glossary"><div class="t">용어</div>
+<dl>
+<dt>ASR / STT</dt><dd> — 음성 인식(Automatic Speech Recognition, Speech-to-Text). 말을 글자로 바꾸는 모델.</dd>
+<dt>TTS</dt><dd> — 음성 합성(Text-to-Speech). 글자를 말소리로 바꾸는 모델.</dd>
+<dt>WER</dt><dd> — 단어 오류율(Word Error Rate). 인식한 단어 중 틀린 비율. 낮을수록 좋다.</dd>
+<dt>VAD</dt><dd> — 음성 활동 감지(Voice Activity Detection). 사람이 말하고 있는지, 말을 끝냈는지를 감지.</dd>
+<dt>캐스케이드(cascade) 파이프라인</dt><dd> — VAD → ASR → LLM → TTS처럼 전문 모델을 순서대로 잇는 구성.</dd>
+<dt>speech-to-speech(S2S)</dt><dd> — 모델 하나가 음성을 입력받아 바로 음성을 생성하는 구성. 중간에 글자로 바꾸지 않는다.</dd>
+<dt>반이중 / 전이중(half-/full-duplex)</dt><dd> — 반이중은 사용자가 말을 마친 뒤 응답(턴 기반). 전이중은 듣는 중에도 말하고 끼어들기(barge-in)·맞장구를 처리.</dd>
+<dt>TTFA</dt><dd> — Time to First Audio. 질문이 끝난 뒤 첫 음성이 나오기까지의 시간(초).</dd>
+</dl></div>
+
+<h3>4.1 두 구성 — 공식 문서가 말하는 장단점</h3>
+<table>
+  <tr><th style="width:16%">출처</th><th>캐스케이드(STT→LLM→TTS)</th><th>speech-to-speech</th></tr>
+  <tr><td>LiveKit 문서(프레임워크, 모델 공급사 중립) <a class="ref" href="#r37">[37]</a> <span class="src off">🔍</span></td><td>지연 "보통", 도구 호출 "성숙", 전체 텍스트 기록 남음(감사 가능), 대본 음성(say) 가능. 단점: "STT가 텍스트를 만들기 때문에 억양·감정 신호가 LLM에 닿지 않음". 권고: "대부분의 프로덕션 에이전트에는 캐스케이드가 올바른 기본값"</td><td>지연 "가장 빠름", 억양 이해·표현력 있는 출력 내장. 단점: 도구 호출 "덜 성숙", 전사 지연, 대본 음성 불가, 감사 어려움, 공급사 선택 폭 좁음. 전이중은 "모델이 끼어들기를 처리하고 스스로 멈출 때까지 말함"</td></tr>
+  <tr><td>OpenAI <a class="ref" href="#r32">[32]</a> <span class="src vendor">🏢</span></td><td>Python SDK에 체인형 VoicePipeline(전사 → 코드 → TTS) 제공. 데모 README: 이어 붙인 구조는 "사용자가 말을 마친 뒤 응답 지연이 1.5초 이상인 경우가 많다"</td><td>"하나의 모델과 API로 음성을 직접 처리·생성해 지연을 줄이고 말의 뉘앙스를 보존" (2025-08-28 블로그)</td></tr>
+  <tr><td>Kyutai(Moshi 논문) <a class="ref" href="#r34">[34]</a> <span class="src paper">📄</span></td><td>"복잡성 때문에 상호작용 사이에 수 초의 지연", "텍스트가 중간 매체라 감정·비언어 소리가 손실", "화자 턴 분할에 의존해 겹침·끼어들기를 못 다룸"</td><td>"최초의 실시간 전이중 음성 LLM, 이론 지연 160ms, 실제 200ms"</td></tr>
+  <tr><td>ElevenLabs <a class="ref" href="#r35">[35]</a> <span class="src vendor">🏢</span></td><td>둘 다 제공. 캐스케이드 구성 요소: 자체 ASR, 선택한 LLM, TTS, "대화 타이밍을 다루는 자체 턴테이킹 모델". 커스텀 LLM·특정 TTS·텍스트 전용이면 캐스케이드 권장</td><td>Realtime 모델 "Mini: 최저 지연·비용", "Max: 답하기 전에 추론". OpenAI Realtime과 같은 와이어 프로토콜</td></tr>
+  <tr><td>Deepgram <a class="ref" href="#r36">[36]</a> <span class="src vendor">🏢</span></td><td colspan="2">캐스케이드를 API 하나로 묶음: "각 단계 사이에 네트워크 왕복이 없어" 빠르다고 주장. 동시에 "오늘날 캐스케이드 음성 에이전트는 빠르고 정확하지만, 언제 말을 이어가고 언제 양보할지 같은 부분은 여전히 어렵다"고 인정(Think Live 모델의 동기)</td></tr>
+</table>
+
+<figure>
+  <img src="images/baseline/voice-livekit-pipeline-types.png" alt="LiveKit 파이프라인 유형 비교표">
+  <figcaption><b>그림 4-1.</b> 캐스케이드 / 턴 기반 realtime / 전이중 realtime의 비교표(지연·도구 호출 성숙도·전사·감사 가능성 등). 출처: LiveKit Agents 문서 "Pipeline types", https://docs.livekit.io/agents/models/pipelines/ (2026-11-12 캡처) <a class="ref" href="#r37">[37]</a></figcaption>
+</figure>
+
+<h3>4.2 정량 baseline — 블록별·종단 지표 (2026-11-12 조회)</h3>
+
+<h4>① 음성 인식(ASR) 정확도 — Open ASR Leaderboard <span class="src off">🔍 제3자</span></h4>
+<ul>
+  <li>Hugging Face가 공개 스크립트로 64개 모델을 평가해 영어 단문 데이터셋들의 평균 WER로 순위를 매긴다. 속도는 RTFx(처리한 음성 초 ÷ 계산 시간, 높을수록 빠름)로 표시하며 API 모델은 RTFx가 없다 <a class="ref" href="#r29">[29]</a>.</li>
+</ul>
+<table>
+  <tr><th>구분</th><th>모델(표기 그대로)</th><th class="num">평균 WER</th><th class="num">RTFx</th><th>근거</th></tr>
+  <tr><td>현재 최고(API)</td><td>zoom/scribe_v2.1_pro</td><td class="num">4.87%</td><td class="num">—</td><td>🔍 [29]</td></tr>
+  <tr><td>오픈 가중치 최고</td><td>Musci-research/Musci-ASR-qwen-1019-hf (4위)</td><td class="num">5.70%</td><td class="num">774.69</td><td>🔍 [29]</td></tr>
+  <tr><td>오픈 가중치 차순위</td><td>nvidia/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B (10위) / Qwen/Qwen3-ASR-1.7B-hf (11위)</td><td class="num">6.13% / 6.15%</td><td class="num">472.62 / 835.62</td><td>🔍 [29]</td></tr>
+</table>
+<ul>
+  <li>읽는 법: 1위와 오픈 가중치 1위의 차이는 0.8%p다. 음성 인식 블록은 오픈소스로도 상위권 성능에 근접해 있다 <a class="ref" href="#r29">[29]</a>.</li>
+</ul>
+
+<figure>
+  <img src="images/baseline/voice-open-asr-leaderboard.png" alt="Open ASR Leaderboard 상위">
+  <figcaption><b>그림 4-2.</b> Open ASR Leaderboard 상위 행(평균 WER 오름차순). 출처: Hugging Face Open ASR Leaderboard, https://huggingface.co/spaces/hf-audio/open_asr_leaderboard (2026-11-12 캡처) <a class="ref" href="#r29">[29]</a></figcaption>
+</figure>
+
+<h4>② speech-to-speech 모델의 추론·지연·대화 품질 — Artificial Analysis <span class="src off">🔍 제3자</span></h4>
+<ul>
+  <li>Artificial Analysis는 44개 S2S 모델을 자체 실행해 네 지표를 낸다: 음성 추론(Big Bench Audio, 1,000문항), 에이전트 과업(τ-Voice, 전이중 모델만), 선호도 아레나, 과업 성공률. 네 지표의 균등 가중 평균이 Speech to Speech Index다 <a class="ref" href="#r31">[31]</a>.</li>
+</ul>
+<table>
+  <tr><th>지표</th><th>상위</th><th>참고 행</th></tr>
+  <tr><td>S2S Index(종합)</td><td>Phonic 1 (High) 87.1 · Grok Voice 3.0 86.9 · GPT-Live-1 (Astra, medium) 83.2 · Gemini 3.8 Live Extended Thinking (High) 82.6</td><td>GPT-Realtime-2.1 High 75.2</td></tr>
+  <tr><td>음성 추론(Big Bench Audio)</td><td>StepAudio 3 Realtime 99.7% · Qwen Audio 3.0 Realtime Plus 99.2% · Phonic 1 (High) 98.9%</td><td>Gemini 2.5 Flash Native Audio 68.6% · GPT-4o audio 54.3% · <b>Moshi 4.4%</b>(오픈 연구 모델)</td></tr>
+  <tr><td>첫 음성까지 시간(TTFA)</td><td>Raon SpeechChat 0.04초 · Eleven Realtime v1 Max 0.57초 · Phonic 1 (High) 0.61초 · Gemini 2.5 Flash Native Audio 0.63초</td><td>GPT-Realtime-2 (High) 1.14초 · Gemini 3.8 Live 1.18초 · StepAudio 3 Realtime 8.83초(추론 길어 가장 느림)</td></tr>
+  <tr><td>에이전트 과업(τ-Voice, 전이중만)</td><td>Phonic 1 (High) 79.9% · GPT-Live-1 (Astra, medium) 74.5% · Grok Voice 3.0 71.6%</td><td>GPT-Realtime-2.1 High 45.7%</td></tr>
+  <tr><td>대화 역학(끼어들기·맞장구 등)</td><td>StepAudio 3 Realtime 98.9% · Qwen Audio 3.0 Realtime Plus 98.4% · GPT-Live-1 (Sol, low) 97.3%</td><td>Moshi 61.0%</td></tr>
+  <tr><td>입력 음성 1시간당 비용(USD)</td><td>Gemini 3.8 Live $0.84 · Gemini 2.5 Flash Native Audio $1.42</td><td>GPT-Realtime-2 (High) $4.14 · GPT-Realtime-2.1 High $10.75</td></tr>
+</table>
+<ul>
+  <li>⚠ 일부 모델은 1~2회 시도 기준이라고 사이트가 명시한다(GPT-Live-1 두 설정, GPT-Realtime-2 Minimal: 1회; GPT-Realtime-2.1 High: 2회). TTFA는 측정 위치에 따라 달라지는 체감 지연의 대리값이다 <a class="ref" href="#r31">[31]</a>.</li>
+  <li>읽는 법: 추론 정확도(99%대)와 대화 역학(98%대)은 상위권이 포화에 가깝지만, 실제 고객 응대 과업 성공률(τ-Voice)은 최고가 79.9%이고 모델 간 격차가 크다. "말을 잘 알아듣고 자연스럽게 주고받는 것"과 "일을 끝내는 것"은 다른 능력이다 <a class="ref" href="#r31">[31]</a>.</li>
+</ul>
+
+<h4>③ 고객 응대 과업 성공률 — τ-bench 음성판(Sierra) <span class="src off">🔍</span></h4>
+<ul>
+  <li>τ-bench 2.0은 같은 고객 응대 과업을 텍스트(text-v1)와 전이중 음성(voice-v1: 영어 278개 과업, voice-v2: 6개 언어 × 3개 도메인 900통화)으로 제공한다. 음성판은 합성 음성을 말하는 시뮬레이터 고객과 에이전트가 동시에 말하는 전이중 조건이며, 2.0 점수는 1.x와 비교 불가라고 명시한다 <a class="ref" href="#r14">[14]</a>.</li>
+  <li><b>2026년 초의 격차</b> <span class="src paper">📄</span>: τ-Voice 논문 초록 — 278개 과업에서 텍스트 GPT-5(추론)는 85%인데 음성 에이전트는 깨끗한 조건에서 31~51%, 소음·다양한 억양 조건에서 26~38%로 "텍스트 능력의 30~45%만 유지". 실패의 79~90%는 에이전트 행동에서 비롯 <a class="ref" href="#r38">[38]</a>.</li>
+  <li><b>2026년 9~11월 리더보드(voice-v1, pass^1, 도메인별 항공/소매/통신)</b> <a class="ref" href="#r14">[14]</a>:
+    <ul>
+      <li>Sierra가 직접 실행한 표준 설정 최고: gpt-live-1 (Diamond alpha) 82.0 / 78.9 / 84.2 (2026-09-09).</li>
+      <li>벤더 자체 제출(⚠ 자체 보고): Pine Voice 1.0 92.0 / 78.8 / 91.2, phonic-1 80.0 / 76.3 / 94.7.</li>
+      <li>턴 기반 S2S(표준 설정, Sierra 실행): gpt-realtime-2 (xhigh) 58.0 / 47.4 / 21.9, gemini-3.1-flash-live-preview-thinking-high 64.0 / 45.6 / 21.9.</li>
+      <li><b>캐스케이드 기준선(LiveKit, Sierra 실행)</b>: 48.0 / 28.9 / 16.7.</li>
+    </ul></li>
+  <li><b>텍스트와의 격차</b>: 같은 저장소의 1.x 텍스트 리더보드 상위(4회 이상 시행)는 GPT-5.2 (high) 83.0 / 81.6 / 89.7, Claude Opus 4.5 (high) 84.0 / 79.6 / 92.3. 2026년 중반 턴 기반 S2S는 도메인별로 25~68점 낮았고, 9~10월의 전이중 모델이 항공·통신에서 거의 따라붙었다 <a class="ref" href="#r14">[14]</a>. ⚠ 텍스트와 음성판은 시뮬레이터·시행 횟수가 달라 엄밀한 동일 조건 비교는 아니다.</li>
+  <li><b>언어별</b> <span class="src paper">📄</span>: τ-Multilingual 논문 — 4,500통화에서 스페인어·포르투갈어·힌디어는 영어 대비 3.2점 이내, 한국어 −14.7점, 중국어 −8.4점. voice-v2 리더보드에서도 한국어가 모든 시스템에서 가장 낮다(예: gpt-live-1 영어 84.7 vs 한국어 71.3; gemini-3.8-live-extended-thinking 81.3 vs 40.7) <a class="ref" href="#r38">[38]</a><a class="ref" href="#r14">[14]</a>.</li>
+</ul>
+
+<h4>④ 지연·전이중·끼어들기 — 공식 문서가 밝힌 수치</h4>
+<table>
+  <tr><th style="width:18%">시스템</th><th>구성</th><th>공식 수치·기능</th><th style="width:10%">근거</th></tr>
+  <tr><td>Kyutai Moshi(오픈, 7B)</td><td>S2S, 전이중(사용자·모델 두 음성 스트림 동시 모델링)</td><td>이론 지연 160ms(코덱 프레임 80ms + 음향 지연 80ms), L4 GPU에서 실제 200ms. 가중치 CC-BY 4.0, 코드 MIT/Apache</td><td>📄🏢 [34]</td></tr>
+  <tr><td>OpenAI Realtime API</td><td>S2S(gpt-realtime 계열), 전이중 모델 GPT-Live-1은 제3자 문서에만 등장</td><td>절대 지연 수치 없음. Azure 공식 문서의 전송별 표: WebRTC "~100ms", WebSocket "~200ms". VAD는 server_vad(무음 기준)·semantic_vad(의미 기준) 두 종류, 끼어들면 audio_interrupted 이벤트로 재생 중단. 가격 "$32/1M 음성 입력 토큰, $64/1M 음성 출력 토큰"(2026-05 기준 변동 없음)</td><td>🏢 [32]</td></tr>
+  <tr><td>Google Gemini Live API</td><td>S2S("native audio"), 상태 유지 WebSocket</td><td>"Barge-in: 사용자가 언제든 끼어들 수 있음", 70개 언어, 입력 16kHz/출력 24kHz PCM, 세션 재개 정보 24시간 보관, 비차단 도구 실행 기본. 절대 지연 수치 없음(공식 문서 페이지는 이 환경에서 접근 불가 — 예제 README·쿡북 기준)</td><td>🏢 <a class="ref" href="#r33">[33]</a></td></tr>
+  <tr><td>ElevenLabs Agents</td><td>캐스케이드 + Realtime 둘 다</td><td>절대 지연 수치 없음. 턴테이킹 설정: 무음 후 턴 전환 1~30초, 소프트 타임아웃 0.5~8초(권장 3초), 끼어들기 허용/금지 선택, 턴 적극성 3단계</td><td>🏢 [35]</td></tr>
+  <tr><td>Deepgram Voice Agent API</td><td>캐스케이드를 단일 WebSocket API로</td><td>절대 수치 없음. 기법: 추측 응답(턴 확정 전 미리 생성, "수백 ms 절감"), 조기 턴 종료("마지막 100~200ms 절감, LLM 호출 50~70% 증가"). 세션 2시간 제한</td><td>🏢 [36]</td></tr>
+  <tr><td>LiveKit Agents</td><td>프레임워크(세 구성 모두 지원)</td><td>"종단 응답 지연이 1초 미만이면 자연스럽게 느껴진다". 턴 감지 모델: 음성 기반 v1(14개 언어, 한국어 포함) / 텍스트 기반(Qwen2.5-0.5B, 396MB, 턴당 50~160ms). 맞장구와 진짜 끼어들기 구분</td><td>🏢 [37]</td></tr>
+</table>
+
+<h3>4.3 정성 baseline — 체크리스트</h3>
+<table>
+  <tr><th>항목</th><th>상태(2026-11-12)</th><th>근거</th></tr>
+  <tr><td>ASR 블록의 오픈소스 수준</td><td>○ 오픈 가중치 최고가 전체 1위와 0.8%p 차이</td><td>🔍 [29]</td></tr>
+  <tr><td>S2S 전이중 상용 모델</td><td>○ GPT-Live-1, Grok Voice 3.0, Phonic 1, Gemini 3.8 Live 등 복수 공급사</td><td>🔍 [31][14] 🏢 [37]</td></tr>
+  <tr><td>S2S 오픈 모델의 과업 능력</td><td>× Moshi는 음성 추론 4.4%, 대화 역학 61.0%로 상용 대비 큰 격차. Qwen3.5 Omni 계열은 상위권(오픈 여부는 모델별 확인 필요 — 출처 미확인)</td><td>🔍 [31]</td></tr>
+  <tr><td>음성 과업 성공률의 텍스트 대비 격차</td><td>△ 2026년 초 30~45% 유지 → 9~10월 전이중 모델이 항공·통신에서 근접. 소매는 여전히 낮음</td><td>📄 [38] 🔍 [14]</td></tr>
+  <tr><td>한국어</td><td>△ 모든 시스템에서 가장 낮은 언어(−14.7점). 턴 감지 모델은 한국어 지원</td><td>📄 [38] 🔍 [14] 🏢 [37]</td></tr>
+  <tr><td>표준 벤치마크</td><td>○ 과업: τ-Voice/τ-i18n · 추론: Big Bench Audio, VoiceBench · 대화 역학: Full Duplex Bench. 단, 공급사 공식 지연 수치는 대부분 없음</td><td>🔍 <a class="ref" href="#r14">[14]</a><a class="ref" href="#r31">[31]</a> 📄 <a class="ref" href="#r30">[30]</a></td></tr>
+  <tr><td>비용 투명성</td><td>○ 제3자가 입력 1시간당 비용 공개($0.84~$10.75)</td><td>🔍 [31]</td></tr>
+</table>
+
+<h2 id="ch5">5. 종합 스코어카드와 성숙도 체크리스트</h2>
+<p class="small">5.1은 2~4장의 수치를 한 표에 모은 것이다(조회일 2026-11-12, 각 수치의 조건·경고는 해당 장 참조). 5.2는 등급 판정 없이 사실만 ○/△/×로 적는다. 판정은 독자가 한다.</p>
+
+<h3>5.1 축별 수치 스코어카드</h3>
+<table style="font-size:12.5px">
+  <tr><th style="width:17%">축</th><th>현재 최고(운영자 실행·검증 우선)</th><th>널리 쓸 수 있는 수준(제3자 비용 통제)</th><th>오픈 가중치</th><th style="width:10%">근거</th></tr>
+  <tr><td>코딩(Verified)</td><td>76.8% ($0.75/문제) · 자체 보고 79.2%</td><td>72.0% (Mini 50문제, $463.90)</td><td>75.8% ($0.07/문제)</td><td>🔍 [12][19]</td></tr>
+  <tr><td>코딩(Pro, 비공개 기업 코드)</td><td>51.5% (Private) · 61.5% (Public)</td><td>HAL 없음</td><td>미확인</td><td>🔍 [22]</td></tr>
+  <tr><td>터미널 장기 작업</td><td>65.8% ± 3.1 (총 $4.7k/330회)</td><td>HAL 없음</td><td>41.2%(추정, 오픈 여부 미확인)</td><td>🔍 [13]</td></tr>
+  <tr><td>고객 응대(텍스트)</td><td>pass^1 84 / 80 / 92 (항공/소매/통신) · pass^4 70 / 52 / 78</td><td>56.0% (HAL 항공 구판, $11.36)</td><td>82 / 84 / 98(오픈 여부 미확인)</td><td>🔍 [14][19]</td></tr>
+  <tr><td>고객 응대(음성, 전이중)</td><td>82 / 79 / 84 (Sierra 실행) · 자체 제출 92 / 79 / 91</td><td>캐스케이드 기준선 48 / 29 / 17</td><td>Moshi류 오픈 S2S는 과업 능력 미달(추론 4.4%)</td><td>🔍 [14][31]</td></tr>
+  <tr><td>범용 보조(GAIA)</td><td>자체 제출 94.4%</td><td>74.6% (HAL, $178.20)</td><td>미확인</td><td>🔍 [15][19]</td></tr>
+  <tr><td>컴퓨터 조작(OSWorld-Verified)</td><td>86.0% (모델) · 90.2% (프레임워크 포함) · 사람 72.4%(2024 논문)</td><td>HAL 없음</td><td>미확인</td><td>🔍 [17]</td></tr>
+  <tr><td>함수 호출(BFCL V4)</td><td>77.5점</td><td>운영팀 전행 실행</td><td>72.4점 (MIT)</td><td>🔍 [18]</td></tr>
+  <tr><td>음성 인식(WER)</td><td>4.87%</td><td>—</td><td>5.70%</td><td>🔍 [29]</td></tr>
+  <tr><td>S2S 음성 추론 / 첫 음성 지연</td><td>99.7% / 0.57~1.2초(상용 상위)</td><td>—</td><td>Moshi 4.4% / 이론 0.16초</td><td>🔍 [31] 📄 [34]</td></tr>
+  <tr><td>멀티 에이전트 효과(통제 실험)</td><td colspan="3">단일 대비 −70.0% ~ +80.8%, 평균 −0.3%(σ 37.5%) · 오류 증폭 1.0 / 17.2 / 7.8 / 4.4 / 5.1배 · 토큰 1천 개당 성공 67.7 → 13.6 · 단일 성능 45% 이상이면 추가 에이전트의 수익 음수</td><td>📄 [2]</td></tr>
+  <tr><td>멀티 에이전트 실패</td><td colspan="3">7개 공개 시스템 실패율 41~86.7% · 설계 결함 44.2% / 에이전트 간 불일치 32.3% / 검증 23.5% · 설계 개입으로 +9.4~+15.6%p</td><td>📄 [7]</td></tr>
+</table>
+
+<h3>5.2 성숙도 체크리스트 (판정 없음, 사실만)</h3>
+<table>
+  <tr><th style="width:22%">항목</th><th style="width:16%">단일 에이전트(텍스트)</th><th style="width:16%">멀티 에이전트 연동</th><th style="width:16%">음성 에이전트</th><th>근거</th></tr>
+  <tr><td>표준 벤치마크 존재</td><td>○ 축별 6종 + 함수 호출</td><td>× 표준 없음(MARBLE·MAFBench 초기)</td><td>○ τ-Voice/τ-i18n, Big Bench Audio, Full Duplex Bench</td><td>[10][8][6][14][31]</td></tr>
+  <tr><td>제3자 재측정(비용 병기)</td><td>△ HAL 7개 벤치마크, 신규 등록 일시 중지, 일부 비용 2배 과대 표기 이슈</td><td>× 없음(논문 실험만)</td><td>○ Artificial Analysis(44개 모델), Sierra 실행 행</td><td>[19][31][14]</td></tr>
+  <tr><td>리더보드가 하네스·비용을 분리 표기</td><td>△ Terminal-Bench·SWE-bench(Bash Only)·HAL은 ○, GAIA 자체 제출은 ×</td><td>—</td><td>○ AA는 TTFA·비용 병기</td><td>[13][12][15][31]</td></tr>
+  <tr><td>벤치마크 해킹 가능성 감사</td><td>⚠ 감사 13개 전부 critical(BFCL·GAIA·Terminal-Bench·tau-bench·OSWorld 포함)</td><td>—</td><td>—(음성 벤치마크는 감사 대상 아님)</td><td>[11]</td></tr>
+  <tr><td>오픈 가중치의 최고 대비 근접도</td><td>○ 코딩 1%p, 함수 호출 5점</td><td>—</td><td>○ ASR 0.8%p · × S2S 큰 격차</td><td>[12][18][29][31]</td></tr>
+  <tr><td>반복 신뢰성 지표 공개</td><td>△ τ-bench pass^k만 표준 공개</td><td>×</td><td>× (1회 시행 기준)</td><td>[14]</td></tr>
+  <tr><td>연동 규격 안정성</td><td>—</td><td>△ MCP 5판·최신판 비호환 변경 · A2A 1.0.0</td><td>△ OpenAI Realtime 와이어 프로토콜을 타사가 채택(ElevenLabs)</td><td>[20][21][35]</td></tr>
+  <tr><td>프레임워크 공식 지원</td><td>—</td><td>○ 6종 모두 멀티 구성·HITL·체크포인트·MCP 클라이언트 · △ A2A는 2종</td><td>○ 캐스케이드·S2S·전이중 모두 지원하는 프레임워크 존재(LiveKit)</td><td>[23]–[28][37]</td></tr>
+  <tr><td>공급사 공식 지연 수치</td><td>—</td><td>—</td><td>× 대부분 없음(Moshi 논문 160/200ms, Azure 문서 전송별 ~100/~200ms만)</td><td>[32][34]</td></tr>
+  <tr><td>한국어</td><td>미조사</td><td>—</td><td>△ 모든 음성 시스템에서 최저 언어(−14.7점)</td><td>[38][14]</td></tr>
+</table>
+
+<h2 id="ch6">6. 리서치 방향 — 핵심 질문 4개, 미해결 문제 4개</h2>
+<p class="small">각 항목은 「질문 → 쉽게 풀면 → 왜 아직 답이 없나(근거) → 파고들 하위 질문」 순서다. 근거는 모두 앞 장에서 인용한 1차 자료다.</p>
+
+<h3>6.1 핵심 질문 4개</h3>
+
+<h4>Q1. 어떤 일을 여러 에이전트에게 나눠 시키면 좋아지고, 어떤 일은 나빠지나? 시작 전에 알 수 있나?</h4>
+<ul>
+  <li><b>쉽게 풀면</b>: 사람 팀도 "조사 보고서"는 나눠 맡기면 빠르지만 "설명서대로 조립"은 한 사람이 순서대로 하는 게 낫다. 어떤 일이 어느 쪽인지 미리 판별하는 방법이 아직 없다.</li>
+  <li><b>근거</b>: 분해 가능한 금융 추론은 +80.8%, 순차 의존이 강한 계획 과업은 −70.0%. 단일 성능이 약 45%를 넘는 과업은 에이전트를 더해도 손해. 과업 속성으로 결과를 예측하는 식의 설명력은 R² 0.37~0.41 <a class="ref" href="#r2">[2]</a>.</li>
+  <li><b>하위 질문</b>: "나눌 수 있는 일"인지 실행 전에 측정하는 방법은? 45% 임계값은 모델이 좋아져도 유지되나? 지휘자는 싼 모델·작업자는 좋은 모델로 섞어도 되나(같은 논문: 작업자 쪽 능력이 더 중요) <a class="ref" href="#r2">[2]</a>? 도구가 많을수록 나누는 비용이 커지는 이유는?</li>
+</ul>
+
+<h4>Q2. 에이전트끼리 무엇을 알려줘야 하고, 기억은 어떻게 나눠 관리해야 하나?</h4>
+<ul>
+  <li><b>쉽게 풀면</b>: 팀원이 아무것도 안 말하고 결과만 합치면 한 사람의 실수가 전체를 망친다. 모든 것을 공유하면 비용이 폭증한다. 기억은 "방금 들은 것"과 "오래 알던 것" 둘이면 되는지, 잊는 기능은 필요한지 모른다.</li>
+  <li><b>근거</b>: 통신 없는 Independent 구조는 오류 17.2배, 중앙 검토 구조는 4.4배 <a class="ref" href="#r2">[2]</a>. "알면서 안 알려줌"과 "대화 이력 상실"이 별도 실패 유형이며 전자는 거의 실패한 실행에서만 나타남 <a class="ref" href="#r7">[7]</a>. 평가된 어느 프레임워크도 메모리를 지우거나 고치는 기능이 없고, 선택적 망각 시험에서 모두 5점 미만 <a class="ref" href="#r6">[6]</a>.</li>
+  <li><b>하위 질문</b>: 공유 컨텍스트가 클수록 좋은가, 전달 규칙이 더 중요한가? 기억을 몇 층으로 나눠야 하나(MAFBench의 메모리 벤치마크는 정확 검색·시험 중 학습·장기 이해·선택적 망각 4능력) <a class="ref" href="#r6">[6]</a>? 잊지 못하는 메모리는 장기 운영에서 어떤 실패를 낳나? 컨텍스트 창이 커지면 메모리 설계가 필요 없어지나(MAFBench 설계 원칙: "큰 컨텍스트 창에 의존하지 말라") <a class="ref" href="#r6">[6]</a>?</li>
+</ul>
+
+<h4>Q3. 에이전트가 "다 했습니다"라고 할 때 그 말을 어떻게 믿나?</h4>
+<ul>
+  <li><b>쉽게 풀면</b>: 신입이 "끝냈어요"라고 해도 검수를 한다. 에이전트의 검수는 자기 자신이나 다른 에이전트가 하는데, 그 검수가 제대로 되는지, 그리고 시험 자체는 믿을 만한지가 문제다.</li>
+  <li><b>근거</b>: 같은 과업을 k번 모두 성공하는 비율(pass^k)은 k가 커질수록 급락(gpt-4.1 통신 도메인 k=1 0.34 → k=4 0.19) <a class="ref" href="#r14">[14]</a>. 검증 실패(3.2·3.3)는 성공한 실행에도 자주 나타남 <a class="ref" href="#r7">[7]</a>. LLM 자동 채점의 사람 일치도 κ 0.77 <a class="ref" href="#r7">[7]</a>. 13개 벤치마크 전부 채점기 격리 실패로 과업을 풀지 않고도 점수 획득 가능 <a class="ref" href="#r11">[11]</a>.</li>
+  <li><b>하위 질문</b>: 검증자를 실행자와 분리하면 충분한가, 검증자는 누가 검증하나? 최종 결과 채점과 중간 과정(궤적) 채점 중 어느 것이 배치 신뢰성을 더 잘 예측하나 <a class="ref" href="#r10">[10]</a>? "속이는 것이 푸는 것보다 어려운" 채점기는 어떻게 설계하나 <a class="ref" href="#r11">[11]</a>? 사람 검수 없는 자동 채점은 어디까지 믿을 수 있나?</li>
+</ul>
+
+<h4>Q4. 사람은 언제, 어떻게 끼어들어야 하나?</h4>
+<ul>
+  <li><b>쉽게 풀면</b>: 완전 자동이 목표가 아니라면 에이전트가 "확인해 주세요"라고 물어야 할 순간을 정해야 한다. 너무 자주 물으면 쓸모없고, 너무 안 물으면 위험하다. 음성 비서는 실시간이라 이 문제가 가장 극단적이다.</li>
+  <li><b>근거</b>: Feng 외의 자율성 5단계 표는 "언제 사용자에게 물어야 하는지 어떻게 아나", "물었을 때 좋은 피드백을 어떻게 받나"를 열린 질문으로 적어 둠 <a class="ref" href="#r4">[4]</a>. A2A는 INPUT_REQUIRED·AUTH_REQUIRED 대기 상태를, MCP는 "도구 호출 전 사용자 동의"를 규정 <a class="ref" href="#r20">[20]</a><a class="ref" href="#r21">[21]</a>. τ²-bench에서 에이전트가 사용자에게 행동을 안내해야 하는 조건은 혼자 할 때보다 성공률이 18~25%p 낮았다 <a class="ref" href="#r14">[14]</a>.</li>
+  <li><b>하위 질문</b>: 어떤 행동이 "되돌릴 수 없는" 행동인지 에이전트가 판별할 수 있나? 승인 요청 빈도와 성공률의 관계는? 사람의 답이 늦거나 틀릴 때 어떻게 하나? 실시간 음성에서는 "물어보는" 비용이 어떻게 달라지나?</li>
+</ul>
+
+<h3>6.2 미해결 문제 4개</h3>
+<table>
+  <tr><th style="width:26%">문제</th><th>쉽게 풀면</th><th style="width:38%">근거</th></tr>
+  <tr><td><b>P1. 반복·장기 신뢰성</b></td><td>같은 일을 여러 번 시키면 매번 성공하지 못하고, 긴 일일수록 성공률이 0에 가까워진다.</td><td>pass^k 급락 <a class="ref" href="#r14">[14]</a>; 필요한 행동 수가 늘수록 성공률 0에 수렴 <a class="ref" href="#r14">[14]</a>; 7개 멀티 에이전트 시스템 실패율 41~86.7% <a class="ref" href="#r7">[7]</a></td></tr>
+  <tr><td><b>P2. 비용 대비 효과의 기준 부재</b></td><td>얼마를 더 써서 얼마를 얻었는지 재는 표준이 없다. 비용 없는 성능 비교가 관행이다.</td><td>토큰 1천 개당 성공 수 단일 67.7 vs Hybrid 13.6 <a class="ref" href="#r2">[2]</a>; 멀티는 채팅의 15배 토큰 <a class="ref" href="#r9">[9]</a>; 평가 서베이가 비용·효율 지표 공백을 지적 <a class="ref" href="#r10">[10]</a>; 제3자 비용 통제 리더보드(HAL)는 7개 벤치마크만 다룸 <a class="ref" href="#r19">[19]</a></td></tr>
+  <tr><td><b>P3. 신뢰할 수 있는 평가와 안전</b></td><td>시험 자체를 믿을 수 없고, 멀티 에이전트 표준 시험이 없으며, 안전 평가는 비어 있다.</td><td>감사한 13개 벤치마크 전부 critical risk, 45건의 작동하는 해킹 <a class="ref" href="#r11">[11]</a>; 서베이: 안전·정책 준수 평가가 특히 멀티 에이전트에서 공백 <a class="ref" href="#r10">[10]</a>; 멀티 전용 벤치마크는 MARBLE·MAFBench 등 초기 단계 <a class="ref" href="#r8">[8]</a><a class="ref" href="#r6">[6]</a></td></tr>
+  <tr><td><b>P4. 연동 규격의 미성숙</b></td><td>에이전트를 서로 연결하는 규격이 아직 흔들린다.</td><td>MCP 사양 5판, 최신판에 비호환 변경(무상태화·Sampling 폐기) <a class="ref" href="#r20">[20]</a>; A2A 1.0.0 직후 <a class="ref" href="#r21">[21]</a>; MCP 보안이 "사용자 동의"와 "도구 설명 불신"에 의존 <a class="ref" href="#r20">[20]</a>; 프레임워크별 지원은 3.5절 표 참조</td></tr>
+</table>
+
+<h2 id="ch7">7. 주의·한계 — 이 보고서의 수치를 읽을 때</h2>
+
+<h3>7.1 벤치마크 점수는 해킹될 수 있다 <span class="src paper">📄</span></h3>
+<ul>
+  <li>UC Berkeley RDI(Hao Wang·Qiuyang Mang·Alvin Cheung·Koushik Sen·Dawn Song)는 2026년 4월, 벤치마크 채점 코드를 분석해 점수 부풀리기를 자동으로 찾는 에이전트로 13개 벤치마크(FrontierCS, BFCL, LiveBench, GAIA, WebArena, AGIEval, AgentBench, Terminal-Bench, tau-bench, MLE-bench, OSWorld, FieldWorkArena, CAR-bench)를 감사했다 <a class="ref" href="#r11">[11]</a>.</li>
+  <li>결과: 잠재 취약점 825건, 작동하는 해킹 45건(16종 공격 유형), 13개 전부 critical risk. 가장 흔한 원인은 피평가 코드가 채점기와 같은 프로세스·컨테이너·파일시스템을 공유하는 것 <a class="ref" href="#r11">[11]</a>.</li>
+  <li>예시: WebArena는 812개 정답이 담긴 JSON이 에이전트가 읽을 수 있는 파일시스템에 있었고, Terminal-Bench의 한 과업은 C 확장이 "존재하는지만" 확인하고 호출하지 않았다 <a class="ref" href="#r11">[11]</a>.</li>
+  <li>같은 글이 인용한 공개 사례: 한 모델이 SWE-bench 궤적의 24.4%에서 git log로 정답 커밋을 베껴 점수가 81.4%에서 76.2%로 교정됨; OpenAI가 SWE-bench Verified 감사 문제의 59.4%에 결함 테스트가 있음을 발견한 뒤 Verified 보고를 중단 <a class="ref" href="#r11">[11]</a>.</li>
+  <li>이 보고서 2장의 벤치마크 중 BFCL·GAIA·Terminal-Bench·τ-bench·OSWorld가 감사 대상에 포함된다. 해당 점수에는 ⚠H 표시를 붙였다.</li>
+</ul>
+
+<div class="grid2">
+<figure>
+  <img src="images/baseline/rdi-results.png" alt="RDI 감사 결과 개요">
+  <figcaption><b>그림 7-1.</b> 13개 벤치마크 감사 결과 개요(잠재 취약점 825, 확인된 해킹 45, critical 13/13)와 취약점 유형. 출처: Berkeley RDI, "We Scored 100% on AI Benchmarks Without Solving a Single Problem" (2026-04), https://rdi.berkeley.edu/blog/trustworthy-benchmarks (2026-11-12 캡처) <a class="ref" href="#r11">[11]</a></figcaption>
+</figure>
+<figure>
+  <img src="images/baseline/rdi-pipeline.png" alt="RDI 감사 파이프라인">
+  <figcaption><b>그림 7-2.</b> 자동 감사 파이프라인(벤치마크 수집 → 취약점 탐지 → 공격 코드 생성·검증). 출처: 같은 글 (2026-11-12 캡처) <a class="ref" href="#r11">[11]</a></figcaption>
+</figure>
+</div>
+
+<h3>7.2 비교할 수 없는 조건</h3>
+<ul>
+  <li><b>버전</b>: 벤치마크 버전이 다르면 과업 집합이 달라 비교 불가. τ-bench 2.0 저장소는 2.0 영문 결과가 v1.0.1과 비교 불가하다고 명시 <a class="ref" href="#r14">[14]</a>. Terminal-Bench는 확인일 기준 4.1을 표기 <a class="ref" href="#r13">[13]</a>.</li>
+  <li><b>하네스(harness)</b>: 같은 모델도 모델을 돌리는 에이전트 코드(프롬프트·도구·재시도 정책)에 따라 점수가 다르다. Terminal-Bench 리더보드가 MODEL 열과 AGENT 열을 따로 두는 이유 <a class="ref" href="#r13">[13]</a>. 평가 서베이는 "LLM과 하네스를 분리한 평가"를 미래 과제로 꼽는다 <a class="ref" href="#r10">[10]</a>.</li>
+  <li><b>자체 보고 vs 제3자</b>: 벤더 발표 수치는 "주장"이다. 벤치마크 운영자 검증 표시(SWE-bench) <a class="ref" href="#r12">[12]</a>나 제3자 재측정(HAL) <a class="ref" href="#r19">[19]</a>과 구분해 읽는다.</li>
+  <li><b>표본 크기</b>: 통제 실험의 벤치마크당 문제 수는 20~100개 <a class="ref" href="#r2">[2]</a>, MAST 사례 연구의 ProgramDev-v0는 32문제 <a class="ref" href="#r7">[7]</a>. 효과의 방향은 믿되 소수점 자리는 믿지 않는다.</li>
+</ul>
+
+<h3>7.3 이 보고서가 "baseline"이라 부르는 것의 한계</h3>
+<ul>
+  <li>실제 산업 배치의 성공률·비용 통계는 공개 자료가 없다. 이 보고서의 baseline은 <b>공개 벤치마크에서 재현 가능한 수준 + 통제 실험이 보인 구조적 효과</b>이며, 현장 평균이 아니다.</li>
+  <li>리더보드 수치는 조회일(2026-11-12) 기준 스냅샷이다. 수개월 단위로 1위가 바뀐다.</li>
+  <li>이 보고서에서 확인하지 못한 항목은 8장 "출처 미확인 목록"에 모았다.</li>
+</ul>
+
+<h2 id="ch8">8. 조사 방법과 출처</h2>
+
+<h3>8.1 수집·표기 원칙</h3>
+<ul>
+  <li><b>근거 유형과 우선순위</b>: 🔍 공식 리더보드·사양서 → 📄 논문(arXiv HTML판 본문 확인) → 🏢 벤더 자체 보고(주장으로 표기) → 서베이(지형 설명에만 사용). 2차 블로그·비교글은 어떤 수치의 근거로도 쓰지 않았다.</li>
+  <li><b>정량 수치 규칙</b>: 축마다 공식 리더보드 하나를 지정해 2026-11-12에 조회. "현재 최고"는 해당 리더보드 1위(운영자 검증 표시 우선), "널리 쓸 수 있는 수준"은 HAL 비용 통제 재측정 최고치(HAL에 없는 축은 "HAL 없음" 표기), "오픈소스"는 오픈 가중치 표시 행 1위. 각 수치에 벤치마크·버전·모델·하네스·산출 방식·비용·출처 유형·조회일을 함께 기록.</li>
+  <li><b>멀티 에이전트 효과</b>: 리더보드가 없으므로 통제 실험이 보고한 범위를 조건과 함께 적고, 벤더 사례는 "자체 평가 1건"으로 병기.</li>
+  <li><b>성숙도</b>: 자체 등급 판정을 하지 않고 사실 체크리스트(○/×)만 적는다. 판정은 독자가 한다.</li>
+  <li><b>분류 체계</b>: 출판된 것만 사용(1장). 자체 분류를 만들지 않았다.</li>
+  <li><b>그림·표</b>: 도식은 원본 이미지를 받아 그대로 넣고 출처·조회일을 캡션에 적었다. 표는 원본 수치를 그대로 옮긴 HTML 표 또는 원본 캡처다.</li>
+  <li><b>저장소 기존 문서</b>: 참고·인용하지 않았다.</li>
+</ul>
+
+<h3>8.2 출처 미확인 목록</h3>
+
+<ul>
+  <li><b>BrowseComp 현재 최고 수치</b> — 공식 리더보드가 없고 벤더 모델 카드의 자체 보고치만 존재. 이 보고서에서는 수치를 싣지 않음.</li>
+  <li><b>오픈 가중치 여부</b> — Terminal-Bench(GLM-5.3), τ-bench(Qwen3.5-397B-A17B, GLM-5), OSWorld(Holo3, Kimi K2.6), SWE-bench Pro·GAIA 상위 행: 해당 리더보드에 오픈 표시가 없어 확인하지 못함.</li>
+  <li><b>Artificial Analysis 상위 S2S 모델의 오픈 여부</b>(Qwen Audio 3.0 Realtime, StepAudio 3 Realtime 등) — 모델별 라이선스 미확인.</li>
+  <li><b>OpenAI Realtime API 공식 문서의 절대 지연 수치, "chained vs speech-to-speech" 공식 비교 페이지, GPT-Live-1 공식 페이지</b> — platform.openai.com 문서가 developers.openai.com으로 이전되어 이 환경에서 접근 불가. OpenAI 블로그·SDK 문서·Azure 문서로 대체.</li>
+  <li><b>Gemini Live API 공식 문서의 "native audio vs half-cascade" 설명, 세션 시간 제한, 지연 수치</b> — ai.google.dev가 aistudio.google.com으로 이전되어 접근 불가. Google 예제 README·쿡북으로 대체.</li>
+  <li><b>VoiceBench 현재 리더보드</b> — 웹 리더보드(github.io) 접근 불가. 2024년 논문 표만 확인.</li>
+  <li><b>τ-bench 리더보드 사이트(taubench.com)의 실제 표시 순위</b> — 접근 불가. 저장소의 리더보드 데이터 파일(JSON)로 대체했으며, voice-v2 집계치는 보고서 작성자가 시행별 보상에서 계산한 값.</li>
+  <li><b>GAIA 리더보드 Space의 렌더링 화면</b> — 접근 불가. 기반 데이터셋(results_public, 4,149행)을 직접 정렬.</li>
+  <li><b>MCP의 운영 조직</b> — 사양 문서에 명시 없음.</li>
+  <li><b>Google ADK의 A2A 프로토콜 버전</b> — 문서에 미표기.</li>
+  <li><b>LangGraph·CrewAI·OpenAI Agents SDK·Claude Agent SDK의 A2A 지원, MCP 서버(에이전트 노출) 지원</b> — 공식 문서에서 찾지 못함(기능 부재의 확정은 아님).</li>
+  <li><b>Terminal-Bench 1위 등 2026년 하반기 모델명</b>(Opus 5.5, GPT-6.1 Sol, claude-fable-5 등) — 리더보드 표기 그대로 옮겼으며 모델 자체는 별도 확인하지 않음.</li>
+  <li><b>τ²-bench 논문의 pass^k 수치표</b> — 논문은 그림으로만 제공(그림 2-2로 수록).</li>
+</ul>
+
+
+<h3 id="refs">8.3 출처</h3>
+<div class="refs"><ol>
+  <li id="r1">📄 Anthropic, "Building effective agents" (2024-12-19). <a href="https://www.anthropic.com/engineering/building-effective-agents">https://www.anthropic.com/engineering/building-effective-agents</a> (2026-11-12 조회)</li>
+  <li id="r2">📄 Yubin Kim et al. (Google Research·Google DeepMind·MIT), "Towards a Science of Scaling Agent Systems", arXiv:2512.08296 (v1 2025-12-09, v3 2026-04-08). <a href="https://arxiv.org/abs/2512.08296">https://arxiv.org/abs/2512.08296</a> · 본문 <a href="https://arxiv.org/html/2512.08296v3">https://arxiv.org/html/2512.08296v3</a> · Google Research 블로그 (2026-01-28) <a href="https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/">https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/</a></li>
+  <li id="r3">📄 Margaret Mitchell, Avijit Ghosh, Alexandra Sasha Luccioni, Giada Pistilli, "Fully Autonomous AI Agents Should Not be Developed", arXiv:2502.02649 (v3 2025-10). <a href="https://arxiv.org/html/2502.02649v3">https://arxiv.org/html/2502.02649v3</a></li>
+  <li id="r4">📄 K. J. Kevin Feng, David W. McDonald, Amy X. Zhang, "Levels of Autonomy for AI Agents", arXiv:2506.12469 (v2 2025-07). <a href="https://arxiv.org/html/2506.12469v2">https://arxiv.org/html/2506.12469v2</a></li>
+  <li id="r5">📄 Meredith Ringel Morris et al., "Position: Levels of AGI for Operationalizing Progress on the Path to AGI", arXiv:2311.02462 (v5 2025-09; ICML 2024). <a href="https://arxiv.org/html/2311.02462v5">https://arxiv.org/html/2311.02462v5</a></li>
+  <li id="r6">📄 "Architectural Design, Not Only Model Intelligence, Governs Multi-Agent LLM Performance" (MAFBench; Concordia University), arXiv:2602.03128 (v1 2026-02-03, v2 2026-09-17). <a href="https://arxiv.org/html/2602.03128v2">https://arxiv.org/html/2602.03128v2</a></li>
+  <li id="r7">📄 Mert Cemri et al. (UC Berkeley), "Why Do Multi-Agent LLM Systems Fail?", arXiv:2503.13657 (v1 2025-03-17, v3 2025-10-26). <a href="https://arxiv.org/html/2503.13657v3">https://arxiv.org/html/2503.13657v3</a></li>
+  <li id="r8">📄 Kunlun Zhu et al. (UIUC), "MultiAgentBench: Evaluating the Collaboration and Competition of LLM agents", arXiv:2503.01935 (2025-03-03). <a href="https://arxiv.org/html/2503.01935v1">https://arxiv.org/html/2503.01935v1</a></li>
+  <li id="r9">🏢 Anthropic, "How we built our multi-agent research system" (2025-06-13). <a href="https://www.anthropic.com/engineering/multi-agent-research-system">https://www.anthropic.com/engineering/multi-agent-research-system</a> (2026-11-12 조회)</li>
+  <li id="r10">📄 Asaf Yehudai et al. (IBM Research 외), "Survey on Evaluation of LLM-based Agents", arXiv:2503.16416 (v2 2026-04-23). <a href="https://arxiv.org/html/2503.16416v2">https://arxiv.org/html/2503.16416v2</a></li>
+  <li id="r11">📄 Hao Wang, Qiuyang Mang, Alvin Cheung, Koushik Sen, Dawn Song (UC Berkeley RDI), "We Scored 100% on AI Benchmarks Without Solving a Single Problem" (2026-04). <a href="https://rdi.berkeley.edu/blog/trustworthy-benchmarks">https://rdi.berkeley.edu/blog/trustworthy-benchmarks</a> · 도구 <a href="https://github.com/moogician/trustworthy-env">https://github.com/moogician/trustworthy-env</a> (2026-11-12 조회)</li>
+  <li id="r12">🔍 SWE-bench 공식 리더보드 <a href="https://www.swebench.com/">https://www.swebench.com/</a> (2026-11-12 조회) · 📄 Carlos E. Jimenez et al., "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?", arXiv:2310.06770 (2023-10-10) <a href="https://arxiv.org/abs/2310.06770">https://arxiv.org/abs/2310.06770</a></li>
+  <li id="r13">🔍 Terminal-Bench 공식 사이트·리더보드 <a href="https://www.tbench.ai/">https://www.tbench.ai/</a> (2026-11-12 조회)</li>
+  <li id="r14">📄 Shunyu Yao et al. (Sierra), "τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains", arXiv:2406.12045 (2024-06-17) <a href="https://arxiv.org/abs/2406.12045">https://arxiv.org/abs/2406.12045</a> · 📄 Victor Barres et al. (Sierra), "τ²-Bench: Evaluating Conversational Agents in a Dual-Control Environment", arXiv:2506.07982 (2025-06-09) <a href="https://arxiv.org/html/2506.07982v1">https://arxiv.org/html/2506.07982v1</a> · 🔍 공식 저장소 <a href="https://github.com/sierra-research/tau2-bench">https://github.com/sierra-research/tau2-bench</a> (2026-11-12 조회)</li>
+  <li id="r15">📄 Grégoire Mialon et al., "GAIA: a benchmark for General AI Assistants", arXiv:2311.12983 (2023-11-21) <a href="https://arxiv.org/abs/2311.12983">https://arxiv.org/abs/2311.12983</a> · 🔍 리더보드 <a href="https://huggingface.co/gaia-benchmark">https://huggingface.co/gaia-benchmark</a></li>
+  <li id="r16">📄 Jason Wei et al. (OpenAI), "BrowseComp: A Simple Yet Challenging Benchmark for Browsing Agents", arXiv:2504.12516 (2025-04-16) <a href="https://arxiv.org/abs/2504.12516">https://arxiv.org/abs/2504.12516</a></li>
+  <li id="r17">🔍 OSWorld 공식 사이트 <a href="https://osworld-v1.xlang.ai/">https://osworld-v1.xlang.ai/</a> (os-world.github.io에서 리다이렉트; 2026-11-12 조회)</li>
+  <li id="r18">🔍 Berkeley Function-Calling Leaderboard (BFCL) <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">https://gorilla.cs.berkeley.edu/leaderboard.html</a> (2026-11-12 조회)</li>
+  <li id="r19">🔍 HAL — Holistic Agent Leaderboard (Princeton) <a href="https://hal.cs.princeton.edu/">https://hal.cs.princeton.edu/</a> (2026-11-12 조회)</li>
+  <li id="r20">🔍 Model Context Protocol 사양 2026-07-28 <a href="https://modelcontextprotocol.io/specification/latest">https://modelcontextprotocol.io/specification/latest</a> · 아키텍처 개요 <a href="https://modelcontextprotocol.io/docs/learn/architecture">https://modelcontextprotocol.io/docs/learn/architecture</a> (2026-11-11 조회)</li>
+  <li id="r21">🔍 Agent2Agent (A2A) Protocol 사양 1.0.0 <a href="https://a2a-protocol.org/latest/specification/">https://a2a-protocol.org/latest/specification/</a> · Key Concepts <a href="https://a2a-protocol.org/latest/topics/key-concepts/">https://a2a-protocol.org/latest/topics/key-concepts/</a> · "A2A and MCP" <a href="https://a2a-protocol.org/latest/topics/a2a-and-mcp/">https://a2a-protocol.org/latest/topics/a2a-and-mcp/</a> (2026-11-11 조회)</li>
+  <li id="r22">🔍 SWE-bench Pro 리더보드 (Scale AI) <a href="https://labs.scale.com/leaderboard/swe_bench_pro">https://labs.scale.com/leaderboard/swe_bench_pro</a> (2026-11-12 조회)</li>
+  <li id="r23">🔍 LangGraph 공식 문서 — 개요 <a href="https://docs.langchain.com/oss/python/langgraph/overview">https://docs.langchain.com/oss/python/langgraph/overview</a> · 멀티 에이전트 패턴 <a href="https://docs.langchain.com/oss/python/langchain/multi-agent">…/langchain/multi-agent</a> · MCP <a href="https://docs.langchain.com/oss/python/langchain/mcp">…/langchain/mcp</a> · interrupts <a href="https://docs.langchain.com/oss/python/langgraph/interrupts">…/langgraph/interrupts</a> · persistence <a href="https://docs.langchain.com/oss/python/langgraph/persistence">…/langgraph/persistence</a> · observability <a href="https://docs.langchain.com/oss/python/langgraph/observability">…/langgraph/observability</a>; LICENSE(GitHub langchain-ai/langgraph), PyPI langgraph (2026-11-12 조회)</li>
+  <li id="r24">🔍 CrewAI 공식 문서 — 소개 <a href="https://docs.crewai.com/en/introduction">https://docs.crewai.com/en/introduction</a> · MCP <a href="https://docs.crewai.com/en/mcp/overview">…/mcp/overview</a> · human-in-the-loop <a href="https://docs.crewai.com/en/learn/human-in-the-loop">…/learn/human-in-the-loop</a> · checkpointing <a href="https://docs.crewai.com/en/concepts/checkpointing">…/concepts/checkpointing</a> · tracing <a href="https://docs.crewai.com/en/observability/tracing">…/observability/tracing</a> · changelog <a href="https://docs.crewai.com/en/changelog">…/changelog</a>; LICENSE(GitHub crewAIInc/crewAI), PyPI crewai (2026-11-12 조회)</li>
+  <li id="r25">🔍 OpenAI Agents SDK(Python) 공식 문서 — <a href="https://openai.github.io/openai-agents-python/">https://openai.github.io/openai-agents-python/</a> · handoffs <a href="https://openai.github.io/openai-agents-python/handoffs/">…/handoffs/</a> · MCP <a href="https://openai.github.io/openai-agents-python/mcp/">…/mcp/</a> · human-in-the-loop <a href="https://openai.github.io/openai-agents-python/human_in_the_loop/">…/human_in_the_loop/</a> · sessions <a href="https://openai.github.io/openai-agents-python/sessions/">…/sessions/</a> · tracing <a href="https://openai.github.io/openai-agents-python/tracing/">…/tracing/</a> · release <a href="https://openai.github.io/openai-agents-python/release/">…/release/</a>; LICENSE(GitHub openai/openai-agents-python), PyPI openai-agents (2026-11-12 조회)</li>
+  <li id="r26">🔍 Google ADK 공식 문서 — <a href="https://adk.dev/">https://adk.dev/</a> · about <a href="https://adk.dev/get-started/about/">…/get-started/about/</a> · workflows <a href="https://adk.dev/workflows/">…/workflows/</a> · MCP tools <a href="https://adk.dev/tools-custom/mcp-tools/">…/tools-custom/mcp-tools/</a> · A2A <a href="https://adk.dev/a2a/">…/a2a/</a> · confirmation <a href="https://adk.dev/tools-custom/confirmation/">…/tools-custom/confirmation/</a> · resume <a href="https://adk.dev/runtime/resume/">…/runtime/resume/</a> · traces <a href="https://adk.dev/observability/traces/">…/observability/traces/</a>; LICENSE(GitHub google/adk-python), PyPI google-adk (2026-11-12 조회)</li>
+  <li id="r27">🔍 Microsoft Agent Framework 공식 문서 — 개요 <a href="https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview">https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview</a> · orchestrations <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/">…/workflows/orchestrations/</a> · MCP <a href="https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools">…/agents/tools/local-mcp-tools</a> · A2A <a href="https://learn.microsoft.com/en-us/agent-framework/integrations/by-component/agent-services/a2a">…/agent-services/a2a</a> · human-in-the-loop <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop">…/workflows/human-in-the-loop</a> · checkpoints <a href="https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints">…/workflows/checkpoints</a> · observability <a href="https://learn.microsoft.com/en-us/agent-framework/agents/observability">…/agents/observability</a> · AutoGen 마이그레이션 <a href="https://learn.microsoft.com/en-us/agent-framework/migration-guide/from-autogen/">…/migration-guide/from-autogen/</a> · AutoGen 저장소 README <a href="https://github.com/microsoft/autogen">https://github.com/microsoft/autogen</a>; LICENSE(GitHub microsoft/agent-framework), PyPI agent-framework (2026-11-12 조회)</li>
+  <li id="r28">🔍 Claude Agent SDK 공식 문서 — 개요 <a href="https://code.claude.com/docs/en/agent-sdk/overview">https://code.claude.com/docs/en/agent-sdk/overview</a>(platform.claude.com 동일 내용) · subagents <a href="https://code.claude.com/docs/en/agent-sdk/subagents">…/agent-sdk/subagents</a> · MCP <a href="https://code.claude.com/docs/en/agent-sdk/mcp">…/agent-sdk/mcp</a> · user input <a href="https://code.claude.com/docs/en/agent-sdk/user-input">…/agent-sdk/user-input</a> · sessions <a href="https://code.claude.com/docs/en/agent-sdk/sessions">…/agent-sdk/sessions</a> · observability <a href="https://code.claude.com/docs/en/agent-sdk/observability">…/agent-sdk/observability</a>; LICENSE(GitHub anthropics/claude-agent-sdk-python), PyPI claude-agent-sdk (2026-11-12 조회)</li>
+  <li id="r29">🔍 Hugging Face, Open ASR Leaderboard(64개 모델, 평균 WER·RTFx) <a href="https://huggingface.co/spaces/hf-audio/open_asr_leaderboard">https://huggingface.co/spaces/hf-audio/open_asr_leaderboard</a> (2026-11-12 조회)</li>
+  <li id="r30">📄 Yiming Chen et al., "VoiceBench: Benchmarking LLM-Based Voice Assistants", arXiv:2410.17196 (2024-10) <a href="https://arxiv.org/abs/2410.17196">https://arxiv.org/abs/2410.17196</a> · 저장소 <a href="https://github.com/MatthewCYM/VoiceBench">https://github.com/MatthewCYM/VoiceBench</a> (2026-11-12 조회; 웹 리더보드는 이 환경에서 접근 불가)</li>
+  <li id="r31">🔍 Artificial Analysis, Speech to Speech 리더보드(Big Bench Audio · τ-Voice · Speech Agent Arena · TTFA · 비용) <a href="https://artificialanalysis.ai/speech-to-speech">https://artificialanalysis.ai/speech-to-speech</a> (2026-11-12 조회)</li>
+  <li id="r32">🏢 OpenAI — 블로그 "Introducing gpt-realtime and Realtime API updates for production voice agents" (2025-08-28) <a href="https://openai.com/index/introducing-gpt-realtime/">https://openai.com/index/introducing-gpt-realtime/</a> · 블로그 "Advancing voice intelligence with new models in the API" (2026-05-07) <a href="https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/">https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/</a> · Agents SDK realtime 가이드(GitHub openai/openai-agents-python docs/realtime/guide.md, openai-agents-js guides/voice-agents.mdx) · Microsoft Learn, Azure OpenAI Realtime audio quickstart(전송별 지연 표) <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/openai/realtime-audio-quickstart">https://learn.microsoft.com/en-us/azure/ai-foundry/openai/realtime-audio-quickstart</a> (2026-11-12 조회; platform.openai.com 문서는 이 환경에서 접근 불가)</li>
+  <li id="r33">🏢 Google — gemini-live-api-examples README <a href="https://github.com/google-gemini/gemini-live-api-examples">https://github.com/google-gemini/gemini-live-api-examples</a> · Gemini Cookbook "Get_started_LiveAPI" 노트북 <a href="https://github.com/google-gemini/cookbook">https://github.com/google-gemini/cookbook</a> (2026-11-12 조회; ai.google.dev 공식 문서 페이지는 이 환경에서 접근 불가)</li>
+  <li id="r34">📄🏢 Kyutai — Alexandre Défossez et al., "Moshi: a speech-text foundation model for real-time dialogue", arXiv:2410.00037 <a href="https://arxiv.org/abs/2410.00037">https://arxiv.org/abs/2410.00037</a> · 저장소 README <a href="https://github.com/kyutai-labs/moshi">https://github.com/kyutai-labs/moshi</a> · 공개 블로그(2024-09-18) <a href="https://kyutai.org/blog/2024-09-18-moshi-release/">https://kyutai.org/blog/2024-09-18-moshi-release/</a> (2026-11-12 조회)</li>
+  <li id="r35">🏢 ElevenLabs — ElevenAgents 개요 <a href="https://elevenlabs.io/docs/eleven-agents/overview">https://elevenlabs.io/docs/eleven-agents/overview</a> · Conversation flow <a href="https://elevenlabs.io/docs/agents-platform/customization/conversation-flow">https://elevenlabs.io/docs/agents-platform/customization/conversation-flow</a> · Realtime models <a href="https://elevenlabs.io/docs/eleven-agents/customization/realtime-models">https://elevenlabs.io/docs/eleven-agents/customization/realtime-models</a> (2026-11-12 조회)</li>
+  <li id="r36">🏢 Deepgram — Voice Agent API 문서: architecture <a href="https://developers.deepgram.com/docs/voice-agent-architecture">https://developers.deepgram.com/docs/voice-agent-architecture</a> · speculative replies · eager end-of-turn · latency report · Think Live (developers.deepgram.com/docs/…; 2026-11-12 조회)</li>
+  <li id="r37">🏢 LiveKit — Agents 문서: Pipeline types <a href="https://docs.livekit.io/agents/models/pipelines/">https://docs.livekit.io/agents/models/pipelines/</a> · Turn detection <a href="https://docs.livekit.io/agents/build/turns/">https://docs.livekit.io/agents/build/turns/</a> · Realtime models <a href="https://docs.livekit.io/agents/models/realtime/">https://docs.livekit.io/agents/models/realtime/</a> (2026-11-12 조회)</li>
+  <li id="r38">📄 Sierra — "τ-Voice" 논문, arXiv:2603.13686 <a href="https://arxiv.org/abs/2603.13686">https://arxiv.org/abs/2603.13686</a> · "τ-Multilingual" 논문, arXiv:2609.35820 <a href="https://arxiv.org/abs/2609.35820">https://arxiv.org/abs/2609.35820</a> · 🔍 tau2-bench 저장소의 리더보드 제출 데이터(web/leaderboard/public/submissions/*.json; 사이트 taubench.com은 이 환경에서 접근 불가) <a href="https://github.com/sierra-research/tau2-bench">https://github.com/sierra-research/tau2-bench</a> (2026-11-12 조회)</li>
+</ol></div>
+
+<p class="small" style="margin-top:30px">이 문서는 2026-11-12 기준 공개 자료만으로 작성했다. 수치는 조회일의 스냅샷이며, 리더보드는 수개월 단위로 바뀐다. 문서 내 모든 그림은 원 출처의 저작물이며 학습·연구 목적의 인용으로 출처를 명시했다.</p>
+</div>
+</body>
+</html>
